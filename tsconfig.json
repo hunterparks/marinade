@@ -14,6 +14,18 @@
     "lib": [
       "es2017",
       "dom"
-    ]
+    ],
+    "baseUrl": "./src", // This must be specified if "paths" is.
+    "paths": {
+      "@app/*": [
+        "app/*"
+      ],
+      "@components/*": [
+        "app/components/*"
+      ],
+      "@models/*": [
+        "app/models/*"
+      ]
+    }
   }
 }
