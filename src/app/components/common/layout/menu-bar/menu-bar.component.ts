@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Output, ViewEncapsulation } from '@angular/core';
+import { Component, ViewEncapsulation } from '@angular/core';
 
 declare let $: any;
 
@@ -8,12 +8,4 @@ declare let $: any;
   templateUrl: './menu-bar.component.html',
   styleUrls: ['./menu-bar.component.sass']
 })
-export class MenuBarComponent {
-
-  @Output() projectTreeToggle: EventEmitter<any> = new EventEmitter<any>();
-
-  public toggleProjectTree(): void {
-    this.projectTreeToggle.emit();
-  }
-
-}
+export class MenuBarComponent { }

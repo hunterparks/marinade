@@ -8,4 +8,9 @@ import { TreeNode } from '@models/project-tree/project-tree.model';
 })
 export class TreeNodeComponent {
   @Input() public node: TreeNode;
+
+  public toggleNode(): void {
+    this.node.open = !this.node.open;
+    console.log(this.node.open);
+  }
 }

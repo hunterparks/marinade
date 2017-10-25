@@ -1,0 +1,26 @@
+<button class="ui button">Run</button>
+<button class="ui button">Pause</button>
+<button class="ui button">Step</button>
+<button class="ui button">Stop</button>
+<button class="ui button">Reload</button>
+<ace-editor [text]="'code goes here'" #editor style="height:93vh; width: 50vw; position: fixed; left: 0;"></ace-editor>
+<table class="ui celled table" style="position: fixed; right: 1vw; width: 47vw;">
+  <thead><tr>
+    <th>Register</th>
+    <th>Address</th>
+    <th>Value</th>
+    <th>Format</th>
+  </tr></thead>
+  <tbody>
+  <tr *ngFor="let register of registers">
+    <td><button class="ui button">R{{ register.number }}</button></td>
+    <td>{{ register.address }}</td>
+    <td>{{ register.value }}</td>
+    <td>
+      <button class="ui button">Binary</button>
+      <button class="ui button">Decimal</button>
+      <button class="ui button">Hex</button>
+    </td>
+  </tr>
+  </tbody>
+</table>

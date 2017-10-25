@@ -1,76 +1,76 @@
-export class TreeNode {
-  public name: string;
-  public type: string;
-  public status: string;
-  public children?: TreeNode[];
+export interface TreeNode {
+  name: string;
+  type: string;
+  open: boolean;
+  children?: TreeNode[];
 }
 
-export const ProjectFiles: TreeNode = {
+export let ProjectFiles: TreeNode = {
   name: 'Marinade',
   type: 'folder',
-  status: 'open',
+  open: true,
   children: [
     {
       name: 'e2e',
       type: 'folder',
-      status: 'closed',
+      open: false,
       children: [
         {
           name: 'app.e2e-spec.ts',
           type: 'ts',
-          status: 'closed',
+          open: false,
         },
         {
           name: 'app.po.ts',
           type: 'ts',
-          status: 'closed',
+          open: false,
         },
         {
           name: 'tsconfig.e2e.json',
           type: 'ts',
-          status: 'closed',
+          open: false,
         },
       ]
     },
     {
       name: 'node_modules',
       type: 'folder',
-      status: 'closed',
+      open: false,
     },
     {
       name: 'src',
       type: 'folder',
-      status: 'open',
+      open: true,
       children: [
         {
           name: 'app',
           type: 'folder',
-          status: 'open',
+          open: true,
           children: [
             {
               name: 'app.component.html',
               type: 'html',
-              status: 'closed',
+              open: false,
             },
             {
               name: 'app.component.sass',
               type: 'sass',
-              status: 'closed',
+              open: false,
             },
             {
               name: 'app.component.spec.ts',
               type: 'ts',
-              status: 'closed',
+              open: false,
             },
             {
               name: 'app.component.ts',
               type: 'ts',
-              status: 'closed',
+              open: false,
             },
             {
               name: 'app.module.ts',
               type: 'ts',
-              status: 'closed',
+              open: false,
             },
           ]
         }

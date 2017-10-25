@@ -10,21 +10,10 @@ declare let $: any;
 export class AppComponent implements AfterViewInit {
 
   ngAfterViewInit() {
-    // using context
-    $('#project-tree')
-      .sidebar({
-        context: $('#main-content'),
-        closable: false,
-        dimPage: false,
-      });
     $('#view-menu')
       .sidebar({
         context: $('#project-root'),
       });
-  }
-
-  toggleProjectTree() {
-    $('#project-tree').sidebar('toggle');
   }
 
   toggleView() {

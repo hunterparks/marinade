@@ -1,8 +1,8 @@
 <div class="item">
   <i class="icon" [class.open]="node.status === 'open'" [class.folder]="node.type === 'folder'" [class.code]="node.type !== 'folder'"></i>
-  <div class="content">
+  <div class="content"  (click)="toggleNode()">
     <div class="header">{{ node.name }}</div>
-    <div class="list">
+    <div class="list" *ngIf="node.open">
       <marinade-tree-node *ngFor="let child of node.children" [node]="child"></marinade-tree-node>
     </div>
   </div>

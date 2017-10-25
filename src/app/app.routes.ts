@@ -4,7 +4,8 @@ import { MemoryComponent } from "@components/memory/memory.component";
 import { SimulatorComponent } from "@components/simulator/simulator.component";
 
 export const MarinadeRoutes: Routes = [
+  { path: 'code',      component: EditorComponent },
   { path: 'memory',    component: MemoryComponent },
   { path: 'simulator', component: SimulatorComponent },
-  { path: '**',        component: EditorComponent }
+  { path: '**',        component: EditorComponent },
 ];
