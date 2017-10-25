@@ -8,6 +8,8 @@ import { MenuBarComponent } from '@components/common/layout/menu-bar/menu-bar.co
 import { RouterModule } from '@angular/router';
 import { MarinadeRoutes } from '@app/app.routes';
 import { EditorComponent } from '@components/editor/editor.component';
+import { MemoryComponent } from '@components/memory/memory.component';
+import { SimulatorComponent } from '@components/simulator/simulator.component';
 
 @NgModule({
   declarations: [
@@ -15,7 +17,9 @@ import { EditorComponent } from '@components/editor/editor.component';
     ProjectTreeComponent,
     TreeNodeComponent,
     MenuBarComponent,
-    EditorComponent
+    EditorComponent,
+    MemoryComponent,
+    SimulatorComponent
   ],
   imports: [
     BrowserModule,

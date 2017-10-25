@@ -1,9 +1,26 @@
-<marinade-menu-bar (projectTreeToggle)="open()"></marinade-menu-bar>
-<div class="ui bottom attached segment pushable">
-  <marinade-project-tree></marinade-project-tree>
-  <div class="pusher">
-    <div class="ui basic segment">
-      <router-outlet></router-outlet>
+<div id="project-root" class="ui top attached segment pusher">
+  <marinade-menu-bar (projectTreeToggle)="toggleProjectTree()"></marinade-menu-bar>
+  <div class="ui bottom attached segment pushable">
+    <marinade-project-tree></marinade-project-tree>
+    <div id="main-content" class="pusher">
+      <div class="ui basic segment">
+        <router-outlet></router-outlet>
+      </div>
     </div>
   </div>
+  <div id="view-toggle" (click)="toggleView()"></div>
+</div>
+<div id="view-menu" class="ui bottom inverted nine item labeled icon sidebar menu">
+  <a class="item">
+    <i class="code icon"></i>
+    Code
+  </a>
+  <a class="item">
+    <i class="microchip icon"></i>
+    Memory
+  </a>
+  <a class="item">
+    <i class="smile icon"></i>
+    Simulator
+  </a>
 </div>

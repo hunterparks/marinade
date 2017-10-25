@@ -11,17 +11,24 @@ export class AppComponent implements AfterViewInit {
 
   ngAfterViewInit() {
     // using context
-    $('.ui.sidebar')
+    $('#project-tree')
       .sidebar({
-        context: $('.bottom.segment'),
+        context: $('#main-content'),
         closable: false,
         dimPage: false,
-      })
-    ;
+      });
+    $('#view-menu')
+      .sidebar({
+        context: $('#project-root'),
+      });
   }
 
-  open() {
-    $('.ui.sidebar').sidebar('toggle');
+  toggleProjectTree() {
+    $('#project-tree').sidebar('toggle');
+  }
+
+  toggleView() {
+    $('#view-menu').sidebar({ transition: 'scale down' }).sidebar('toggle');
   }
 
 }
