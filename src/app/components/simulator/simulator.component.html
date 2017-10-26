@@ -1,1 +1,31 @@
-<h2 class="ui header">ARM Simulator</h2>
+<button class="ui green button">Run</button>
+<button class="ui orange button">Pause</button>
+<button class="ui purple button">Step</button>
+<button class="ui red button">Stop</button>
+<button class="ui primary button">Reload</button>
+<div class="ui selection dropdown">
+  <input type="hidden" name="speed">
+  <i class="dropdown icon"></i>
+  <div class="default text">Speed (100%)</div>
+  <div class="menu">
+    <div class="item" data-value="0">25%</div>
+    <div class="item" data-value="1">50%</div>
+    <div class="item" data-value="2">75%</div>
+    <div class="item" data-value="3">100%</div>
+    <div class="item" data-value="4">125%</div>
+    <div class="item" data-value="5">150%</div>
+    <div class="item" data-value="6">175%</div>
+    <div class="item" data-value="7">200%</div>
+  </div>
+</div>
+<ace-editor [text]="'code goes here'" #editor></ace-editor>
+<img class="cpu" src="assets/img/silicon.jpg">
+<div class="context">
+  <p>Program Counter: 0x0000</p>
+  <p>Instructions executed: 0</p>
+  <p>Instructions left: 0</p>
+  <hr>
+  <img class="lcd" src="assets/img/lcd.jpeg">
+  <br>
+  <img class="leds" src="assets/img/leds.png">
+</div>

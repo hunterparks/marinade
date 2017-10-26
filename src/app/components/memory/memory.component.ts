@@ -8,6 +8,7 @@ import { Register, Registers } from '@models/memory/register-values.model';
 })
 export class MemoryComponent {
 
+  public text: string = 'code goes here';
   public registers: Register[] = Registers;
 
 }

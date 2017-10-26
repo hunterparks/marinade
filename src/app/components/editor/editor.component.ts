@@ -10,7 +10,7 @@ declare let $: any;
 export class EditorComponent implements AfterViewInit {
 
   @ViewChild('editor') editor;
-  public text: string = '';
+  public text: string = 'code goes here';
   public mode: string = 'typescript';
 
   public ngAfterViewInit(): void {
