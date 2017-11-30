@@ -57,7 +57,10 @@
     "no-empty": false,
     "no-empty-interface": true,
     "no-eval": true,
-    "no-inferrable-types": false,
+    "no-inferrable-types": [
+      true,
+      "ignore-params"
+    ],
     "no-misused-new": true,
     "no-non-null-assertion": true,
     "no-shadowed-variable": true,
@@ -115,15 +118,17 @@
     "directive-selector": [
       true,
       "attribute",
-      "marinade",
+      "app",
       "camelCase"
     ],
     "component-selector": [
       true,
       "element",
-      "marinade",
+      "app",
       "kebab-case"
     ],
+    "angular-whitespace": [true, "check-interpolation"],
+    "no-output-on-prefix": true,
     "use-input-property-decorator": true,
     "use-output-property-decorator": true,
     "use-host-property-decorator": true,
@@ -132,7 +137,6 @@
     "use-life-cycle-interface": true,
     "use-pipe-transform-interface": true,
     "component-class-suffix": true,
-    "directive-class-suffix": true,
-    "invoke-injectable": true
+    "directive-class-suffix": true
   }
 }
