@@ -23,6 +23,9 @@ jobs:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
 
+      # Lint the codebase
+      - run: npm run lint
+
       # Run unit tests with coverage
       - run: npm run test-ci
 
