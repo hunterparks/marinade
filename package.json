@@ -7,7 +7,8 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
-    "test": "ng test --single-run",
+    "test": "ng test",
+    "test-ci": "ng test --single-run --code-coverage",
     "lint": "ng lint",
     "e2e": "ng e2e"
   },
@@ -33,6 +34,7 @@
     "@types/jasmine": "~2.5.53",
     "@types/jasminewd2": "~2.0.2",
     "@types/node": "~6.0.60",
+    "codecov": "^3.0.0",
     "codelyzer": "^4.0.1",
     "electron": "1.7.9",
     "jasmine-core": "~2.6.2",

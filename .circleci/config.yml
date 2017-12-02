@@ -23,5 +23,11 @@ jobs:
             - node_modules
           key: v1-dependencies-{{ checksum "package.json" }}
 
-      # run tests!
-      - run: npm run test
+      # Run unit tests with coverage
+      - run: npm run test-ci
+
+      # Send coverage to codecov
+      - run: bash <(curl -s https://codecov.io/bash) -t $CODECOV_TOKEN
+
+      # Run e2e tests
+      - run: npm run e2e
