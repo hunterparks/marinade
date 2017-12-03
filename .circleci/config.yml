@@ -6,9 +6,6 @@ jobs:
       - image: circleci/node:7.10-browsers
     steps:
       - checkout
-      - run:
-          name: Update NPM
-          command: 'sudo npm install -g npm@latest'
       # Download and cache dependencies
       - restore_cache:
           keys:
