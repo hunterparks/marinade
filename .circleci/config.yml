@@ -61,6 +61,10 @@ workflows:
           requires:
             - build
       - hold:
+          filters:
+            branches:
+              only:
+                - master
           type: approval
           requires:
             - test
