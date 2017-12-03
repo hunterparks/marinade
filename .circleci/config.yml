@@ -7,7 +7,8 @@ jobs:
   build:
     <<: *defaults
     steps:
-      - checkout
+      - attach_workspace:
+          at: /~/marinade
       # Download and cache dependencies
       - restore_cache:
           keys:
