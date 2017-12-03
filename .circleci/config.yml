@@ -28,6 +28,9 @@ jobs:
     steps:
       - checkout
       - run:
+          name: Install NPM
+          command: npm install
+      - run:
           name: Lint
           command: npm run lint
       - run:
