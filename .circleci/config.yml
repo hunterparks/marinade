@@ -32,7 +32,7 @@ jobs:
     <<: *defaults
     steps:
       - attach_workspace:
-          at: /~/marinade
+          at: ~/marinade
       - run:
           name: Lint
           command: npm run lint
