@@ -1,6 +1,13 @@
 # Marinade
 
-[![CircleCI](https://circleci.com/gh/msoesd-teambeta/marinade/tree/master.svg?style=svg)](https://circleci.com/gh/msoesd-teambeta/marinade/tree/master)
+[![CircleCI branch](https://img.shields.io/circleci/project/github/msoesd-teambeta/marinade/master.svg?style=for-the-badge)](https://circleci.com/gh/msoesd-teambeta/marinade/tree/master)
+[![Codecov branch](https://img.shields.io/codecov/c/github/msoesd-teambeta/marinade/master.svg?style=for-the-badge)](https://codecov.io/gh/msoesd-teambeta/marinade/branch/master)
+
+[![GitHub last commit (branch)](https://img.shields.io/github/last-commit/msoesd-teambeta/marinade/master.svg?style=for-the-badge)](https://github.com/msoesd-teambeta/marinade/commits/master)
+[![GitHub pull requests](https://img.shields.io/github/issues-pr/msoesd-teambeta/marinade.svg?style=for-the-badge)](https://github.com/msoesd-teambeta/marinade/pulls)
+
+[![forthebadge](https://forthebadge.com/images/badges/built-with-love.svg)](https://forthebadge.com)
+[![forthebadge](https://forthebadge.com/images/badges/uses-badges.svg)](https://forthebadge.com)
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 1.4.8.
 
@@ -42,3 +49,7 @@ Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protrac
 ## Further help
 
 To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+
+## Badge Info
+
+Badges from [Shields.io](https://shields.io/) and [For the Badge](https://forthebadge.com/).
