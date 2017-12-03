@@ -31,6 +31,7 @@ jobs:
   test:
     <<: *defaults
     steps:
+      - checkout
       - attach_workspace:
           at: ~/marinade
       - run:
