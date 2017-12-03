@@ -60,10 +60,7 @@ workflows:
       - test:
           requires:
             - build
-      - hold:
-          type: approval
+      - deploy:
+        type: approval
           requires:
             - test
-      - deploy:
-          requires:
-            - hold
