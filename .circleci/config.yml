@@ -1,0 +1,77 @@
+version: 2
+defaults: &defaults
+  working_directory: ~/marinade
+  docker:
+    - image: circleci/node:7.10-browsers
+jobs:
+  build:
+    <<: *defaults
+    steps:
+      - checkout
+      # Download and cache dependencies
+      - restore_cache:
+          keys:
+          - v1-dependencies-{{ checksum "package.json" }}
+          # fallback to using the latest cache if no exact match is found
+          - v1-dependencies-
+      - run:
+          name: Install NPM
+          command: npm install
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package.json" }}
+      - run:
+          name: Build code
+          command: npm run build
+      - persist-to-workspace:
+          root: ~/marinade
+          paths:
+            - node_modules
+  test:
+    <<: *defaults
+    steps:
+      - checkout
+      - attach_workspace:
+          at: ~/marinade
+      - run:
+          name: Lint
+          command: npm run lint
+      - run:
+          name: Unit tests with coverage
+          command: npm run test-ci
+      - run:
+          name: Update Codecov
+          command: bash <(curl -s https://codecov.io/bash) -t $CODECOV_TOKEN
+      - run:
+          name: E2E tests
+          command: npm run e2e
+  deploy:
+    <<: *defaults
+    steps:
+      - run:
+          name: Display notice
+          command: echo "TODO - setup deploy"
+workflows:
+  version: 2
+  build_and_test_deploy:
+    jobs:
+      - build
+      - test:
+          requires:
+            - build
+      - hold:
+          filters:
+            branches:
+              only:
+                - master
+          type: approval
+          requires:
+            - test
+      - deploy:
+          filters:
+            branches:
+              only:
+                - master
+          requires:
+            - hold
