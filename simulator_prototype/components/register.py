@@ -2,11 +2,12 @@ from components.clock import Clock
 from components.reset import Reset
 from components.bus import Bus
 from components.logic_input import LogicInput
-from components.abstract.sequential import Sequential, Edge_Type, Reset_Type
+from components.abstract.sequential import Sequential, Latch_Type, Reset_Type
 
 class Register(Sequential):
 
-    def __init__(self, name, clock, reset, in_bus, out_bus, size, default_state = 0, edge_type = Edge_Type.LATCH_RISING_EDGE, reset_type = Reset_Type.RESET_ACTIVE_LOW):
+    #TODO enable
+    def __init__(self, name, clock, reset, in_bus, out_bus, size, default_state = 0, edge_type = Latch_Type.RISING_EDGE, reset_type = Reset_Type.ACTIVE_LOW):
 
         self._name = name
         self._clock = clock
@@ -22,11 +23,11 @@ class Register(Sequential):
         self._reset_type = reset_type
 
     def on_rising_edge(self):
-        if self._edge_type == Edge_Type.LATCH_RISING_EDGE or self._edge_type == Edge_Type.LATCH_BOTH_EDGE:
+        if self._edge_type == Latch_Type.RISING_EDGE or self._edge_type == Latch_Type.BOTH_EDGE:
             self._q = self._d
 
     def on_falling_edge(self):
-        if self._edge_type == Edge_Type.LATCH_FALLING_EDGE or self._edge_type == Edge_Type.LATCH_BOTH_EDGE:
+        if self._edge_type == Latch_Type.FALLING_EDGE or self._edge_type == Latch_Type.BOTH_EDGE:
             self._q = self._d
 
     def on_reset(self):
@@ -51,9 +52,9 @@ class Register(Sequential):
         self._prev_clock_state = self._clock.read()
 
         #check for reset event
-        if self._reset_type == Reset_Type.RESET_ACTIVE_LOW and self._reset.read() == 0:
+        if self._reset_type == Reset_Type.ACTIVE_LOW and self._reset.read() == 0:
             self.on_reset()
-        elif self._reset_type == Reset_Type.RESET_ACTIVE_HIGH and self._reset.read() == 1:
+        elif self._reset_type == Reset_Type.ACTIVE_HIGH and self._reset.read() == 1:
             self.on_reset()
 
         # assert output for timestep
