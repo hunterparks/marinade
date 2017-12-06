@@ -2,21 +2,11 @@ from components.clock import Clock
 from components.reset import Reset
 from components.bus import Bus
 from components.logic_input import LogicInput
-from components.abstract.sequential import Sequential
-from enum import Enum
-
-class Register_Edge_Type(Enum):
-    LATCH_RISING_EDGE = 0
-    LATCH_FALLING_EDGE = 1
-    LATCH_BOTH_EDGE = 2
-
-class Register_Reset_Type(Enum):
-    RESET_ACTIVE_LOW = 0
-    RESET_ACTIVE_HIGH = 1
+from components.abstract.sequential import Sequential, Edge_Type, Reset_Type
 
 class Register(Sequential):
 
-    def __init__(self, name, clock, reset, in_bus, out_bus, size, default_state = 0, edge_type = Register_Edge_Type.LATCH_RISING_EDGE, reset_type = Register_Reset_Type.RESET_ACTIVE_LOW):
+    def __init__(self, name, clock, reset, in_bus, out_bus, size, default_state = 0, edge_type = Edge_Type.LATCH_RISING_EDGE, reset_type = Reset_Type.RESET_ACTIVE_LOW):
 
         self._name = name
         self._clock = clock
@@ -32,11 +22,11 @@ class Register(Sequential):
         self._reset_type = reset_type
 
     def on_rising_edge(self):
-        if self._edge_type == Register_Edge_Type.LATCH_RISING_EDGE or self._edge_type == Register_Edge_Type.LATCH_BOTH_EDGE:
+        if self._edge_type == Edge_Type.LATCH_RISING_EDGE or self._edge_type == Edge_Type.LATCH_BOTH_EDGE:
             self._q = self._d
 
     def on_falling_edge(self):
-        if self._edge_type == Register_Edge_Type.LATCH_FALLING_EDGE or self._edge_type == Register_Edge_Type.LATCH_BOTH_EDGE:
+        if self._edge_type == Edge_Type.LATCH_FALLING_EDGE or self._edge_type == Edge_Type.LATCH_BOTH_EDGE:
             self._q = self._d
 
     def on_reset(self):
@@ -61,9 +51,9 @@ class Register(Sequential):
         self._prev_clock_state = self._clock.read()
 
         #check for reset event
-        if self._reset_type == Register_Reset_Type.RESET_ACTIVE_LOW and self._reset.read() == 0:
+        if self._reset_type == Reset_Type.RESET_ACTIVE_LOW and self._reset.read() == 0:
             self.on_reset()
-        elif self._reset_type == Register_Reset_Type.RESET_ACTIVE_HIGH and self._reset.read() == 1:
+        elif self._reset_type == Reset_Type.RESET_ACTIVE_HIGH and self._reset.read() == 1:
             self.on_reset()
 
         # assert output for timestep

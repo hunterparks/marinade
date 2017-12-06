@@ -1,10 +1,13 @@
 
+import time
+
 from components.bus import Bus
 from components.clock import Clock
 from components.reset import Reset
 from components.logic_input import LogicInput
+from components.abstract.sequential import Edge_Type, Reset_Type
 
-from components.register import Register, Register_Edge_Type, Register_Reset_Type
+from components.register import Register
 from components.adder import Adder
 
 if __name__ == "__main__":
@@ -17,58 +20,21 @@ if __name__ == "__main__":
     d_bus = Bus('d_bus',8,127)
     q_bus = Bus('q_bus',8,0)
 
-    reg = Register('reg',clk,rst,d_bus,q_bus,8,0,Register_Edge_Type.LATCH_RISING_EDGE,Register_Reset_Type.RESET_ACTIVE_HIGH)
+    reg = Register('reg',clk,rst,d_bus,q_bus,8,0,Edge_Type.LATCH_RISING_EDGE,Reset_Type.RESET_ACTIVE_HIGH)
     add = Adder('adder',8,q_bus,constant,d_bus,carry)
-    #TODO make this a loop at some point to really prove out the idea
-
-    print('-----------------------------------------------------------')
-    print(clk.inspect())
-    print(rst.inspect())
-    print(d_bus.inspect())
-    print(reg.inspect())
-    print(q_bus.inspect())
-
     add.run()
     reg.run()
 
-    print('-----------------------------------------------------------')
-    print(clk.inspect())
-    print(rst.inspect())
-    print(d_bus.inspect())
-    print(reg.inspect())
-    print(q_bus.inspect())
+    while True:
+        print('-----------------------------------------------------------')
+        print(clk.inspect())
+        print(rst.inspect())
+        print(d_bus.inspect())
+        print(reg.inspect())
+        print(q_bus.inspect())
 
-    clk.generate()
-    add.run()
-    reg.run()
+        clk.generate()
+        add.run()
+        reg.run()
 
-    print('-----------------------------------------------------------')
-    print(clk.inspect())
-    print(rst.inspect())
-    print(d_bus.inspect())
-    print(reg.inspect())
-    print(q_bus.inspect())
-
-    clk.generate()
-    #rst.generate()
-    add.run()
-    reg.run()
-
-    print('-----------------------------------------------------------')
-    print(clk.inspect())
-    print(rst.inspect())
-    print(d_bus.inspect())
-    print(reg.inspect())
-    print(q_bus.inspect())
-
-    clk.generate()
-    #rst.generate()
-    add.run()
-    reg.run()
-
-    print('-----------------------------------------------------------')
-    print(clk.inspect())
-    print(rst.inspect())
-    print(d_bus.inspect())
-    print(reg.inspect())
-    print(q_bus.inspect())
+        time.sleep(0.01)

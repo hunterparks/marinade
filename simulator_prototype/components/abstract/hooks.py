@@ -1,3 +1,9 @@
+"""
+    Hooks provide a means of communicating between other backend behavior and
+    the simulator architecture. Thus the input functions into the architecture
+    should be asserted at start of cycle.
+"""
+
 from abc import ABC, abstractmethod
 
 class Hook(ABC):
@@ -22,8 +28,9 @@ class InputHook(Hook):
 
 class OutputHook(Hook):
     """
-        Abstract Hook for module message inspection
+        Abstract Hook for module message inspection. (Distinct from Hook)
     """
+    pass
 
 class InternalHook(Hook):
     """
