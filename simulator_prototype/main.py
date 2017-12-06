@@ -18,6 +18,8 @@ if __name__ == "__main__":
 
     #TODO make this a loop at some point to really prove out the idea
 
+    # this is a comments
+
     print('-----------------------------------------------------------')
     print(clk.inspect())
     print(rst.inspect())
