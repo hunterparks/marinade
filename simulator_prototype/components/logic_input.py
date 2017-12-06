@@ -1,6 +1,7 @@
 from components.abstract.hooks import InputHook
+from components.abstract.ibus import iBusRead
 
-class LogicInput(InputHook):
+class LogicInput(InputHook,iBusRead):
 
     def __init__(self, name, size, default_state = 0):
         if not isinstance(name, str) or size <= 0 or default_state < 0 or default_state > 2**size:

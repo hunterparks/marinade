@@ -1,6 +1,7 @@
 from components.abstract.hooks import OutputHook
+from components.abstract.ibus import iBusRead, iBusWrite
 
-class Bus(OutputHook):
+class Bus(OutputHook, iBusRead, iBusWrite):
 
     def __init__(self, name, size, default_value=0):
         if not isinstance(name,str) or size <= 0 or default_value < 0 or default_value >= 2**size:
