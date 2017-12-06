@@ -1,6 +1,7 @@
 from components.abstract.hooks import InputHook
+from components.abstract.ibus import iBusRead
 
-class Reset(InputHook):
+class Reset(InputHook,iBusRead):
 
     def __init__(self, name, default_state = 0):
         if not isinstance(name, str) or default_state < 0 or default_state > 1:
