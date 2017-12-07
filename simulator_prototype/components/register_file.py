@@ -5,6 +5,10 @@ from components.logic_input import LogicInput
 from components.abstract.sequential import Sequential
 from enum import Enum
 
+#Note to larry I might have broken your code if you continued working on it after
+#meeting. I changed the parameter order of register and made some parameters optional that
+#were not before (check git changes if it affects you, or slack me)
+
 class Register_File(Sequential):
 
     def __init__(self, name, clock, reset, regwr, wd3, a1, a2, a3, rd1, rd2, size, default_state = 0, edge_type = 'RISING_EDGE', reset_type = 'ACTIVE_LOW'):
@@ -45,6 +49,6 @@ class Register_File(Sequential):
     def modify(self,data):
         pass
 
-    #TODO 
+    #TODO
     def run(self):
         pass

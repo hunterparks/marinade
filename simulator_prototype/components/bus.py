@@ -8,7 +8,7 @@ from components.abstract.ibus import iBusRead, iBusWrite
 
 class Bus(OutputHook, iBusRead, iBusWrite):
     """
-
+        Bus is a read/write object used to connect architecture entities
     """
 
     def __init__(self, name, size, default_value=0):
@@ -33,3 +33,7 @@ class Bus(OutputHook, iBusRead, iBusWrite):
         if value < 0 or value >= 2**self._size:
             raise ValueError('Value out of range for bus')
         self._value = value
+
+    def size(self):
+        "Returns size of bus"
+        return self._size

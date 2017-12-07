@@ -17,13 +17,37 @@ class Latch_Type(Enum):
     FALLING_EDGE = 1
     BOTH_EDGE = 2
 
-class Reset_Type(Enum):
+    @classmethod
+    def valid(cls, x):
+        "Checks if value is within enum"
+        retval = False
+        if x == cls.RISING_EDGE:
+            retval = True
+        elif x == cls.FALLING_EDGE:
+            retval = True
+        elif x == cls.BOTH_EDGE:
+            retval = True
+        return retval
+
+
+
+class Logic_States(Enum):
     """
         Defines reset sequential logic on type
     """
 
     ACTIVE_LOW = 0
     ACTIVE_HIGH = 1
+
+    @classmethod
+    def valid(cls, x):
+        "Checks if value is within enum"
+        retval = False
+        if x == cls.ACTIVE_LOW:
+            retval = True
+        elif x == cls.ACTIVE_HIGH:
+            retval = True
+        return retval
 
 class Sequential(InternalHook, Entity):
     """
