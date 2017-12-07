@@ -39,6 +39,6 @@ class InternalHook(Hook):
     """
 
     @abstractmethod
-    def modify(self,data):
+    def modify(self,data=None):
         "Hook method to modify internal data for element"
         return NotImplemented

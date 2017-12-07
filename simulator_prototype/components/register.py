@@ -90,10 +90,18 @@ class Register(Sequential):
         "Returns dictionary message to user"
         return {'name' : self._name, 'type' : 'register', 'size' : self._size, 'state' : self._q}
 
-    #TODO write this function so that user can modify internal contents of register
     def modify(self,data):
         "Handles message from user to modify memory contents"
-        pass
+        if data is None:
+            raise ValueError('Expecting message to be provided')
+        elif 'state' not in data:
+            raise ValueError('Invalid format for message')
+
+        state = data['state']
+        if isinstance(state,int) and state >= 0 and state < 2**self._size:
+            self._q = state
+        else:
+            raise ValueError('Data in message does fit in internal size')
 
     def run(self):
         "Timestep handler function clocks data into register and asserts output"

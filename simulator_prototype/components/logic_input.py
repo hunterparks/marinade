@@ -26,16 +26,16 @@ class LogicInput(InputHook,iBusRead):
 
     def generate(self, message):
         "Sets a new state for read only bus from user space"
-        if message is not None:
-            if 'state' in message:
-                if isinstance(message['state'],int) and message['state'] >= 0 and message['state'] < 2**self._size:
-                    self._state = message['state']
-                else:
-                    raise ValueError('Data in message does not match expected range')
-            else:
-                raise ValueError('Invalid format for message')
-        else:
+        if message is None:
             raise ValueError('Expecting message to be provided')
+        elif 'state' not in message:
+            raise ValueError('Invalid format for message')
+
+        state = message['state']
+        if isinstance(state,int) and state >= 0 and state < 2**self._size:
+            self._state = state
+        else:
+            raise ValueError('Data in message does not match expected range')
 
     def read(self):
         "Returns last valid state set in user space"
