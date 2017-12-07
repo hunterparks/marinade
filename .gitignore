@@ -31,10 +31,10 @@ testem.log
 /e2e/*.js
 /e2e/*.map
 
-# pyc Files
-*.pyc
-
 # System Files
 .DS_Store
 Thumbs.db
-simulator_prototype/components/__pycache__/__init__.cpython-36.pyc
+
+# Python
+__pycache__/
+*.py[cod]
