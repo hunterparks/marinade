@@ -39,4 +39,4 @@ class Clock(InputHook,iBusRead):
 
     def size(self):
         "Returns size of bus"
-        return self._size
+        return 1

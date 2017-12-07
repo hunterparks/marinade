@@ -7,8 +7,9 @@ from components.abstract.sequential import Sequential, Latch_Type, Logic_States
 
 class Register(Sequential):
 
-    #TODO enforce bus size rules
-    def __init__(self, name, size, clock, reset, in_bus, out_bus = None, default_state = 0, edge_type = Latch_Type.RISING_EDGE, reset_type = Logic_States.ACTIVE_LOW, enable = None, enable_type = Logic_States.ACTIVE_HIGH):
+    def __init__(self, name, size, clock, reset, in_bus, out_bus = None, default_state = 0,
+                edge_type = Latch_Type.RISING_EDGE, reset_type = Logic_States.ACTIVE_LOW,
+                enable = None, enable_type = Logic_States.ACTIVE_HIGH):
         if not isinstance(name,str) or size <= 0 or default_state < 0 or default_state >= 2**size:
             raise ValueError('Initialization parameters invalid')
         self._name = name
@@ -19,17 +20,30 @@ class Register(Sequential):
 
         if not isinstance(clock,iBusRead) or not isinstance(reset,iBusRead) or not isinstance(in_bus,iBusRead):
             raise ValueError('Input buses must be readable')
+
+        if not clock.size() == 1:
+            raise ValueError('Clock bus must be size {}'.format(1))
         self._clock = clock
         self._prev_clock_state = clock.read()
+
+        if not reset.size() == 1:
+            raise ValueError('Reset bus must be size {}'.format(1))
         self._reset = reset
+
+        if not in_bus.size() == size:
+            raise ValueError('Input bus size must match internal size {}'.format(size))
         self._in_bus = in_bus
 
         if not isinstance(enable,iBusRead) and not enable is None:
             raise ValueError('If enable bus defined then must be readable')
+        elif not enable is None and not enable.size() == 1:
+            raise ValueError('Enable bus must be size {}'.format(1))
         self._enable = enable
 
         if not isinstance(out_bus,iBusWrite) and not out_bus is None:
             raise ValueError('If output bus defined then must be writable')
+        elif not out_bus is None and not out_bus.size() == size:
+            raise ValueError('Output bus size must match internal size {}'.format(size))
         self._out_bus = out_bus
 
         if not Latch_Type.valid(edge_type):
@@ -44,12 +58,10 @@ class Register(Sequential):
             raise ValueError('Invalid active reset type')
         self._enable_type = enable_type
 
-    #TODO do check on size to prevent larger than allowed values
     def on_rising_edge(self):
         if self._edge_type == Latch_Type.RISING_EDGE or self._edge_type == Latch_Type.BOTH_EDGE:
             self._q = self._d
 
-    #TODO do check on size to prevent larger than allowed values
     def on_falling_edge(self):
         if self._edge_type == Latch_Type.FALLING_EDGE or self._edge_type == Latch_Type.BOTH_EDGE:
             self._q = self._d
