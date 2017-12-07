@@ -2,19 +2,19 @@ from components.clock import Clock
 from components.reset import Reset
 from components.bus import Bus
 from components.logic_input import LogicInput
-from components.abstract.sequential import Sequential
+from components.abstract.sequential import Sequential, Edge_Type, Reset_Type
 from enum import Enum
 
 class Register_File(Sequential):
 
-    def __init__(self, name, clock, reset, regwr, wd3, a1, a2, a3, rd1, rd2, size, default_state = 0, edge_type = 'RISING_EDGE', reset_type = 'ACTIVE_LOW'):
+    def __init__(self, name, clock, reset, write_enable, write_data, a1, a2, a3, rd1, rd2, size, default_state = 0, edge_type = Edge_Type.LATCH_FALLING_EDGE, reset_type = Reset_Type.RESET_ACTIVE_LOW):
 
         self._name = name
         self._clock = clock
         self._prev_clock_state = clock.read()
         self._reset = reset
-        self._regwr = regwr
-        self._wd3 = wd3
+        self._write_enable = write_enable
+        self._write_data = write_data
         self._a1 = a1
         self._a2 = a2
         self._a3 = a3
@@ -27,7 +27,8 @@ class Register_File(Sequential):
 
     #TODO
     def on_rising_edge(self):
-        pass
+        if self._edge_type == Edge_Type.LATCH_RISING_EDGE or self._edge_type == Edge_Type.LATCH_BOTH_EDGE:
+            
 
     #TODO
     def on_falling_edge(self):

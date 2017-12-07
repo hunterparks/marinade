@@ -16,8 +16,6 @@
 *.launch
 .settings/
 *.sublime-workspace
-
-# IDE - VSCode
 .vscode/*
 
 # misc
@@ -33,7 +31,10 @@ testem.log
 /e2e/*.js
 /e2e/*.map
 
+# pyc Files
+*.pyc
+
 # System Files
 .DS_Store
 Thumbs.db
-.vscode/settings.json
+simulator_prototype/components/__pycache__/__init__.cpython-36.pyc
