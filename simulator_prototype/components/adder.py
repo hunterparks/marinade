@@ -1,11 +1,26 @@
+"""
+    Adder component is a standalone core component for general architecture
+    development.
+"""
+
 from components.abstract.ibus import iBusRead, iBusWrite
 from components.bus import Bus
 from components.logic_input import LogicInput
 from components.abstract.combinational import Combinational
 
 class Adder(Combinational):
+    """
+        Adder component implements a combinational adder of fixed bit width.
+        Component expects two input signals to be of same size as internal.
+
+        Output follows form:
+            Y = A + B + CIN
+            COUT = (A + B + CIN) >= (2 ^ BIT_WIDTH)
+    """
 
     def __init__(self, name, size, a_bus, b_bus, y_bus=None, carry_in=None, carry_out=None):
+        "Constructor will check for valid parameters, exception thrown on invalid"
+
         if not isinstance(name,str) or size <= 0 :
             raise ValueError('Initialization parameters invalid')
         self._name = name

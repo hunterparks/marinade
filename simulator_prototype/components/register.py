@@ -1,3 +1,8 @@
+"""
+    Register component is a standalone core component for general architecture
+    development.
+"""
+
 from components.abstract.ibus import iBusRead, iBusWrite
 from components.clock import Clock
 from components.reset import Reset
@@ -6,10 +11,19 @@ from components.logic_input import LogicInput
 from components.abstract.sequential import Sequential, Latch_Type, Logic_States
 
 class Register(Sequential):
+    """
+        Register component implements a sequential fixed bit width memory space.
+        Component expects a clock, reset as per sequential requirement.
+        Component expects input and output bus to be of same size as internal
+
+        Default state is state of device at startup and on reset
+    """
 
     def __init__(self, name, size, clock, reset, in_bus, out_bus = None, default_state = 0,
                 edge_type = Latch_Type.RISING_EDGE, reset_type = Logic_States.ACTIVE_LOW,
                 enable = None, enable_type = Logic_States.ACTIVE_HIGH):
+        "Constructor will check for valid parameters, exception thrown on invalid"
+
         if not isinstance(name,str) or size <= 0 or default_state < 0 or default_state >= 2**size:
             raise ValueError('Initialization parameters invalid')
         self._name = name
@@ -59,24 +73,30 @@ class Register(Sequential):
         self._enable_type = enable_type
 
     def on_rising_edge(self):
+        "Implements clock rising behavior: captures data if latching type matches"
         if self._edge_type == Latch_Type.RISING_EDGE or self._edge_type == Latch_Type.BOTH_EDGE:
             self._q = self._d
 
     def on_falling_edge(self):
+        "Implements clock falling behavior: captures data if latching type matches"
         if self._edge_type == Latch_Type.FALLING_EDGE or self._edge_type == Latch_Type.BOTH_EDGE:
             self._q = self._d
 
     def on_reset(self):
+        "Resets the output to default state defined for register"
         self._q = self._default_state
 
     def inspect(self):
+        "Returns dictionary message to user"
         return {'name' : self._name, 'type' : 'register', 'size' : self._size, 'state' : self._q}
 
     #TODO write this function so that user can modify internal contents of register
     def modify(self,data):
+        "Handles message from user to modify memory contents"
         pass
 
     def run(self):
+        "Timestep handler function clocks data into register and asserts output"
         # receive input from in bud
         self._d = self._in_bus.read()
 
