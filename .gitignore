@@ -37,3 +37,7 @@ testem.log
 .DS_Store
 Thumbs.db
 .vscode/settings.json
+
+# Python
+__pycache__/
+*.py[cod]
