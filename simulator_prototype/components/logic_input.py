@@ -6,6 +6,8 @@
 from components.abstract.hooks import InputHook
 from components.abstract.ibus import iBusRead
 
+
+
 class LogicInput(InputHook,iBusRead):
     """
         Input hook into architecture that functions as a logical bus
@@ -13,16 +15,21 @@ class LogicInput(InputHook,iBusRead):
 
     def __init__(self, name, size, default_state = 0):
         "Constructor will cause exception on invalid parameters"
-        if not isinstance(name, str) or size <= 0 or default_state < 0 or default_state > 2**size:
+        if not isinstance(name, str):
             raise ValueError('Initialization parameters invalid')
-
+        elif not isinstance(size,int) or size <= 0:
+            raise ValueError('Size must be an integer greater than zero')
+        elif not isinstance(default_state,int) or default_state < 0 or default_state > 2**size:
+            raise ValueError('Default state must be an integer that fits in defined range')
         self._name = name
         self._size = size
         self._state = default_state
 
+
     def inspect(self):
         "Returns a dictionary message to application defining current state"
         return {'name' : self._name, 'type' : 'logic', 'size' : 1, 'state' : self._state}
+
 
     def generate(self, message):
         "Sets a new state for read only bus from user space"
@@ -37,9 +44,11 @@ class LogicInput(InputHook,iBusRead):
         else:
             raise ValueError('Data in message does not match expected range')
 
+
     def read(self):
         "Returns last valid state set in user space"
         return self._state
+
 
     def size(self):
         "Returns size of bus"

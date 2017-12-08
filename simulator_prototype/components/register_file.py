@@ -32,7 +32,7 @@ class Register_File(Sequential):
     #TODO
     def on_rising_edge(self):
         if self._edge_type == Edge_Type.LATCH_RISING_EDGE or self._edge_type == Edge_Type.LATCH_BOTH_EDGE:
-            
+
 
     #TODO
     def on_falling_edge(self):
@@ -51,5 +51,5 @@ class Register_File(Sequential):
         pass
 
     #TODO
-    def run(self):
+    def run(self,time=None):
         pass

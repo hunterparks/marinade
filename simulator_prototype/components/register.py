@@ -10,6 +10,8 @@ from components.bus import Bus
 from components.logic_input import LogicInput
 from components.abstract.sequential import Sequential, Latch_Type, Logic_States
 
+
+
 class Register(Sequential):
     """
         Register component implements a sequential fixed bit width memory space.
@@ -24,8 +26,13 @@ class Register(Sequential):
                 enable = None, enable_type = Logic_States.ACTIVE_HIGH):
         "Constructor will check for valid parameters, exception thrown on invalid"
 
-        if not isinstance(name,str) or size <= 0 or default_state < 0 or default_state >= 2**size:
-            raise ValueError('Initialization parameters invalid')
+        if not isinstance(name,str):
+            raise ValueError('Name must be a string')
+        elif not isinstance(size,int) or size <= 0:
+            raise ValueError('Size must be an integer greater than zero')
+        elif not isinstance(default_state,int) or default_state < 0 or default_state >= 2**size:
+            raise ValueError('Default state must be an integer that fits in defined range')
+
         self._name = name
         self._size = size
         self._default_state = default_state
@@ -72,23 +79,28 @@ class Register(Sequential):
             raise ValueError('Invalid active reset type')
         self._enable_type = enable_type
 
+
     def on_rising_edge(self):
         "Implements clock rising behavior: captures data if latching type matches"
         if self._edge_type == Latch_Type.RISING_EDGE or self._edge_type == Latch_Type.BOTH_EDGE:
             self._q = self._d
+
 
     def on_falling_edge(self):
         "Implements clock falling behavior: captures data if latching type matches"
         if self._edge_type == Latch_Type.FALLING_EDGE or self._edge_type == Latch_Type.BOTH_EDGE:
             self._q = self._d
 
+
     def on_reset(self):
         "Resets the output to default state defined for register"
         self._q = self._default_state
 
+
     def inspect(self):
         "Returns dictionary message to user"
         return {'name' : self._name, 'type' : 'register', 'size' : self._size, 'state' : self._q}
+
 
     def modify(self,data):
         "Handles message from user to modify memory contents"
@@ -103,7 +115,8 @@ class Register(Sequential):
         else:
             raise ValueError('Data in message does fit in internal size')
 
-    def run(self):
+
+    def run(self,time=None):
         "Timestep handler function clocks data into register and asserts output"
         # receive input from in bud
         self._d = self._in_bus.read()

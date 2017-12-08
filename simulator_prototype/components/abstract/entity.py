@@ -16,6 +16,6 @@ class Entity(ABC):
     """
 
     @abstractmethod
-    def run(self):
+    def run(self,time):
         "Implement this in each concrete child to run in the architecture"
         return NotImplemented

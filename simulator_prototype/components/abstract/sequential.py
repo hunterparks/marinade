@@ -8,6 +8,8 @@ from components.abstract.hooks import InternalHook
 from components.abstract.entity import Entity
 from enum import Enum
 
+
+
 class Latch_Type(Enum):
     """
         Defines clock sequential logic latch type
@@ -49,6 +51,8 @@ class Logic_States(Enum):
             retval = True
         return retval
 
+
+
 class Sequential(InternalHook, Entity):
     """
         All sequential components should be children of the Sequential class.
@@ -62,10 +66,12 @@ class Sequential(InternalHook, Entity):
         "On clock rising edge in entity run, this function should be called"
         return NotImplemented
 
+
     @abstractmethod
     def on_falling_edge(self):
         "On clock falling edge in entity run, this function should be called"
         return NotImplemented
+
 
     @abstractmethod
     def on_reset(self):

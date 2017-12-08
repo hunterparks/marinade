@@ -8,6 +8,8 @@ from components.bus import Bus
 from components.logic_input import LogicInput
 from components.abstract.combinational import Combinational
 
+
+
 class Adder(Combinational):
     """
         Adder component implements a combinational adder of fixed bit width.
@@ -21,8 +23,10 @@ class Adder(Combinational):
     def __init__(self, name, size, a_bus, b_bus, y_bus=None, carry_in=None, carry_out=None):
         "Constructor will check for valid parameters, exception thrown on invalid"
 
-        if not isinstance(name,str) or size <= 0 :
-            raise ValueError('Initialization parameters invalid')
+        if not isinstance(name,str):
+            raise ValueError('Name must be a string')
+        elif not isinstance(size,int) or size <= 0:
+            raise ValueError('Size must be integer greater than zero')
         self._name = name
         self._size = size
 
@@ -51,7 +55,8 @@ class Adder(Combinational):
             raise ValueError('Carry bus must be size {}'.format(1))
         self._carry_out = carry_out
 
-    def run(self):
+
+    def run(self,time=None):
         "Implements add functionality with rollover and carry bit"
 
         #process input carry bit
@@ -62,6 +67,9 @@ class Adder(Combinational):
         #run combinational function
         y = (self._a.read() + self._b.read() + cin)
         cout = 1 if y / (2**self._size) else 0
+
+        if not isinstance(y,int) or not isinstance(cout, int):
+            raise Exception('Produced non-integer result')
 
         #assert outputs
         if not self._y is None:

@@ -1,6 +1,4 @@
 
-#TODO git ignore .pyc
-
 import time
 
 from components.bus import Bus

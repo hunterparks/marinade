@@ -6,6 +6,8 @@
 
 from abc import ABC, abstractmethod
 
+
+
 class Hook(ABC):
     """
         Abstract Hook interface to define application inspection
@@ -15,6 +17,8 @@ class Hook(ABC):
     def inspect(self):
         "Hook method to inspect signals from the network"
         return NotImplemented
+
+
 
 class InputHook(Hook):
     """
@@ -26,11 +30,15 @@ class InputHook(Hook):
         "Hook method to generate signals to the rest of the network"
         return NotImplemented
 
+
+
 class OutputHook(Hook):
     """
         Abstract Hook for module message inspection. (Distinct from Hook)
     """
     pass
+
+
 
 class InternalHook(Hook):
     """

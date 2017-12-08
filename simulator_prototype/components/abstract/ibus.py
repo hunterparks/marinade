@@ -4,6 +4,8 @@
 
 from abc import ABC, abstractmethod
 
+
+
 class iBus(ABC):
     """
         Interface to enforce size constraint on bus type objects
@@ -14,6 +16,8 @@ class iBus(ABC):
         "Interface function for bus to note its size to the caller, expect return"
         return NotImplemented
 
+
+
 class iBusRead(iBus):
     """
         Interface to enforce read behavior on a bus type object
@@ -23,6 +27,8 @@ class iBusRead(iBus):
     def read(self):
         "Interface function for bus to send data to caller, expect a return value"
         return NotImplemented
+
+
 
 class iBusWrite(iBus):
     """
