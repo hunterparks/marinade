@@ -4,10 +4,8 @@
 """
 
 from components.abstract.ibus import iBusRead, iBusWrite
-from components.clock import Clock
-from components.reset import Reset
-from components.bus import Bus
-from components.logic_input import LogicInput
+from components.core.clock import Clock
+from components.core.reset import Reset
 from components.abstract.sequential import Sequential, Latch_Type, Logic_States
 
 

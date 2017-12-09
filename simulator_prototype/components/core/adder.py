@@ -4,8 +4,6 @@
 """
 
 from components.abstract.ibus import iBusRead, iBusWrite
-from components.bus import Bus
-from components.logic_input import LogicInput
 from components.abstract.combinational import Combinational
 
 

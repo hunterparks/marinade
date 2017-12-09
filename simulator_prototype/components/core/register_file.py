@@ -1,16 +1,17 @@
-from components.clock import Clock
-from components.reset import Reset
-from components.bus import Bus
-from components.logic_input import LogicInput
+from components.core.clock import Clock
+from components.core.reset import Reset
+from components.core.bus import Bus
+from components.core.logic_input import LogicInput
 from components.abstract.sequential import Sequential, Latch_Type, Logic_States
-from components.register import Register
+from components.core.register import Register
 from enum import Enum
+from components.abstract.combinational import Combinational
 
 #Note to larry I might have broken your code if you continued working on it after
 #meeting. I changed the parameter order of register and made some parameters optional that
 #were not before (check git changes if it affects you, or slack me)
 
-class Register_File(Sequential):
+class Register_File(Combinational):
 
     def __init__(self, name, clock, reset, write_enable, write_data, a1, a2, a3, rd1, rd2,
                  edge_type = Latch_Type.FALLING_EDGE, reset_type = Logic_States.ACTIVE_LOW,
@@ -91,15 +92,13 @@ class Register_File(Sequential):
         # returns a dictionary message to application defining current state
         return {'name' : self._name, 'type' : 'regfile', 'size' : None, 'state': None}
 
-    # this is to be used by the contorl to toggle write_enable between true and false
-    def write_enable(state):
-        self._write_enable = state
+    def run(self,time=None):
+        if self._write_enable.read() == self._enable_type:
+            self._reg[self._a3.read()].run()
 
-    def run(self):
-        if self._write_enable:
-            self._reg[self._a3].run()
-        else:
-            self._reg[self._a1].run()
-            self._rd1 = self._reg[self._a1].read()
-            self._reg[self._a2].run()
-            self._rd2 = self._reg[self._a2].read()
+        self._reg[self._a1.read()].run()
+        self._rd1.write(self._output[self._a1.read()].read())
+        self._reg[self._a2.read()].run()
+        self._rd2.write(self._output[self._a2.read()].read())
+
+        print(self._r0.inspect())
