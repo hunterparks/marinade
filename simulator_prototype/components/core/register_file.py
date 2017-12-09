@@ -100,5 +100,3 @@ class Register_File(Combinational):
         self._rd1.write(self._output[self._a1.read()].read())
         self._reg[self._a2.read()].run()
         self._rd2.write(self._output[self._a2.read()].read())
-
-        print(self._r0.inspect())

@@ -65,7 +65,6 @@ class Adder(Combinational):
         #run combinational function
         y = (self._a.read() + self._b.read() + cin)
         cout = 1 if y / (2**self._size) else 0
-
         if not isinstance(y,int) or not isinstance(cout, int):
             raise Exception('Produced non-integer result')
 
