@@ -22,33 +22,33 @@ class Adder(Combinational):
         "Constructor will check for valid parameters, exception thrown on invalid"
 
         if not isinstance(name,str):
-            raise ValueError('Name must be a string')
+            raise TypeError('Name must be a string')
         elif not isinstance(size,int) or size <= 0:
-            raise ValueError('Size must be integer greater than zero')
+            raise TypeError('Size must be integer greater than zero')
         self._name = name
         self._size = size
 
         if not isinstance(a_bus,iBusRead) or not isinstance(b_bus,iBusRead):
-            raise ValueError('Input buses must be readable')
+            raise TypeError('Input buses must be readable')
         elif not a_bus.size() == size or not b_bus.size() == size:
             raise ValueError('Input buses size must match internal size {}'.format(size))
         self._a = a_bus
         self._b = b_bus
 
         if not isinstance(y_bus,iBusWrite) and not y_bus is None:
-            raise ValueError('If output bus defined then must be writable')
+            raise TypeError('If output bus defined then must be writable')
         elif not y_bus is None and not y_bus.size() == size:
             raise ValueError('Output bus size must match internal size {}'.foramt(size))
         self._y = y_bus
 
         if not isinstance(carry_in,iBusRead) and not carry_in is None:
-            raise ValueError('If carry bus defined them must be readable')
+            raise TypeError('If carry bus defined them must be readable')
         elif not carry_in is None and not carry_in.size() == 1:
             raise ValueError('Carry bus must be size {}'.format(1))
         self._carry_in = carry_in
 
         if not isinstance(carry_out,iBusWrite) and not carry_out is None:
-            raise ValueError('If carry bus defined then must be writable')
+            raise TypeError('If carry bus defined then must be writable')
         elif not carry_out is None and not carry_out.size() == 1:
             raise ValueError('Carry bus must be size {}'.format(1))
         self._carry_out = carry_out
@@ -66,7 +66,7 @@ class Adder(Combinational):
         y = (self._a.read() + self._b.read() + cin)
         cout = 1 if y / (2**self._size) else 0
         if not isinstance(y,int) or not isinstance(cout, int):
-            raise Exception('Produced non-integer result')
+            raise TypeError('Produced non-integer result')
 
         #assert outputs
         if not self._y is None:

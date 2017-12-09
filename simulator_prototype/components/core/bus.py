@@ -16,11 +16,11 @@ class Bus(OutputHook, iBusRead, iBusWrite):
     def __init__(self, name, size, default_value=0):
         "Constructor will cause exception on invalid parameters"
         if not isinstance(name,str):
-            raise ValueError('Name must be a string')
+            raise TypeError('Name must be a string')
         elif not isinstance(size,int) or size <= 0:
-            raise ValueError('Size must be an integer greater than zero')
+            raise TypeError('Size must be an integer greater than zero')
         elif not isinstance(default_value,int) or default_value < 0 or default_value >= 2**size:
-            raise ValueError('Default state must be an integer that fits in defined range')
+            raise TypeError('Default state must be an integer that fits in defined range')
 
         self._name = name
         self._size = size
@@ -39,9 +39,14 @@ class Bus(OutputHook, iBusRead, iBusWrite):
 
     def write(self, value):
         "Writes parameter to bus, if out of bus' bounds then exception occurs"
-        if not isinstance(value,int) or value < 0 or value >= 2**self._size:
-            raise ValueError('Value out of range for bus')
-        self._value = value
+        if isinstance(value,int):
+            if value < 0 or value >= 2**self._size:
+                raise ValueError('Value out of range for bus')
+            self._value = value
+        elif isinstance(value,iBusRead):
+            self.write(value.read())
+        else:
+            raise TypeError('Type invalid, pass either integer or readable')
 
 
     def size(self):

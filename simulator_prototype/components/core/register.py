@@ -25,11 +25,11 @@ class Register(Sequential):
         "Constructor will check for valid parameters, exception thrown on invalid"
 
         if not isinstance(name,str):
-            raise ValueError('Name must be a string')
+            raise TypeError('Name must be a string')
         elif not isinstance(size,int) or size <= 0:
-            raise ValueError('Size must be an integer greater than zero')
+            raise TypeError('Size must be an integer greater than zero')
         elif not isinstance(default_state,int) or default_state < 0 or default_state >= 2**size:
-            raise ValueError('Default state must be an integer that fits in defined range')
+            raise TypeError('Default state must be an integer that fits in defined range')
 
         self._name = name
         self._size = size
@@ -38,7 +38,7 @@ class Register(Sequential):
         self._q = default_state
 
         if not isinstance(clock,iBusRead) or not isinstance(reset,iBusRead) or not isinstance(in_bus,iBusRead):
-            raise ValueError('Input buses must be readable')
+            raise TypeError('Input buses must be readable')
 
         if not clock.size() == 1:
             raise ValueError('Clock bus must be size {}'.format(1))
@@ -54,13 +54,13 @@ class Register(Sequential):
         self._in_bus = in_bus
 
         if not isinstance(enable,iBusRead) and not enable is None:
-            raise ValueError('If enable bus defined then must be readable')
+            raise TypeError('If enable bus defined then must be readable')
         elif not enable is None and not enable.size() == 1:
             raise ValueError('Enable bus must be size {}'.format(1))
         self._enable = enable
 
         if not isinstance(out_bus,iBusWrite) and not out_bus is None:
-            raise ValueError('If output bus defined then must be writable')
+            raise TypeError('If output bus defined then must be writable')
         elif not out_bus is None and not out_bus.size() == size:
             raise ValueError('Output bus size must match internal size {}'.format(size))
         self._out_bus = out_bus
@@ -103,7 +103,7 @@ class Register(Sequential):
     def modify(self,data):
         "Handles message from user to modify memory contents"
         if data is None:
-            raise ValueError('Expecting message to be provided')
+            raise TypeError('Expecting message to be provided')
         elif 'state' not in data:
             raise ValueError('Invalid format for message')
 

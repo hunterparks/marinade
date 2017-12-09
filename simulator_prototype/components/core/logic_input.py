@@ -16,11 +16,11 @@ class LogicInput(InputHook,iBusRead):
     def __init__(self, name, size, default_state = 0):
         "Constructor will cause exception on invalid parameters"
         if not isinstance(name, str):
-            raise ValueError('Initialization parameters invalid')
+            raise TypeError('Initialization parameters invalid')
         elif not isinstance(size,int) or size <= 0:
-            raise ValueError('Size must be an integer greater than zero')
+            raise TypeError('Size must be an integer greater than zero')
         elif not isinstance(default_state,int) or default_state < 0 or default_state > 2**size:
-            raise ValueError('Default state must be an integer that fits in defined range')
+            raise TypeError('Default state must be an integer that fits in defined range')
         self._name = name
         self._size = size
         self._state = default_state
@@ -34,7 +34,7 @@ class LogicInput(InputHook,iBusRead):
     def generate(self, message):
         "Sets a new state for read only bus from user space"
         if message is None:
-            raise ValueError('Expecting message to be provided')
+            raise TypeError('Expecting message to be provided')
         elif 'state' not in message:
             raise ValueError('Invalid format for message')
 

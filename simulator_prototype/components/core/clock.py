@@ -24,9 +24,9 @@ class Clock(InputHook,iBusRead,Entity):
     def __init__(self, name, freq, default_state = 0):
         "Constructor will cause exception on invalid parameters"
         if not isinstance(name, str):
-            raise ValueError('Name must be a string')
+            raise TypeError('Name must be a string')
         elif not isinstance(default_state,int) or default_state < 0 or default_state > 1:
-            raise ValueError('Default state must be a bit value')
+            raise TypeError('Default state must be a bit value')
         elif freq < limits.MIN_FREQUENCY or freq > limits.MAX_FREQUENCY:
             raise ValueError('Frequency must be valid')
 
@@ -57,7 +57,7 @@ class Clock(InputHook,iBusRead,Entity):
                 raise ValueError('Clock bit can only be zero or one')
             self._state = state
         else:
-            raise ValueError('Message type not supported')
+            raise TypeError('Message type not supported')
 
 
     def read(self):
