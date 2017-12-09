@@ -72,7 +72,7 @@
     "typescript": "~2.4.2"
   },
   "build": {
-    "appId": "com.electron.${name}",
+    "appId": "com.electron.marinade",
     "productName": "Marinade",
     "files": [
       "electron.js",
@@ -84,6 +84,9 @@
     "mac": {
       "category": "public.app-category.education",
       "target": "dmg"
+    },
+    "win": {
+      "target": "nsis"
     },
     "publish": {
       "provider": "github",
