@@ -1,5 +1,6 @@
 """
-
+    Multiplexer component is a standalone core component for general
+    architecture development.
 """
 
 from components.abstract.ibus import iBusRead, iBusWrite
@@ -7,9 +8,16 @@ from components.abstract.combinational import Combinational
 import math
 
 
+
 class Mux(Combinational):
     """
+        Mux component implements a combinational multiplexer of fixed bit width.
+        Component expects an array of 2 or more input signals that match width.
+        Component expects a select input control signal of size sufficent to
+        select all inputs but not larger (ceil(len(inputs)/2)) = s.size())
 
+        Output follows form:
+            Y = I[(S & pow(2,ceil(len(inputs)/2))))]
     """
 
     def __init__(self, name, size, inputs, select, output=None):
@@ -41,6 +49,7 @@ class Mux(Combinational):
         elif not output.size() == self._size:
             raise ValueError('Output bus size must match internal')
         self._output = output
+
 
     def run(self,time=None):
         "Implements n-length mux select functionality with case ignore"

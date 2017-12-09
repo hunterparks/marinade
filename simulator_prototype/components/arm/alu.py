@@ -2,7 +2,8 @@ from components.abstract.combinational import Combinational
 from components.abstract.ibus import iBusRead, iBusWrite
 
 class Alu(Combinational):
-    def __init__(self, a, b, alus, f, c, v, n, z):
+    def __init__(self, name, a, b, alus, f, c, v, n, z):
+        self._name = name
         self._a = a
         self._b = b
         self._alus = alus
@@ -32,7 +33,7 @@ class Alu(Combinational):
 
         # the following bits are used to determine when to branch
         # negative
-        self._n.write(self._f >> 32)
+        self._n.write(self._f.read() >> 32)
         # zero
         if self._f.read() == 0:
             self._z.write(1)

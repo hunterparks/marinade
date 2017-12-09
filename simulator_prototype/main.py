@@ -13,8 +13,9 @@ from components.abstract.sequential import Latch_Type, Logic_States
 
 from components.core.register import Register
 from components.core.adder import Adder
-from components.core.register_file import Register_File
+from components.arm.register_file import Register_File
 from components.core.mux import Mux
+from components.arm.alu import Alu
 
 if __name__ == "__main__":
 
@@ -27,19 +28,25 @@ if __name__ == "__main__":
 
     d_bus = Bus('d_bus',32,127)
     q_bus = Bus('q_bus',32,0)
-    n_bus = Bus('n_bus',32,0)
+    m_bus = Bus('n_bus',32,0)
     f_bus = Bus('f_bus',32,0)
+    r_bus = Bus('r_bus',32,0)
+    c_bus = Bus('c_bus',1,0)
+    v_bus = Bus('v_bus',1,0)
+    n_bus = Bus('n_bus',1,0)
+    z_bus = Bus('z_bus',1,0)
 
-    #reg = Register('reg',32,clk,rst,d_bus,q_bus,0,Latch_Type.FALLING_EDGE,Logic_States.ACTIVE_LOW,c2,Logic_States.ACTIVE_HIGH)
+
+    #reg = Register('reg',32,clk,rst,d_bus,q_bus)
     add = Adder('adder',32,q_bus,c1,d_bus)
-    regFile = Register_File('regfile',clk,rst,c2,d_bus,address,address,address,q_bus,n_bus)
-    m = Mux('mux',32,[q_bus,n_bus],c2,f_bus)
+    regFile = Register_File('regfile',clk,rst,c2,d_bus,address,address,address,q_bus,m_bus)
+    m = Mux('mux',32,[q_bus,m_bus],c2,f_bus)
+    alu = Alu('alu',f_bus,q_bus,Bus('temp',1,0),r_bus,c_bus,v_bus,n_bus,z_bus)
     add.run()
     #reg.run()
     regFile.run()
     m.run()
-
-
+    alu.run()
 
     while True:
         print('-----------------------------------------------------------')
@@ -49,11 +56,18 @@ if __name__ == "__main__":
         #print(reg.inspect())
         print(q_bus.inspect())
         print(f_bus.inspect())
+        print(r_bus.inspect())
+        print(c_bus.inspect())
+        print(v_bus.inspect())
+        print(n_bus.inspect())
+        print(z_bus.inspect())
+
 
         clk.generate()
         add.run()
         #reg.run()
         regFile.run()
         m.run()
+        alu.run()
 
-        time.sleep(0.01)
+        time.sleep(0.5)
