@@ -1,4 +1,3 @@
-#TODO change from value error to more varied set
 
 import time
 
