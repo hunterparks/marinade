@@ -13,12 +13,8 @@ class BusSubset(Entity):
         sequential.
     """
 
-    def __init__(self,name,in_b,outs_b,outs_range):
+    def __init__(self,in_b,outs_b,outs_range):
         "Constructor will check for valid parameters, exception thrown on invalid"
-
-        if not isinstance(name,str):
-            raise TypeError('Name must be a string')
-        self._name = name
 
         if not isinstance(in_b,iBusRead):
             raise TypeError('Input bus must be readable')

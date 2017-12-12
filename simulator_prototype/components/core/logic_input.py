@@ -13,22 +13,20 @@ class LogicInput(InputHook,iBusRead):
         Input hook into architecture that functions as a logical bus
     """
 
-    def __init__(self, name, size, default_state = 0):
+    def __init__(self, size, default_state = 0):
         "Constructor will cause exception on invalid parameters"
-        if not isinstance(name, str):
-            raise TypeError('Initialization parameters invalid')
-        elif not isinstance(size,int) or size <= 0:
+        if not isinstance(size,int) or size <= 0:
             raise TypeError('Size must be an integer greater than zero')
         elif not isinstance(default_state,int) or default_state < 0 or default_state > 2**size:
             raise TypeError('Default state must be an integer that fits in defined range')
-        self._name = name
+
         self._size = size
         self._state = default_state
 
 
     def inspect(self):
         "Returns a dictionary message to application defining current state"
-        return {'name' : self._name, 'type' : 'logic', 'size' : 1, 'state' : self._state}
+        return {'type' : 'logic', 'size' : 1, 'state' : self._state}
 
 
     def generate(self, message):

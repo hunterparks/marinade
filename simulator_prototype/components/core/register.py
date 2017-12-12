@@ -19,19 +19,16 @@ class Register(Sequential):
         Default state is state of device at startup and on reset
     """
 
-    def __init__(self, name, size, clock, reset, in_bus, out_bus = None, default_state = 0,
+    def __init__(self, size, clock, reset, in_bus, out_bus = None, default_state = 0,
                 edge_type = Latch_Type.RISING_EDGE, reset_type = Logic_States.ACTIVE_LOW,
                 enable = None, enable_type = Logic_States.ACTIVE_HIGH):
         "Constructor will check for valid parameters, exception thrown on invalid"
 
-        if not isinstance(name,str):
-            raise TypeError('Name must be a string')
-        elif not isinstance(size,int) or size <= 0:
+        if not isinstance(size,int) or size <= 0:
             raise TypeError('Size must be an integer greater than zero')
         elif not isinstance(default_state,int) or default_state < 0 or default_state >= 2**size:
             raise TypeError('Default state must be an integer that fits in defined range')
 
-        self._name = name
         self._size = size
         self._default_state = default_state
         self._d = default_state
@@ -97,7 +94,7 @@ class Register(Sequential):
 
     def inspect(self):
         "Returns dictionary message to user"
-        return {'name' : self._name, 'type' : 'register', 'size' : self._size, 'state' : self._q}
+        return {'type' : 'register', 'size' : self._size, 'state' : self._q}
 
 
     def modify(self,data):

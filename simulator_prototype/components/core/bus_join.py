@@ -13,12 +13,8 @@ class BusJoin(Entity):
         order as traversed through the list.
     """
 
-    def __init__(self, name, ins_b, out_b):
+    def __init__(self, ins_b, out_b):
         "Constructor will check for valid parameters, exception thrown on invalid"
-
-        if not isinstance(name,str):
-            raise TypeError('Name must be a string')
-        self._name = name
 
         if not isinstance(ins_b,list):
             raise TypeError()

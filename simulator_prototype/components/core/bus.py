@@ -13,23 +13,20 @@ class Bus(OutputHook, iBusRead, iBusWrite):
         Bus is a read/write object used to connect architecture entities
     """
 
-    def __init__(self, name, size, default_value=0):
+    def __init__(self, size, default_value=0):
         "Constructor will cause exception on invalid parameters"
-        if not isinstance(name,str):
-            raise TypeError('Name must be a string')
-        elif not isinstance(size,int) or size <= 0:
+        if not isinstance(size,int) or size <= 0:
             raise TypeError('Size must be an integer greater than zero')
         elif not isinstance(default_value,int) or default_value < 0 or default_value >= 2**size:
             raise TypeError('Default state must be an integer that fits in defined range')
 
-        self._name = name
         self._size = size
         self._value = default_value
 
 
     def inspect(self):
         "Returns a dictionary message to application caller defining state of bus"
-        return { 'name' : self._name, 'type' : 'logic', 'size' : self._size, 'state' : self._value}
+        return { 'type' : 'logic', 'size' : self._size, 'state' : self._value}
 
 
     def read(self):

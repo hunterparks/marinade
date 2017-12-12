@@ -20,14 +20,11 @@ class Mux(Combinational):
             Y = I[(S & pow(2,ceil(len(inputs)/2))))]
     """
 
-    def __init__(self, name, size, inputs, select, output=None):
+    def __init__(self, size, inputs, select, output=None):
         "Constructor will check for valid parameters, exception thrown on invalid"
 
-        if not isinstance(name,str):
-            raise TypeError('Name must be a string')
-        elif not isinstance(size,int) or size <= 0:
+        if not isinstance(size,int) or size <= 0:
             raise TypeError('Size must be an integer greater than zero')
-        self._name = name
         self._size = size
 
         print(len(inputs))

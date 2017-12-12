@@ -2,8 +2,7 @@ from components.abstract.combinational import Combinational
 from components.abstract.ibus import iBusRead, iBusWrite
 
 class Alu(Combinational):
-    def __init__(self, name, a, b, alus, f, c, v, n, z):
-        self._name = name
+    def __init__(self, a, b, alus, f, c, v, n, z):
         self._a = a
         self._b = b
         self._alus = alus

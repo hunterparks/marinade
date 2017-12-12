@@ -2,8 +2,7 @@ from components.abstract.combinational import Combinational
 from components.abstract.ibus import iBusRead, iBusWrite
 
 class Extender(Combinational):
-    def __init__(self, name, imm, imm32, exts):
-        self._name = name
+    def __init__(self, imm, imm32, exts):
         if(imm.size() != 23 ):
             raise ValueError('Immediate must be 23-bits')
         self._imm = imm
@@ -11,19 +10,19 @@ class Extender(Combinational):
         '''
         exts = 0 for data processing instructions
         exts = 1 for load and store instructions
-        exts = 2 or 3 for branch instructions 
+        exts = 2 or 3 for branch instructions
         '''
         self._exts = exts
 
     def inspect(self):
         # returns a dictionary message to application defining current state
-        return {'name' : self._name, 'type' : 'regfile', 'size' : None, 'state': self._exts.read()}
+        return {'type' : 'regfile', 'size' : None, 'state': self._exts.read()}
 
     def run(self, time = None):
         '''
         would normally extend with 0's for when exts contains a 0 or 1
         this is not necessary in Python
-        ''' 
+        '''
         if self._exts.read() == 0:
             self._imm32.write(self._imm.read() >> 25)
         elif self._exts.read() == 1:
@@ -33,5 +32,5 @@ class Extender(Combinational):
             new_imm = self._imm.read()
             signed_bit = new_imm >> 22
             if signed_bit == 1:
-                new_imm = 0x3F000000 | new_imm 
+                new_imm = 0x3F000000 | new_imm
             self._imm32.write(new_imm << 2)

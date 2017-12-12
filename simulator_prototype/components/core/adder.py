@@ -18,14 +18,11 @@ class Adder(Combinational):
             COUT = (A + B + CIN) >= (2 ^ BIT_WIDTH)
     """
 
-    def __init__(self, name, size, a_bus, b_bus, y_bus=None, carry_in=None, carry_out=None):
+    def __init__(self, size, a_bus, b_bus, y_bus=None, carry_in=None, carry_out=None):
         "Constructor will check for valid parameters, exception thrown on invalid"
 
-        if not isinstance(name,str):
-            raise TypeError('Name must be a string')
-        elif not isinstance(size,int) or size <= 0:
+        if not isinstance(size,int) or size <= 0:
             raise TypeError('Size must be integer greater than zero')
-        self._name = name
         self._size = size
 
         if not isinstance(a_bus,iBusRead) or not isinstance(b_bus,iBusRead):

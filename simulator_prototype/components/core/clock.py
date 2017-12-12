@@ -21,16 +21,13 @@ class Clock(InputHook,iBusRead,Entity):
         information that logic is responsible for keeping track of state change
     """
 
-    def __init__(self, name, freq, default_state = 0):
+    def __init__(self, freq, default_state = 0):
         "Constructor will cause exception on invalid parameters"
-        if not isinstance(name, str):
-            raise TypeError('Name must be a string')
-        elif not isinstance(default_state,int) or default_state < 0 or default_state > 1:
+        if not isinstance(default_state,int) or default_state < 0 or default_state > 1:
             raise TypeError('Default state must be a bit value')
         elif freq < limits.MIN_FREQUENCY or freq > limits.MAX_FREQUENCY:
             raise ValueError('Frequency must be valid')
 
-        self._name = name
         self._state = default_state
         self._freq = freq #Hz
         self._default_state = default_state
@@ -38,7 +35,7 @@ class Clock(InputHook,iBusRead,Entity):
 
     def inspect(self):
         "Returns a dictionary message to application defining current state"
-        return {'name' : self._name, 'type' : 'clock', 'size' : 1, 'state' : self._state}
+        return {'type' : 'clock', 'size' : 1, 'state' : self._state, 'frequency' : self._freq}
 
 
     def generate(self, message=None):
@@ -46,18 +43,18 @@ class Clock(InputHook,iBusRead,Entity):
         if message is None:
             # Assume that generate means a logic toggle (for compatibility)
             self._state = (self._state + 1) % 2
-        elif 'frequency' in message:
-            freq  = message['frequency']
-            if freq < limits.MIN_FREQUENCY or freq > limits.MAX_FREQUENCY:
-                raise ValueError('Frequency must be valid')
-            self._freq = freq
-        elif 'state' in message:
-            state = message['state']
-            if not isinstance(state, int) or state < 0 or state > 1:
-                raise ValueError('Clock bit can only be zero or one')
-            self._state = state
         else:
-            raise TypeError('Message type not supported')
+            if 'frequency' in message:
+                freq  = message['frequency']
+                if freq < limits.MIN_FREQUENCY or freq > limits.MAX_FREQUENCY:
+                    raise ValueError('Frequency must be valid')
+                self._freq = freq
+
+            if 'state' in message:
+                state = message['state']
+                if not isinstance(state, int) or state < 0 or state > 1:
+                    raise ValueError('Clock bit can only be zero or one')
+                self._state = state
 
 
     def read(self):
@@ -68,6 +65,11 @@ class Clock(InputHook,iBusRead,Entity):
     def size(self):
         "Returns size of bus"
         return 1
+
+
+    def frequency(self):
+        "Returns clock frequency"
+        return self._freq
 
 
     def run(self,time):

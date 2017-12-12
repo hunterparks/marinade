@@ -18,20 +18,17 @@ class Reset(InputHook,iBusRead):
         information that logic is responsible for keeping track of state change
     """
 
-    def __init__(self, name, default_state = 0):
+    def __init__(self, default_state = 0):
         "Constructor will cause exception on invalid parameters"
-        if not isinstance(name, str):
-            raise TypeError('Initialization parameters invalid')
-        elif not isinstance(default_state,int) or default_state < 0 or default_state > 1:
+        if not isinstance(default_state,int) or default_state < 0 or default_state > 1:
             raise TypeError('Default state must be a bit value')
 
-        self._name = name
         self._state = default_state
 
 
     def inspect(self):
         "Returns a dictionary message to application defining current state"
-        return {'name' : self._name, 'type' : 'reset', 'size' : 1, 'state' : self._state}
+        return {'type' : 'reset', 'size' : 1, 'state' : self._state}
 
 
     def generate(self, message=None):
