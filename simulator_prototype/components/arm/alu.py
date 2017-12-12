@@ -13,6 +13,10 @@ class Alu(Combinational):
         self._n = n
         self._z = z
 
+    def inspect(self):
+        # returns a dictionary message to application defining current state
+        return {'name' : self._name, 'type' : 'alu', 'size' : None, 'state': self._alus.read()}
+
     def run(self, time = None):
         if self._alus.read() == 0:
             self._f.write(self._a.read() + self._b.read())
@@ -30,10 +34,9 @@ class Alu(Combinational):
             self._f.write(self._b.read())
         else:
             self._f.write(1)
-
         # the following bits are used to determine when to branch
         # negative
-        self._n.write(self._f.read() >> 32)
+        self._n.write(self._f.read() >> 31)
         # zero
         if self._f.read() == 0:
             self._z.write(1)
