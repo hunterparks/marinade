@@ -33,5 +33,5 @@ class Extender(Combinational):
             new_imm = self._imm.read()
             signed_bit = new_imm >> 22
             if signed_bit == 1:
-                new_imm = 0xFC | new_imm 
+                new_imm = 0x3F000000 | new_imm 
             self._imm32.write(new_imm << 2)
