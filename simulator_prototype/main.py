@@ -21,6 +21,7 @@ from components.core.mux import Mux
 from components.arm.alu import Alu
 from components.core.bus_subset import BusSubset
 from components.core.bus_join import BusJoin
+from components.core.constant import Constant
 
 from collections import OrderedDict
 from architecture import Architecture
@@ -35,7 +36,7 @@ if __name__ == "__main__":
 
     b0 = Bus(8,0)
     b1 = Bus(8,0)
-    c1 = LogicInput(8,1)
+    c1 = Constant(8,1)
 
     reg = Register(8,clk,rst,b0,b1)
     add = Adder(8,c1,b1,b0)
@@ -51,6 +52,8 @@ if __name__ == "__main__":
         print(arch.hook(msg_inspect))
         arch.logic_run()
         time.sleep(0.01)
+
+
 
 # prototype code old
 

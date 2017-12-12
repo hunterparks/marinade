@@ -1,5 +1,5 @@
 """
-    Logic input is to be viewed as either a constant or user changable signal
+    Logic input is to be viewed as user changable signal
     into the architecture. Thus the device acts as a read only bus.
 """
 
@@ -26,7 +26,7 @@ class LogicInput(InputHook,iBusRead):
 
     def inspect(self):
         "Returns a dictionary message to application defining current state"
-        return {'type' : 'logic', 'size' : 1, 'state' : self._state}
+        return {'type' : 'logic', 'size' : self._size, 'state' : self._state}
 
 
     def generate(self, message):
