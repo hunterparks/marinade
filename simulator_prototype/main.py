@@ -1,4 +1,11 @@
 
+#TODO create constant hook
+#TODO finish architecture code
+#TODO clean up import tree
+#TODO code all components for single-cycle
+#TODO unit testing
+#TODO documentation !!!!!!
+
 import time
 
 from components.core.bus import Bus
@@ -15,7 +22,37 @@ from components.arm.alu import Alu
 from components.core.bus_subset import BusSubset
 from components.core.bus_join import BusJoin
 
+from collections import OrderedDict
+from architecture import Architecture
+
 if __name__ == "__main__":
+
+
+# architecture prototype code
+
+    clk = Clock(10,0)
+    rst = Reset(1)
+
+    b0 = Bus(8,0)
+    b1 = Bus(8,0)
+    c1 = LogicInput(8,1)
+
+    reg = Register(8,clk,rst,b0,b1)
+    add = Adder(8,c1,b1,b0)
+
+    hooks = OrderedDict([('clk',clk),('rst',rst),('b0',b0),('b1',b1),('c1',c1)])
+    entities = OrderedDict([('clk',clk),('add', add),('reg', reg)])
+
+    arch = Architecture(0.0001,clk,rst,hooks,entities)
+
+    msg_inspect = {'inspect' : ['clk','rst','b0','b1','c1']}
+
+    while True:
+        print(arch.hook(msg_inspect))
+        arch.logic_run()
+        time.sleep(0.01)
+
+# prototype code old
 
     clk = Clock(10,0)
     rst = Reset(1)

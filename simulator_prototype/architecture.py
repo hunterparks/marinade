@@ -1,18 +1,17 @@
 
-from collections import OrderedDict
-
 class Architecture:
 
-    def __init__(self, time_step, clock, reset, hooks, entity):
+    def __init__(self, time_step, clock, reset, hooks, entities):
 
         self._main_clock = clock
         self._main_reset = reset
 
         self._hook_dict = hooks
-        self._entity_dict = entity
+        self._entity_dict = entities
 
-        self._time_step = time_step
         self._logic_step = 1 / (2 * self._main_clock.frequency())
+        self._time_step = time_step
+
 
 
     def hook(self,message):
@@ -20,7 +19,7 @@ class Architecture:
         if 'inspect' in message:
             h_list = message['inspect']
             for h in h_list:
-                ret_val.update({h : self._hook_dict[h]})
+                ret_val.update({h : self._hook_dict[h].inspect()})
         elif 'modify' in message:
             modify = message['modify']
             name = modify['name']
@@ -37,17 +36,16 @@ class Architecture:
 
     def time_step(self,time):
         for key, value in self._entity_dict.items():
-            print('Entity:',key)
             value.run(time)
 
-    def time_run(self,steps=1,time=0):
+    def time_run(self,time=0,steps=1):
         while time < steps * self._time_step:
             self.time_step(time)
             time += self._time_step
         return time
 
-    def logic_run(self,steps=1,time=0):
-        while time < 2 * steps * self._logic_step:
+    def logic_run(self,time=0,steps=1):
+        while time <  2 * steps * self._logic_step:
             self.time_step(time)
             time += self._logic_step
         return time
