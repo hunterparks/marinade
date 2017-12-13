@@ -1,6 +1,5 @@
 
 
-#TODO finish architecture code
 #TODO clean up import tree
 #TODO code all components for single-cycle
 #TODO unit testing
@@ -26,8 +25,55 @@ from components.core.constant import Constant
 from collections import OrderedDict
 from architecture import Architecture
 
+
+import asyncio
+import websockets
+import json
+
+
+
+
+
 if __name__ == "__main__":
 
+# websocket prototype
+
+    clk = Clock(10,0)
+    rst = Reset(1)
+
+    b0 = Bus(8,0)
+    b1 = Bus(8,0)
+    c1 = Constant(8,1)
+
+    reg = Register(8,clk,rst,b0,b1)
+    add = Adder(8,c1,b1,b0)
+
+    hooks = OrderedDict([('clk',clk),('rst',rst),('b0',b0),('b1',b1),('c1',c1)])
+    entities = OrderedDict([('clk',clk),('add', add),('reg', reg)])
+
+    arch = Architecture(0.0001,clk,rst,hooks,entities)
+
+    msg_inspect = {'inspect' : ['clk','rst','b0','b1','c1']}
+
+    async def interface_to_frontend(websocket, path):
+        async for message in websocket:
+            msg = json.loads(message)
+
+            retMsg = {}
+
+            if 'hook' in msg:
+                retMsg = arch.hook(msg['hook'])
+
+            if 'architecture' in msg:
+                if 'simulate' in msg['architecture']:
+                    arch.logic_run()
+                    retMsg = arch.hook(msg_inspect)
+
+            rxStr = json.dumps(retMsg)
+            await websocket.send(rxStr)
+
+    asyncio.get_event_loop().run_until_complete(websockets.serve(interface_to_frontend, 'localhost', 4242))
+    asyncio.get_event_loop().run_forever()
 
 # architecture prototype code
 
