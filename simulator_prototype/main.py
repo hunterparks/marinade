@@ -42,7 +42,7 @@ import json
 
 if __name__ == "__main__":
 
-"""
+    """
     # single cycle prototype
 
     #define system resources
@@ -170,7 +170,7 @@ if __name__ == "__main__":
         print(arch.hook(msg_inspect))
         arch.logic_run()
         time.sleep(0.5)
-"""
+    """
 
     # websocket prototype
 

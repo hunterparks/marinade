@@ -11,6 +11,7 @@ export class AppComponent {
   public formula: string = '1 + 1';
   public result: string = '';
   public count: number = 0;
+  public simFlag: boolean = false;
 
   constructor(private serial: WebsocketService) {
     this.serial.messageSubject.subscribe((result: string) => {
@@ -19,7 +20,17 @@ export class AppComponent {
       this.count = msg.b1.state;
     });
     this.serial.connect();
+
+    var obj = this
+    setInterval(function() {
+      if(obj.simFlag){
+        obj.step()
+      }
+    }, 1000)
+
   }
+
+
 
   public onChange(): void {
     /* tslint:disable-next-line: no-console */ // Todo: Remove this output
@@ -28,7 +39,7 @@ export class AppComponent {
   }
 
   public simulate(): void {
-
+    this.simFlag = true;
   }
 
   public step(): void {
@@ -42,6 +53,6 @@ export class AppComponent {
   }
 
   public stop(): void {
-
+    this.simFlag = false;
   }
 }
