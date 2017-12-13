@@ -3,8 +3,9 @@ from components.abstract.ibus import iBusRead, iBusWrite
 
 class Extender(Combinational):
     def __init__(self, imm, imm32, exts):
-        if(imm.size() != 23 ):
-            raise ValueError('Immediate must be 23-bits')
+        #NOTE I changed this to 24 bits since 23..0 is 24 bits
+        if(imm.size() != 24 ):
+            raise ValueError('Immediate must be 24-bits')
         self._imm = imm
         self._imm32 = imm32
         '''

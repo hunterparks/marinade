@@ -27,7 +27,6 @@ class Mux(Combinational):
             raise TypeError('Size must be an integer greater than zero')
         self._size = size
 
-        print(len(inputs))
         if not isinstance(inputs,list) or not len(inputs) > 1:
             raise TypeError('Inputs must be a list with at least two inputs')
         elif not all((isinstance(x,iBusRead) and x.size() == self._size) for x in inputs):
