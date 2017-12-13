@@ -5,6 +5,8 @@
 #TODO unit testing
 #TODO documentation !!!!!!
 
+#TODO shift register
+
 import time
 
 from components.core.bus import Bus
