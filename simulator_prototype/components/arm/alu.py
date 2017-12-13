@@ -14,7 +14,7 @@ class Alu(Combinational):
 
     def inspect(self):
         # returns a dictionary message to application defining current state
-        return {'name' : self._name, 'type' : 'alu', 'size' : None, 'state': self._alus.read()}
+        return {'type' : 'alu', 'size' : None, 'state': self._alus.read()}
 
     def run(self, time = None):
         if self._alus.read() == 0:
