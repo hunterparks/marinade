@@ -42,12 +42,12 @@ import json
 
 if __name__ == "__main__":
 
-    """
+
     # single cycle prototype
 
     #define system resources
     clk = Clock(10,0)
-    rst = Reset(1)
+    rst = Reset(0)
     hooks = OrderedDict([('clk',clk),('rst',rst)])
 
     #define input hooks and constants
@@ -170,7 +170,7 @@ if __name__ == "__main__":
         print(arch.hook(msg_inspect))
         arch.logic_run()
         time.sleep(0.5)
-    """
+
 
     # websocket prototype
 
