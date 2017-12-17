@@ -171,7 +171,6 @@ if __name__ == "__main__":
         arch.logic_run()
         time.sleep(0.5)
 
-
     # websocket prototype
 
     clk = Clock(10,0)
@@ -234,7 +233,6 @@ if __name__ == "__main__":
         print(arch.hook(msg_inspect))
         arch.logic_run()
         time.sleep(0.01)
-
 
 
     # prototype code old

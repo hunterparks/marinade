@@ -17,7 +17,7 @@ class LogicInput(InputHook,iBusRead):
         "Constructor will cause exception on invalid parameters"
         if not isinstance(size,int) or size <= 0:
             raise TypeError('Size must be an integer greater than zero')
-        elif not isinstance(default_state,int) or default_state < 0 or default_state > 2**size:
+        elif not isinstance(default_state,int) or default_state < 0 or default_state >= 2**size:
             raise TypeError('Default state must be an integer that fits in defined range')
 
         self._size = size
@@ -30,17 +30,19 @@ class LogicInput(InputHook,iBusRead):
 
 
     def generate(self, message):
-        "Sets a new state for read only bus from user space"
+        "Sets a new state for read only bus from user space, returns confirmation"
+
         if message is None:
-            raise TypeError('Expecting message to be provided')
+            return {'error' : 'expecting message to be provided'}
         elif 'state' not in message:
-            raise ValueError('Invalid format for message')
+            return {'error' : 'invalid format for message'}
 
         state = message['state']
         if isinstance(state,int) and state >= 0 and state < 2**self._size:
             self._state = state
+            return {'success' : True}
         else:
-            raise ValueError('Data in message does not match expected range')
+            return {'error' : 'data in message does not match expected range'}
 
 
     def read(self):
