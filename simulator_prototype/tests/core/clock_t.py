@@ -147,5 +147,30 @@ class Reset_t(unittest.TestCase):
         l = Clock(50)
         self.assertTrue(l.size() == 1)
 
+    def test_run(self):
+        "Verifies correct time based simulation"
+        c = Clock(1,0) # 1Hz
+
+        c.run(0)
+        self.assertTrue(c.read() == 0)
+
+        c.run(0.25)
+        self.assertTrue(c.read() == 0)
+
+        c.run(0.50)
+        self.assertTrue(c.read() == 1)
+
+        c.run(0.75)
+        self.assertTrue(c.read() == 1)
+
+        c.run(1.00)
+        self.assertTrue(c.read() == 0)
+
+        c.run(1.50)
+        self.assertTrue(c.read() == 1)
+
+        c.run(2)
+        self.assertTrue(c.read() == 0)
+
 if __name__ == '__main__':
     unittest.main()
