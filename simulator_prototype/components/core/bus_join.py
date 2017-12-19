@@ -16,10 +16,10 @@ class BusJoin(Entity):
     def __init__(self, ins_b, out_b):
         "Constructor will check for valid parameters, exception thrown on invalid"
 
-        if not isinstance(ins_b,list):
-            raise TypeError()
+        if not isinstance(ins_b,list) or len(ins_b) <= 0:
+            raise TypeError("Inputs must be a list of readables")
         elif not all(isinstance(x,iBusRead) for x in ins_b):
-            raise TypeError()
+            raise TypeError("Inputs must be a list of readables")
         self._inputs = ins_b
 
         necessary_size = 0
@@ -27,9 +27,9 @@ class BusJoin(Entity):
             necessary_size += x.size()
 
         if not isinstance(out_b,iBusWrite):
-            raise TypeError()
+            raise TypeError("Output must be writable")
         elif not out_b.size() == necessary_size:
-            raise ValueError()
+            raise ValueError("Output must match combined input size")
         self._output = out_b
 
 
@@ -39,5 +39,5 @@ class BusJoin(Entity):
         val = 0
         for i in self._inputs:
             val += i.read() << shift
-            shift = i.size()
+            shift += i.size()
         self._output.write(val)

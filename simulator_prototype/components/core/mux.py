@@ -42,7 +42,7 @@ class Mux(Combinational):
 
         if not isinstance(output,iBusWrite) and not output is None:
             raise TypeError('Output must be defined as a bus or None')
-        elif not output.size() == self._size:
+        elif not output is None and not output.size() == self._size:
             raise ValueError('Output bus size must match internal')
         self._output = output
 
@@ -55,4 +55,7 @@ class Mux(Combinational):
 
         #select signal to pass to output
         if not self._output is None:
-            self._output.write(self._inputs[s].read())
+            if s >= len(self._inputs):
+                self._output.write(0) #selected empty entry (odd degree in)
+            else:
+                self._output.write(self._inputs[s].read())

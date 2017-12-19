@@ -35,7 +35,7 @@ class Adder(Combinational):
         if not isinstance(y_bus,iBusWrite) and not y_bus is None:
             raise TypeError('If output bus defined then must be writable')
         elif not y_bus is None and not y_bus.size() == size:
-            raise ValueError('Output bus size must match internal size {}'.foramt(size))
+            raise ValueError('Output bus size must match internal size {}'.format(size))
         self._y = y_bus
 
         if not isinstance(carry_in,iBusRead) and not carry_in is None:

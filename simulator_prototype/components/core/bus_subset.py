@@ -20,7 +20,7 @@ class BusSubset(Entity):
             raise TypeError('Input bus must be readable')
         self._input = in_b
 
-        if not isinstance(outs_b,list):
+        if not isinstance(outs_b,list) or len(outs_b) <= 0:
             raise TypeError('Outputs must be a list with at least one element')
         elif not all(isinstance(x,iBusWrite) and x.size() <= in_b.size() for x in outs_b):
             raise ValueError('Output buses must be writable')
