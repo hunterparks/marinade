@@ -16,7 +16,7 @@ class Constant(Hook,iBusRead):
         "Constructor will cause exception on invalid parameters"
         if not isinstance(size,int) or size <= 0:
             raise TypeError('Size must be an integer greater than zero')
-        elif not isinstance(state,int) or state < 0 or state > 2**size:
+        elif not isinstance(state,int) or state < 0 or state >= 2**size:
             raise TypeError('State must be an integer that fits in defined range')
 
         self._size = size

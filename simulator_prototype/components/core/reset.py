@@ -33,16 +33,18 @@ class Reset(InputHook,iBusRead):
 
     def generate(self, message=None):
         "Sets a new state for read only reset bus from user space"
+
         if message is None:
-            # Assume that generate means a logic toggle (for compatibility)
-            self._state = (self._state + 1) % 2
-        elif 'state' in message:
-            state = message['state']
-            if not isinstance(state, int) or state < 0 or state > 1:
-                raise ValueError('Clock bit can only be zero or one')
+            return {'error' : 'expecting message to be provided'}
+        elif 'state' not in message:
+            return {'error' : 'invalid format for message'}
+
+        state = message['state']
+        if isinstance(state,int) and state >= 0 and state < 2:
             self._state = state
+            return {'success' : True}
         else:
-            raise TypeError('Message type not supported')
+            return {'error' : 'data in message does not match expected range'}
 
 
     def read(self):

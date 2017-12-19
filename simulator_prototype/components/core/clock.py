@@ -25,8 +25,10 @@ class Clock(InputHook,iBusRead,Entity):
         "Constructor will cause exception on invalid parameters"
         if not isinstance(default_state,int) or default_state < 0 or default_state > 1:
             raise TypeError('Default state must be a bit value')
+        elif not isinstance(freq,(float,int)):
+            raise TypeError('Frequency must be a real number type')
         elif freq < limits.MIN_FREQUENCY or freq > limits.MAX_FREQUENCY:
-            raise ValueError('Frequency must be valid')
+            raise ValueError('Frequency must be within limits')
 
         self._state = default_state
         self._freq = freq #Hz
@@ -40,21 +42,39 @@ class Clock(InputHook,iBusRead,Entity):
 
     def generate(self, message=None):
         "Sets a new state or frequency for clock bus from user space"
-        if message is None:
-            # Assume that generate means a logic toggle (for compatibility)
-            self._state = (self._state + 1) % 2
-        else:
-            if 'frequency' in message:
-                freq  = message['frequency']
-                if freq < limits.MIN_FREQUENCY or freq > limits.MAX_FREQUENCY:
-                    raise ValueError('Frequency must be valid')
-                self._freq = freq
+        no_valid_in_message = True
 
-            if 'state' in message:
-                state = message['state']
-                if not isinstance(state, int) or state < 0 or state > 1:
-                    raise ValueError('Clock bit can only be zero or one')
-                self._state = state
+        # do not handle empty message
+        if message is None:
+            return {'error' : 'expecting message to be provided'}
+
+        # get frequency message if available
+        f = self._freq
+        if 'frequency' in message:
+            no_valid_in_message = False
+            freq  = message['frequency']
+            if not isinstance(freq,(float,int)):
+                return {'error' : 'frequency must be a real number type'}
+            elif freq < limits.MIN_FREQUENCY or freq > limits.MAX_FREQUENCY:
+                return {'error' : 'data in message does not match expected range'}
+            f = freq
+
+        # get state message if available
+        s = self._state
+        if 'state' in message:
+            no_valid_in_message = False
+            state = message['state']
+            if not isinstance(state, int) or state < 0 or state > 1:
+                return {'error' : 'data in message does not match expected range'}
+            s = state
+
+        # if a message was valid then set and return success else failure
+        if no_valid_in_message:
+            return {'error' : 'invalid format for message'}
+        else:
+            self._freq = f
+            self._state = s
+            return {'success' : True}
 
 
     def read(self):
