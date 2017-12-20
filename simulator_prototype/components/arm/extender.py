@@ -25,13 +25,13 @@ class Extender(Combinational):
         this is not necessary in Python
         '''
         if self._exts.read() == 0:
-            self._imm32.write(self._imm.read() >> 25)
+            self._imm32.write(self._imm.read() & 0x000000FF)
         elif self._exts.read() == 1:
-            self._imm32.write(self._imm.read() >> 21)
+            self._imm32.write(self._imm.read() & 0x00000FFF)
         else:
             # sign extend the immediate and add put 0's in the 2 least significant bits
             new_imm = self._imm.read()
-            signed_bit = new_imm >> 22
+            signed_bit = (0x800000 & new_imm) >> 23
             if signed_bit == 1:
                 new_imm = 0x3F000000 | new_imm
             self._imm32.write(new_imm << 2)
