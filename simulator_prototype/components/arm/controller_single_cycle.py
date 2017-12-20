@@ -159,7 +159,7 @@ class ControllerSingleCycle(Controller):
             self._regsrc.write(0b0)
         else:
             self._regsrc.write(0b1)
-        #ws3s
+        #wd3s
         if self._op.read() == 0b10 and ((self._funct.read() >> 4) == 0b01 or (self._funct.read() >> 4) == 0b11):
             self._wd3s.write(1)
         else:
@@ -175,7 +175,7 @@ class ControllerSingleCycle(Controller):
                 'regwr': self._regwr.read(), 'exts': self._exts.read(), 
                 'alusrcb': self._alusrcb.read(), 'alus': self._alus.read(), 
                 'aluflagwr': self._aluflagwr.read(), 'memwr': self._memwr.read(), 
-                'regsrc': self._regsrc.read(), 'w3bs': self._wd3s.read()}
+                'regsrc': self._regsrc.read(), 'wd3s': self._wd3s.read()}
 
     def modify(self, data=None):
         "Not implemented for single cycle"
