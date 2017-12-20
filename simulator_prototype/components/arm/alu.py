@@ -12,36 +12,47 @@ class Alu(Combinational):
         self._n = n
         self._z = z
 
-    def inspect(self):
-        # returns a dictionary message to application defining current state
-        return {'type' : 'alu', 'size' : None, 'state': self._alus.read()}
 
     def run(self, time = None):
+        result = 0
         if self._alus.read() == 0:
-            self._f.write(self._a.read() + self._b.read())
+            # bitwise add
+            result = (self._a.read() + self._b.read()) & (2**32 - 1)
         elif self._alus.read() == 1:
-            self._f.write(self._a.read() - self._b.read())
+            # bitwise subtract
+            result = (self._a.read() - self._b.read()) & (2**32 - 1)
         elif self._alus.read() == 2:
-            self._f.write(self._a.read() & self._b.read())
+            # bitwise and
+            result = self._a.read() & self._b.read()
         elif self._alus.read() == 3:
-            self._f.write(self._a.read() | self._b.read())
+            # bitwise or
+            result = self._a.read() | self._b.read()
         elif self._alus.read() == 4:
-            self._f.write(self._a.read() ^ self._b.read())    # bitwise xor
+            # bitwise xor
+            result = self._a.read() ^ self._b.read()
         elif self._alus.read() == 5:
-            self._f.write(self._a.read())
+            # bitwise pass a
+            result = self._a.read()
         elif self._alus.read() == 6:
-            self._f.write(self._b.read())
+            # bitwise pass b
+            result = self._b.read()
         else:
-            self._f.write(1)
+            # generate 1
+            result = 1
+        self._f.write(result)
+
         # the following bits are used to determine when to branch
         # negative
         self._n.write(self._f.read() >> 31)
+
         # zero
         if self._f.read() == 0:
             self._z.write(1)
         else:
             self._z.write(0)
+
         # carry (always 0 for now)
         self._c.write(0)
+
         # signed overflow (always 0 for now)
         self._v.write(0)
