@@ -8,7 +8,7 @@ from components.abstract.sequential import Latch_Type, Logic_States
 
 from components.core.register import Register
 from components.core.adder import Adder
-from components.arm.register_file import Register_File
+from components.arm.register_file import RegisterFile
 from components.core.mux import Mux
 from components.arm.alu import Alu
 from components.core.bus_subset import BusSubset
@@ -106,7 +106,7 @@ def generate_single_cycle_architecture():
     entities.update({'ra3_mux' : Mux(4,[hooks['instr_19_16'],hooks['instr_15_12'],hooks['const14']],hooks['regwrs'],hooks['ra3'])})
     entities.update({'rwd_mux' : Mux(32,[hooks['wdb'],hooks['pc4']],hooks['wdbs'],hooks['rwd'])})
     entities.update({'extimm' : Extender(hooks['instr_23_0'],hooks['imm32'],hooks['exts'])})
-    entities.update({'regfile' : Register_File(hooks['clk'],hooks['rst'],hooks['regwr'],hooks['rwd'],hooks['ra1'],hooks['ra2'],hooks['ra3'],hooks['rd1'],hooks['rd2'])})
+    entities.update({'regfile' : RegisterFile(hooks['clk'],hooks['rst'],hooks['regwr'],hooks['rwd'],hooks['ra1'],hooks['ra2'],hooks['ra3'],hooks['rd1'],hooks['rd2'])})
 
     entities.update({'alu_mux' : Mux(32,[hooks['imm32'],hooks['rd2']],hooks['alu8rcb'],hooks['alub'])})
     entities.update({'add_br' : Adder(32,hooks['pc8'],hooks['imm32'],hooks['branch'])})
