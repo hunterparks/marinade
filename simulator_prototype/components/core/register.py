@@ -4,8 +4,6 @@
 """
 
 from components.abstract.ibus import iBusRead, iBusWrite
-from components.core.clock import Clock
-from components.core.reset import Reset
 from components.abstract.sequential import Sequential, Latch_Type, Logic_States
 
 
@@ -70,7 +68,7 @@ class Register(Sequential):
         self._reset_type = reset_type
 
         if not Logic_States.valid(enable_type):
-            raise ValueError('Invalid active reset type')
+            raise ValueError('Invalid active enable type')
         self._enable_type = enable_type
 
 

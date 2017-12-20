@@ -78,6 +78,9 @@ class Mux_t(unittest.TestCase):
         m = Mux(8,[c0,c1,c2],s)
         m.run()
 
+    def test_out_of_bounds(self):
+        "Test for valid control signal that extends past defined"
+        raise NotImplementedError() #TODO
 
 
 
