@@ -4,7 +4,7 @@ from components.abstract.controller import iBusRead, iBusWrite
 class ControllerSingleCycle(Controller):
 
     def __init__(self, cond, op, funct, rd, bit4, c, v, n, z, pcsrc, pcwr, regsa,
-                regdst, regwrs, regwr, exts, alusrcb, alus, aluflagwr, memwr, regsrc, w3bs):
+                regdst, regwrs, regwr, exts, alusrcb, alus, aluflagwr, memwr, regsrc, wd3s):
         self._cond = cond
         self._op = op
         self._funct = funct
@@ -26,18 +26,18 @@ class ControllerSingleCycle(Controller):
         self._aluflagwr = aluflagwr
         self._memwr = memwr
         self._regsrc = regsrc
-        self._w3bs = w3bs
+        self._wd3s = wd3s
 
     def run(self, time):
         # pcsrc
-        if self._op.read() == 0b10 and (self._cond.read() == 0b110 or self._cond.read() == 0b0000 or self._cond.read() = 0b0001):
+        if self._op.read() == 0b10 and (self._cond.read() == 0b110 or self._cond.read() == 0b0000 or self._cond.read() == 0b0001):
             self._pcsrc.write(0b00)
-        elif self._op.read() == 0b00 and self._rd = 0b1111:
+        elif self._op.read() == 0b00 and self._rd == 0b1111:
             self._pcsrc.write(0b10)
         else:
             self._pcsrc.write(0b01)
         # pcwr - Always a 1 for the single cycle processor
-        self._p cwr.write(0b1)
+        self._pcwr.write(0b1)
         #regsa
         if self._op.read() == 0b00 and self._bit4.read() == 0b1 and (self._funct.read() == 0b000000 or self._funct.read() == 0b000001):
             self._regsa.write(0b0)
@@ -168,14 +168,14 @@ class ControllerSingleCycle(Controller):
 
     def inspect(self):
         return {'type': 'sc-controller', 'cond': self._cond.read(), 'op': self._op.read(), 
-                'funct': self._funct.read(), 'rd': self._rd.read(), 'bit4' = self._bit4.read(), 
+                'funct': self._funct.read(), 'rd': self._rd.read(), 'bit4': self._bit4.read(), 
                 'c': self._c.read(), 'v': self._v.read(), 'n': self._n.read(), 'z': self._z.read(),
                 'pcsrc': self._pcsrc.read(), 'pcwr': self._pcwr.read(), 'regsa': self._regsa.read(),
                 'regdst': self._regdst.read(), 'regwrs': self._regwrs.read(),
                 'regwr': self._regwr.read(), 'exts': self._exts.read(), 
                 'alusrcb': self._alusrcb.read(), 'alus': self._alus.read(), 
                 'aluflagwr': self._aluflagwr.read(), 'memwr': self._memwr.read(), 
-                'regsrc': self._regsrc.read(), 'w3bs': self._w3bs.read()}
+                'regsrc': self._regsrc.read(), 'w3bs': self._wd3s.read()}
 
     def modify(self, data=None):
         "Not implemented for single cycle"
