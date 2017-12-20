@@ -11,7 +11,7 @@ from components.abstract.combinational import Combinational
 #meeting. I changed the parameter order of register and made some parameters optional that
 #were not before (check git changes if it affects you, or slack me)
 
-class Register_File(Combinational):
+class Register_File(Sequential):
 
     def __init__(self, clock, reset, write_enable, write_data, a1, a2, a3, rd1, rd2,
                  edge_type = Latch_Type.FALLING_EDGE, reset_type = Logic_States.ACTIVE_LOW,
@@ -91,7 +91,21 @@ class Register_File(Combinational):
         # returns a dictionary message to application defining current state
         return {'type' : 'regfile', 'size' : None, 'state': None}
 
+    def modify(self):
+        raise NotImplementedError()
+
+    def on_rising_edge(self):
+        raise NotImplementedError()
+
+    def on_falling_edge(self):
+        raise NotImplementedError()
+
+    def on_reset(self):
+        raise NotImplementedError()
+
     def run(self,time=None):
+
+        #NOTE: Shouldn't all registers be ran, only one of them being enabled to write?
         if self._write_enable.read() == self._enable_type:
             self._reg[self._a3.read()].run()
 
