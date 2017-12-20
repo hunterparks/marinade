@@ -167,8 +167,15 @@ class ControllerSingleCycle(Controller):
 
 
     def inspect(self):
-        "Not implemented for single cycle"
-        pass
+        return {'type': 'sc-controller', 'cond': self._cond.read(), 'op': self._op.read(), 
+                'funct': self._funct.read(), 'rd': self._rd.read(), 'bit4' = self._bit4.read(), 
+                'c': self._c.read(), 'v': self._v.read(), 'n': self._n.read(), 'z': self._z.read(),
+                'pcsrc': self._pcsrc.read(), 'pcwr': self._pcwr.read(), 'regsa': self._regsa.read(),
+                'regdst': self._regdst.read(), 'regwrs': self._regwrs.read(),
+                'regwr': self._regwr.read(), 'exts': self._exts.read(), 
+                'alusrcb': self._alusrcb.read(), 'alus': self._alus.read(), 
+                'aluflagwr': self._aluflagwr.read(), 'memwr': self._memwr.read(), 
+                'regsrc': self._regsrc.read(), 'w3bs': self._w3bs.read()}
 
     def modify(self, data=None):
         "Not implemented for single cycle"
