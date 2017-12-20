@@ -1,5 +1,5 @@
 from components.abstract.controller import Controller
-from components.abstract.controller import iBusRead, iBusWrite
+from components.abstract.ibus import iBusRead, iBusWrite
 
 class ControllerSingleCycle(Controller):
 
@@ -167,15 +167,22 @@ class ControllerSingleCycle(Controller):
 
 
     def inspect(self):
-        return {'type': 'sc-controller', 'cond': self._cond.read(), 'op': self._op.read(), 
-                'funct': self._funct.read(), 'rd': self._rd.read(), 'bit4': self._bit4.read(), 
+        return {'type': 'sc-controller', 'cond': self._cond.read(), 'op': self._op.read(),
+                'funct': self._funct.read(), 'rd': self._rd.read(), 'bit4': self._bit4.read(),
                 'c': self._c.read(), 'v': self._v.read(), 'n': self._n.read(), 'z': self._z.read(),
                 'pcsrc': self._pcsrc.read(), 'pcwr': self._pcwr.read(), 'regsa': self._regsa.read(),
                 'regdst': self._regdst.read(), 'regwrs': self._regwrs.read(),
+<<<<<<< HEAD
                 'regwr': self._regwr.read(), 'exts': self._exts.read(), 
                 'alusrcb': self._alusrcb.read(), 'alus': self._alus.read(), 
                 'aluflagwr': self._aluflagwr.read(), 'memwr': self._memwr.read(), 
                 'regsrc': self._regsrc.read(), 'wd3s': self._wd3s.read()}
+=======
+                'regwr': self._regwr.read(), 'exts': self._exts.read(),
+                'alusrcb': self._alusrcb.read(), 'alus': self._alus.read(),
+                'aluflagwr': self._aluflagwr.read(), 'memwr': self._memwr.read(),
+                'regsrc': self._regsrc.read(), 'w3bs': self._wd3s.read()}
+>>>>>>> 2ca128a526ccaa554d0c9ce54fb9e44e73ace3b6
 
     def modify(self, data=None):
         "Not implemented for single cycle"
