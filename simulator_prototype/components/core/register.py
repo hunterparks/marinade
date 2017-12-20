@@ -20,7 +20,7 @@ class Register(Sequential):
     """
 
     def __init__(self, size, clock, reset, in_bus, out_bus = None, default_state = 0,
-                edge_type = Latch_Type.RISING_EDGE, reset_type = Logic_States.ACTIVE_LOW,
+                edge_type = Latch_Type.RISING_EDGE, reset_type = Logic_States.ACTIVE_HIGH,
                 enable = None, enable_type = Logic_States.ACTIVE_HIGH):
         "Constructor will check for valid parameters, exception thrown on invalid"
 
@@ -31,7 +31,6 @@ class Register(Sequential):
 
         self._size = size
         self._default_state = default_state
-        self._d = default_state
         self._q = default_state
 
         if not isinstance(clock,iBusRead) or not isinstance(reset,iBusRead) or not isinstance(in_bus,iBusRead):
@@ -78,13 +77,13 @@ class Register(Sequential):
     def on_rising_edge(self):
         "Implements clock rising behavior: captures data if latching type matches"
         if self._edge_type == Latch_Type.RISING_EDGE or self._edge_type == Latch_Type.BOTH_EDGE:
-            self._q = self._d
+            self._q = self._in_bus.read()
 
 
     def on_falling_edge(self):
         "Implements clock falling behavior: captures data if latching type matches"
         if self._edge_type == Latch_Type.FALLING_EDGE or self._edge_type == Latch_Type.BOTH_EDGE:
-            self._q = self._d
+            self._q = self._in_bus.read()
 
 
     def on_reset(self):
@@ -99,22 +98,22 @@ class Register(Sequential):
 
     def modify(self,data):
         "Handles message from user to modify memory contents"
+
         if data is None:
-            raise TypeError('Expecting message to be provided')
+            return {'error' : 'expecting message to be provided'}
         elif 'state' not in data:
-            raise ValueError('Invalid format for message')
+            return {'error' : 'invalid format for message'}
 
         state = data['state']
         if isinstance(state,int) and state >= 0 and state < 2**self._size:
             self._q = state
+            return {'success' : True}
         else:
-            raise ValueError('Data in message does fit in internal size')
+            return {'error' : 'data in message does not match internal size'}
 
 
     def run(self,time=None):
         "Timestep handler function clocks data into register and asserts output"
-        # receive input from in bud
-        self._d = self._in_bus.read()
 
         #process enable line
         e = True
