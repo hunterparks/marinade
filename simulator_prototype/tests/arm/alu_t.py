@@ -72,7 +72,7 @@ class Alu_t(unittest.TestCase):
         # test case 9
         '''
             Curt - A 'Value out of range for bus' error occurs here
-            because of the sign extender number. Need to look
+            because of the sign extended number. Need to look
             further into this error
         '''
         a.write(1)

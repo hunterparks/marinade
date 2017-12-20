@@ -78,7 +78,19 @@ class Mux_t(unittest.TestCase):
         m = Mux(8,[c0,c1,c2],s)
         m.run()
 
+    def test_out_of_bounds(self):
+        "Test for valid control signal that extends past defined"
+        c0 = Constant(8,150)
+        c1 = Constant(8,5)
+        c2 = Constant(8,255)
+        s = Bus(2,0)
+        y = Bus(8,1)
 
+        m = Mux(8,[c0,c1,c2],s,y)
+        s.write(3)
+        m.run()
+
+        self.assertTrue(y.read() == 0) # prove valid overflow
 
 
 if __name__ == '__main__':

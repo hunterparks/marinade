@@ -1,19 +1,19 @@
 """
-
+    Generalized register file defines addressable set of registers
 """
 
-from components.core.clock import Clock
-from components.core.reset import Reset
-from components.core.bus import Bus
-from components.core.logic_input import LogicInput
-from components.abstract.sequential import Sequential, Latch_Type, Logic_States
-from components.core.register import Register
-from enum import Enum
-from components.abstract.combinational import Combinational
+from components.core.bus import Bus, iBusRead, iBusWrite
+from components.core.register import Sequential, Register, Latch_Type, Logic_States
+
+
 
 class RegisterFile(Sequential):
     """
+        Register File component implements a set of registers with a single
+        write input and a set of read outputs. All outputs and input correspond
+        to an address to select which register to use.
 
+        Component is sequential and thus requires a clock and reset to operate
     """
 
     def __init__(self, num_reg, reg_size, clock, reset, write_addr, write_data, read_addrs, read_datas, enable=None,
@@ -40,22 +40,53 @@ class RegisterFile(Sequential):
                 enable_type : logic state to allow write behavior
         """
 
-        #TODO error checking
+        #configuration
+        if not isinstance(reg_size,int) or reg_size <= 0:
+            raise TypeError()
+        elif not isinstance(num_reg,int) or num_reg <= 0:
+            raise TypeError()
+        elif not Latch_Type.valid(edge_type):
+            raise ValueError('Invalid latch edge type')
+        elif not Logic_States.valid(reset_type):
+            raise ValueError('Invalid active reset type')
+        elif not Logic_States.valid(enable_type):
+            raise ValueError('Invalid active enable type')
+
+        self._reg_size = reg_size
+        self._num_reg = num_reg
+        self._edge_type = edge_type
+        self._reset_type = reset_type
+        self._enable_type = enable_type
+
+        #generate necessary parameters that buses must fit
+        necessary_length = 0 #TODO
+        necessary_size = self._reg_size
 
         #external connections
+        if not isinstance(clock, iBusRead) or not clock.size() == 1:
+            raise TypeError('Clock bus must be valid')
+        elif not isinstance(reset, iBusRead) or not reset.size() == 1:
+            raise TypeError('Reset bus must be valid')
+        elif not isinstance(enable, iBusRead) or not enable.size() == 1:
+            raise TypeError('Write enable bus must be readable')
+        elif not isinstance(write_addr, iBusRead) or not write_addr.size() == necessary_length:
+            raise TypeError('Write address bus must be readable')
+        elif not isinstance(write_data, iBusRead) or not write_data.size() == necessary_size:
+            raise TypeError('Write data bus must be readable')
+        elif not isinstance(read_addrs,list) or not isinstance(read_datas,list):
+            raise TypeError('Read buses lists must be lists')
+        elif not all((isinstance(x,iBusRead) and x.size() == necessary_length) for x in read_addrs):
+            raise TypeError('Read address buses must be have correct size')
+        elif not all((isinstance(x,iBusWrite) and x.size() == necessary_size) for x in read_datas):
+            rase TypeError('Read data buses must be have correct size')
+
+        self._clock = clock
         self._reset = reset
         self._enable = enable
         self._waddr = write_addr
         self._wdata = write_data
         self._raddrs = read_addrs
         self._rdatas = read_datas
-
-        #configuration
-        self._edge_type = edge_type
-        self._reset_type = reset_type
-        self._enable_type = enable_type
-        self._reg_size = reg_size
-        self._num_reg = num_reg
 
         #internal structure
         self._regs = []
@@ -87,6 +118,7 @@ class RegisterFile(Sequential):
 
     def modify(self):
         "Handles message from user to modify memory contents"
+        #TODO
         raise NotImplementedError()
 
 
@@ -120,6 +152,7 @@ class RegisterFile(Sequential):
 
         #write data to register
         if e:
+            #TODO address mapping for out of bounds
             self._ens[self._waddr.read()].write(1)
 
         #check for reset event
@@ -134,8 +167,10 @@ class RegisterFile(Sequential):
 
         #read from registers and assert output
         for i in range(len(self._raddrs)):
+            #TODO address mapping for out of bounds
             self._rdatas[i].write(self._datas[self._raddrs[i].read()].read())
 
         #clear enable flags for register selected
         if e:
+            #TODO address mapping for out of bounds
             self._ens[self._waddr.read()].write(0)
