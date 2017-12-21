@@ -30,6 +30,7 @@ class Alu(Combinational):
 
     def run(self, time = None):
         result = 0
+<<<<<<< HEAD
         if self._alus.read() == 0:
             # bitwise add
             self._f.write((self._a.read() + self._b.read()) & (2**32 - 1))
@@ -58,6 +59,27 @@ class Alu(Combinational):
         else:
             # generate 1
             self._f.write(1)
+=======
+        if self._alus.read() == 0: # bitwise add
+            result = (self._a.read() + self._b.read()) & (2**32 - 1)
+        elif self._alus.read() == 1: # bitwise subtract
+            result = (self._a.read() - self._b.read()) & (2**32 - 1)
+        elif self._alus.read() == 2: # bitwise and
+            result = self._a.read() & self._b.read()
+        elif self._alus.read() == 3: # bitwise or
+            result = self._a.read() | self._b.read()
+        elif self._alus.read() == 4: # bitwise xor
+            result = self._a.read() ^ self._b.read()
+        elif self._alus.read() == 5: # bitwise pass a
+            result = self._a.read()
+        elif self._alus.read() == 6: # bitwise pass b
+            result = self._b.read()
+        else: # generate 1
+            result = 1
+        self._f.write(result)
+
+        # the following bits are used to determine when to branch
+>>>>>>> 172637a9e01904bbec4048de9b474f9d22a7e9c0
         # negative
         self._n.write(self._f.read() >> 31)
         # zero

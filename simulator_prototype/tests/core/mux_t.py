@@ -92,6 +92,24 @@ class Mux_t(unittest.TestCase):
 
         self.assertTrue(y.read() == 0) # prove valid overflow
 
+    def test_large_mux(self):
+        "Test mux for large size to validate scaling algorithm"
+        c0 = Constant(8,150)
+        c1 = Constant(8,5)
+        c2 = Constant(8,255)
+        c3 = Constant(8,150)
+        c4 = Constant(8,5)
+        c5 = Constant(8,255)
+        c6 = Constant(8,150)
+        c7 = Constant(8,5)
+        s = Bus(3,0)
+        y = Bus(8,1)
+        m = Mux(8,[c0,c1,c2,c3,c4,c5,c6],s,y)
+
+        c8 = Constant(8,255)
+        s = Bus(4,0)
+        m = Mux(8,[c0,c1,c2,c3,c4,c5,c6,c7,c8],s,y)
+
 
 if __name__ == '__main__':
     unittest.main()

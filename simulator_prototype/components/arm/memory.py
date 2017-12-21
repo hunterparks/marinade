@@ -5,7 +5,7 @@ from components.abstract.sequential import Sequential, Latch_Type, Logic_States
 import limits
 
 class Memory(Sequential):
-    def __init__(self, a, wd, memwr, reset, clock, rd, edge_type = Latch_Type.FALLING_EDGE, 
+    def __init__(self, a, wd, memwr, reset, clock, rd, edge_type = Latch_Type.FALLING_EDGE,
                 reset_type = Logic_States.ACTIVE_LOW, memwr_type = Logic_States.ACTIVE_LOW):
         self._a = a
         self._wd = wd
@@ -26,7 +26,7 @@ class Memory(Sequential):
     def on_falling_edge(self):
         if self._edge_type == Latch_Type.FALLING_EDGE or self._edge_type == Latch_Type.BOTH_EDGE:
             self._assigned_memory[self._a.read()] == self._wd.read()
-        
+
     def on_reset(self):
         # wipes out all memory
         self._assigned_memory = {}
@@ -38,8 +38,8 @@ class Memory(Sequential):
     def modify(self, message):
         start_address = message['start']
         modified_memory = message['data']
+        offset = 0
         for data in modified_memory:
-            offset = 0
             self._assigned_memory[start_address + offset] = data
             offset = offset + 32
 
