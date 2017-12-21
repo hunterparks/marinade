@@ -5,6 +5,50 @@ class ControllerSingleCycle(Controller):
 
     def __init__(self, cond, op, funct, rd, bit4, c, v, n, z, pcsrc, pcwr, regsa,
                 regdst, regwrs, regwr, exts, alusrcb, alus, aluflagwr, memwr, regsrc, wd3s):
+        if cond.size() != 4:
+            raise ValueError('The cond bus must have a size of 4-bits')
+        if op.size() != 2:
+            raise ValueError('The op bus must have a size of 2-bits')
+        if funct.size() != 6:
+            raise ValueError('The funct bus must have a size of 6-bits')
+        if rd.size() != 3:
+            raise ValueError('The rd bus must have a size of 3-bits')
+        if bit4.size() != 1:
+            raise ValueError('The bit4 bus must have a size of 1-bit')
+        if c.size() != 1:
+            raise ValueError('The c bus must have a size of 1-bit')
+        if v.size() != 1:
+            raise ValueError('The v bus must have a size of 1-bit')
+        if n.size() != 1:
+            raise ValueError('The n bus must have a size of 1-bit')
+        if z.size() != 1:
+            raise ValueError('The z bus must have a size of 1-bit')
+        if pcsrc.size() != 2:
+            raise ValueError('The pcsrc bus must have a size of 2-bits')
+        if pcwr.size() != 1:
+            raise ValueError('The pcwr bus must have a size of 1-bit')
+        if regsa.size() != 1:
+            raise ValueError('The regsa bus must have a size of 1-bit')
+        if regdst.size() != 2:
+            raise ValueError('The regdst bus must have a size of 2-bits')
+        if regwrs.size() != 2:
+            raise ValueError('The regwrs bus must have a size of 2-bits')
+        if regwr.size() != 1:
+            raise ValueError('The regwr bus must have a size of 1-bit')
+        if exts.size() != 2:
+            raise ValueError('The exts bus must have a size of 2-bits'
+        if alusrcb.size() != 1:
+            raise ValueError('The alusrcb bus must have a size of 1-bit')
+        if alus.size() != 4:
+            raise ValueError('The alus bus must have a size of 4-bits'
+        if aluflagwr.size() != 1:
+            raise ValueError('The aluflagwr bus must have a size of 1-bit')
+        if memwr.size() != 1:
+            raise ValueError('The memwr bus must have a size of 1-bit')
+        if regsrc.size() != 1:
+            raise ValueError('The regsrc bus must have a size of 1-bit')
+        if wd3s.size() != 1:
+            raise ValueError('The wd3s bus must have a size of 1-bit')
         self._cond = cond
         self._op = op
         self._funct = funct

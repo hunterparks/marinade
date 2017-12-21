@@ -6,6 +6,9 @@ from components.core.bus import Bus
 
 class ControllerSingleCycle_t(unittest.TestCase):
 
+    def test_constructor(self):
+        pass
+
     def test_run(self):
         pass
 
