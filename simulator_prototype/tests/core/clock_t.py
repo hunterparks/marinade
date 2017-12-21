@@ -4,7 +4,7 @@ sys.path.insert(0,'../../')
 from components.core.clock import Clock
 import limits
 
-class Reset_t(unittest.TestCase):
+class Clock_t(unittest.TestCase):
 
     def test_constructor(self):
         "Constructor with valid and invalid configuration"

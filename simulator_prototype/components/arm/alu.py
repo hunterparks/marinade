@@ -15,29 +15,21 @@ class Alu(Combinational):
 
     def run(self, time = None):
         result = 0
-        if self._alus.read() == 0:
-            # bitwise add
+        if self._alus.read() == 0: # bitwise add
             result = (self._a.read() + self._b.read()) & (2**32 - 1)
-        elif self._alus.read() == 1:
-            # bitwise subtract
+        elif self._alus.read() == 1: # bitwise subtract
             result = (self._a.read() - self._b.read()) & (2**32 - 1)
-        elif self._alus.read() == 2:
-            # bitwise and
+        elif self._alus.read() == 2: # bitwise and
             result = self._a.read() & self._b.read()
-        elif self._alus.read() == 3:
-            # bitwise or
+        elif self._alus.read() == 3: # bitwise or
             result = self._a.read() | self._b.read()
-        elif self._alus.read() == 4:
-            # bitwise xor
+        elif self._alus.read() == 4: # bitwise xor
             result = self._a.read() ^ self._b.read()
-        elif self._alus.read() == 5:
-            # bitwise pass a
+        elif self._alus.read() == 5: # bitwise pass a
             result = self._a.read()
-        elif self._alus.read() == 6:
-            # bitwise pass b
+        elif self._alus.read() == 6: # bitwise pass b
             result = self._b.read()
-        else:
-            # generate 1
+        else: # generate 1
             result = 1
         self._f.write(result)
 

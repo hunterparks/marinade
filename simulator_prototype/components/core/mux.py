@@ -14,10 +14,10 @@ class Mux(Combinational):
         Mux component implements a combinational multiplexer of fixed bit width.
         Component expects an array of 2 or more input signals that match width.
         Component expects a select input control signal of size sufficent to
-        select all inputs but not larger (ceil(len(inputs)/2)) = s.size())
+        select all inputs but not larger floor(log(len(inputs),2) + 1) = size
 
         Output follows form:
-            Y = I[(S & pow(2,ceil(len(inputs)/2))))]
+            Y = I[(S & pow(2,floor(log(len(inputs),2) + 1)))]
     """
 
     def __init__(self, size, inputs, select, output=None):
@@ -32,7 +32,14 @@ class Mux(Combinational):
         elif not all((isinstance(x,iBusRead) and x.size() == self._size) for x in inputs):
             raise TypeError('All inputs must be a bus with size equal to internal')
         self._inputs = inputs
-        self._necessary_select_size = int(math.ceil(len(inputs) / 2))
+        if len(inputs) < 0:
+            raise ValueError('Length is less than zero')
+        elif len(inputs) == 0:
+            self._necessary_select_size = 0
+        elif len(inputs) <= 2:
+            self._necessary_select_size = len(inputs) - 1
+        else: # len > 2
+            self._necessary_select_size = int(math.floor(math.log(len(inputs) - 1,2) + 1))
 
         if not isinstance(select,iBusRead):
             raise TypeError('Select signal must be a bus')

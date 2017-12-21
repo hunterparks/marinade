@@ -4,6 +4,7 @@
 
 from components.core.bus import Bus, iBusRead, iBusWrite
 from components.core.register import Sequential, Register, Latch_Type, Logic_States
+import math
 
 
 
@@ -17,7 +18,7 @@ class RegisterFile(Sequential):
     """
 
     def __init__(self, num_reg, reg_size, clock, reset, write_addr, write_data, read_addrs, read_datas, enable=None,
-            default_state = 0,edge_type = Latch_Type.FALLING_EDGE, reset_type = Logic_States.ACTIVE_LOW,enable_type = Logic_States.ACTIVE_HIGH):
+            default_state = 0,edge_type = Latch_Type.RISING_EDGE, reset_type = Logic_States.ACTIVE_HIGH,enable_type = Logic_States.ACTIVE_HIGH):
         """
             Constructor will check for valid parameters, exception thrown on invalid
 
@@ -42,9 +43,9 @@ class RegisterFile(Sequential):
 
         #configuration
         if not isinstance(reg_size,int) or reg_size <= 0:
-            raise TypeError()
+            raise TypeError('Number of registers must be valid integer')
         elif not isinstance(num_reg,int) or num_reg <= 0:
-            raise TypeError()
+            raise TypeError('Bit-width must be valid')
         elif not Latch_Type.valid(edge_type):
             raise ValueError('Invalid latch edge type')
         elif not Logic_States.valid(reset_type):
@@ -59,8 +60,13 @@ class RegisterFile(Sequential):
         self._enable_type = enable_type
 
         #generate necessary parameters that buses must fit
-        necessary_length = 0 #TODO
-        necessary_size = self._reg_size
+        if num_reg == 0:
+            self._necessary_length = 0
+        elif num_reg < 2:
+            self._necessary_length = 1
+        else: # len > 2
+            self._necessary_length = int(math.floor(math.log(num_reg-1,2) + 1))
+        self._necessary_size = self._reg_size
 
         #external connections
         if not isinstance(clock, iBusRead) or not clock.size() == 1:
@@ -69,16 +75,18 @@ class RegisterFile(Sequential):
             raise TypeError('Reset bus must be valid')
         elif not isinstance(enable, iBusRead) or not enable.size() == 1:
             raise TypeError('Write enable bus must be readable')
-        elif not isinstance(write_addr, iBusRead) or not write_addr.size() == necessary_length:
+        elif not isinstance(write_addr, iBusRead) or not write_addr.size() == self._necessary_length:
             raise TypeError('Write address bus must be readable')
-        elif not isinstance(write_data, iBusRead) or not write_data.size() == necessary_size:
+        elif not isinstance(write_data, iBusRead) or not write_data.size() == self._necessary_size:
             raise TypeError('Write data bus must be readable')
         elif not isinstance(read_addrs,list) or not isinstance(read_datas,list):
-            raise TypeError('Read buses lists must be lists')
-        elif not all((isinstance(x,iBusRead) and x.size() == necessary_length) for x in read_addrs):
+            raise TypeError('Read buses lists must be list')
+        elif not (len(read_addrs) == len(read_datas)) or len(read_addrs) <= 0 or len(read_datas) <= 0:
+            raise TypeError('Read buses must having matching size greater than zero')
+        elif not all((isinstance(x,iBusRead) and x.size() == self._necessary_length) for x in read_addrs):
             raise TypeError('Read address buses must be have correct size')
-        elif not all((isinstance(x,iBusWrite) and x.size() == necessary_size) for x in read_datas):
-            rase TypeError('Read data buses must be have correct size')
+        elif not all((isinstance(x,iBusWrite) and x.size() == self._necessary_size) for x in read_datas):
+            raise TypeError('Read data buses must be have correct size')
 
         self._clock = clock
         self._reset = reset
@@ -116,10 +124,34 @@ class RegisterFile(Sequential):
                }
 
 
-    def modify(self):
+    def modify(self,message):
         "Handles message from user to modify memory contents"
-        #TODO
-        raise NotImplementedError()
+
+        if message is None:
+            return {'error' : 'expecting message to be provided'}
+        elif 'data' not in message or 'start' not in message:
+            return {'error' : 'invalid format for message'}
+
+        start = message['start']
+        data = message['data']
+        if not isinstance(start, int) or start < 0 or start >= self._num_reg:
+            return {'error' : 'start index must be an integer in valid range'}
+        elif not isinstance(data, list):
+            return {'error' : 'data must be a list of integers'}
+        elif (len(data) + start) > self._num_reg:
+            return {'error' : 'address rolloever not supported'}
+        else:
+            retval = {}
+            for i in range(0,len(data)):
+                tm = {'state' : data[i]}
+                rm = self._regs[i + start].modify(tm)
+                if 'error' in rm:
+                    if 'error' not in retval:
+                        retval.update({'error' : []})
+                    retval['error'].append('r{}: {}'.format(i,rm['error']))
+            if 'error' not in retval:
+                retval.update({'success' : True})
+            return retval
 
 
     def on_rising_edge(self):
@@ -152,7 +184,6 @@ class RegisterFile(Sequential):
 
         #write data to register
         if e:
-            #TODO address mapping for out of bounds
             self._ens[self._waddr.read()].write(1)
 
         #check for reset event
@@ -167,10 +198,8 @@ class RegisterFile(Sequential):
 
         #read from registers and assert output
         for i in range(len(self._raddrs)):
-            #TODO address mapping for out of bounds
             self._rdatas[i].write(self._datas[self._raddrs[i].read()].read())
 
         #clear enable flags for register selected
         if e:
-            #TODO address mapping for out of bounds
             self._ens[self._waddr.read()].write(0)

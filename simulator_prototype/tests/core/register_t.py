@@ -4,8 +4,7 @@ sys.path.insert(0,'../../')
 from components.core.register import Register, Latch_Type, Logic_States
 from components.core.constant import Constant
 from components.core.bus import Bus
-from components.core.reset import Reset
-from components.core.clock import Clock
+
 
 class Register_t(unittest.TestCase):
 

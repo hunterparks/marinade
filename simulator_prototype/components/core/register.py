@@ -94,15 +94,15 @@ class Register(Sequential):
         return {'type' : 'register', 'size' : self._size, 'state' : self._q}
 
 
-    def modify(self,data):
+    def modify(self,message):
         "Handles message from user to modify memory contents"
 
-        if data is None:
+        if message is None:
             return {'error' : 'expecting message to be provided'}
-        elif 'state' not in data:
+        elif 'state' not in message:
             return {'error' : 'invalid format for message'}
 
-        state = data['state']
+        state = message['state']
         if isinstance(state,int) and state >= 0 and state < 2**self._size:
             self._q = state
             return {'success' : True}
