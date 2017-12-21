@@ -6,6 +6,22 @@ from components.core.bus import Bus
 
 class Alu_t(unittest.TestCase):
 
+    def test_constructor(self):
+        a = Bus(31)
+        b = Bus(32)
+        alus = Bus(4)
+        f = Bus(32)
+        c = Bus(1)
+        v = Bus(1)
+        n = Bus(1)
+        z = Bus(1)
+        # Test case 1
+        with self.assertRaises(ValueError):
+            test_alu = Alu(a, b, alus, f, c, v, n, z)
+        # Test case 2
+        with self.assertRaises(ValueError):
+            test_alu = Alu(a, b, alus, c, f, v, n, z)
+
     def test_run(self):
         # initialize sizes of input and output busses
         a = Bus(32)
@@ -21,60 +37,71 @@ class Alu_t(unittest.TestCase):
         # initialize inputs with values
         a.write(5)
         b.write(2)
-        # test case 1
+        # test case 3
         alus.write(0)
         test_alu.run()
         self.assertEqual(f.read(), 7)
         self.assertEqual(z.read(), 0)
         self.assertEqual(n.read(), 0)
-        # test case 2
+        self.assertEqual(c.read(), 0)
+        self.assertEqual(v.read(), 0)
+        # test case 4
         alus.write(1)
         test_alu.run()
         self.assertEqual(f.read(), 3)
         self.assertEqual(z.read(), 0)
         self.assertEqual(n.read(), 0)
-        # test case 3
+        self.assertEqual(c.read(), 0)
+        self.assertEqual(v.read(), 0)
+        # test case 5
         alus.write(2)
         test_alu.run()
         self.assertEqual(f.read(), 0)
         self.assertEqual(z.read(), 1)
         self.assertEqual(n.read(), 0)
-        # test case 4
+        self.assertEqual(c.read(), 0)
+        self.assertEqual(v.read(), 0)
+        # test case 6
         alus.write(3)
         test_alu.run()
         self.assertEqual(f.read(), 7)
         self.assertEqual(z.read(), 0)
         self.assertEqual(n.read(), 0)
-        # test case 5
+        self.assertEqual(c.read(), 0)
+        self.assertEqual(v.read(), 0)
+        # test case 7
         alus.write(4)
         test_alu.run()
         self.assertEqual(f.read(), 7)
         self.assertEqual(z.read(), 0)
         self.assertEqual(n.read(), 0)
-        # test case 6
+        self.assertEqual(c.read(), 0)
+        self.assertEqual(v.read(), 0)
+        # test case 8
         alus.write(5)
         test_alu.run()
         self.assertEqual(f.read(), 5)
         self.assertEqual(z.read(), 0)
         self.assertEqual(n.read(), 0)
-        # test case 7
+        self.assertEqual(c.read(), 0)
+        self.assertEqual(v.read(), 0)
+        # test case 9
         alus.write(6)
         test_alu.run()
         self.assertEqual(f.read(), 2)
         self.assertEqual(z.read(), 0)
         self.assertEqual(n.read(), 0)
-        # test case 8
+        self.assertEqual(c.read(), 0)
+        self.assertEqual(v.read(), 0)
+        # test case 10
         alus.write(7)
         test_alu.run()
         self.assertEqual(f.read(), 1)
         self.assertEqual(z.read(), 0)
         self.assertEqual(n.read(), 0)
-        # test case 9
-        '''
-            Curt - A 'Value out of range for bus' error occurs here
-            because of the sign extended number. Need to look
-            further into this error
-        '''
+        self.assertEqual(c.read(), 0)
+        self.assertEqual(v.read(), 0)
+        # test case 11
         a.write(1)
         b.write(2)
         alus.write(1)
@@ -82,6 +109,28 @@ class Alu_t(unittest.TestCase):
         self.assertEqual(f.read(), 0xFFFFFFFF)
         self.assertEqual(z.read(), 0)
         self.assertEqual(n.read(), 1)
+        self.assertEqual(c.read(), 0)
+        self.assertEqual(v.read(), 0)
+        # test case 12
+        a.write(0x80000000)
+        b.write(0x80000000)
+        alus.write(0)
+        test_alu.run()
+        self.assertEqual(f.read(), 0)
+        self.assertEqual(z.read(), 1)
+        self.assertEqual(n.read(), 0)
+        self.assertEqual(c.read(), 1)
+        self.assertEqual(v.read(), 1)
+        # test case 13
+        a.write(0x7FFFFFFF)
+        b.write(0xFFFFFFFF)
+        alus.write(1)
+        test_alu.run()
+        self.assertEqual(f.read(), 0x80000000)
+        self.assertEqual(z.read(), 0)
+        self.assertEqual(n.read(), 1)
+        self.assertEqual(c.read(), 0)
+        self.assertEqual(v.read(), 1)
 
 if __name__ == '__main__':
     unittest.main()

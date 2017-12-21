@@ -4,8 +4,12 @@ from components.abstract.ibus import iBusRead, iBusWrite
 class Extender(Combinational):
     def __init__(self, imm, imm32, exts):
         #NOTE I changed this to 24 bits since 23..0 is 24 bits
-        if(imm.size() != 24 ):
-            raise ValueError('Immediate must be 24-bits')
+        if imm.size() != 24:
+            raise ValueError('The imm bus must have a size of 24-bits')
+        if imm32.size() != 32:
+            raise ValueError('The imm32 bus must have a size of 32-bits')
+        if exts.size() != 2:
+            raise ValueError('The exts bus must have a size of 2-bits')
         self._imm = imm
         self._imm32 = imm32
         '''
@@ -14,10 +18,6 @@ class Extender(Combinational):
         exts = 2 or 3 for branch instructions
         '''
         self._exts = exts
-
-    def inspect(self):
-        # returns a dictionary message to application defining current state
-        return {'type' : 'regfile', 'size' : None, 'state': self._exts.read()}
 
     def run(self, time = None):
         '''
