@@ -7,6 +7,7 @@ from components.core.bus import Bus
 class Alu_t(unittest.TestCase):
 
     def test_constructor(self):
+        # tests 2 bad constructors - not all possible bad constructors tested
         a = Bus(31)
         b = Bus(32)
         alus = Bus(4)
@@ -15,15 +16,15 @@ class Alu_t(unittest.TestCase):
         v = Bus(1)
         n = Bus(1)
         z = Bus(1)
-        # Test case 1
+        # test case 1
         with self.assertRaises(ValueError):
             test_alu = Alu(a, b, alus, f, c, v, n, z)
-        # Test case 2
+        # test case 2
         with self.assertRaises(ValueError):
             test_alu = Alu(a, b, alus, c, f, v, n, z)
 
     def test_run(self):
-        # initialize sizes of input and output busses
+        # test's the alu's run function
         a = Bus(32)
         b = Bus(32)
         alus = Bus(4)
@@ -96,12 +97,20 @@ class Alu_t(unittest.TestCase):
         # test case 10
         alus.write(7)
         test_alu.run()
-        self.assertEqual(f.read(), 1)
+        self.assertEqual(f.read(), 10)
         self.assertEqual(z.read(), 0)
         self.assertEqual(n.read(), 0)
         self.assertEqual(c.read(), 0)
         self.assertEqual(v.read(), 0)
         # test case 11
+        alus.write(8)
+        test_alu.run()
+        self.assertEqual(f.read(), 1)
+        self.assertEqual(z.read(), 0)
+        self.assertEqual(n.read(), 0)
+        self.assertEqual(c.read(), 0)
+        self.assertEqual(v.read(), 0)
+        # test case 12
         a.write(1)
         b.write(2)
         alus.write(1)
@@ -111,7 +120,7 @@ class Alu_t(unittest.TestCase):
         self.assertEqual(n.read(), 1)
         self.assertEqual(c.read(), 0)
         self.assertEqual(v.read(), 0)
-        # test case 12
+        # test case 13
         a.write(0x80000000)
         b.write(0x80000000)
         alus.write(0)
@@ -121,12 +130,22 @@ class Alu_t(unittest.TestCase):
         self.assertEqual(n.read(), 0)
         self.assertEqual(c.read(), 1)
         self.assertEqual(v.read(), 1)
-        # test case 13
+        # test case 14
         a.write(0x7FFFFFFF)
         b.write(0xFFFFFFFF)
         alus.write(1)
         test_alu.run()
         self.assertEqual(f.read(), 0x80000000)
+        self.assertEqual(z.read(), 0)
+        self.assertEqual(n.read(), 1)
+        self.assertEqual(c.read(), 0)
+        self.assertEqual(v.read(), 1)
+        # test case 15
+        a.write(268435456)
+        b.write(9)
+        alus.write(7)
+        test_alu.run()
+        self.assertEqual(f.read(), 2415919104)
         self.assertEqual(z.read(), 0)
         self.assertEqual(n.read(), 1)
         self.assertEqual(c.read(), 0)

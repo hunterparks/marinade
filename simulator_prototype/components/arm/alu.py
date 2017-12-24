@@ -29,7 +29,6 @@ class Alu(Combinational):
         self._z = z
 
     def run(self, time = None):
-        result = 0
         if self._alus.read() == 0:
             # bitwise add
             self._f.write((self._a.read() + self._b.read()) & (2**32 - 1))
@@ -55,6 +54,10 @@ class Alu(Combinational):
         elif self._alus.read() == 6:
             # bitwise pass b
             self._f.write(self._b.read())
+        elif self._alus.read() == 7:
+            # bitwise multiplication
+            self._f.write(self._a.read() * self._b.read())
+            self.signed_overflow('mul')
         else:
             # generate 1
             self._f.write(1)
@@ -79,9 +82,18 @@ class Alu(Combinational):
                     self._v.write(1)
             else:
                 self._v.write(0)
-        if operation == 'subtract' or operation == 'sub':
+        elif operation == 'subtract' or operation == 'sub':
             if self._a.read() >> 31 != self._b.read() >> 31:
                 if self._f.read() >> 31 == self._b.read() >> 31:
+                    self._v.write(1)
+            else:
+                self._v.write(0)
+        elif operation == 'multiply' or operation == 'mul':
+            if self._a.read() >> 31 == self._b.read() >> 31 and self._a.read() >> 31 == 0:
+                if self._f.read() >> 31 != self._a.read() >> 31:
+                    self._v.write(1)
+            elif self._a.read() >> 31 == self._b.read() >> 31 and self._a.read() >> 31 == 1:
+                if self._f.read() >> 31 == self._a.read() >> 31:
                     self._v.write(1)
             else:
                 self._v.write(0)

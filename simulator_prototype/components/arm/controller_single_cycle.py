@@ -11,7 +11,7 @@ class ControllerSingleCycle(Controller):
             raise ValueError('The op bus must have a size of 2-bits')
         if funct.size() != 6:
             raise ValueError('The funct bus must have a size of 6-bits')
-        if rd.size() != 3:
+        if rd.size() != 4:
             raise ValueError('The rd bus must have a size of 3-bits')
         if bit4.size() != 1:
             raise ValueError('The bit4 bus must have a size of 1-bit')
@@ -36,11 +36,11 @@ class ControllerSingleCycle(Controller):
         if regwr.size() != 1:
             raise ValueError('The regwr bus must have a size of 1-bit')
         if exts.size() != 2:
-            raise ValueError('The exts bus must have a size of 2-bits'
+            raise ValueError('The exts bus must have a size of 2-bits')
         if alusrcb.size() != 1:
             raise ValueError('The alusrcb bus must have a size of 1-bit')
         if alus.size() != 4:
-            raise ValueError('The alus bus must have a size of 4-bits'
+            raise ValueError('The alus bus must have a size of 4-bits')
         if aluflagwr.size() != 1:
             raise ValueError('The aluflagwr bus must have a size of 1-bit')
         if memwr.size() != 1:
@@ -72,11 +72,11 @@ class ControllerSingleCycle(Controller):
         self._regsrc = regsrc
         self._wd3s = wd3s
 
-    def run(self, time):
+    def run(self, time = None):
         # pcsrc
         if self._op.read() == 0b10 and (self._cond.read() == 0b110 or self._cond.read() == 0b0000 or self._cond.read() == 0b0001):
             self._pcsrc.write(0b00)
-        elif self._op.read() == 0b00 and self._rd == 0b1111:
+        elif self._op.read() == 0b00 and self._rd.read() == 0b1111:
             self._pcsrc.write(0b10)
         else:
             self._pcsrc.write(0b01)
@@ -95,7 +95,7 @@ class ControllerSingleCycle(Controller):
         else:
             self._regdst.write(0b01)
         # regwrs
-        if self._op.read() == 0b10 and ((self._funct.read() >> 4) == 0b01 or (self._funct.read() >> 4) == 0b11):
+        if self._op.read() == 0b10 and ((self._funct.read() & 0b001000) >> 3) == 0b1:
             self._regwrs.write(0b10)
         elif self._op.read() == 0b00 and self._bit4.read() == 0b1 and (self._funct.read() == 0b000000 or self._funct.read() == 0b000001):
             self._regwrs.write(0b00)
@@ -106,7 +106,7 @@ class ControllerSingleCycle(Controller):
             self._regwr.write(0b0)
         elif self._op.read() == 0b01 and self._funct.read() == 0b011000:
             self._regwr.write(0b0)
-        elif self._op.read() == 0b10 and ((self._funct.read() >> 4) == 0b01 or (self._funct.read() >> 4) == 0b11):
+        elif self._op.read() == 0b10 and ((self._funct.read() & 0b001000) >> 3) == 0b1:
             self._regwr.write(0b0)
         else:
             self._regwr.write(0b1)
@@ -137,12 +137,14 @@ class ControllerSingleCycle(Controller):
                 self._alusrcb.write(0b1)
             else:
                 self._alusrcb.write(0b0)
+        else:
+            self._alusrcb.write(0b0)
         # alus
         if (self._op.read() == 0b00 and (self._funct.read() == 0b001000 or
                 self._funct.read() == 0b101000 or self._funct.read() == 0b001001 or
                 self._funct.read() == 0b101001)):
             self._alus.write(0b0000)
-        elif (self._op.read() == 0b10 and (self._funct.read() == 0b011000 or
+        elif (self._op.read() == 0b01 and (self._funct.read() == 0b011000 or
                 self._funct.read() == 0b011001)):
             self._alus.write(0b0000)
         elif (self._op.read() == 0b00 and (self._funct.read() == 0b000100 or
@@ -173,14 +175,15 @@ class ControllerSingleCycle(Controller):
             self._alus.write(0b1111)
         # aluflagwr
         if self._op.read() == 0b00:
+            # Note: need to look further into the logic when funct is 1
             if (self._funct.read() == 0b010101 or self._funct.read() == 0b110101 or
-                    self._funct.read() == 0b010101 or self._funct.read() == 0b110101 or
                     self._funct.read() == 0b000001 or self._funct.read() == 0b100001 or
                     self._funct.read() == 0b000011 or self._funct.read() == 0b100011 or
                     self._funct.read() == 0b000101 or self._funct.read() == 0b100101 or
                     self._funct.read() == 0b000111 or self._funct.read() == 0b100111 or
                     self._funct.read() == 0b001001 or self._funct.read() == 0b101001 or
                     self._funct.read() == 0b001011 or self._funct.read() == 0b101011 or
+                    self._funct.read() == 0b001101 or self._funct.read() == 0b101101 or
                     self._funct.read() == 0b001111 or self._funct.read() == 0b101111 or
                     self._funct.read() == 0b010001 or self._funct.read() == 0b110001 or
                     self._funct.read() == 0b010011 or self._funct.read() == 0b110011 or
@@ -188,11 +191,12 @@ class ControllerSingleCycle(Controller):
                     self._funct.read() == 0b011001 or self._funct.read() == 0b111001 or
                     self._funct.read() == 0b011011 or self._funct.read() == 0b111011 or
                     self._funct.read() == 0b011101 or self._funct.read() == 0b111101 or
-                    self._funct.read() == 0b011111 or self._funct.read() == 0b111111 or
-                    (self._funct.read() == 0b000001 and self._bit4.read() == 0b1)):
+                    self._funct.read() == 0b011111 or self._funct.read() == 0b111111):
                 self._aluflagwr.write(0b1)
             else:
                 self._aluflagwr.write(0b0)
+        else:
+            self._aluflagwr.write(0b0)
         # memwr
         if self._op.read() == 0b01 and self._funct.read() == 0b011000:
             self._memwr.write(0b1)
@@ -204,7 +208,7 @@ class ControllerSingleCycle(Controller):
         else:
             self._regsrc.write(0b1)
         #wd3s
-        if self._op.read() == 0b10 and ((self._funct.read() >> 4) == 0b01 or (self._funct.read() >> 4) == 0b11):
+        if self._op.read() == 0b10 and ((self._funct.read() & 0b001000) >> 3) == 0b1:
             self._wd3s.write(1)
         else:
             self._wd3s.write(0)
@@ -216,7 +220,6 @@ class ControllerSingleCycle(Controller):
                 'c': self._c.read(), 'v': self._v.read(), 'n': self._n.read(), 'z': self._z.read(),
                 'pcsrc': self._pcsrc.read(), 'pcwr': self._pcwr.read(), 'regsa': self._regsa.read(),
                 'regdst': self._regdst.read(), 'regwrs': self._regwrs.read(),
-
                 'regwr': self._regwr.read(), 'exts': self._exts.read(),
                 'alusrcb': self._alusrcb.read(), 'alus': self._alus.read(),
                 'aluflagwr': self._aluflagwr.read(), 'memwr': self._memwr.read(),

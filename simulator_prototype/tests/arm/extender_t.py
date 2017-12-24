@@ -7,7 +7,7 @@ from components.core.bus import Bus
 class Extender_t(unittest.TestCase):
 
     def test_constructor(self):
-        # initialize busses
+        # tests 3 bad constructors - all possible bad constructors tested 
         imm = Bus(23)
         imm32 = Bus(32)
         exts = Bus(2) 
@@ -26,7 +26,7 @@ class Extender_t(unittest.TestCase):
             e = Extender(imm, imm32, exts)
 
     def test_run(self):
-        # initialize busses
+        # tests the enxtender's run function
         imm = Bus(24)
         imm32 = Bus(32)
         exts = Bus(2)
