@@ -14,7 +14,7 @@ jobs:
           - v1-dependencies-{{ checksum "package.json" }}
           # fallback to using the latest cache if no exact match is found
           - v1-dependencies-
-      - npm_update:
+      - run:
           name: Update NPM
           command: npm install -g npm
       - run:
