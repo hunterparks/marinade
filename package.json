@@ -1,5 +1,13 @@
 {
   "name": "marinade",
+  "description": "MSOE ARM Integrated Architecture Development Environment",
+  "homepage": "https://github.com/msoesd-teambeta/marinade",
+  "author": {
+    "name": "Team Beta"
+  },
+  "repository": {
+    "url": "https://github.com/msoesd-teambeta/marinade"
+  },
   "version": "0.0.0",
   "license": "MIT",
   "main": "electron.js",
@@ -7,10 +15,24 @@
     "ng": "ng",
     "start": "ng serve",
     "build": "ng build",
+    "build:prod": "ng build --prod",
     "test": "ng test",
     "test-ci": "ng test --single-run --code-coverage",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "pack": "npm run build:prod; electron-builder --dir -wml",
+    "pack:win": "npm run build:prod; electron-builder --dir -w",
+    "pack:mac": "npm run build:prod; electron-builder --dir -m",
+    "pack:lin": "npm run build:prod; electron-builder --dir -l",
+    "dist": "npm run build:prod; electron-builder -wml",
+    "dist:win": "npm run build:prod; electron-builder -w",
+    "dist:mac": "npm run build:prod; electron-builder -m",
+    "dist:lin": "npm run build:prod; electron-builder -l",
+    "release": "npm run build:prod; build -wml",
+    "electron": "npm run electron:dev:dynamic",
+    "electron:dev": "npm run build; electron .",
+    "electron:dev:dynamic": "concurrently \"npm run start\" \"electron . dynamic\"",
+    "electron:prod": "npm run build:prod; electron ."
   },
   "private": true,
   "dependencies": {
@@ -24,6 +46,8 @@
     "@angular/platform-browser-dynamic": "^5.0.0",
     "@angular/router": "^5.0.0",
     "core-js": "^2.4.1",
+    "electron-log": "^2.2.13",
+    "electron-updater": "^2.16.3",
     "rxjs": "^5.5.2",
     "zone.js": "^0.8.14"
   },
@@ -36,7 +60,9 @@
     "@types/node": "~6.0.60",
     "codecov": "^3.0.0",
     "codelyzer": "^4.0.1",
+    "concurrently": "^3.5.1",
     "electron": "1.7.9",
+    "electron-builder": "^19.48.2",
     "jasmine-core": "~2.6.2",
     "jasmine-spec-reporter": "~4.1.0",
     "karma": "~1.7.0",
@@ -50,5 +76,54 @@
     "tslint": "~5.7.0",
     "tslint-eslint-rules": "^4.1.1",
     "typescript": "~2.4.2"
+  },
+  "build": {
+    "appId": "com.electron.marinade",
+    "productName": "Marinade",
+    "files": [
+      "electron.js",
+      "dist/*"
+    ],
+    "directories": {
+      "output": "platforms"
+    },
+    "mac": {
+      "category": "public.app-category.education",
+      "target": [
+        {
+          "target": "dmg",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "linux": {
+      "target": [
+        {
+          "target": "tar.gz",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "category": "Education"
+    },
+    "publish": {
+      "provider": "github",
+      "owner": "msoesd-teambeta",
+      "vPrefixedTagName": true,
+      "releaseType": "draft"
+    }
   }
 }
