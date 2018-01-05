@@ -3,21 +3,21 @@ from components.abstract.ibus import iBusRead, iBusWrite
 
 class Alu(Combinational):
     def __init__(self, a, b, alus, f, c, v, n, z):
-        if a.size() != 32:
+        if not isinstance(a, iBusRead) or a.size() != 32:
             raise ValueError("The a bus must have a size of 32-bits.")
-        if b.size() != 32:
+        if not isinstance(b, iBusRead) or b.size() != 32:
             raise ValueError('The b bus must have a size of 32-bits')
-        if alus.size() != 4:
+        if not isinstance(alus, iBusRead) or alus.size() != 4:
             raise ValueError('The alus bus must have a size of 4-bits')
-        if f.size() != 32:
+        if not isinstance(f, iBusWrite) or f.size() != 32:
             raise ValueError('The f bus must have a size of 32-bits')
-        if c.size() != 1:
+        if not isinstance(c, iBusWrite) or c.size() != 1:
             raise ValueError('The c bus must have a size of 1-bit')
-        if v.size() != 1:
+        if not isinstance(v, iBusWrite) or v.size() != 1:
             raise ValueError('The v bus must have a szie of 1-bit')
-        if n.size() != 1:
+        if not isinstance(n, iBusWrite) or n.size() != 1:
             raise ValueError('The n bus must have a size of 1-bit')
-        if z.size() != 1:
+        if not isinstance(z, iBusWrite) or z.size() != 1:
             raise ValueError('The z bus must have a size of 1-bit')
         self._a = a
         self._b = b
