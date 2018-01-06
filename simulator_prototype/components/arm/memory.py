@@ -55,35 +55,52 @@ class Memory(Sequential):
 
     def on_falling_edge(self):
         if self._edge_type == Latch_Type.FALLING_EDGE or self._edge_type == Latch_Type.BOTH_EDGE:
-            self._assigned_memory[self._a.read()] == self._wd.read()
+            self._assigned_memory[self._a.read()] = self._wd.read()
 
     def on_reset(self):
-        # wipes out all memory
+        '''
+        wipes out all memory
+        '''
         self._assigned_memory = {}
 
     def inspect(self):
-        # returns dictionary message to user
-        return {'type': 'memory'}
+        '''
+        returns dictionary message to user
+        '''
+        return {'type': 'memory', 'size': len(self._assigned_memory)}
 
     def modify(self, message):
+        if 'start' not in message or 'data' not in message:
+            raise ValueError('The message argurment must be a dictionary that includes a "start" key and a "data" key')
         start_address = message['start']
         modified_memory = message['data']
         offset = 0
         for data in modified_memory:
             self._assigned_memory[start_address + offset] = data
             offset = offset + 32
+        
+    def view_memory_address(self, address):
+        '''
+        Used to view a 32-bit memory address.
+        This method is used for testing purposes only.
+        It should not be used when designing the top level architecture.
+        '''
+        if address not in self._assigned_memory:
+            return 0x81818181
+        else:
+            return self._assigned_memory[address]
 
     def run(self, time = None):
-        # read is asynchronous
-        if self._a.read() not in self._assigned_memory:
-            # unassinged memory is set to 81818181
-            self._rd.write(81818181)
-        else:
-            self._rd.write(self._assigned_memory[self._a.read()])
         # write is synchronous
         if self._memwr.read() == 1:
             if self._clock.read() == 1 and self._prev_clock_state == 0:
                 self.on_rising_edge()
             elif self._clock.read() == 0 and self._prev_clock_state == 1:
                 self.on_falling_edge()
-            self._prev_clock_state = self._clock.read()
+        self._prev_clock_state = self._clock.read()
+        # read is asynchronous
+        if self._a.read() not in self._assigned_memory:
+            # unassinged memory is set to 0x81818181
+            self._rd.write(0x81818181)
+        else:
+            self._rd.write(self._assigned_memory[self._a.read()])
