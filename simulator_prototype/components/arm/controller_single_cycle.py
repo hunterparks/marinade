@@ -5,49 +5,93 @@ class ControllerSingleCycle(Controller):
 
     def __init__(self, cond, op, funct, rd, bit4, c, v, n, z, pcsrc, pcwr, regsa,
                 regdst, regwrs, regwr, exts, alusrcb, alus, aluflagwr, memwr, regsrc, wd3s):
-        if cond.size() != 4:
+        if not isinstance(cond, iBusRead):
+            raise TypeError('The cond bus must be readable')
+        elif cond.size() != 4:
             raise ValueError('The cond bus must have a size of 4-bits')
-        if op.size() != 2:
+        if not isinstance(op, iBusRead):
+            raise TypeError('The op bus must be readable')
+        elif op.size() != 2:
             raise ValueError('The op bus must have a size of 2-bits')
-        if funct.size() != 6:
+        if not isinstance(funct, iBusRead):
+            raise TypeError('The funct bus must be readable')
+        elif funct.size() != 6:
             raise ValueError('The funct bus must have a size of 6-bits')
-        if rd.size() != 4:
+        if not isinstance(rd, iBusRead):
+            raise TypeError('The rd bus must be readable')
+        elif rd.size() != 4:
             raise ValueError('The rd bus must have a size of 3-bits')
-        if bit4.size() != 1:
+        if not isinstance(bit4, iBusRead):
+            raise TypeError('The bit4 bus must be readable')
+        elif bit4.size() != 1:
             raise ValueError('The bit4 bus must have a size of 1-bit')
-        if c.size() != 1:
+        if not isinstance(c, iBusRead):
+            raise TypeError('The c bus must be readable')
+        elif c.size() != 1:
             raise ValueError('The c bus must have a size of 1-bit')
-        if v.size() != 1:
+        if not isinstance(v, iBusRead):
+            raise TypeError('The v bus must be readable')
+        elif v.size() != 1:
             raise ValueError('The v bus must have a size of 1-bit')
-        if n.size() != 1:
+        if not isinstance(n, iBusRead):
+            raise TypeError('The n bus must be readable')
+        elif n.size() != 1:
             raise ValueError('The n bus must have a size of 1-bit')
-        if z.size() != 1:
+        if not isinstance(z, iBusRead):
+            raise TypeError('The z bus must be readable')
+        elif z.size() != 1:
             raise ValueError('The z bus must have a size of 1-bit')
-        if pcsrc.size() != 2:
+        if not isinstance(pcsrc, iBusRead):
+            raise TypeError('The pcsrc bus must be writable')
+        elif pcsrc.size() != 2:
             raise ValueError('The pcsrc bus must have a size of 2-bits')
-        if pcwr.size() != 1:
+        if not isinstance(pcwr, iBusRead):
+            raise TypeError('The pcwr bus must be writable')
+        elif pcwr.size() != 1:
             raise ValueError('The pcwr bus must have a size of 1-bit')
-        if regsa.size() != 1:
+        if not isinstance(regsa, iBusRead):
+            raise TypeError('The regsa bus must be writable')
+        elif regsa.size() != 1:
             raise ValueError('The regsa bus must have a size of 1-bit')
-        if regdst.size() != 2:
+        if not isinstance(regdst, iBusRead):
+            raise TypeError('The regdst bus must be writable')
+        elif regdst.size() != 2:
             raise ValueError('The regdst bus must have a size of 2-bits')
-        if regwrs.size() != 2:
+        if not isinstance(regwrs, iBusRead):
+            raise TypeError('The regwrs bus must be writable')
+        elif regwrs.size() != 2:
             raise ValueError('The regwrs bus must have a size of 2-bits')
-        if regwr.size() != 1:
+        if not isinstance(regwr, iBusRead):
+            raise TypeError('The regwr bus must be writable')
+        elif regwr.size() != 1:
             raise ValueError('The regwr bus must have a size of 1-bit')
-        if exts.size() != 2:
+        if not isinstance(exts, iBusRead):
+            raise TypeError('The exts bus must be writable')
+        elif exts.size() != 2:
             raise ValueError('The exts bus must have a size of 2-bits')
-        if alusrcb.size() != 1:
+        if not isinstance(alusrcb, iBusRead):
+            raise TypeError('The alusrcb bus must be writable')
+        elif alusrcb.size() != 1:
             raise ValueError('The alusrcb bus must have a size of 1-bit')
-        if alus.size() != 4:
+        if not isinstance(alus, iBusRead):
+            raise TypeError('The alus bus must be writable')
+        elif alus.size() != 4:
             raise ValueError('The alus bus must have a size of 4-bits')
-        if aluflagwr.size() != 1:
+        if not isinstance(aluflagwr, iBusRead):
+            raise TypeError('The aluflagwr bus must be writable')
+        elif aluflagwr.size() != 1:
             raise ValueError('The aluflagwr bus must have a size of 1-bit')
-        if memwr.size() != 1:
+        if not isinstance(memwr, iBusRead):
+            raise TypeError('The memwr bus must be writable')
+        elif memwr.size() != 1:
             raise ValueError('The memwr bus must have a size of 1-bit')
-        if regsrc.size() != 1:
+        if not isinstance(regsrc, iBusRead):
+            raise TypeError('The regsrc bus must be writable')
+        elif regsrc.size() != 1:
             raise ValueError('The regsrc bus must have a size of 1-bit')
-        if wd3s.size() != 1:
+        if not isinstance(wd3s, iBusRead):
+            raise TypeError('The wd3s bus must be writable')
+        elif wd3s.size() != 1:
             raise ValueError('The wd3s bus must have a size of 1-bit')
         self._cond = cond
         self._op = op

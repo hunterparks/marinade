@@ -9,15 +9,25 @@ class Ifid(Sequential):
     def __init__(self, instrf, stall, flush, clk, instrd, default_state = 0, 
                 edge_type = Latch_Type.RISING_EDGE, flush_type = Logic_States.ACTIVE_HIGH,
                 enable = None, enable_type = Logic_States.ACTIVE_HIGH):
-        if not isinstance(instrf, iBusRead) or instrf.size() != 32:
+        if not isinstance(instrf, iBusRead):
+            raise TypeError('The instrf bus must be readable')
+        elif instrf.size() != 32:
             raise ValueError('The instrf bus must have a size of 32 bits')
-        if not isinstance(stall, iBusRead) or stall.size() != 1:
+        if not isinstance(stall, iBusRead):
+            raise TypeError('The stall bus must be readable')
+        elif stall.size() != 1:
             raise ValueError('The stall bus must have a size of 1 bit')
-        if not isinstance(flush, iBusRead) or flush.size() != 1:
+        if not isinstance(flush, iBusRead):
+            raise TypeError('The flush bus must be readable')
+        elif flush.size() != 1:
             raise ValueError('The flush bus must have a size of 1 bit')
-        if not isinstance(clk, iBusRead) or clk.size() != 1:
+        if not isinstance(clk, iBusRead):
+            raise TypeError('The clk bust must be readable')
+        elif clk.size() != 1:
             raise ValueError('The clock bus must have a size of 1 bit')
-        if not isinstance(instrd, iBusWrite) or instrd.size() != 32:
+        if not isinstance(instrd, iBusWrite):
+            raise TypeError('The instrd bus must be writeable')
+        elif instrd.size() != 32:
             raise ValueError('The instrd bus must have a size of 32 bits') 
         if not isinstance(default_state, int) or default_state < 0 or default_state >= 2**32:
             raise ValueError('The default state must be an integer between -1 and 4294967296')

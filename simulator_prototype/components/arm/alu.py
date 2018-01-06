@@ -3,21 +3,37 @@ from components.abstract.ibus import iBusRead, iBusWrite
 
 class Alu(Combinational):
     def __init__(self, a, b, alus, f, c, v, n, z):
-        if not isinstance(a, iBusRead) or a.size() != 32:
-            raise ValueError("The a bus must have a size of 32-bits.")
-        if not isinstance(b, iBusRead) or b.size() != 32:
+        if not isinstance(a, iBusRead):
+            raise TypeError('The a bus must be readable')
+        elif a.size() != 32:
+            raise ValueError('The a bus must have a size of 32-bits.')
+        if not isinstance(b, iBusRead):
+            raise TypeError('The b bus must be readable')
+        elif b.size() != 32:
             raise ValueError('The b bus must have a size of 32-bits')
-        if not isinstance(alus, iBusRead) or alus.size() != 4:
+        if not isinstance(alus, iBusRead):
+            raise TypeError('The alus bus must be readable')
+        elif alus.size() != 4:
             raise ValueError('The alus bus must have a size of 4-bits')
-        if not isinstance(f, iBusWrite) or f.size() != 32:
+        if not isinstance(f, iBusWrite):
+            raise TypeError('The f bus must be writeable')
+        elif f.size() != 32:
             raise ValueError('The f bus must have a size of 32-bits')
-        if not isinstance(c, iBusWrite) or c.size() != 1:
+        if not isinstance(c, iBusWrite):
+            raise TypeError('The c bus must be writable')
+        elif c.size() != 1:
             raise ValueError('The c bus must have a size of 1-bit')
-        if not isinstance(v, iBusWrite) or v.size() != 1:
+        if not isinstance(v, iBusWrite):
+            raise TypeError('The v bus must be writeable')
+        elif v.size() != 1:
             raise ValueError('The v bus must have a szie of 1-bit')
-        if not isinstance(n, iBusWrite) or n.size() != 1:
+        if not isinstance(n, iBusWrite):
+            raise TypeError('The n bus must be writeable')
+        elif n.size() != 1:
             raise ValueError('The n bus must have a size of 1-bit')
-        if not isinstance(z, iBusWrite) or z.size() != 1:
+        if not isinstance(z, iBusWrite):
+            raise TypeError('The z bus must be writeable')
+        elif z.size() != 1:
             raise ValueError('The z bus must have a size of 1-bit')
         self._a = a
         self._b = b

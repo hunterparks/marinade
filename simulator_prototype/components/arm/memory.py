@@ -7,17 +7,29 @@ import limits
 class Memory(Sequential):
     def __init__(self, a, wd, memwr, reset, clock, rd, edge_type = Latch_Type.FALLING_EDGE,
                 reset_type = Logic_States.ACTIVE_LOW, memwr_type = Logic_States.ACTIVE_LOW):
-        if not isinstance(a, iBusRead) or a.size() != 32:
+        if not isinstance(a, iBusRead): 
+            raise TypeError('The a bus must be readable')
+        elif a.size() != 32:
             raise ValueError('The a bus must have a size of 32 bits')
-        if not isinstance(wd, iBusRead) or wd.size() != 32:
+        if not isinstance(wd, iBusRead):
+            raise TypeError('The wd bus must be readable')
+        elif wd.size() != 32:
             raise ValueError('The wd bus must have a size of 32 bits')
-        if not isinstance(memwr, iBusRead) or memwr.size() != 1:
+        if not isinstance(memwr, iBusRead):
+            raise TypeError('The memwr bus must be readable')
+        elif memwr.size() != 1:
             raise ValueError('The memwr bus must have a size of 1 bit')
-        if not isinstance(reset, iBusRead) or reset.size() != 1:
+        if not isinstance(reset, iBusRead):
+            raise TypeError('The reset bus must be readable')
+        elif reset.size() != 1:
             raise ValueError('The reset bus must have a size of 1 bit')
-        if not isinstance(clock, iBusRead) or clock.size() != 1:
+        if not isinstance(clock, iBusRead):
+            raise TypeError('The clock bus must be readable')
+        elif clock.size() != 1:
             raise ValueError('The clock bus must have a size of 1 bit')
-        if not isinstance(rd, iBusWrite) or rd.size() != 32:
+        if not isinstance(rd, iBusWrite):
+            raise TypeError('The rd must must be writable')
+        elif rd.size() != 32:
             raise ValueError('The rd bus must have a size of 32 bits')
         if not Latch_Type.valid(edge_type):
             raise ValueError('Invalid latch edge type')
