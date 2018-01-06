@@ -9,6 +9,21 @@ class Ifid(Sequential):
     def __init__(self, instrf, stall, flush, clk, instrd, default_state = 0, 
                 edge_type = Latch_Type.RISING_EDGE, flush_type = Logic_States.ACTIVE_HIGH,
                 enable = None, enable_type = Logic_States.ACTIVE_HIGH):
+        '''
+        inputs:
+            instrf: the fetched instruction
+            stall: postpones the flow of instructions if active
+            flush: clears the instruction if active
+            clk: input clock
+            enable: not typically used
+        outputs:
+            instrd: the output instruction
+
+        default_state: the default output
+        edge_type: ifid register data latch type
+        flush_type: flush signal active state
+        enable_type : enable signal active state
+        '''
         if not isinstance(instrf, iBusRead):
             raise TypeError('The instrf bus must be readable')
         elif instrf.size() != 32:
@@ -53,26 +68,35 @@ class Ifid(Sequential):
         self._enable_type = enable_type
 
     def on_rising_edge(self):
-        "Implements clock rising behavior: captures data if latching type matches"
+        '''
+        Implements clock rising behavior: captures data if latching type matches
+        '''
         if self._edge_type == Latch_Type.RISING_EDGE or self._edge_type == Latch_Type.BOTH_EDGE:
             self._instrd.write(self._instrf.read())
 
     def on_falling_edge(self):
-        "Implements clock falling behavior: captures data if latching type matches"
+        '''
+        Implements clock falling behavior: captures data if latching type matches
+        '''
         if self._edge_type == Latch_Type.FALLING_EDGE or self._edge_type == Latch_Type.BOTH_EDGE:
             self._instrd.write(self._instrf.read())
 
     def on_reset(self):
-        "Flushes the output to the default state defined for the register"
+        '''
+        Flushes the output to the default state defined for the register
+        '''
         self._instrd.write(self._default_state)
 
     def inspect(self):
-        "Returns a dictionary message to the user"
+        '''
+        Returns a dictionary message to the user
+        '''
         return {'type': 'ifid', 'instrf': self._instrf.read(), 'instrd': self._instrd.read()}
     
     def run(self, time = None):
-        "Timestep handler function clocks data into register and asserts output"
-
+        '''
+        Timestep handler function clocks data into register and asserts output
+        ''''
         # process enable line
         e = True
         if self._enable is not None:
@@ -80,7 +104,6 @@ class Ifid(Sequential):
                 e = self._enable_type.read() == 0
             else:
                 e = self._enable.read() == 1
-        
         # check for clock change
         if e:
             if self._clk.read() == 1 and self._prev_clk_state == 0:
@@ -88,7 +111,6 @@ class Ifid(Sequential):
             elif self._clk.read() == 0 and self._prev_clk_state == 1:
                 self.on_falling_edge()
         self._prev_clk_state = self._clk.read()
-
         # check for reset event
         if self._flush_type == Logic_States.ACTIVE_LOW and self._flush.read() == 0:
             self.on_reset()

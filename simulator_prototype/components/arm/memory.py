@@ -5,8 +5,22 @@ from components.abstract.sequential import Sequential, Latch_Type, Logic_States
 import limits
 
 class Memory(Sequential):
-    def __init__(self, a, wd, memwr, reset, clock, rd, edge_type = Latch_Type.FALLING_EDGE,
-                reset_type = Logic_States.ACTIVE_LOW, memwr_type = Logic_States.ACTIVE_LOW):
+    def __init__(self, a, wd, memwr, rst, clk, rd, edge_type = Latch_Type.FALLING_EDGE,
+                rst_type = Logic_States.ACTIVE_LOW, memwr_type = Logic_States.ACTIVE_LOW):
+        '''
+        inputs:
+            a: memory address
+            wd: data to be written to memory
+            memwr: control signal used to all memory to be written to
+            rst: clears all assigned memory
+            clk: input clock
+        outputs:
+            rd: output of memory that was read from
+
+        edge_type: memory data latch type
+        rst_type: memory reset signal active state
+        memwr_type : memory write enable active state
+        '''
         if not isinstance(a, iBusRead): 
             raise TypeError('The a bus must be readable')
         elif a.size() != 32:
@@ -19,41 +33,47 @@ class Memory(Sequential):
             raise TypeError('The memwr bus must be readable')
         elif memwr.size() != 1:
             raise ValueError('The memwr bus must have a size of 1 bit')
-        if not isinstance(reset, iBusRead):
-            raise TypeError('The reset bus must be readable')
-        elif reset.size() != 1:
-            raise ValueError('The reset bus must have a size of 1 bit')
-        if not isinstance(clock, iBusRead):
-            raise TypeError('The clock bus must be readable')
-        elif clock.size() != 1:
-            raise ValueError('The clock bus must have a size of 1 bit')
+        if not isinstance(rst, iBusRead):
+            raise TypeError('The rst bus must be readable')
+        elif rst.size() != 1:
+            raise ValueError('The rst bus must have a size of 1 bit')
+        if not isinstance(clk, iBusRead):
+            raise TypeError('The clk bus must be readable')
+        elif clk.size() != 1:
+            raise ValueError('The clk bus must have a size of 1 bit')
         if not isinstance(rd, iBusWrite):
             raise TypeError('The rd must must be writable')
         elif rd.size() != 32:
             raise ValueError('The rd bus must have a size of 32 bits')
         if not Latch_Type.valid(edge_type):
             raise ValueError('Invalid latch edge type')
-        if not Logic_States.valid(reset_type):
-            raise ValueError('Invalid reset state')
+        if not Logic_States.valid(rst_type):
+            raise ValueError('Invalid rst state')
         if not Logic_States.valid(memwr_type):
             raise ValueError('Invalid memwr state')
         self._a = a
         self._wd = wd
         self._memwr = memwr
-        self._reset = reset
-        self._clock = clock
-        self._prev_clock_state = self._clock.read()
+        self._rst = rst
+        self._clk = clk
+        self._prev_clk_state = self._clk.read()
         self._rd = rd
         self._edge_type = edge_type
-        self._reset_type = reset_type
+        self._rst_type = rst_type
         self._memwr_type = memwr_type
         self._assigned_memory = {}
 
     def on_rising_edge(self):
+        '''
+        implements clock rising behavior: captures data if latching type matches
+        '''
         if self._edge_type == Latch_Type.RISING_EDGE or self._edge_type == Latch_Type.BOTH_EDGE:
             self._assigned_memory[self._a.read()] = self._wd.read()
 
     def on_falling_edge(self):
+        '''
+        implements clock falling behavior: captures data if latching type matches
+        '''
         if self._edge_type == Latch_Type.FALLING_EDGE or self._edge_type == Latch_Type.BOTH_EDGE:
             self._assigned_memory[self._a.read()] = self._wd.read()
 
@@ -70,6 +90,9 @@ class Memory(Sequential):
         return {'type': 'memory', 'size': len(self._assigned_memory)}
 
     def modify(self, message):
+        '''
+        allows for memory modification outside of the normal program flow
+        '''
         if 'start' not in message or 'data' not in message:
             raise ValueError('The message argurment must be a dictionary that includes a "start" key and a "data" key')
         start_address = message['start']
@@ -81,9 +104,7 @@ class Memory(Sequential):
         
     def view_memory_address(self, address):
         '''
-        Used to view a 32-bit memory address.
-        This method is used for testing purposes only.
-        It should not be used when designing the top level architecture.
+        used to view a 32-bit memory address (used for testing purposes only)
         '''
         if address not in self._assigned_memory:
             return 0x81818181
@@ -91,13 +112,16 @@ class Memory(Sequential):
             return self._assigned_memory[address]
 
     def run(self, time = None):
+        '''
+        allows the memory to operatate during normal program execution
+        '''
         # write is synchronous
         if self._memwr.read() == 1:
-            if self._clock.read() == 1 and self._prev_clock_state == 0:
+            if self._clk.read() == 1 and self._prev_clk_state == 0:
                 self.on_rising_edge()
-            elif self._clock.read() == 0 and self._prev_clock_state == 1:
+            elif self._clk.read() == 0 and self._prev_clk_state == 1:
                 self.on_falling_edge()
-        self._prev_clock_state = self._clock.read()
+        self._prev_clk_state = self._clk.read()
         # read is asynchronous
         if self._a.read() not in self._assigned_memory:
             # unassinged memory is set to 0x81818181

@@ -8,7 +8,7 @@ class Alu_t(unittest.TestCase):
 
     def test_constructor(self):
         '''
-        tests 2 bad constructors - not all possible bad constructors tested
+        tests 2 bad constructors - not all possible constructors tested
         '''
         a = Bus(31)
         b = Bus(32)

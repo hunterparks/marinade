@@ -5,6 +5,32 @@ class ControllerSingleCycle(Controller):
 
     def __init__(self, cond, op, funct, rd, bit4, c, v, n, z, pcsrc, pcwr, regsa,
                 regdst, regwrs, regwr, exts, alusrcb, alus, aluflagwr, memwr, regsrc, wd3s):
+        '''
+        inputs:
+            cond: 4-bits that represent bits 31..28 of the instruction
+            op: 2-bits that represent bits 27..26 of the instruction
+            funct: 6-bits that represent bits 25..20 of the instruction
+            rd: 4-bits that represent bits 15..12 of the instruction
+            bit4: the 4th bit of the instruction
+            c: carry bit
+            v: signed overflow bit
+            n: negative bit
+            z: zero bit
+        outputs:
+            pcsrc: selects the instruction given to the fetch stage
+            pcwr: always a 1 for the single cycle processor
+            regsa: selects what register is passed into input a1 of the regfile
+            regdst: selects what register is passed into input a2 of the regfile
+            regwrs: selects which register is passed into input a3 of the regfile
+            regwr: selects whether to write back to the regfile
+            exts: selects the appropriate extension for an immediate
+            alusrcb: selects what value input b of the alu recieves
+            alus: selects the operation of the alu
+            aluflagwr: selects whether the c, v, n, and z flags need to be updated
+            memwr: selects whether to write to memory
+            regsrc: selects whether the alu output or data memory is feedback
+            wd3s: selects what data to write to the regfile
+        '''
         if not isinstance(cond, iBusRead):
             raise TypeError('The cond bus must be readable')
         elif cond.size() != 4:
@@ -117,6 +143,9 @@ class ControllerSingleCycle(Controller):
         self._wd3s = wd3s
 
     def run(self, time = None):
+        '''
+        implements run functionality for the single cycle processor
+        '''
         # pcsrc
         if self._op.read() == 0b10 and (self._cond.read() == 0b110 or self._cond.read() == 0b0000 or self._cond.read() == 0b0001):
             self._pcsrc.write(0b00)
