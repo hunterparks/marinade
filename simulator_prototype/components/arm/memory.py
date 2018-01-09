@@ -5,7 +5,6 @@ from components.abstract.sequential import Sequential, Latch_Type, Logic_States
 import limits
 
 class Memory(Sequential):
-<<<<<<< HEAD
     def __init__(self, a, wd, memwr, rst, clk, rd, edge_type = Latch_Type.FALLING_EDGE,
                 rst_type = Logic_States.ACTIVE_LOW, memwr_type = Logic_States.ACTIVE_LOW):
         '''
@@ -23,11 +22,6 @@ class Memory(Sequential):
         memwr_type : memory write enable active state
         '''
         if not isinstance(a, iBusRead): 
-=======
-    def __init__(self, a, wd, memwr, reset, clock, rd, edge_type = Latch_Type.FALLING_EDGE,
-                reset_type = Logic_States.ACTIVE_LOW, memwr_type = Logic_States.ACTIVE_LOW):
-        if not isinstance(a, iBusRead):
->>>>>>> 9ef7910118927b07df4365bb4b515bc2e2b51c1c
             raise TypeError('The a bus must be readable')
         elif a.size() != 32:
             raise ValueError('The a bus must have a size of 32 bits')
