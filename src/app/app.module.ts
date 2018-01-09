@@ -1,7 +1,17 @@
-import { NgModule } from '@angular/core';
+import { ErrorHandler, NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
-
+import * as Raven from 'raven-js';
 import { AppComponent } from './app.component';
+
+Raven
+  .config('http://3d4bca0e8aa8465bae6fd29934f5ea0f@192.168.64.2:9000/1')
+  .install();
+
+export class RavenErrorHandler implements ErrorHandler {
+  public handleError(err: any): void {
+    Raven.captureException(err);
+  }
+}
 
 @NgModule({
   bootstrap: [AppComponent],
@@ -11,6 +21,6 @@ import { AppComponent } from './app.component';
   imports: [
     BrowserModule
   ],
-  providers: []
+  providers: [ { provide: ErrorHandler, useClass: RavenErrorHandler } ]
 })
 export class AppModule { }
