@@ -5,6 +5,7 @@ from components.abstract.sequential import Sequential, Latch_Type, Logic_States
 import limits
 
 class Memory(Sequential):
+<<<<<<< HEAD
     def __init__(self, a, wd, memwr, rst, clk, rd, edge_type = Latch_Type.FALLING_EDGE,
                 rst_type = Logic_States.ACTIVE_LOW, memwr_type = Logic_States.ACTIVE_LOW):
         '''
@@ -22,6 +23,11 @@ class Memory(Sequential):
         memwr_type : memory write enable active state
         '''
         if not isinstance(a, iBusRead): 
+=======
+    def __init__(self, a, wd, memwr, reset, clock, rd, edge_type = Latch_Type.FALLING_EDGE,
+                reset_type = Logic_States.ACTIVE_LOW, memwr_type = Logic_States.ACTIVE_LOW):
+        if not isinstance(a, iBusRead):
+>>>>>>> 9ef7910118927b07df4365bb4b515bc2e2b51c1c
             raise TypeError('The a bus must be readable')
         elif a.size() != 32:
             raise ValueError('The a bus must have a size of 32 bits')
@@ -87,12 +93,17 @@ class Memory(Sequential):
         '''
         returns dictionary message to user
         '''
+        #TODO printout memory when inspected
         return {'type': 'memory', 'size': len(self._assigned_memory)}
 
     def modify(self, message):
+<<<<<<< HEAD
         '''
         allows for memory modification outside of the normal program flow
         '''
+=======
+        #TODO this needs to return a JSON not an error
+>>>>>>> 9ef7910118927b07df4365bb4b515bc2e2b51c1c
         if 'start' not in message or 'data' not in message:
             raise ValueError('The message argurment must be a dictionary that includes a "start" key and a "data" key')
         start_address = message['start']
@@ -100,8 +111,9 @@ class Memory(Sequential):
         offset = 0
         for data in modified_memory:
             self._assigned_memory[start_address + offset] = data
-            offset = offset + 32
-        
+            #TODO this needs to account for rollover for fixed size memory
+            offset = offset + 4
+
     def view_memory_address(self, address):
         '''
         used to view a 32-bit memory address (used for testing purposes only)

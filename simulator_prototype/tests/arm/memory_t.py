@@ -66,7 +66,7 @@ class Memory_t(unittest.TestCase):
         mem = Memory(a, wd, memwr, reset, clock, rd, Latch_Type.RISING_EDGE)
         mem.on_falling_edge()
         self.assertEqual(mem.view_memory_address(a.read()), 0x81818181)
-    
+
     def test_on_reset(self):
         '''
         tests the memory's on reset function
@@ -109,7 +109,7 @@ class Memory_t(unittest.TestCase):
         # test case 9
         with self.assertRaises(ValueError):
             mem.modify({'star': 0x20, 'data': [5]})
-    
+
     def test_run(self):
         '''
         tests the memories run function
