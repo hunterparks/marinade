@@ -7,7 +7,7 @@ import limits
 class Memory(Sequential):
     def __init__(self, a, wd, memwr, reset, clock, rd, edge_type = Latch_Type.FALLING_EDGE,
                 reset_type = Logic_States.ACTIVE_LOW, memwr_type = Logic_States.ACTIVE_LOW):
-        if not isinstance(a, iBusRead): 
+        if not isinstance(a, iBusRead):
             raise TypeError('The a bus must be readable')
         elif a.size() != 32:
             raise ValueError('The a bus must have a size of 32 bits')
@@ -67,9 +67,11 @@ class Memory(Sequential):
         '''
         returns dictionary message to user
         '''
+        #TODO printout memory when inspected
         return {'type': 'memory', 'size': len(self._assigned_memory)}
 
     def modify(self, message):
+        #TODO this needs to return a JSON not an error
         if 'start' not in message or 'data' not in message:
             raise ValueError('The message argurment must be a dictionary that includes a "start" key and a "data" key')
         start_address = message['start']
@@ -77,8 +79,9 @@ class Memory(Sequential):
         offset = 0
         for data in modified_memory:
             self._assigned_memory[start_address + offset] = data
-            offset = offset + 32
-        
+            #TODO this needs to account for rollover for fixed size memory
+            offset = offset + 4
+
     def view_memory_address(self, address):
         '''
         Used to view a 32-bit memory address.

@@ -72,7 +72,7 @@ class Alu(Combinational):
             self._f.write(self._b.read())
         elif self._alus.read() == 7:
             # bitwise multiplication
-            self._f.write(self._a.read() * self._b.read())
+            self._f.write((self._a.read() * self._b.read()) & (2**32 - 1))
             self.signed_overflow('mul')
         else:
             # generate 1
@@ -84,7 +84,7 @@ class Alu(Combinational):
             self._z.write(1)
         else:
             self._z.write(0)
-            
+
     def carry(self):
         if self._a.read() >> 31 and self._b.read() >> 31:
             self._c.write(1)

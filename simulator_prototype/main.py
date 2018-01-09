@@ -45,15 +45,65 @@ if __name__ == "__main__":
 
     # single cycle prototype
     arch, hooks = single_cycle_poc.generate_single_cycle_architecture()
+    single_cycle_poc.program_single_cycle_architecture(arch)
 
     #test inspection message
-    msg_inspect = {'inspect' : hooks.keys()}
+    #msg_inspect = {'inspect' : hooks.keys()}
+    msg_inspect = {
+        'inspect' : [
+            'clk',
+            'rst',
+            'wdb',
+            'pc4',
+            'branch',
+            'instr',
+            'pcsrc',
+            'pcwr',
+            'regsa',
+            'regdst',
+            'regwrs',
+            'regwr',
+            'exts',
+            'alus',
+            'aluflagwr',
+            'memwr',
+            'regsrc',
+            'wdbs',
+            'imm32',
+            'rd1',
+            'rd2',
+        ]
+    }
 
-    while True:
-        print('----------------------------------------------------------------')
-        print(arch.hook(msg_inspect))
-        arch.logic_run()
-        time.sleep(0.5)
+    #test file
+    tf = open('single_cycle_data_output.txt', 'w')
+
+    try:
+        while True:
+            print('----------------------------------------------------------------')
+            rstr = json.dumps(arch.hook(msg_inspect))
+            print(rstr)
+            tf.write('\n\n\n')
+            tf.write(rstr)
+            arch.logic_run()
+            time.sleep(0.5)
+    except Exception as e:
+        tf.close()
+        raise e
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     # websocket prototype
 

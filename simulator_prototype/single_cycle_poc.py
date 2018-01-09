@@ -21,6 +21,36 @@ from components.arm.controller_single_cycle import ControllerSingleCycle
 from collections import OrderedDict
 from architecture import Architecture
 
+def program_single_cycle_architecture(arch):
+    program_msg = {
+        'modify' : {
+            'name' : 'progmem',
+            'parameters' : {
+                'start' : 0,
+                'data' : [
+                    0xE3A0800A,
+                    0xE2889001,
+                    0xE0090998,
+                    0xE3A0A000,
+                    0xE24AA020,
+                    0xE019A00A,
+                    0x0A000002,
+                    0xE3A0B001,
+                    0xE3A0C004,
+                    0xE58CB000,
+                    0xE59C6000,
+                    0xEAFFFFFD
+                ]
+            }
+        }
+    }
+    res = arch.hook(program_msg)
+    print("Programming:")
+    print(program_msg)
+    print(res)
+    print('\n\n\n')
+
+
 def generate_single_cycle_architecture():
     #define system resources
     clk = Clock(10,0)
@@ -89,7 +119,7 @@ def generate_single_cycle_architecture():
 
     # generate components
     entities = OrderedDict([('clk',clk)])
-    entities.update({'pc_reg' : Register(32,hooks['clk'],hooks['rst'],hooks['pcwb'],hooks['pc'],0, enable = hooks['pcwr'])})
+    entities.update({'pc_reg' : Register(32,hooks['clk'],hooks['rst'],hooks['pcwb'],hooks['pc'],0, enable = hooks['pcwr'],edge_type = Latch_Type.FALLING_EDGE)})
     entities.update({'add8' : Adder(32,hooks['pc'],hooks['const8'],hooks['pc8'])})
     entities.update({'add4' : Adder(32,hooks['pc'],hooks['const4'],hooks['pc4'])})
     entities.update({'progmem' : Memory(hooks['pc'],hooks['pmd'],hooks['pmwr'],hooks['clk'],hooks['rst'],hooks['instr'])})
@@ -101,6 +131,17 @@ def generate_single_cycle_architecture():
                      hooks['instr_27_26'],hooks['instr_25_20'],
                      hooks['instr_4_4']],
                     [(0,24),(16,20),(0,4),(12,16),(8,12),(28,32),(26,28),(20,26),(4,5)])})
+
+    entities.update({'controller' : ControllerSingleCycle(hooks['instr_31_28'],
+                    hooks['instr_27_26'],hooks['instr_25_20'],
+                    hooks['instr_15_12'],hooks['instr_4_4'],
+                    hooks['c'],hooks['v'],hooks['n'],hooks['z'],
+                    hooks['pcsrc'],hooks['pcwr'],hooks['regsa'],
+                    hooks['regdst'],hooks['regwrs'],hooks['regwr'],
+                    hooks['exts'],hooks['alu8rcb'],hooks['alus'],
+                    hooks['aluflagwr'],hooks['memwr'],hooks['regsrc'],
+                    hooks['wdbs'])})
+
     entities.update({'ra1_mux' : Mux(4,[hooks['instr_3_0'],hooks['instr_19_16']],hooks['regsa'],hooks['ra1'])})
     entities.update({'ra2_mux' : Mux(4,[hooks['instr_11_8'],hooks['instr_3_0'],hooks['instr_15_12']],hooks['regdst'],hooks['ra2'])})
     entities.update({'ra3_mux' : Mux(4,[hooks['instr_19_16'],hooks['instr_15_12'],hooks['const14']],hooks['regwrs'],hooks['ra3'])})
@@ -118,16 +159,6 @@ def generate_single_cycle_architecture():
     entities.update({'datamem' : Memory(hooks['aluf'],hooks['rd2'],hooks['memwr'],hooks['rst'],hooks['clk'],hooks['memrd'])})
     entities.update({'wdb_mux' : Mux(32,[hooks['memrd'],hooks['aluf']],hooks['regsrc'],hooks['wdb'])})
     entities.update({'pcwb_mux' : Mux(32,[hooks['branch'],hooks['pc4'],hooks['wdb']],hooks['pcsrc'],hooks['pcwb'])})
-
-    entities.update({'controller' : ControllerSingleCycle(hooks['instr_31_28'],
-                    hooks['instr_27_26'],hooks['instr_25_20'],
-                    hooks['instr_15_12'],hooks['instr_4_4'],
-                    hooks['c'],hooks['v'],hooks['n'],hooks['z'],
-                    hooks['pcsrc'],hooks['pcwr'],hooks['regsa'],
-                    hooks['regdst'],hooks['regwrs'],hooks['regwr'],
-                    hooks['exts'],hooks['alu8rcb'],hooks['alus'],
-                    hooks['aluflagwr'],hooks['memwr'],hooks['regsrc'],
-                    hooks['wdbs'])})
 
     #place memory (Internal) hooks into hook list
     hooks.update({'pc_reg' : entities['pc_reg']})
