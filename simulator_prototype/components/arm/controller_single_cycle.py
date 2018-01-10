@@ -293,8 +293,7 @@ class ControllerSingleCycle(Controller):
             ALUS <= "0111" for A*B
             ALUS <= "1111" for 1
         """
-        if (op == 0b00 and (funct == 0b000000 or 0b00 and funct == 0b000001)
-                and bit4 == 0b1):
+        if op == 0b00 and (funct == 0b000000 or funct == 0b000001) and bit4 == 0b1:
             return 0b0111
         elif op == 0b00 and (funct == 0b001000 or funct == 0b101000
                 or funct == 0b001001 or funct == 0b101001):

@@ -35,7 +35,7 @@ class ControllerSingleCycle_t(unittest.TestCase):
         # test case 1
         with self.assertRaises(ValueError):
             scc = ControllerSingleCycle(cond, funct, op, rd, bit4, c, v, n, z, pcsrc, pcwr, regsa,
-                                        regdst, regwrs, regwr, exts, alusrcb, alus, aluflagwr, 
+                                        regdst, regwrs, regwr, exts, alusrcb, alus, aluflagwr,
                                         memwr, regsrc, wd3s)
         # test case 2
         with self.assertRaises(ValueError):
@@ -45,12 +45,12 @@ class ControllerSingleCycle_t(unittest.TestCase):
         # test case 3
         with self.assertRaises(ValueError):
             scc = ControllerSingleCycle(cond, op, funct, rd, bit4, c, v, n, z, pcsrc, pcwr, regsa,
-                                        regdst, regwr, regwrs, exts, alusrcb, aluflagwr, alus, 
+                                        regdst, regwr, regwrs, exts, alusrcb, aluflagwr, alus,
                                         memwr, regsrc, wd3s)
         # test case 4
         with self.assertRaises(ValueError):
             scc = ControllerSingleCycle(cond, op, funct, rd, bit4, c, v, n, z, pcsrc, pcwr, regsa,
-                                        regdst, regwr, regwrs, alusrcb, exts, alus, aluflagwr, 
+                                        regdst, regwr, regwrs, alusrcb, exts, alus, aluflagwr,
                                         memwr, regsrc, wd3s)
 
     def test_run(self):
@@ -81,7 +81,7 @@ class ControllerSingleCycle_t(unittest.TestCase):
         wd3s = Bus(1)
         # initialize single cycle controller
         scc = ControllerSingleCycle(cond, op, funct, rd, bit4, c, v, n, z, pcsrc, pcwr, regsa,
-                                    regdst, regwrs, regwr, exts, alusrcb, alus, aluflagwr, memwr, 
+                                    regdst, regwrs, regwr, exts, alusrcb, alus, aluflagwr, memwr,
                                     regsrc, wd3s)
         # pcsrc tests
         # test case 4 - occurs for banch instructions where condition is met
@@ -179,13 +179,13 @@ class ControllerSingleCycle_t(unittest.TestCase):
         scc.run()
         self.assertEqual(exts.read(), 0)
         # alusrcb
-        # test case 23 - occurs when source b requires the output to the rd2 register 
+        # test case 23 - occurs when source b requires the output to the rd2 register
         # (data processing instruction)
         op.write(0)
         funct.write(28)
         scc.run()
         self.assertEqual(alusrcb.read(), 1)
-        # test case 24 - occurs when source b requires the output to the rd2 register 
+        # test case 24 - occurs when source b requires the output to the rd2 register
         # (data processing instruction)
         op.write(0)
         bit4.write(1)
@@ -291,7 +291,7 @@ class ControllerSingleCycle_t(unittest.TestCase):
         op.write(0)
         scc.run()
         self.assertEqual(wd3s.read(), 0)
-    
+
     def test_inspect(self):
         '''
         tests the signle cycle processors inspect method
@@ -320,32 +320,11 @@ class ControllerSingleCycle_t(unittest.TestCase):
         wd3s = Bus(1)
         # initialize single cycle controller
         scc = ControllerSingleCycle(cond, op, funct, rd, bit4, c, v, n, z, pcsrc, pcwr, regsa,
-                                    regdst, regwrs, regwr, exts, alusrcb, alus, aluflagwr, memwr, 
+                                    regdst, regwrs, regwr, exts, alusrcb, alus, aluflagwr, memwr,
                                     regsrc, wd3s)
         ins = scc.inspect()
         self.assertTrue(ins['type'] == 'sc-controller')
-        self.assertTrue(ins['cond'] == 0)
-        self.assertTrue(ins['op'] == 0)
-        self.assertTrue(ins['funct'] == 0)
-        self.assertTrue(ins['rd'] == 0)
-        self.assertTrue(ins['bit4'] == 0)
-        self.assertTrue(ins['c'] == 0)
-        self.assertTrue(ins['v'] == 0)
-        self.assertTrue(ins['n'] == 0)
-        self.assertTrue(ins['z'] == 0)
-        self.assertTrue(ins['pcsrc'] == 0)
-        self.assertTrue(ins['pcwr'] == 0)
-        self.assertTrue(ins['regsa'] == 0)
-        self.assertTrue(ins['regdst'] == 0)
-        self.assertTrue(ins['regwrs'] == 0)
-        self.assertTrue(ins['regwr'] == 0)
-        self.assertTrue(ins['exts'] == 0)
-        self.assertTrue(ins['alusrcb'] == 0)
-        self.assertTrue(ins['alus'] == 0)
-        self.assertTrue(ins['aluflagwr'] == 0)
-        self.assertTrue(ins['memwr'] == 0)
-        self.assertTrue(ins['regsrc'] == 0)
-        self.assertTrue(ins['wd3s'] == 0)
+        self.assertTrue(ins['state'] is None)
 
 if __name__ == '__main__':
-    unittest.main()        
+    unittest.main()
