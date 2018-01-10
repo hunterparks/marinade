@@ -158,13 +158,17 @@ class ControllerSingleCycle(Controller):
 
 
     @staticmethod
-    def _generate_pcsrc(op,cond,rd):
+    def _generate_pcsrc(op,cond,rd,z):
         """
             PCSRC <= B"10" when a data processing instruction modifies pc
             PCSRC <= B"01" for pc+4
             PCSRC <= B"00" for branch instructions where condition is met
         """
-        if op == 0b10 and (cond == 0b110 or cond == 0b0000 or cond == 0b0001):
+        if op == 0b10 and cond == 0b1110:
+            return 0b00
+        elif op == 0b10 and cond == 0b0000 and z == 0b1:
+            return 0b00
+        elif op == 0b10 and cond == 0b0001 and z == 0b0:
             return 0b00
         elif op == 0b00 and rd == 0b1111:
             return 0b10
@@ -400,9 +404,10 @@ class ControllerSingleCycle(Controller):
         bit4 = self._bit4.read()
         cond = self._cond.read()
         rd = self._rd.read()
+        z = self._z.read()
 
         #Generate control outputs
-        self._pcsrc.write(self._generate_pcsrc(op,cond,rd))
+        self._pcsrc.write(self._generate_pcsrc(op,cond,rd,z))
         self._pcwr.write(self._generate_pcwr())
         self._regsa.write(self._generate_regsa(op,bit4,funct))
         self._regdst.write(self._generate_regdst(op,bit4,funct))
