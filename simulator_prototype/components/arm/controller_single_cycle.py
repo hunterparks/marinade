@@ -218,7 +218,7 @@ class ControllerSingleCycle(Controller):
             REGWRS <= B"01" to select Rd (data processing instruction)
             REGWRS <= B"00" to select Rd (mul instruction)
         """
-        if op == 0b10 and ((funct & 0b001000) >> 3) == 0b1:
+        if op == 0b10 and ((funct & 0b010000) >> 4) == 0b1: #NOTE changed shift
             return 0b10
         elif op == 0b00 and bit4 == 0b1 and (funct == 0b000000 or funct == 0b000001):
             return 0b00
@@ -237,7 +237,7 @@ class ControllerSingleCycle(Controller):
             return 0b0
         elif op == 0b01 and funct == 0b011000:
             return 0b0
-        elif op == 0b10 and ((funct & 0b001000) >> 3) == 0b0:
+        elif op == 0b10 and ((funct & 0b010000) >> 4) == 0b0: #NOTE changed shift
             return 0b0
         else:
             return 0b1
@@ -378,7 +378,7 @@ class ControllerSingleCycle(Controller):
             REGSRC <= '1' when output of ALU is feedback (ldr instructions)
             REGSRC <= '0' when output of data mem is feedback
         """
-        if op == 0b10 and funct == 0b011001:
+        if op == 0b01 and funct == 0b011001:
             return 0b0
         else:
             return 0b1
@@ -389,7 +389,7 @@ class ControllerSingleCycle(Controller):
         """
             WDS3 <= '1' when a bl instruction is run else '0'
         """
-        if op == 0b10 and ((funct & 0b001000) >> 3) == 0b1:
+        if op == 0b10 and ((funct & 0b010000) >> 4) == 0b1: #NOTE changed shift
             return 0b1
         else:
             return 0b0

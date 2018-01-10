@@ -1,4 +1,5 @@
 
+#TODO API for architecture to get hook names and relationships
 
 #TODO clean up import tree
 #TODO unit testing
@@ -77,7 +78,7 @@ if __name__ == "__main__":
     tf.write('{"Run":[')
 
     count = 0
-    while count < 10:
+    while count < 15:
         print('----------------------------------------------------------------')
         rstr = json.dumps(arch.hook(msg_inspect))
         print(rstr)
