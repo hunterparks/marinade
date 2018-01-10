@@ -21,6 +21,8 @@ from components.arm.controller_single_cycle import ControllerSingleCycle
 from collections import OrderedDict
 from architecture import Architecture
 
+#TODO alureg should be special register
+
 def program_single_cycle_architecture(arch):
     program_msg = {
         'modify' : {
