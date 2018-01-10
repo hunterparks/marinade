@@ -4,8 +4,6 @@
 #TODO unit testing
 #TODO documentation !!!!!!
 
-#TODO regfile should be sequential
-
 #TODO shift register
 
 import time

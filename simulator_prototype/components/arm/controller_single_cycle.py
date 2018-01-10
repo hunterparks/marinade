@@ -1,17 +1,20 @@
 """
-
+    Single-cycle controller as inspired by Larry Skuse's VHDL work
 """
 from components.abstract.controller import Controller
 from components.abstract.ibus import iBusRead, iBusWrite
 
 class ControllerSingleCycle(Controller):
     """
-
+        Single-cycle controller component implements architecture controller
+        which will take a current instruction (broken into subfields) and ALU
+        status flags. Output is the control paths for the architecture which
+        will be enforced until the next instruction.
     """
 
     def __init__(self, cond, op, funct, rd, bit4, c, v, n, z, pcsrc, pcwr, regsa,
                 regdst, regwrs, regwr, exts, alusrcb, alus, aluflagwr, memwr, regsrc, wd3s):
-        '''
+        """
         inputs:
             cond: 4-bits that represent bits 31..28 of the instruction
             op: 2-bits that represent bits 27..26 of the instruction
@@ -36,7 +39,8 @@ class ControllerSingleCycle(Controller):
             memwr: selects whether to write to memory
             regsrc: selects whether the alu output or data memory is feedback
             wd3s: selects what data to write to the regfile
-        '''
+        """
+
         if not isinstance(cond, iBusRead):
             raise TypeError('The cond bus must be readable')
         elif cond.size() != 4:
@@ -229,7 +233,7 @@ class ControllerSingleCycle(Controller):
             return 0b0
         elif op == 0b01 and funct == 0b011000:
             return 0b0
-        elif op == 0b10 and ((funct & 0b001000) >> 3) == 0b1:
+        elif op == 0b10 and ((funct & 0b001000) >> 3) == 0b0:
             return 0b0
         else:
             return 0b1
