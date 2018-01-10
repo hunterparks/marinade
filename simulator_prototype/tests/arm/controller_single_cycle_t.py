@@ -7,7 +7,9 @@ from components.core.bus import Bus
 class ControllerSingleCycle_t(unittest.TestCase):
 
     def test_constructor(self):
-        # tests 4 bad constructors - not all possible bad constructors tested
+        '''
+        tests 4 bad constructors - not all possible constructors tested
+        '''
         cond = Bus(4)
         op = Bus(2)
         funct = Bus(6)
@@ -52,7 +54,9 @@ class ControllerSingleCycle_t(unittest.TestCase):
                                         memwr, regsrc, wd3s)
 
     def test_run(self):
-        # tests the signle cycle processors run method
+        '''
+        tests the signle cycle processors run method
+        '''
         cond = Bus(4)
         op = Bus(2)
         funct = Bus(6)
@@ -289,7 +293,9 @@ class ControllerSingleCycle_t(unittest.TestCase):
         self.assertEqual(wd3s.read(), 0)
     
     def test_inspect(self):
-        # tests the signle cycle processors inspect method
+        '''
+        tests the signle cycle processors inspect method
+        '''
         cond = Bus(4)
         op = Bus(2)
         funct = Bus(6)

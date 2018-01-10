@@ -3,6 +3,18 @@ from components.abstract.ibus import iBusRead, iBusWrite
 
 class Alu(Combinational):
     def __init__(self, a, b, alus, f, c, v, n, z):
+        '''
+        inputs:
+            a: 32-bit input to the alu
+            b: 32-bit input to the alu
+            alus: 4-bit control signal for the alu
+        outputs:
+            f: 32-bit output to the alu
+            c: carry bit
+            v: signed overflow bit
+            n: negative bit
+            z: zero bit
+        '''
         if not isinstance(a, iBusRead):
             raise TypeError('The a bus must be readable')
         elif a.size() != 32:
@@ -45,6 +57,9 @@ class Alu(Combinational):
         self._z = z
 
     def run(self, time = None):
+        '''
+        implements run functionality for the alu
+        '''
         if self._alus.read() == 0:
             # bitwise add
             self._f.write((self._a.read() + self._b.read()) & (2**32 - 1))

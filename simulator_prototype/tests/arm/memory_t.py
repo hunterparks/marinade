@@ -8,7 +8,7 @@ class Memory_t(unittest.TestCase):
 
     def test_constructor(self):
         '''
-        tests 2 bad constructors - not all possible bad constructors tested
+        tests 2 bad constructors - not all possible constructors tested
         '''
         a = Bus(32)
         wd = Bus(32)
@@ -68,6 +68,9 @@ class Memory_t(unittest.TestCase):
         self.assertEqual(mem.view_memory_address(a.read()), 0x81818181)
 
     def test_on_reset(self):
+        '''
+        tests the memory's on reset function
+        '''
         a = Bus(32)
         wd = Bus(32)
         memwr = Bus(1)
@@ -89,6 +92,9 @@ class Memory_t(unittest.TestCase):
         self.assertEqual(msg['size'], 0)
 
     def test_modify(self):
+        '''
+        tests the memories modify function
+        '''
         a = Bus(32)
         wd = Bus(32)
         memwr = Bus(1)
@@ -105,6 +111,9 @@ class Memory_t(unittest.TestCase):
             mem.modify({'star': 0x20, 'data': [5]})
 
     def test_run(self):
+        '''
+        tests the memories run function
+        '''
         a = Bus(32)
         wd = Bus(32)
         memwr = Bus(1)
