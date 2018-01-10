@@ -77,8 +77,10 @@ class Alu(Combinational):
         else:
             # generate 1
             self._f.write(1)
+            
         # negative
         self._n.write(self._f.read() >> 31)
+
         # zero
         if self._f.read() == 0:
             self._z.write(1)

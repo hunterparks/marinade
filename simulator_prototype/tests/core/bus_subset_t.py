@@ -47,13 +47,15 @@ class BusSubset_t(unittest.TestCase):
         b1 = Bus(8)
         b2 = Bus(2)
         b3 = Bus(2)
+        b4 = Bus(1)
 
-        bs = BusSubset(c0,[b0,b1,b2,b3],[(0,4),(4,12),(12,14),(14,16)])
+        bs = BusSubset(c0,[b0,b1,b2,b3,b4],[(0,4),(4,12),(12,14),(14,16),(3,4)])
         bs.run()
         self.assertTrue(b0.read() == 0x0A)
         self.assertTrue(b1.read() == 0xAA)
         self.assertTrue(b2.read() == 0x02)
         self.assertTrue(b3.read() == 0x02)
+        self.assertTrue(b4.read() == 1)
 
 
 if __name__ == '__main__':

@@ -1,7 +1,6 @@
 
 
 #TODO clean up import tree
-#TODO code all components for single-cycle
 #TODO unit testing
 #TODO documentation !!!!!!
 
@@ -19,7 +18,7 @@ from components.abstract.sequential import Latch_Type, Logic_States
 
 from components.core.register import Register
 from components.core.adder import Adder
-from components.arm.register_file import RegisterFile
+from components.arm.register_file_wo_pc import RegisterFile_wo_PC
 from components.core.mux import Mux
 from components.arm.alu import Alu
 from components.core.bus_subset import BusSubset
@@ -48,7 +47,7 @@ if __name__ == "__main__":
     single_cycle_poc.program_single_cycle_architecture(arch)
 
     #test inspection message
-    #msg_inspect = {'inspect' : hooks.keys()}
+#    msg_inspect = {'inspect' : hooks.keys()}
     msg_inspect = {
         'inspect' : [
             'clk',
@@ -77,20 +76,24 @@ if __name__ == "__main__":
 
     #test file
     tf = open('single_cycle_data_output.txt', 'w')
+    tf.write('{"Run":[')
 
-    try:
-        while True:
-            print('----------------------------------------------------------------')
-            rstr = json.dumps(arch.hook(msg_inspect))
-            print(rstr)
-            tf.write('\n\n\n')
-            tf.write(rstr)
-            arch.logic_run()
-            time.sleep(0.5)
-    except Exception as e:
-        tf.close()
-        raise e
+    count = 0
+    while count < 10:
+        print('----------------------------------------------------------------')
+        rstr = json.dumps(arch.hook(msg_inspect))
+        print(rstr)
+        if count > 0:
+            tf.write(",")
+        tf.write(rstr)
+        arch.logic_run()
+        time.sleep(0.5)
+        count += 1
 
+    tf.write(']}')
+    tf.close()
+
+    quit()
 
 
 
