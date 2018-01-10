@@ -1,9 +1,17 @@
+"""
+
+"""
+
 from components.abstract.combinational import Combinational
 from components.abstract.ibus import iBusRead, iBusWrite
 
 class Alu(Combinational):
+    """
+
+    """
+
     def __init__(self, a, b, alus, f, c, v, n, z):
-        '''
+        """
         inputs:
             a: 32-bit input to the alu
             b: 32-bit input to the alu
@@ -14,7 +22,8 @@ class Alu(Combinational):
             v: signed overflow bit
             n: negative bit
             z: zero bit
-        '''
+        """
+
         if not isinstance(a, iBusRead):
             raise TypeError('The a bus must be readable')
         elif a.size() != 32:
@@ -47,6 +56,7 @@ class Alu(Combinational):
             raise TypeError('The z bus must be writeable')
         elif z.size() != 1:
             raise ValueError('The z bus must have a size of 1-bit')
+
         self._a = a
         self._b = b
         self._alus = alus
@@ -56,10 +66,11 @@ class Alu(Combinational):
         self._n = n
         self._z = z
 
+
     def run(self, time = None):
-        '''
-        implements run functionality for the alu
-        '''
+        "implements run functionality for the alu"
+
+        #TODO perhaps abstract the actual math operation and the identification?
         if self._alus.read() == 0:
             # bitwise add
             self._f.write((self._a.read() + self._b.read()) & (2**32 - 1))
@@ -92,8 +103,10 @@ class Alu(Combinational):
         else:
             # generate 1
             self._f.write(1)
+
         # negative
         self._n.write(self._f.read() >> 31)
+
         # zero
         if self._f.read() == 0:
             self._z.write(1)
@@ -101,12 +114,14 @@ class Alu(Combinational):
             self._z.write(0)
 
     def carry(self):
+        #TODO perhaps write these as static methods
         if self._a.read() >> 31 and self._b.read() >> 31:
             self._c.write(1)
         else:
             self._c.write(0)
 
     def signed_overflow(self, operation):
+        #TODO perhaps write these as static methods
         if operation == 'add':
             if self._a.read() >> 31 == self._b.read() >> 31:
                 if self._f.read() >> 31 != self._a.read() >> 31:

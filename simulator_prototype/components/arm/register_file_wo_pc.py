@@ -5,7 +5,7 @@
 from components.core.register_file import RegisterFile as _RegisterFile
 from components.core.register_file import Latch_Type, Logic_States
 
-class RegisterFile(_RegisterFile):
+class RegisterFile_wo_PC(_RegisterFile):
     """
         ARM specific register file of length 16 with bit-width of 32.
         Component is sequential and thus requires a clock and reset to operate

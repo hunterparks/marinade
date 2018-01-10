@@ -1,15 +1,24 @@
+"""
+
+"""
+
 from components.abstract.combinational import Combinational
 from components.abstract.ibus import iBusRead, iBusWrite
 
 class Extender(Combinational):
+    """
+
+    """
+
     def __init__(self, imm, exts, imm32):
-        '''
+        """
         inputs:
             imm: 24-bit immediate
             exts: extender control signal
         output:
             imm32: resulting 32-bit immediate
-        '''
+        """
+
         if not isinstance(imm, iBusRead):
             raise TypeError('The imm bus must be readable')
         elif imm.size() != 24:
@@ -27,11 +36,12 @@ class Extender(Combinational):
         self._imm32 = imm32
 
     def run(self, time = None):
-        '''
+        """
         exts = 0 for data processing instructions
         exts = 1 for load and store instructions
         exts = 2 or 3 for branch instructions
-        '''
+        """
+
         # keep only the 8 most least significant bits
         if self._exts.read() == 0:
             self._imm32.write(self._imm.read() & 0x000000FF)

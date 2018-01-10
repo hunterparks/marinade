@@ -8,7 +8,7 @@ from components.abstract.sequential import Latch_Type, Logic_States
 
 from components.core.register import Register
 from components.core.adder import Adder
-from components.arm.register_file import RegisterFile
+from components.arm.register_file_wo_pc import RegisterFile_wo_PC
 from components.core.mux import Mux
 from components.arm.alu import Alu
 from components.core.bus_subset import BusSubset
@@ -146,8 +146,8 @@ def generate_single_cycle_architecture():
     entities.update({'ra2_mux' : Mux(4,[hooks['instr_11_8'],hooks['instr_3_0'],hooks['instr_15_12']],hooks['regdst'],hooks['ra2'])})
     entities.update({'ra3_mux' : Mux(4,[hooks['instr_19_16'],hooks['instr_15_12'],hooks['const14']],hooks['regwrs'],hooks['ra3'])})
     entities.update({'rwd_mux' : Mux(32,[hooks['wdb'],hooks['pc4']],hooks['wdbs'],hooks['rwd'])})
-    entities.update({'extimm' : Extender(hooks['instr_23_0'],hooks['imm32'],hooks['exts'])})
-    entities.update({'regfile' : RegisterFile(hooks['clk'],hooks['rst'],hooks['regwr'],hooks['rwd'],hooks['ra1'],hooks['ra2'],hooks['ra3'],hooks['rd1'],hooks['rd2'])})
+    entities.update({'extimm' : Extender(hooks['instr_23_0'],hooks['exts'],hooks['imm32'])})
+    entities.update({'regfile' : RegisterFile_wo_PC(hooks['clk'],hooks['rst'],hooks['regwr'],hooks['rwd'],hooks['ra1'],hooks['ra2'],hooks['ra3'],hooks['rd1'],hooks['rd2'])})
 
     entities.update({'alu_mux' : Mux(32,[hooks['imm32'],hooks['rd2']],hooks['alu8rcb'],hooks['alub'])})
     entities.update({'add_br' : Adder(32,hooks['pc8'],hooks['imm32'],hooks['branch'])})
@@ -166,6 +166,7 @@ def generate_single_cycle_architecture():
     hooks.update({'regfile' : entities['regfile']})
     hooks.update({'aluflag_reg' : entities['aluflag_reg']})
     hooks.update({'datamem' : entities['datamem']})
+    hooks.update({'controller' : entities['controller']})
 
     # generate simulatable architecture
     arch = Architecture(0.0001,clk,rst,hooks,entities)

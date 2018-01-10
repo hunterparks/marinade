@@ -105,7 +105,7 @@ class Memory_t(unittest.TestCase):
         # test case 8
         mem.modify({'start': 0x1000, 'data': [10, 2]})
         self.assertEqual(mem.view_memory_address(0x1000), 10)
-        self.assertEqual(mem.view_memory_address(0x1020), 2)
+        self.assertEqual(mem.view_memory_address(0x1004), 2)
         # test case 9
         with self.assertRaises(ValueError):
             mem.modify({'star': 0x20, 'data': [5]})
