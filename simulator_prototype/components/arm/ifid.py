@@ -2,9 +2,9 @@ from components.abstract.ibus import iBusRead, iBusWrite
 from components.abstract.sequential import Sequential, Latch_Type, Logic_States
 
 class Ifid(Sequential):
-    """
+    '''
         This specialized register sits between the fetch and decode stages of the processor
-    """
+    '''
 
     def __init__(self, instrf, stall, flush, clk, instrd, default_state = 0, 
                 edge_type = Latch_Type.RISING_EDGE, flush_type = Logic_States.ACTIVE_HIGH,
@@ -14,7 +14,7 @@ class Ifid(Sequential):
             instrf: the fetched instruction
             stall: postpones the flow of instructions if active
             flush: clears the instruction if active
-            clk: input clock
+            clk: clock
             enable: not typically used
         outputs:
             instrd: the output instruction
@@ -72,20 +72,28 @@ class Ifid(Sequential):
         Implements clock rising behavior: captures data if latching type matches
         '''
         if self._edge_type == Latch_Type.RISING_EDGE or self._edge_type == Latch_Type.BOTH_EDGE:
-            self._instrd.write(self._instrf.read())
+            if ((self._flush_type == Logic_States.ACTIVE_LOW and self._flush.read() == 0)
+                    or (self._flush_type == Logic_States.ACTIVE_HIGH and self._flush.read() == 1)):
+                self._instrd.write(0)
+            else:
+                self._instrd.write(self._instrf.read())
 
     def on_falling_edge(self):
         '''
         Implements clock falling behavior: captures data if latching type matches
         '''
         if self._edge_type == Latch_Type.FALLING_EDGE or self._edge_type == Latch_Type.BOTH_EDGE:
-            self._instrd.write(self._instrf.read())
+            if ((self._flush_type == Logic_States.ACTIVE_LOW and self._flush.read() == 0)
+                    or (self._flush_type == Logic_States.ACTIVE_HIGH and self._flush.read() == 1)):
+                self._instrd.write(0)
+            else:
+                self._instrd.write(self._instrf.read())
 
     def on_reset(self):
         '''
-        Flushes the output to the default state defined for the register
+        Not used for this register
         '''
-        self._instrd.write(self._default_state)
+        pass
 
     def inspect(self):
         '''
@@ -95,7 +103,7 @@ class Ifid(Sequential):
     
     def run(self, time = None):
         '''
-        Timestep handler function clocks data into register and asserts output
+        Timestep handler function - sequentially asserts output
         ''''
         # process enable line
         e = True
@@ -111,8 +119,3 @@ class Ifid(Sequential):
             elif self._clk.read() == 0 and self._prev_clk_state == 1:
                 self.on_falling_edge()
         self._prev_clk_state = self._clk.read()
-        # check for reset event
-        if self._flush_type == Logic_States.ACTIVE_LOW and self._flush.read() == 0:
-            self.on_reset()
-        elif self._flush_type == Logic_States.ACTIVE_HIGH and self._flush.read() == 1:
-            self.on_reset()
