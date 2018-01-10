@@ -20,7 +20,7 @@ class Idex(Sequential):
             alusrcbd: selects what value input B of the alu recieves
             alusd: selects the operation of the alu
             aluflagwrd: selects whether to update the C, V, N, and Z flags
-            memwrd: selects whether or not to write to memory
+            memwrd: selects whether to write to memory
             regsrcd: selects whether the alu output or memory is feedback
             wd3sd: selects what data to write to the regfile
             rd1d: register value
@@ -28,9 +28,10 @@ class Idex(Sequential):
             imm32d: 32-bit immediate value
             ra1d: register number
             ra2d: register number
-            ra3d: register number or constant
+            ra3d: register number
             flush: clears the instruction if active
             clk: clock
+            enable: enables component (not typically used)
         outputs:
             pcsrce: selects the next instruction given to the fetch stage
             regwrse: selects which register is passed into input a2 of the regfile

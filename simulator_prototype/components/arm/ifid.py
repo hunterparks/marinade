@@ -15,7 +15,7 @@ class Ifid(Sequential):
             stall: postpones the flow of instructions if active
             flush: clears the instruction if active
             clk: clock
-            enable: not typically used
+            enable: enables component (not typically used)
         outputs:
             instrd: the output instruction
 
