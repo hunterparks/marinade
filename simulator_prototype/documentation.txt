@@ -1,0 +1,94 @@
+I plan on elaborating the message scheme in this document. In the future this
+should be cleaned up and turned into a presentable file.
+
+Three parts of the backend simulation message architecture are relevant for
+frontend communication. Each of these will follow a JSON messaging scheme
+  1) Hook messages into and from architecture
+  2) Control messages (Run, Reset, Step)
+  3) Configure messages (New architecture, new virtual IO)
+
+General Message Scheme
+
+{
+  "<type>"" : < payload >
+}
+
+Hook Message Scheme
+
+{
+  "hook" : {
+    "hook method*" : <message to hook>
+  }
+}
+
+[*] if applicable
+
+  Examples!
+
+  @inspect
+  {
+    "hook" : {
+      "inspect" : ["h1","h2"...]
+    }
+  }
+
+  @modify
+  {
+    "hook" : {
+      "modify" : {
+        "name" : "h1",
+        "state" : [<some numbers],
+        "start_address" : <some number
+      }
+    }
+  }
+
+  @generate
+  {
+    "hook" : {
+      "generate" : {
+        "name" : "<clk, reset, logic_input>",
+        "frequency" : <some reasonable number>
+        "state" : <some reasonable number>
+      }
+    }
+  }
+
+Control Message Scheme
+
+{
+  "architecture" : <message to architecture>
+}
+
+  Examples!
+
+  @limits
+  {
+    "architecture" : {
+      "limits" : null
+    }
+  }
+
+  @configuration
+  {
+    "architecture" : {
+      "configuration" : {
+
+      }
+    }
+  }
+
+  @simulate
+  {
+    "architecture" : {
+      "simulate" : {
+        "type" : "logic or time"
+        "steps" : <number of time steps to take> or
+        "run" : null
+        "return" : true / false
+      }
+    }
+  }
+
+
+//Notes for self
