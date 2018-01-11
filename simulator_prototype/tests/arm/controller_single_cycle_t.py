@@ -131,7 +131,7 @@ class ControllerSingleCycle_t(unittest.TestCase):
         # regwrs
         # test cast 13 - used to select lr instruction (bl instruction)
         op.write(2)
-        funct.write(8)
+        funct.write(16)
         scc.run()
         self.assertEqual(regwrs.read(), 2)
         # test case 14 - used to select Rd register (data processing instruction)
@@ -157,11 +157,11 @@ class ControllerSingleCycle_t(unittest.TestCase):
         self.assertEqual(regwr.read(), 0)
         # test case 18 - occurs when an instruction writes back to the regfile
         op.write(2)
-        funct.write(0b111000)
+        funct.write(0b101100)
         scc.run()
         self.assertEqual(regwr.read(), 0)
         # test case 19 - occurs when an instruction writes back to the regfile
-        funct.write(1)
+        funct.write(0b010000)
         scc.run()
         self.assertEqual(regwr.read(), 1)
         # exts
@@ -273,7 +273,7 @@ class ControllerSingleCycle_t(unittest.TestCase):
         self.assertEqual(memwr.read(), 0)
         # regsrc
         # test case 43 - occurs when output of alu is feedback (ldr instructions)
-        op.write(2)
+        op.write(1)
         funct.write(25)
         scc.run()
         self.assertEqual(regsrc.read(), 0)

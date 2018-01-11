@@ -1,11 +1,10 @@
+"""
+Note: this main file is used solely to collect the tests, prototypes, etc.
+Actual application code can use this as reference or remove it once deemed
+necessary.
+"""
 
-#TODO API for architecture to get hook names and relationships
-
-#TODO clean up import tree
-#TODO unit testing
-#TODO documentation !!!!!!
-
-#TODO shift register
+#TODO remove this file when the time is right
 
 import time
 
@@ -93,18 +92,6 @@ if __name__ == "__main__":
     tf.close()
 
     quit()
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     # websocket prototype

@@ -7,9 +7,10 @@ from components.core.bus import Bus
 class Alu_t(unittest.TestCase):
 
     def test_constructor(self):
-        '''
+        """
         tests 2 bad constructors - not all possible constructors tested
-        '''
+        """
+
         a = Bus(31)
         b = Bus(32)
         alus = Bus(4)
@@ -26,9 +27,10 @@ class Alu_t(unittest.TestCase):
             test_alu = Alu(a, b, alus, c, f, v, n, z)
 
     def test_run(self):
-        '''
+        """
         test's the alu's run function
-        '''
+        """
+
         a = Bus(32)
         b = Bus(32)
         alus = Bus(4)

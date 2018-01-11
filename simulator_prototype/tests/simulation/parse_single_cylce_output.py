@@ -42,5 +42,5 @@ with open('single_cycle_data_output.txt', mode='r') as input_json_file:
 #print(data.dict)
 data = data.transpose()
 
-with open('parsed_sco.xls', 'wb') as f:
+with open('results/parsed_sco.xls', 'wb') as f:
     f.write(data.xls)

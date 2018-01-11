@@ -1,16 +1,23 @@
+"""
+
+"""
+
 from components.abstract.sequential import Sequential, Latch_Type, Logic_States
 from components.core.bus import iBusRead, iBusWrite
 
+
+
 class Exmem(Sequential):
-    '''
-    This specialized register sits between the decode and execute stages of the processor
-    '''
+    """
+    This specialized register sits between the decode and execute stages of the
+    processor
+    """
 
     def __init__(self, pcsrce, regwrse, regwre, memwre, regsrce, wd3se, rd2e, fe, ra3e, clk,
-                pcsrcm, regwrsm, regwrm, memwrm, regsrcm, wd3sm, fm, rd2m, ra3m, 
-                edge_type = Latch_Type.RISING_EDGE, enable = None, 
+                pcsrcm, regwrsm, regwrm, memwrm, regsrcm, wd3sm, fm, rd2m, ra3m,
+                edge_type = Latch_Type.RISING_EDGE, enable = None,
                 enable_type = Logic_States.ACTIVE_HIGH):
-        '''
+        """
         inputs:
             pcsrce: selects the instruction given to the fetch stage
             regwrse: selects which register is passed into input a2 of the regfile
@@ -33,10 +40,11 @@ class Exmem(Sequential):
             rd2e: register value
             fe: output of execute stage
             ra3e: register number
-        
+
         enable_type: exmem register data latch type
         enable_type: enable signal active state
-        '''
+        """
+
         if not isinstance(pcsrce, iBusRead):
             raise TypeError('The pcsrce bus must be readable')
         elif pcsrce.size() != 2:
@@ -119,6 +127,7 @@ class Exmem(Sequential):
             raise ValueError('The enable input must have a size of 1 bit')
         if not Logic_States.valid(enable_type):
             raise ValueError('Invalid enable state')
+
         self._pcsrce = pcsrce
         self._regwrse = regwrse
         self._regwre = regwre
@@ -143,10 +152,12 @@ class Exmem(Sequential):
         self._enable = enable
         self._enable_type = enable_type
 
+
     def on_rising_edge(self):
-        '''
+        """
         Implements clock rising behavior: captures data if latch type matches
-        '''
+        """
+
         if self._edge_type == Latch_Type.RISING_EDGE or self._edge_type == Latch_Type.BOTH_EDGE:
             self._pcsrcm.write(self._pcsrce.read())
             self._regwrsm.write(self._regwrse.read())
@@ -158,10 +169,12 @@ class Exmem(Sequential):
             self._rd2m.write(self._rd2m.read())
             self._ra3m.write(self._ra3m.read())
 
+
     def on_falling_edge(self):
-        '''
+        """
         Implements clock falling behavior: captures data if latch type matches
-        '''
+        """
+
         if self._edge_type == Latch_Type.FALLING_EDGE or self._edge_type == Latch_Type.BOTH_EDGE:
             self._pcsrcm.write(self._pcsrce.read())
             self._regwrsm.write(self._regwrse.read())
@@ -173,20 +186,17 @@ class Exmem(Sequential):
             self._rd2m.write(self._rd2m.read())
             self._ra3m.write(self._ra3m.read())
 
+
     def on_reset(self):
-        '''
-        Not used for this register
-        '''
-        pass
-    
-    def inspect(self):
-        '''
-        Returns a dictionary message to the user
-        '''
+        "Not used for this register"
         pass
 
+
+    def inspect(self):
+        "Returns a dictionary message to the user"
+        pass
+
+
     def run(self, time = None):
-        '''
-        Timestep handler function -sequentially asserts output
-        '''
+        "Timestep handler function -sequentially asserts output"
         pass

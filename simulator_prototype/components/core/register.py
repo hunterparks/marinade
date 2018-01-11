@@ -1,6 +1,6 @@
 """
-    Register component is a standalone core component for general architecture
-    development.
+Register component is a standalone core component for general architecture
+development.
 """
 
 from components.abstract.ibus import iBusRead, iBusWrite
@@ -10,11 +10,11 @@ from components.abstract.sequential import Sequential, Latch_Type, Logic_States
 
 class Register(Sequential):
     """
-        Register component implements a sequential fixed bit width memory space.
-        Component expects a clock, reset as per sequential requirement.
-        Component expects input and output bus to be of same size as internal
+    Register component implements a sequential fixed bit width memory space.
+    Component expects a clock, reset as per sequential requirement.
+    Component expects input and output bus to be of same size as internal
 
-        Default state is state of device at startup and on reset
+    Default state is state of device at startup and on reset
     """
 
     def __init__(self, size, clock, reset, in_bus, out_bus = None, default_state = 0,

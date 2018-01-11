@@ -1,13 +1,16 @@
 """
-
+ARM Extender object for use in ARMv4 architectures
 """
 
 from components.abstract.combinational import Combinational
 from components.abstract.ibus import iBusRead, iBusWrite
 
+
+
 class Extender(Combinational):
     """
-
+    Extender object extends immediate field from instruction to word length for
+    further manipulation by architecture
     """
 
     def __init__(self, imm, exts, imm32):
@@ -34,6 +37,7 @@ class Extender(Combinational):
         self._imm = imm
         self._exts = exts
         self._imm32 = imm32
+
 
     def run(self, time = None):
         """

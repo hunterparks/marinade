@@ -1,5 +1,5 @@
 """
-    Generalized register file defines addressable set of registers
+Generalized register file defines addressable set of registers
 """
 
 from components.core.bus import Bus, iBusRead, iBusWrite
@@ -10,35 +10,35 @@ import math
 
 class RegisterFile(Sequential):
     """
-        Register File component implements a set of registers with a single
-        write input and a set of read outputs. All outputs and input correspond
-        to an address to select which register to use.
+    Register File component implements a set of registers with a single
+    write input and a set of read outputs. All outputs and input correspond
+    to an address to select which register to use.
 
-        Component is sequential and thus requires a clock and reset to operate
+    Component is sequential and thus requires a clock and reset to operate
     """
 
     def __init__(self, num_reg, reg_size, clock, reset, write_addr, write_data, read_addrs, read_datas, enable=None,
             default_state = 0,edge_type = Latch_Type.RISING_EDGE, reset_type = Logic_States.ACTIVE_HIGH,enable_type = Logic_States.ACTIVE_HIGH):
         """
-            Constructor will check for valid parameters, exception thrown on invalid
+        Constructor will check for valid parameters, exception thrown on invalid
 
-            Parameters:
-                num_reg : number of registers in register file
-                reg_size : bit size of registers in register file
-                clock : clock bus of size 1 for register file
-                reset : reset bus of size 1 for register file
-                write_addr : write address of iBusRead size appropriate for num_reg
-                write_data : write address of iBusRead size appropriate for reg_size
-                read_addr : read address array of iBusRead with no more than num_reg
-                            each bus must be of size appropriate for reg selection
-                read_data : read data array of iBusWrite with no more than num_reg
-                            each bus must have size equal to reg_size
-                enable : bit enabling write behavior for specified registers
-                         (Optional) if not specified then assumed active
-                default_state : initial and reset state that registers take on
-                edge_type : Latching type for registers (all must be same)
-                reset_type : logic state to cause reset event
-                enable_type : logic state to allow write behavior
+        Parameters:
+            num_reg : number of registers in register file
+            reg_size : bit size of registers in register file
+            clock : clock bus of size 1 for register file
+            reset : reset bus of size 1 for register file
+            write_addr : write address of iBusRead size appropriate for num_reg
+            write_data : write address of iBusRead size appropriate for reg_size
+            read_addr : read address array of iBusRead with no more than num_reg
+                        each bus must be of size appropriate for reg selection
+            read_data : read data array of iBusWrite with no more than num_reg
+                        each bus must have size equal to reg_size
+            enable : bit enabling write behavior for specified registers
+                     (Optional) if not specified then assumed active
+            default_state : initial and reset state that registers take on
+            edge_type : Latching type for registers (all must be same)
+            reset_type : logic state to cause reset event
+            enable_type : logic state to allow write behavior
         """
 
         #configuration
@@ -107,7 +107,7 @@ class RegisterFile(Sequential):
             self._ens.append(en)
             self._datas.append(da)
             self._regs.append(Register(reg_size,clock,reset,write_data,da,
-                              default_state,edge_type,reset_type,en,Logic_States.ACTIVE_HIGH))
+                default_state,edge_type,reset_type,en,Logic_States.ACTIVE_HIGH))
 
 
     def inspect(self):

@@ -1,15 +1,17 @@
 """
-    ARM specific register file of length 16 with bit-width of 32.
+ARM specific register file of length 16 with bit-width of 32.
 """
 
 from components.core.register_file import RegisterFile as _RegisterFile
 from components.core.register_file import Latch_Type, Logic_States
 
+
+
 class RegisterFile_wo_PC(_RegisterFile):
     """
-        ARM specific register file of length 16 with bit-width of 32.
-        Component is sequential and thus requires a clock and reset to operate
-        Note that this component is a wrapper on core component
+    ARM specific register file of length 16 with bit-width of 32.
+    Component is sequential and thus requires a clock and reset to operate
+    Note that this component is a wrapper on core component
     """
 
     def __init__(self,clock,reset,write_enable, write_data, a1, a2, a3, rd1, rd2,

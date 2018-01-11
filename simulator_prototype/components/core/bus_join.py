@@ -1,5 +1,5 @@
 """
-    BusJoin component used to concatenate multiple buses into a single bus
+BusJoin component used to concatenate multiple buses into a single bus
 """
 
 from components.abstract.entity import Entity
@@ -7,10 +7,10 @@ from components.abstract.ibus import iBusRead, iBusWrite
 
 class BusJoin(Entity):
     """
-        BusJoin concatenates the input buses into a single output bus.
-        The output bus will thus have the combined bit-width of all inputs.
-        Additionally, the inputs will be concatenated in increasing bit index
-        order as traversed through the list.
+    BusJoin concatenates the input buses into a single output bus.
+    The output bus will thus have the combined bit-width of all inputs.
+    Additionally, the inputs will be concatenated in increasing bit index
+    order as traversed through the list.
     """
 
     def __init__(self, ins_b, out_b):

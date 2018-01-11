@@ -1,6 +1,6 @@
 """
-    Bus instances used as conduits of numerical data of fixed size. Expectation
-    is that a bus will be written to by one component but can be read by many
+Bus instances used as conduits of numerical data of fixed size. Expectation
+is that a bus will be written to by one component but can be read by many.
 """
 
 from components.abstract.hooks import OutputHook
@@ -10,7 +10,7 @@ from components.abstract.ibus import iBusRead, iBusWrite
 
 class Bus(OutputHook, iBusRead, iBusWrite):
     """
-        Bus is a read/write object used to connect architecture entities
+    Bus is a read/write object used to connect architecture entities
     """
 
     def __init__(self, size, default_value=0):

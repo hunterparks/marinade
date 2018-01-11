@@ -1,18 +1,25 @@
+"""
+
+"""
+
 from components.abstract.ibus import iBusRead, iBusWrite
 from components.abstract.sequential import Sequential, Latch_Type, Logic_States
 
-class Idex(Sequential):
-    '''
-    This specialized register sits between the decode and execute stages of the processor
-    '''
 
-    def __init__(self, pcsrcd, regwrsd, regwrd, alusrcbd, alusd, aluflagwrd, memwrd, regsrcd, wd3sd,
-                rd1d, rd2d, imm32d, ra1d, ra2d, ra3d, flush, clk, pcsrce, regwrse, regwre,
-                alusrcbe, aluse, aluflagwre, memwre, regsrce, wd3se, rd1e, rd2e, imm32e, ra1e,
-                rd2e, imm32e, ra1e, ra2e, ra3e, edge_type = Latch_Type.RISING_EDGE,
-                flush_type = Logic_States.ACTIVE_HIGH, enable = None, 
+
+class Idex(Sequential):
+    """
+    This specialized register sits between the decode and execute stages of the processor
+    """
+
+    def __init__(self, pcsrcd, regwrsd, regwrd, alusrcbd, alusd, aluflagwrd,
+                memwrd, regsrcd, wd3sd, rd1d, rd2d, imm32d, ra1d, ra2d, ra3d,
+                flush, clk, pcsrce, regwrse, regwre, alusrcbe, aluse, aluflagwre,
+                memwre, regsrce, wd3se, rd1e, rd2e, imm32e, ra1e, rd2e, imm32e,
+                ra1e, ra2e, ra3e, edge_type = Latch_Type.RISING_EDGE,
+                flush_type = Logic_States.ACTIVE_HIGH, enable = None,
                 enable_type = Logic_States.ACTIVE_HIGH):
-        '''
+        """
         inputs:
             pcsrcd: selects the next instruction given to the fetch stage
             regwrsd: selects which register is passed into input a2 of the regfile
@@ -48,11 +55,12 @@ class Idex(Sequential):
             ra1e: register number
             ra2e: register number
             ra3e: register number or constant
-        
+
         edge_type: idex register data latch type
         flush_type: flush signal active state
         enable_type: enable signal active state
-        '''
+        """
+
         if not isinstance(pcsrcd, iBusRead):
             raise TypeError('The pcsrcd bus must be readable')
         elif pcsrcd.size() != 2:
@@ -189,6 +197,7 @@ class Idex(Sequential):
             raise ValueError('The enable input must have a size of 1 bit')
         if not Logic_States.valid(enable_type):
             raise ValueError('Invalid enable state')
+
         self._pcsrcd = pcsrcd
         self._regwrsd = regwrsd
         self._regwrd = regwrd
@@ -226,10 +235,11 @@ class Idex(Sequential):
         self._enable = enable
         self._enable_type = enable_type
 
+
     def on_rising_edge(self):
-        '''
+        """
         Implements clock rising behavior: captures data if latch type matches
-        '''
+        """
         if self._edge_type == Latch_Type.RISING_EDGE or self._edge_type == Latch_Type.BOTH_EDGE:
             if ((self._flush_type == Logic_States.ACTIVE_LOW and self._flush.read() == 0)
                     or (self._flush_type == Logic_States.ACTIVE_HIGH and self._flush.read() == 1)):
@@ -264,11 +274,12 @@ class Idex(Sequential):
                 self._ra1e.write(self._ra1d.read())
                 self._ra2e.write(self._ra2d.read())
                 self._ra3e.write(self._ra3d.read())
-        
+
+
     def on_falling_edge(self):
-        '''
+        """
         Implements clock falling behavior: captures data if latch type matches
-        '''
+        """
         if self._edge_type == Latch_Type.FALLING_EDGE or self._edge_type == Latch_Type.BOTH_EDGE:
             if ((self._flush_type == Logic_States.ACTIVE_LOW and self._flush.read() == 0)
                     or (self._flush_type == Logic_States.ACTIVE_HIGH and self._flush.read() == 1)):
@@ -304,22 +315,26 @@ class Idex(Sequential):
                 self._ra2e.write(self._ra2d.read())
                 self._ra3e.write(self._ra3d.read())
 
+
     def on_reset(self):
-        '''
+        """
         Not used for this register
-        '''
+        """
         pass
+
 
     def insepct(self):
-        '''
+        """
         Returns a dictionary message to the user
-        '''
+        """
         pass
 
+
     def run(self, time = None):
-        '''
+        """
         Timestep handler function - sequentially asserts output
-        '''
+        """
+
         # process enable line
         e = True
         if self._enable is not None:
@@ -327,6 +342,7 @@ class Idex(Sequential):
                 e = self._enable_type.read() == 0
             else:
                 e = self._enable.read() == 1
+                
         # check for clock change
         if e:
             if self._clk.read() == 1 and self._prev_clk_state == 0:

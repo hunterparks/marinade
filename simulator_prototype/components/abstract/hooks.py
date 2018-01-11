@@ -1,7 +1,7 @@
 """
-    Hooks provide a means of communicating between other backend behavior and
-    the simulator architecture. Thus the input functions into the architecture
-    should be asserted at start of cycle.
+Hooks provide a means of communicating between other backend behavior and
+the simulator architecture. Thus the input functions into the architecture
+should be asserted at start of cycle.
 """
 
 from abc import ABC, abstractmethod
@@ -10,7 +10,7 @@ from abc import ABC, abstractmethod
 
 class Hook(ABC):
     """
-        Abstract Hook interface to define application inspection
+    Abstract Hook interface to define application inspection
     """
 
     @abstractmethod
@@ -22,7 +22,7 @@ class Hook(ABC):
 
 class InputHook(Hook):
     """
-        Abstract Hook for module message generation
+    Abstract Hook for module message generation
     """
 
     @abstractmethod
@@ -34,7 +34,7 @@ class InputHook(Hook):
 
 class OutputHook(Hook):
     """
-        Abstract Hook for module message inspection. (Distinct from Hook)
+    Abstract Hook for module message inspection. (Distinct from Hook)
     """
     pass
 
@@ -42,8 +42,8 @@ class OutputHook(Hook):
 
 class InternalHook(Hook):
     """
-        Abstraction on Hook to define a subtype intended to be embedded inside
-        another module type
+    Abstraction on Hook to define a subtype intended to be embedded inside
+    another module type
     """
 
     @abstractmethod

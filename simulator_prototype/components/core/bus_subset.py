@@ -1,5 +1,5 @@
 """
-    BusSubset component used to break apart a single bus into composite signals
+BusSubset component used to break apart a single bus into composite signals
 """
 
 from components.abstract.entity import Entity
@@ -7,10 +7,10 @@ from components.abstract.ibus import iBusRead, iBusWrite
 
 class BusSubset(Entity):
     """
-        BusSubset pull multiple output buses together from a common source.
-        The subsets must be atleast one element and no more than the size of the
-        bus. Additionally, the range of bits pulled from the bus must be
-        sequential.
+    BusSubset pull multiple output buses together from a common source.
+    The subsets must be atleast one element and no more than the size of the
+    bus. Additionally, the range of bits pulled from the bus must be
+    sequential.
     """
 
     def __init__(self,in_b,outs_b,outs_range):

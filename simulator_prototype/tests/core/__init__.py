@@ -1,4 +1,6 @@
-
+"""
+    Pass test cases to importer for test suite
+"""
 
 from core.adder_t import Adder_t
 from core.bus_join_t import BusJoin_t

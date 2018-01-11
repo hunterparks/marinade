@@ -1,18 +1,19 @@
 """
-    Architecture object aggregates all simulation components into a set of of
-    lists as constructed. This object is to be used by the simulator to run the
-    processor and should be produced by the configuration parser
+Architecture object aggregates all simulation components into a set of of
+lists as constructed. This object is to be used by the simulator to run the
+processor and should be produced by the configuration parser
 """
 
 from components.core.clock import Clock
 from components.core.reset import Reset
 
 
+
 class Architecture:
     """
-        Architecture simplifies the structure of the processor during runtime
-        to an ordered list of runnable entities (including clocks) and a list
-        of hooks to pass frontend messages to.
+    Architecture simplifies the structure of the processor during runtime
+    to an ordered list of runnable entities (including clocks) and a list
+    of hooks to pass frontend messages to.
     """
 
     def __init__(self, time_step, clock, reset, hooks, entities):
@@ -88,6 +89,6 @@ class Architecture:
 
     def reset(self):
         "Toggles the main reset to active state, runs a logic step"
-        self._main_reset.generate()
+        self._main_reset.generate({'reset' : True})
         logic_run()
-        self._main_reset.generate()
+        self._main_reset.generate({'reset' : False})

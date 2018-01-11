@@ -1,5 +1,5 @@
 """
-    Define Read and Write behavior for bus types in the system architecture
+Define Read and Write behavior for bus types in the system architecture
 """
 
 from abc import ABC, abstractmethod
@@ -8,7 +8,7 @@ from abc import ABC, abstractmethod
 
 class iBus(ABC):
     """
-        Interface to enforce size constraint on bus type objects
+    Interface to enforce size constraint on bus type objects
     """
 
     @abstractmethod
@@ -20,7 +20,7 @@ class iBus(ABC):
 
 class iBusRead(iBus):
     """
-        Interface to enforce read behavior on a bus type object
+    Interface to enforce read behavior on a bus type object
     """
 
     @abstractmethod
@@ -32,7 +32,7 @@ class iBusRead(iBus):
 
 class iBusWrite(iBus):
     """
-        Interface to enforce write behavior on a bus type object
+    Interface to enforce write behavior on a bus type object
     """
 
     @abstractmethod

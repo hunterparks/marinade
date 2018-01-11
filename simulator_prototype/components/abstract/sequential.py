@@ -1,6 +1,6 @@
 """
-    The goal of the seqential logic class is to provide an interface for all
-    children to develop reset and clock based functionality
+The goal of the seqential logic class is to provide an interface for all
+children to develop reset and clock based functionality
 """
 
 from abc import ABC, abstractmethod
@@ -12,7 +12,7 @@ from enum import Enum
 
 class Latch_Type(Enum):
     """
-        Defines clock sequential logic latch type
+    Defines clock sequential logic latch type
     """
 
     RISING_EDGE = 0
@@ -35,7 +35,7 @@ class Latch_Type(Enum):
 
 class Logic_States(Enum):
     """
-        Defines reset sequential logic on type
+    Defines reset sequential logic on type
     """
 
     ACTIVE_LOW = 0
@@ -55,10 +55,10 @@ class Logic_States(Enum):
 
 class Sequential(InternalHook, Entity):
     """
-        All sequential components should be children of the Sequential class.
-        The goal is to enfore the clock and reset behavior necessary for
-        correct sequential logic operation. Additionally, sequential logic
-        should be considered obserable by the rest of the backend
+    All sequential components should be children of the Sequential class.
+    The goal is to enfore the clock and reset behavior necessary for
+    correct sequential logic operation. Additionally, sequential logic
+    should be considered obserable by the rest of the backend
     """
 
     @abstractmethod

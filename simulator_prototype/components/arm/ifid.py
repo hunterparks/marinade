@@ -1,15 +1,21 @@
+"""
+
+"""
+
 from components.abstract.ibus import iBusRead, iBusWrite
 from components.abstract.sequential import Sequential, Latch_Type, Logic_States
 
-class Ifid(Sequential):
-    '''
-        This specialized register sits between the fetch and decode stages of the processor
-    '''
 
-    def __init__(self, instrf, stall, flush, clk, instrd, default_state = 0, 
+
+class Ifid(Sequential):
+    """
+    This specialized register sits between the fetch and decode stages of the processor
+    """
+
+    def __init__(self, instrf, stall, flush, clk, instrd, default_state = 0,
                 edge_type = Latch_Type.RISING_EDGE, flush_type = Logic_States.ACTIVE_HIGH,
                 enable = None, enable_type = Logic_States.ACTIVE_HIGH):
-        '''
+        """
         inputs:
             instrf: the fetched instruction
             stall: postpones the flow of instructions if active
@@ -23,7 +29,8 @@ class Ifid(Sequential):
         edge_type: ifid register data latch type
         flush_type: flush signal active state
         enable_type : enable signal active state
-        '''
+        """
+
         if not isinstance(instrf, iBusRead):
             raise TypeError('The instrf bus must be readable')
         elif instrf.size() != 32:
@@ -43,7 +50,7 @@ class Ifid(Sequential):
         if not isinstance(instrd, iBusWrite):
             raise TypeError('The instrd bus must be writeable')
         elif instrd.size() != 32:
-            raise ValueError('The instrd bus must have a size of 32 bits') 
+            raise ValueError('The instrd bus must have a size of 32 bits')
         if not isinstance(default_state, int) or default_state < 0 or default_state >= 2**32:
             raise ValueError('The default state must be an integer between -1 and 4294967296')
         if not Latch_Type.valid(edge_type):
@@ -54,6 +61,7 @@ class Ifid(Sequential):
             raise ValueError('The enable input must have a size of 1 bit')
         if not Logic_States.valid(enable_type):
             raise ValueError('Invalid enable state')
+
         self._instrf = instrf
         self._stall = stall
         self._flush = flush
@@ -67,10 +75,11 @@ class Ifid(Sequential):
         self._enable = enable
         self._enable_type = enable_type
 
+
     def on_rising_edge(self):
-        '''
+        """
         Implements clock rising behavior: captures data if latching type matches
-        '''
+        """
         if self._edge_type == Latch_Type.RISING_EDGE or self._edge_type == Latch_Type.BOTH_EDGE:
             if ((self._flush_type == Logic_States.ACTIVE_LOW and self._flush.read() == 0)
                     or (self._flush_type == Logic_States.ACTIVE_HIGH and self._flush.read() == 1)):
@@ -78,10 +87,11 @@ class Ifid(Sequential):
             else:
                 self._instrd.write(self._instrf.read())
 
+
     def on_falling_edge(self):
-        '''
+        """
         Implements clock falling behavior: captures data if latching type matches
-        '''
+        """
         if self._edge_type == Latch_Type.FALLING_EDGE or self._edge_type == Latch_Type.BOTH_EDGE:
             if ((self._flush_type == Logic_States.ACTIVE_LOW and self._flush.read() == 0)
                     or (self._flush_type == Logic_States.ACTIVE_HIGH and self._flush.read() == 1)):
@@ -89,22 +99,26 @@ class Ifid(Sequential):
             else:
                 self._instrd.write(self._instrf.read())
 
+
     def on_reset(self):
-        '''
+        """
         Not used for this register
-        '''
+        """
         pass
 
+
     def inspect(self):
-        '''
+        """
         Returns a dictionary message to the user
-        '''
+        """
         return {'type': 'ifid', 'instrf': self._instrf.read(), 'instrd': self._instrd.read()}
-    
+
+
     def run(self, time = None):
-        '''
+        """
         Timestep handler function - sequentially asserts output
-        ''''
+        """
+
         # process enable line
         e = True
         if self._enable is not None:
@@ -112,6 +126,7 @@ class Ifid(Sequential):
                 e = self._enable_type.read() == 0
             else:
                 e = self._enable.read() == 1
+
         # check for clock change
         if e:
             if self._clk.read() == 1 and self._prev_clk_state == 0:

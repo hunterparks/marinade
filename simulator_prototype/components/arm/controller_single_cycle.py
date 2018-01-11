@@ -1,19 +1,23 @@
 """
-    Single-cycle controller as inspired by Larry Skuse's VHDL work
+Single-cycle controller as derived by Larry Skuse's VHDL work.
 """
+
 from components.abstract.controller import Controller
 from components.abstract.ibus import iBusRead, iBusWrite
 
+
+
 class ControllerSingleCycle(Controller):
     """
-        Single-cycle controller component implements architecture controller
-        which will take a current instruction (broken into subfields) and ALU
-        status flags. Output is the control paths for the architecture which
-        will be enforced until the next instruction.
+    Single-cycle controller component implements architecture controller
+    which will take a current instruction (broken into subfields) and ALU
+    status flags. Output is the control paths for the architecture which
+    will be enforced until the next instruction.
     """
 
     def __init__(self, cond, op, funct, rd, bit4, c, v, n, z, pcsrc, pcwr, regsa,
-                regdst, regwrs, regwr, exts, alusrcb, alus, aluflagwr, memwr, regsrc, wd3s):
+                regdst, regwrs, regwr, exts, alusrcb, alus, aluflagwr, memwr,
+                regsrc, wd3s):
         """
         inputs:
             cond: 4-bits that represent bits 31..28 of the instruction
@@ -160,9 +164,9 @@ class ControllerSingleCycle(Controller):
     @staticmethod
     def _generate_pcsrc(op,cond,rd,z):
         """
-            PCSRC <= B"10" when a data processing instruction modifies pc
-            PCSRC <= B"01" for pc+4
-            PCSRC <= B"00" for branch instructions where condition is met
+        PCSRC <= B"10" when a data processing instruction modifies pc
+        PCSRC <= B"01" for pc+4
+        PCSRC <= B"00" for branch instructions where condition is met
         """
         if op == 0b10 and cond == 0b1110:
             return 0b00
@@ -179,7 +183,7 @@ class ControllerSingleCycle(Controller):
     @staticmethod
     def _generate_pcwr():
         """
-            PCWR <= '1' for single cycle processor
+        PCWR <= '1' for single cycle processor
         """
         return 0b1
 
@@ -187,8 +191,8 @@ class ControllerSingleCycle(Controller):
     @staticmethod
     def _generate_regsa(op,bit4,funct):
         """
-            REGSA <= '1' to select Rn (data processing instructions)
-            REGSA <= '0' to select Rn (mul instruction)
+        REGSA <= '1' to select Rn (data processing instructions)
+        REGSA <= '0' to select Rn (mul instruction)
         """
         if op == 0b00 and bit4 == 0b1 and (funct == 0b000000 or funct == 0b000001):
             return 0b0
@@ -199,9 +203,9 @@ class ControllerSingleCycle(Controller):
     @staticmethod
     def _generate_regdst(op,bit4,funct):
         """
-            REGDST <= B"10" to select Rd (str instruction)
-            REGDST <= B"01" to select Rm (data processing intructions)
-            REGDST <= B"00" to select Rm (mul instruction)
+        REGDST <= B"10" to select Rd (str instruction)
+        REGDST <= B"01" to select Rm (data processing intructions)
+        REGDST <= B"00" to select Rm (mul instruction)
         """
         if op == 0b01 and funct == 0b011000:
             return 0b10
@@ -214,11 +218,11 @@ class ControllerSingleCycle(Controller):
     @staticmethod
     def _generate_regwrs(op,bit4,funct):
         """
-            REGWRS <= B"10" to select LR (bl instruction)
-            REGWRS <= B"01" to select Rd (data processing instruction)
-            REGWRS <= B"00" to select Rd (mul instruction)
+        REGWRS <= B"10" to select LR (bl instruction)
+        REGWRS <= B"01" to select Rd (data processing instruction)
+        REGWRS <= B"00" to select Rd (mul instruction)
         """
-        if op == 0b10 and ((funct & 0b010000) >> 4) == 0b1: #NOTE changed shift
+        if op == 0b10 and ((funct & 0b010000) >> 4) == 0b1:
             return 0b10
         elif op == 0b00 and bit4 == 0b1 and (funct == 0b000000 or funct == 0b000001):
             return 0b00
@@ -229,15 +233,15 @@ class ControllerSingleCycle(Controller):
     @staticmethod
     def _generate_regwr(op,funct):
         """
-            REGWR <= '1' when an instruction writes back to the regfile
-            REGWR <= '0' when an instruction does not write back to the regfile
-                 (str, branch, and cmp instructions)
+        REGWR <= '1' when an instruction writes back to the regfile
+        REGWR <= '0' when an instruction does not write back to the regfile
+             (str, branch, and cmp instructions)
         """
         if op == 0b00 and (funct == 0b010101 or funct == 0b110101):
             return 0b0
         elif op == 0b01 and funct == 0b011000:
             return 0b0
-        elif op == 0b10 and ((funct & 0b010000) >> 4) == 0b0: #NOTE changed shift
+        elif op == 0b10 and ((funct & 0b010000) >> 4) == 0b0:
             return 0b0
         else:
             return 0b1
@@ -246,9 +250,9 @@ class ControllerSingleCycle(Controller):
     @staticmethod
     def _generate_exts(op,funct):
         """
-            EXTS <= B"00" for 8-bit immediate (data processing immediate)
-            EXTS <= B"01" for 12-bit immediate (ldr and str instructions)
-            EXTS <= B"10" for branch instruction
+        EXTS <= B"00" for 8-bit immediate (data processing immediate)
+        EXTS <= B"01" for 12-bit immediate (ldr and str instructions)
+        EXTS <= B"10" for branch instruction
         """
         if op == 0b10:
             return 0b10
@@ -261,9 +265,9 @@ class ControllerSingleCycle(Controller):
     @staticmethod
     def _generate_alusrcb(op,funct,bit4):
         """
-            ALUSRCB <= '1' when source B requires the output of RD2 (data
-                 processing instructions)
-            ALUSRCB <= '0' when source B requires an extended immediate
+        ALUSRCB <= '1' when source B requires the output of RD2 (data
+             processing instructions)
+        ALUSRCB <= '0' when source B requires an extended immediate
         """
         if op == 0b00:
             if (    funct == 0b000000 or funct == 0b000010 or
@@ -291,15 +295,15 @@ class ControllerSingleCycle(Controller):
     @staticmethod
     def _generate_alus(op,bit4,funct):
         """
-            ALUS <= "0000" for +
-            ALUS <= "0001" for -
-            ALUS <= "0010" for and
-            ALUS <= "0011" for or
-            ALUS <= "0100" for xor
-            ALUS <= "0101" for A
-            ALUS <= "0110" for B
-            ALUS <= "0111" for A*B
-            ALUS <= "1111" for 1
+        ALUS <= "0000" for +
+        ALUS <= "0001" for -
+        ALUS <= "0010" for and
+        ALUS <= "0011" for or
+        ALUS <= "0100" for xor
+        ALUS <= "0101" for A
+        ALUS <= "0110" for B
+        ALUS <= "0111" for A*B
+        ALUS <= "1111" for 1
         """
         if op == 0b00 and (funct == 0b000000 or funct == 0b000001) and bit4 == 0b1:
             return 0b0111
@@ -331,8 +335,8 @@ class ControllerSingleCycle(Controller):
     @staticmethod
     def _generate_aluflagwr(op,funct):
         """
-            ALUFLAGWR <= '1' to set flags (cmp instructions or s bit set)
-            ALUFLAGWR <= '0' flags will not be set
+        ALUFLAGWR <= '1' to set flags (cmp instructions or s bit set)
+        ALUFLAGWR <= '0' flags will not be set
         """
         if op == 0b00:
             # Note: need to look further into the logic when funct is 1
@@ -362,9 +366,9 @@ class ControllerSingleCycle(Controller):
     @staticmethod
     def _generate_memwr(op,funct):
         """
-            MEMWR <= '1' allows data to be written to data memory (str
-                     instructions)
-            MEMWR <= '0' cannot write to data memory
+        MEMWR <= '1' allows data to be written to data memory (str
+                 instructions)
+        MEMWR <= '0' cannot write to data memory
         """
         if op == 0b01 and funct == 0b011000:
             return 0b1
@@ -375,8 +379,8 @@ class ControllerSingleCycle(Controller):
     @staticmethod
     def _generate_regsrc(op,funct):
         """
-            REGSRC <= '1' when output of ALU is feedback (ldr instructions)
-            REGSRC <= '0' when output of data mem is feedback
+        REGSRC <= '1' when output of ALU is feedback (ldr instructions)
+        REGSRC <= '0' when output of data mem is feedback
         """
         if op == 0b01 and funct == 0b011001:
             return 0b0
@@ -387,7 +391,7 @@ class ControllerSingleCycle(Controller):
     @staticmethod
     def _generate_wd3s(op,funct):
         """
-            WDS3 <= '1' when a bl instruction is run else '0'
+        WDS3 <= '1' when a bl instruction is run else '0'
         """
         if op == 0b10 and ((funct & 0b010000) >> 4) == 0b1: #NOTE changed shift
             return 0b1

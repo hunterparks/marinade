@@ -1,9 +1,9 @@
 """
-    Clock input is to be viewed as a user adjustable read only bus where the
-    frequency of calling a clock generate relative to the timestep (run rate)
-    determines the resolution of the application.
+Clock input is to be viewed as a user adjustable read only bus where the
+frequency of calling a clock generate relative to the timestep (run rate)
+determines the resolution of the application.
 
-    Note that clock can be used as a logic read bus of size one
+Note that clock can be used as a logic read bus of size one
 """
 
 from components.abstract.hooks import InputHook
@@ -15,10 +15,10 @@ import limits
 
 class Clock(InputHook,iBusRead,Entity):
     """
-        Input hook into architecture reflecting a clock signal, however it can
-        be used as a logical bus. Note that the state expected to be stored is
-        only the current value, for logic that requires previous state
-        information that logic is responsible for keeping track of state change
+    Input hook into architecture reflecting a clock signal, however it can
+    be used as a logical bus. Note that the state expected to be stored is
+    only the current value, for logic that requires previous state
+    information that logic is responsible for keeping track of state change
     """
 
     def __init__(self, freq, default_state = 0):

@@ -1,5 +1,5 @@
 """
-    Constant is to be viewed as an immutable bus in architectures
+Constant is to be viewed as an immutable bus in architectures
 """
 
 from components.abstract.hooks import Hook
@@ -9,7 +9,7 @@ from components.abstract.ibus import iBusRead
 
 class Constant(Hook,iBusRead):
     """
-        Input hook into architecture without the ability to change value
+    Input hook into architecture without the ability to change value
     """
 
     def __init__(self, size, state):

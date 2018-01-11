@@ -1,13 +1,29 @@
 """
-
+ARM ALU object for use in ARMv4 architecture
 """
+#TODO refactor run to static functions
 
 from components.abstract.combinational import Combinational
 from components.abstract.ibus import iBusRead, iBusWrite
 
+
+
 class Alu(Combinational):
     """
-
+    ALU object operates on a and b word sized inputs. Operations are selected
+    through the ALUS control signal. Selectable operations are
+        * add
+        * subtract
+        * and
+        * or
+        * xor
+        * pass a
+        * pass b
+        * multiplication
+        * generate 1
+    The functional result (word size) along with various condition flags are
+    outputed. An external register is necessary to maintain state of condition
+    signals.
     """
 
     def __init__(self, a, b, alus, f, c, v, n, z):

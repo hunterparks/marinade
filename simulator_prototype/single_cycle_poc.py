@@ -1,29 +1,46 @@
-import time
+"""
+Single-cycle Proof of Concept
 
-from components.core.bus import Bus
-from components.core.clock import Clock
-from components.core.reset import Reset
-from components.core.logic_input import LogicInput
+This module defines a proof of concept architecture for a simulated ARM
+CPU. Note that the architecture is incomplete as some instructions /
+instruction variants are unsupported.
+
+The reason that this module exists is to provide a test platform for the
+simulator. In addition, this architecture is used to develop the API for
+interface with front-end processes.
+
+Note that this module will be obsolete once an architecture serializer is
+developed.
+"""
+
+import time
+from collections import OrderedDict
+
 from components.abstract.sequential import Latch_Type, Logic_States
 
-from components.core.register import Register
-from components.core.adder import Adder
-from components.arm.register_file_wo_pc import RegisterFile_wo_PC
+from components.core.bus import Bus
 from components.core.mux import Mux
-from components.arm.alu import Alu
-from components.core.bus_subset import BusSubset
+from components.core.clock import Clock
+from components.core.reset import Reset
+from components.core.adder import Adder
 from components.core.bus_join import BusJoin
+from components.core.register import Register
 from components.core.constant import Constant
+from components.core.bus_subset import BusSubset
+from components.core.logic_input import LogicInput
+
+from components.arm.alu import Alu
 from components.arm.memory import Memory
 from components.arm.extender import Extender
+from components.arm.register_file_wo_pc import RegisterFile_wo_PC
 from components.arm.controller_single_cycle import ControllerSingleCycle
 
-from collections import OrderedDict
 from architecture import Architecture
 
-#TODO alureg should be special register
 
 def program_single_cycle_architecture(arch):
+    "Provides a simple test program to run on architecture (for demo)"
+
     program_msg = {
         'modify' : {
             'name' : 'progmem',
@@ -54,6 +71,8 @@ def program_single_cycle_architecture(arch):
 
 
 def generate_single_cycle_architecture():
+    "Illustrates the necessary process to construct an architecture"
+
     #define system resources
     clk = Clock(10,0)
     rst = Reset(0)
@@ -120,12 +139,18 @@ def generate_single_cycle_architecture():
     hooks.update({'pcsrc' : Bus(2,0)})
 
     # generate components
+
+    # FETCH
     entities = OrderedDict([('clk',clk)])
-    entities.update({'pc_reg' : Register(32,hooks['clk'],hooks['rst'],hooks['pcwb'],hooks['pc'],0, enable = hooks['pcwr'],edge_type = Latch_Type.FALLING_EDGE)})
+    entities.update({'pc_reg' : Register(32,hooks['clk'],hooks['rst'],
+                    hooks['pcwb'],hooks['pc'],0, enable = hooks['pcwr'],
+                    edge_type = Latch_Type.FALLING_EDGE)})
     entities.update({'add8' : Adder(32,hooks['pc'],hooks['const8'],hooks['pc8'])})
     entities.update({'add4' : Adder(32,hooks['pc'],hooks['const4'],hooks['pc4'])})
-    entities.update({'progmem' : Memory(hooks['pc'],hooks['pmd'],hooks['pmwr'],hooks['clk'],hooks['rst'],hooks['instr'])})
+    entities.update({'progmem' : Memory(hooks['pc'],hooks['pmd'],hooks['pmwr'],
+                    hooks['clk'],hooks['rst'],hooks['instr'])})
 
+    # DECODE
     entities.update({'instr_subset' : BusSubset(hooks['instr'],
                     [hooks['instr_23_0'],hooks['instr_19_16'],
                      hooks['instr_3_0'],hooks['instr_15_12'],
@@ -144,23 +169,41 @@ def generate_single_cycle_architecture():
                     hooks['aluflagwr'],hooks['memwr'],hooks['regsrc'],
                     hooks['wdbs'])})
 
-    entities.update({'ra1_mux' : Mux(4,[hooks['instr_3_0'],hooks['instr_19_16']],hooks['regsa'],hooks['ra1'])})
-    entities.update({'ra2_mux' : Mux(4,[hooks['instr_11_8'],hooks['instr_3_0'],hooks['instr_15_12']],hooks['regdst'],hooks['ra2'])})
-    entities.update({'ra3_mux' : Mux(4,[hooks['instr_19_16'],hooks['instr_15_12'],hooks['const14']],hooks['regwrs'],hooks['ra3'])})
-    entities.update({'rwd_mux' : Mux(32,[hooks['wdb'],hooks['pc4']],hooks['wdbs'],hooks['rwd'])})
-    entities.update({'extimm' : Extender(hooks['instr_23_0'],hooks['exts'],hooks['imm32'])})
-    entities.update({'regfile' : RegisterFile_wo_PC(hooks['clk'],hooks['rst'],hooks['regwr'],hooks['rwd'],hooks['ra1'],hooks['ra2'],hooks['ra3'],hooks['rd1'],hooks['rd2'])})
+    entities.update({'ra1_mux' : Mux(4,[hooks['instr_3_0'],hooks['instr_19_16']],
+                    hooks['regsa'],hooks['ra1'])})
+    entities.update({'ra2_mux' : Mux(4,[hooks['instr_11_8'],hooks['instr_3_0'],
+                    hooks['instr_15_12']],hooks['regdst'],hooks['ra2'])})
+    entities.update({'ra3_mux' : Mux(4,[hooks['instr_19_16'],hooks['instr_15_12'],
+                    hooks['const14']],hooks['regwrs'],hooks['ra3'])})
+    entities.update({'rwd_mux' : Mux(32,[hooks['wdb'],hooks['pc4']],hooks['wdbs'],
+                    hooks['rwd'])})
+    entities.update({'extimm' : Extender(hooks['instr_23_0'],hooks['exts'],
+                    hooks['imm32'])})
+    entities.update({'regfile' : RegisterFile_wo_PC(hooks['clk'],hooks['rst'],
+                    hooks['regwr'],hooks['rwd'],hooks['ra1'],hooks['ra2'],
+                    hooks['ra3'],hooks['rd1'],hooks['rd2'])})
 
-    entities.update({'alu_mux' : Mux(32,[hooks['imm32'],hooks['rd2']],hooks['alu8rcb'],hooks['alub'])})
+    # EXECUTE
+    entities.update({'alu_mux' : Mux(32,[hooks['imm32'],hooks['rd2']],
+                    hooks['alu8rcb'],hooks['alub'])})
     entities.update({'add_br' : Adder(32,hooks['pc8'],hooks['imm32'],hooks['branch'])})
-    entities.update({'alu' : Alu(hooks['rd1'],hooks['alub'],hooks['alus'],hooks['aluf'],hooks['aluc'],hooks['aluv'],hooks['alun'],hooks['aluz'])})
-    entities.update({'aluflag_join' : BusJoin([hooks['aluc'],hooks['aluv'],hooks['alun'],hooks['aluz']],hooks['aluflag'])})
-    entities.update({'aluflag_reg' : Register(4,hooks['clk'],hooks['rst'],hooks['aluflag'],hooks['flag'],enable = hooks['aluflagwr'])})
-    entities.update({'flag_subset' : BusSubset(hooks['flag'],[hooks['c'],hooks['v'],hooks['n'],hooks['z']],[(0,1),(1,2),(2,3),(3,4)])})
+    entities.update({'alu' : Alu(hooks['rd1'],hooks['alub'],hooks['alus'],
+                    hooks['aluf'],hooks['aluc'],hooks['aluv'],hooks['alun'],
+                    hooks['aluz'])})
+    entities.update({'aluflag_join' : BusJoin([hooks['aluc'],hooks['aluv'],
+                    hooks['alun'],hooks['aluz']],hooks['aluflag'])})
+    entities.update({'aluflag_reg' : Register(4,hooks['clk'],hooks['rst'],
+                    hooks['aluflag'],hooks['flag'],enable = hooks['aluflagwr'])})
+    entities.update({'flag_subset' : BusSubset(hooks['flag'],[hooks['c'],
+                    hooks['v'],hooks['n'],hooks['z']],[(0,1),(1,2),(2,3),(3,4)])})
 
-    entities.update({'datamem' : Memory(hooks['aluf'],hooks['rd2'],hooks['memwr'],hooks['rst'],hooks['clk'],hooks['memrd'])})
-    entities.update({'wdb_mux' : Mux(32,[hooks['memrd'],hooks['aluf']],hooks['regsrc'],hooks['wdb'])})
-    entities.update({'pcwb_mux' : Mux(32,[hooks['branch'],hooks['pc4'],hooks['wdb']],hooks['pcsrc'],hooks['pcwb'])})
+    # MEMORY & WRITE-BACK
+    entities.update({'datamem' : Memory(hooks['aluf'],hooks['rd2'],hooks['memwr'],
+                    hooks['rst'],hooks['clk'],hooks['memrd'])})
+    entities.update({'wdb_mux' : Mux(32,[hooks['memrd'],hooks['aluf']],
+                    hooks['regsrc'],hooks['wdb'])})
+    entities.update({'pcwb_mux' : Mux(32,[hooks['branch'],hooks['pc4'],hooks['wdb']],
+                    hooks['pcsrc'],hooks['pcwb'])})
 
     #place memory (Internal) hooks into hook list
     hooks.update({'pc_reg' : entities['pc_reg']})
