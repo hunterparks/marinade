@@ -1,12 +1,22 @@
+"""
+Tests Architecture object which defines a collection of entities and hooks
+"""
+
 import unittest
 import sys
 sys.path.insert(0, '../../')
+
 from architecture import Architecture
 from components.core.bus import Bus
 from components.core.clock import Clock
 from components.core.reset import Reset
 
+
+
 class Architecture_t(unittest.TestCase):
+    """
+
+    """
 
     def test_constructor(self):
         raise NotImplementedError
