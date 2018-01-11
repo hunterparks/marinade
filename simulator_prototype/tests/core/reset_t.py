@@ -17,6 +17,7 @@ class Reset_t(unittest.TestCase):
         self.assertTrue(l.size() == 1 and l.read() == 1)
         l= Reset()
         self.assertTrue(l.size() == 1 and l.read() == 0)
+        
 
     def test_inspect(self):
         "Check inspect for valid data presentation"
@@ -25,6 +26,7 @@ class Reset_t(unittest.TestCase):
         self.assertTrue(ins['type'] == 'reset')
         self.assertTrue(ins['size'] == 1)
         self.assertTrue(ins['state'] == 1)
+
 
     def test_generate(self):
         "Check generate handler for valid and invalid message"
@@ -64,10 +66,26 @@ class Reset_t(unittest.TestCase):
 
         self.assertTrue(l.read() == 1)
 
+        m = {
+            'reset' : False
+        }
+        rm = l.generate(m)
+        self.assertTrue('success' in rm and rm['success'])
+        self.assertTrue(l.read() == 0)
+
+        m = {
+            'reset' : True
+        }
+        rm = l.generate(m)
+        self.assertTrue('success' in rm and rm['success'])
+        self.assertTrue(l.read() == 1)
+
+
     def test_read(self):
         "Valid data on read"
         l = Reset()
         self.assertTrue(l.read() == 0)
+
 
     def test_write(self):
         "Exception expected on write"
@@ -76,10 +94,12 @@ class Reset_t(unittest.TestCase):
         with self.assertRaises(Exception):
             l.write(1)
 
+
     def test_size(self):
         "Valid bus size presented"
         l = Reset()
         self.assertTrue(l.size() == 1)
+
 
 if __name__ == '__main__':
     unittest.main()

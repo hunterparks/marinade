@@ -1,3 +1,7 @@
+"""
+Tests core component Mux
+"""
+
 import unittest
 import sys
 sys.path.insert(0,'../../')
@@ -5,7 +9,13 @@ from components.core.mux import Mux
 from components.core.constant import Constant
 from components.core.bus import Bus
 
+
+
 class Mux_t(unittest.TestCase):
+    """
+    Tests Mux component's constructor and run functionality
+    Additionally, checks bound conditions.
+    """
 
     def test_constructor(self):
         "Constructor with valid and invalid configuration"
@@ -78,6 +88,7 @@ class Mux_t(unittest.TestCase):
         m = Mux(8,[c0,c1,c2],s)
         m.run()
 
+
     def test_out_of_bounds(self):
         "Test for valid control signal that extends past defined"
         c0 = Constant(8,150)
@@ -91,6 +102,7 @@ class Mux_t(unittest.TestCase):
         m.run()
 
         self.assertTrue(y.read() == 0) # prove valid overflow
+
 
     def test_large_mux(self):
         "Test mux for large size to validate scaling algorithm"

@@ -1,3 +1,7 @@
+"""
+Tests core component Register
+"""
+
 import unittest
 import sys
 sys.path.insert(0,'../../')
@@ -6,7 +10,12 @@ from components.core.constant import Constant
 from components.core.bus import Bus
 
 
+
 class Register_t(unittest.TestCase):
+    """
+    Tests Register's constructor, inspect, modify, clocking, reset, and run
+    functionality.
+    """
 
     def test_constructor(self):
         "Constructor with valid and invalid configuration"
@@ -160,6 +169,7 @@ class Register_t(unittest.TestCase):
         reg.on_reset()
         reg.run()
         self.assertTrue(q_bus.read() == 0)
+
 
     def test_inspect(self):
         "Verifies hook inspect for valid return"

@@ -1,3 +1,7 @@
+"""
+Test core component RegisterFile
+"""
+
 import unittest
 import sys
 sys.path.insert(0,'../../')
@@ -6,6 +10,10 @@ from components.core.constant import Constant
 from components.core.bus import Bus
 
 class RegisterFile_t(unittest.TestCase):
+    """
+    Test RegisterFile's constructor, inspect, modify, clocking, reset, and run
+    functionality.
+    """
 
     def test_constructor(self):
         "Constructor with valid and invalid configuration"
@@ -94,6 +102,7 @@ class RegisterFile_t(unittest.TestCase):
             rgf = RegisterFile(2,8,clk,rst,wa,wd,[ra],[rd],e)
 
         rgf = RegisterFile(2,8,clk,rst,wa,wd,[ra],[rd],en)
+
 
     def test_inspect(self):
         "Verifies hook inspect for valid return"

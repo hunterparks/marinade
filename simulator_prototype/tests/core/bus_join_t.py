@@ -1,3 +1,7 @@
+"""
+Tests core component BusJoin
+"""
+
 import unittest
 import sys
 sys.path.insert(0,'../../')
@@ -5,7 +9,12 @@ from components.core.bus_join import BusJoin
 from components.core.constant import Constant
 from components.core.bus import Bus
 
+
+
 class BusJoin_t(unittest.TestCase):
+    """
+    Tests BusJoin component's constructor and run functionality
+    """
 
     def test_constructor(self):
         "Constructor with valid and invalid configuration"

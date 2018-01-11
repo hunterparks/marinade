@@ -1,10 +1,20 @@
+"""
+Tests core component Clock
+"""
+
 import unittest
 import sys
 sys.path.insert(0,'../../')
 from components.core.clock import Clock
 import limits
 
+
+
 class Clock_t(unittest.TestCase):
+    """
+    Tests Clock component's constructor, read, write, generate, inspect, size
+    and run functionality.
+    """
 
     def test_constructor(self):
         "Constructor with valid and invalid configuration"
@@ -30,6 +40,7 @@ class Clock_t(unittest.TestCase):
         l= Clock(limits.MAX_FREQUENCY)
         self.assertTrue(l.size() == 1 and l.read() == 0 and l.frequency() == limits.MAX_FREQUENCY)
 
+
     def test_inspect(self):
         "Check inspect for valid data presentation"
         l = Clock(10)
@@ -38,6 +49,7 @@ class Clock_t(unittest.TestCase):
         self.assertTrue(ins['size'] == 1)
         self.assertTrue(ins['state'] == 0)
         self.assertTrue(ins['frequency'] == 10)
+
 
     def test_generate(self):
         "Check generate handler for valid and invalid message"
@@ -135,6 +147,7 @@ class Clock_t(unittest.TestCase):
         l = Clock(10)
         self.assertTrue(l.read() == 0)
 
+
     def test_write(self):
         "Exception expected on write"
         l = Clock(100)
@@ -142,10 +155,12 @@ class Clock_t(unittest.TestCase):
         with self.assertRaises(Exception):
             l.write(1)
 
+
     def test_size(self):
         "Valid bus size presented"
         l = Clock(50)
         self.assertTrue(l.size() == 1)
+
 
     def test_run(self):
         "Verifies correct time based simulation"
@@ -171,6 +186,7 @@ class Clock_t(unittest.TestCase):
 
         c.run(2)
         self.assertTrue(c.read() == 0)
+
 
 if __name__ == '__main__':
     unittest.main()

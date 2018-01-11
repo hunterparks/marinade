@@ -24,6 +24,7 @@ class Reset(InputHook,iBusRead):
             raise TypeError('Default state must be a bit value')
 
         self._state = default_state
+        self._default_state = default_state
 
 
     def inspect(self):

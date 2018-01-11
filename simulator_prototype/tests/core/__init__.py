@@ -1,5 +1,5 @@
 """
-    Pass test cases to importer for test suite
+Pass test cases to importer for test suite
 """
 
 from core.adder_t import Adder_t

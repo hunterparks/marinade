@@ -1,3 +1,7 @@
+"""
+Tests core component Adder
+"""
+
 import unittest
 import sys
 sys.path.insert(0,'../../')
@@ -5,7 +9,12 @@ from components.core.adder import Adder
 from components.core.constant import Constant
 from components.core.bus import Bus
 
+
+
 class Adder_t(unittest.TestCase):
+    """
+    Tests Adder component's constructor and run functionality
+    """
 
     def test_constructor(self):
         "Constructor with valid and invalid configuration"
@@ -64,6 +73,7 @@ class Adder_t(unittest.TestCase):
         a.run(50)
         self.assertTrue(y0.read() == 0)
         self.assertTrue(cout.read() == 1)
+
 
 if __name__ == '__main__':
     unittest.main()

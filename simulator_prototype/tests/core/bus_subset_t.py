@@ -1,3 +1,7 @@
+"""
+Tests core component BusSubset
+"""
+
 import unittest
 import sys
 sys.path.insert(0,'../../')
@@ -5,7 +9,12 @@ from components.core.bus_subset import BusSubset
 from components.core.constant import Constant
 from components.core.bus import Bus
 
+
+
 class BusSubset_t(unittest.TestCase):
+    """
+    Tests BusSubset component's constructor and run functionality
+    """
 
     def test_constructor(self):
         "Constructor with valid and invalid configuration"
@@ -39,6 +48,7 @@ class BusSubset_t(unittest.TestCase):
             bj = BusSubset(c0,[b0],[(0,8)])
 
         bs = BusSubset(c0,[b0,b1,b2,b3],[(0,4),(4,12),(12,14),(14,16)])
+
 
     def test_run(self):
         "Prove correct combinational output given signals"
