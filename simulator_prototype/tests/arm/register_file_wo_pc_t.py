@@ -1,3 +1,7 @@
+"""
+Test arm component RegisterFile_wo_PC
+"""
+
 import unittest
 import sys
 sys.path.insert(0,'../../')
@@ -5,7 +9,13 @@ from components.arm.register_file_wo_pc import RegisterFile_wo_PC, Latch_Type, L
 from components.core.constant import Constant
 from components.core.bus import Bus
 
-class RegisterFile_t(unittest.TestCase):
+
+
+class RegisterFile_wo_PC_t(unittest.TestCase):
+    """
+    Tests RegisterFile_wo_PC constructor for valid operation.
+    Note that all other tests are covered by core RegisterFile 
+    """
 
     def test_constructor(self):
         "Constructor with valid and invalid configuration"
@@ -31,6 +41,7 @@ class RegisterFile_t(unittest.TestCase):
         reg = RegisterFile_wo_PC(clk,rst,en,wd,ra0,ra1,wa,rd0,rd1, enable_type = Logic_States.ACTIVE_LOW)
 
         reg = RegisterFile_wo_PC(clk,rst,en,wd,ra0,ra1,wa,rd0,rd1,Latch_Type.RISING_EDGE,Logic_States.ACTIVE_HIGH,Logic_States.ACTIVE_LOW)
+
 
 if __name__ == '__main__':
     unittest.main()

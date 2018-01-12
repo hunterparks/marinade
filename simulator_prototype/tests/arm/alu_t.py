@@ -1,10 +1,19 @@
+"""
+Tests arm component Alu
+"""
+
 import unittest
 import sys
 sys.path.insert(0, '../../')
 from components.arm.alu import Alu
 from components.core.bus import Bus
 
+
+
 class Alu_t(unittest.TestCase):
+    """
+    Tests Alu's constructor and run functionality
+    """
 
     def test_constructor(self):
         """
@@ -25,6 +34,7 @@ class Alu_t(unittest.TestCase):
         # test case 2
         with self.assertRaises(ValueError):
             test_alu = Alu(a, b, alus, c, f, v, n, z)
+
 
     def test_run(self):
         """
@@ -156,6 +166,7 @@ class Alu_t(unittest.TestCase):
         self.assertEqual(n.read(), 1)
         self.assertEqual(c.read(), 0)
         self.assertEqual(v.read(), 1)
+
 
 if __name__ == '__main__':
     unittest.main()

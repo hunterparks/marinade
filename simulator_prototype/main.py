@@ -73,7 +73,7 @@ if __name__ == "__main__":
     }
 
     #test file
-    tf = open('single_cycle_data_output.txt', 'w')
+    tf = open('tests\simulation\single_cycle_data_output.txt', 'w')
     tf.write('{"Run":[')
 
     count = 0

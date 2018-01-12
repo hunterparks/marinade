@@ -1,4 +1,6 @@
-
+"""
+Test arm component ControllerSingleCycle
+"""
 
 import unittest
 import sys
@@ -6,7 +8,12 @@ sys.path.insert(0, '../../')
 from components.arm.controller_single_cycle import ControllerSingleCycle
 from components.core.bus import Bus
 
+
+
 class ControllerSingleCycle_t(unittest.TestCase):
+    """
+    Test ControllerSingleCycle's constructor, run and hook functionality
+    """
 
     def test_constructor(self):
         "tests 4 bad constructors - not all possible constructors tested"
@@ -53,6 +60,7 @@ class ControllerSingleCycle_t(unittest.TestCase):
             scc = ControllerSingleCycle(cond, op, funct, rd, bit4, c, v, n, z, pcsrc, pcwr, regsa,
                                         regdst, regwr, regwrs, alusrcb, exts, alus, aluflagwr,
                                         memwr, regsrc, wd3s)
+
 
     def test_run(self):
         "tests the signle cycle processors run method"
@@ -292,6 +300,7 @@ class ControllerSingleCycle_t(unittest.TestCase):
         scc.run()
         self.assertEqual(wd3s.read(), 0)
 
+
     def test_inspect(self):
         "tests the single cycle processors inspect method"
 
@@ -324,6 +333,7 @@ class ControllerSingleCycle_t(unittest.TestCase):
         ins = scc.inspect()
         self.assertTrue(ins['type'] == 'sc-controller')
         self.assertTrue(ins['state'] is None)
+
 
     def test_modify(self):
         "tests the single cycle processor inspect method"
@@ -359,6 +369,7 @@ class ControllerSingleCycle_t(unittest.TestCase):
 
         mod = scc.modify({'state' : 0})
         self.assertTrue('error' in mod) #modify is not implemented for controller
+
 
 if __name__ == '__main__':
     unittest.main()
