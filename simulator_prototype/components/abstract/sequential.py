@@ -15,9 +15,9 @@ class Latch_Type(Enum):
     Defines clock sequential logic latch type
     """
 
-    RISING_EDGE = 0
-    FALLING_EDGE = 1
-    BOTH_EDGE = 2
+    RISING_EDGE = 0     # Low to High edge
+    FALLING_EDGE = 1    # High to Low edge
+    BOTH_EDGE = 2       # Rising and Falling edges
 
     @classmethod
     def valid(cls, x):
@@ -38,8 +38,8 @@ class Logic_States(Enum):
     Defines reset sequential logic on type
     """
 
-    ACTIVE_LOW = 0
-    ACTIVE_HIGH = 1
+    ACTIVE_LOW = 0     # Logic low value realized in system for seqential
+    ACTIVE_HIGH = 1    # Logic high value realized in system for seqential
 
     @classmethod
     def valid(cls, x):
