@@ -78,8 +78,12 @@ class SingleCycleProcessor_t(unittest.TestCase):
         Compares two excel tables for same contents. Returns true if passes
         else false.
         """
-        test = tablib.Dataset().load(open(testPath + '.xls', 'rb').read())
-        template = tablib.Dataset().load(open(templatePath + '.xls', 'rb').read())
+        testf = open(testPath + '.xls', 'rb')
+        templatef = open(templatePath + '.xls', 'rb')
+        test = tablib.Dataset().load(testf.read())
+        template = tablib.Dataset().load(templatef.read())
+        testf.close()
+        templatef.close()
         return template.dict == test.dict
 
 
@@ -153,7 +157,97 @@ class SingleCycleProcessor_t(unittest.TestCase):
         Test against a program that covers all instructions to flex architecture
         simulation.
         """
-        raise NotImplementedError
+        full_program = [
+            0xE3A000FF,
+            0xE3A01001,
+            0xE1A02001,
+            0xE3A04C01,
+            0xE5840104,
+            0xE0803001,
+            0xE2814002,
+            0xE0024001,
+            0xE2034C01,
+            0xE0225003,
+            0xE0225001,
+            0xE3A04C01,
+            0xE5945104,
+            0xE3A00000,
+            0xE3A01000,
+            0xE3A02000,
+            0xE3A03000,
+            0xE3A04000,
+            0xE3A05000,
+            0xEAFFFFF0,
+            0xE2811019,
+            0xE2401001,
+            0xE0402001,
+            0xE3823008,
+            0xE1824000,
+            0xE3A05C02,
+            0xE5853000,
+            0xE1500000,
+            0x0AFFFFE9,
+            0xE0214002,
+            0xE5956000,
+            0xEBFFFFE9,
+            0xE3500000,
+            0x1AFFFFE6,
+            0xE3A01001,
+            0xE3A02000,
+            0xEAFFFFE1,
+            0xE3A01000,
+            0xE3A02000,
+            0xEAFFFFDE,
+            0xE0810002,
+            0xE0020190,
+            0xE0230192,
+            0xE1A0F00E
+        ]
+
+        msg_inspect = {
+            'inspect' : [
+                'clk',
+                'rst',
+                'wdb',
+                'pc4',
+                'branch',
+                'instr',
+                'pcsrc',
+                'pcwr',
+                'regsa',
+                'regdst',
+                'regwrs',
+                'regwr',
+                'exts',
+                'alus',
+                'aluflagwr',
+                'memwr',
+                'regsrc',
+                'wdbs',
+                'imm32',
+                'rd1',
+                'rd2',
+            ]
+        }
+
+        # generate JSON through simulation
+        if __name__ == '__main__':
+            resultPath = 'results\\'
+        else:
+            resultPath = 'simulation\\results\\'
+        resultPath = resultPath + 'single_cycle_full_result'
+        self._run_simulation(resultPath,full_program,60,msg_inspect)
+
+        #generate results in excel table for tracking
+        self._process_json_to_excel(resultPath,msg_inspect['inspect'])
+
+        #process results against template
+        if __name__ == '__main__':
+            templatePath = 'results\\'
+        else:
+            templatePath = 'simulation\\templates\\'
+        templatePath = templatePath + 'single_cycle_full_template'
+        self.assertTrue(self._compare_against_template(templatePath,resultPath))
 
 
 if __name__ == '__main__':
