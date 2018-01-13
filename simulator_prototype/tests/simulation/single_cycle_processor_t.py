@@ -12,6 +12,7 @@ import tablib
 import single_cycle_poc
 
 
+
 class SingleCycleProcessor_t(unittest.TestCase):
     """
     SingleCycle processor will be validated after simulation for a number of
@@ -87,25 +88,14 @@ class SingleCycleProcessor_t(unittest.TestCase):
         return template.dict == test.dict
 
 
-    def test_demo_program(self):
+    def _generic_test_procedure(self,filename,program):
         """
-        Test against a simple demo program to prove general operation
+        General form of complete simulation test procedure.
+         1) Runs simulation
+         2) Stores results in a JSON file
+         3) Generates an Excel file
+         4) Compares against template Excel file
         """
-        demo_program = [
-            0xE3A0800A,
-            0xE2889001,
-            0xE0090998,
-            0xE3A0A000,
-            0xE24AA020,
-            0xE019A00A,
-            0x0A000002,
-            0xE3A0B001,
-            0xE3A0C004,
-            0xE58CB000,
-            0xE59C6000,
-            0xEAFFFFFD
-        ]
-
         msg_inspect = {
             'inspect' : [
                 'clk',
@@ -137,8 +127,8 @@ class SingleCycleProcessor_t(unittest.TestCase):
             resultPath = 'results\\'
         else:
             resultPath = 'simulation\\results\\'
-        resultPath = resultPath + 'single_cycle_demo_result'
-        self._run_simulation(resultPath,demo_program,15,msg_inspect)
+        resultPath = resultPath + filename + '_result'
+        self._run_simulation(resultPath,program,15,msg_inspect)
 
         #generate results in excel table for tracking
         self._process_json_to_excel(resultPath,msg_inspect['inspect'])
@@ -148,8 +138,30 @@ class SingleCycleProcessor_t(unittest.TestCase):
             templatePath = 'results\\'
         else:
             templatePath = 'simulation\\templates\\'
-        templatePath = templatePath + 'single_cycle_demo_template'
-        self.assertTrue(self._compare_against_template(templatePath,resultPath))
+        templatePath = templatePath + filename + '_template'
+
+        return self._compare_against_template(templatePath,resultPath)
+
+
+    def test_demo_program(self):
+        """
+        Test against a simple demo program to prove general operation
+        """
+        demo_program = [
+            0xE3A0800A,
+            0xE2889001,
+            0xE0090998,
+            0xE3A0A000,
+            0xE24AA020,
+            0xE019A00A,
+            0x0A000002,
+            0xE3A0B001,
+            0xE3A0C004,
+            0xE58CB000,
+            0xE59C6000,
+            0xEAFFFFFD
+        ]
+        self.assertTrue(self._generic_test_procedure('single_cycle_demo',demo_program))
 
 
     def test_all_instruction_program(self):
@@ -204,50 +216,7 @@ class SingleCycleProcessor_t(unittest.TestCase):
             0xE1A0F00E
         ]
 
-        msg_inspect = {
-            'inspect' : [
-                'clk',
-                'rst',
-                'wdb',
-                'pc4',
-                'branch',
-                'instr',
-                'pcsrc',
-                'pcwr',
-                'regsa',
-                'regdst',
-                'regwrs',
-                'regwr',
-                'exts',
-                'alus',
-                'aluflagwr',
-                'memwr',
-                'regsrc',
-                'wdbs',
-                'imm32',
-                'rd1',
-                'rd2',
-            ]
-        }
-
-        # generate JSON through simulation
-        if __name__ == '__main__':
-            resultPath = 'results\\'
-        else:
-            resultPath = 'simulation\\results\\'
-        resultPath = resultPath + 'single_cycle_full_result'
-        self._run_simulation(resultPath,full_program,60,msg_inspect)
-
-        #generate results in excel table for tracking
-        self._process_json_to_excel(resultPath,msg_inspect['inspect'])
-
-        #process results against template
-        if __name__ == '__main__':
-            templatePath = 'results\\'
-        else:
-            templatePath = 'simulation\\templates\\'
-        templatePath = templatePath + 'single_cycle_full_template'
-        self.assertTrue(self._compare_against_template(templatePath,resultPath))
+        self.assertTrue(self._generic_test_procedure('single_cycle_full',full_program))
 
 
 if __name__ == '__main__':
