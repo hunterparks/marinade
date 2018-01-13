@@ -36,13 +36,28 @@ import json
 
 import single_cycle_poc
 
+demo_program = [
+    0xE3A0800A,
+    0xE2889001,
+    0xE0090998,
+    0xE3A0A000,
+    0xE24AA020,
+    0xE019A00A,
+    0x0A000002,
+    0xE3A0B001,
+    0xE3A0C004,
+    0xE58CB000,
+    0xE59C6000,
+    0xEAFFFFFD
+]
+
 
 if __name__ == "__main__":
 
 
     # single cycle prototype
     arch, hooks = single_cycle_poc.generate_single_cycle_architecture()
-    single_cycle_poc.program_single_cycle_architecture(arch)
+    single_cycle_poc.program_single_cycle_architecture(arch,demo_program)
 
     #test inspection message
 #    msg_inspect = {'inspect' : hooks.keys()}
@@ -73,7 +88,7 @@ if __name__ == "__main__":
     }
 
     #test file
-    tf = open('tests\simulation\single_cycle_data_output.txt', 'w')
+    tf = open('single_cycle_data_output.txt', 'w')
     tf.write('{"Run":[')
 
     count = 0

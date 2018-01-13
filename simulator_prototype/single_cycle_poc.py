@@ -38,7 +38,7 @@ from components.arm.controller_single_cycle import ControllerSingleCycle
 from architecture import Architecture
 
 
-def program_single_cycle_architecture(arch):
+def program_single_cycle_architecture(arch,program):
     "Provides a simple test program to run on architecture (for demo)"
 
     program_msg = {
@@ -46,28 +46,11 @@ def program_single_cycle_architecture(arch):
             'name' : 'progmem',
             'parameters' : {
                 'start' : 0,
-                'data' : [
-                    0xE3A0800A,
-                    0xE2889001,
-                    0xE0090998,
-                    0xE3A0A000,
-                    0xE24AA020,
-                    0xE019A00A,
-                    0x0A000002,
-                    0xE3A0B001,
-                    0xE3A0C004,
-                    0xE58CB000,
-                    0xE59C6000,
-                    0xEAFFFFFD
-                ]
+                'data' : program
             }
         }
     }
     res = arch.hook(program_msg)
-    print("Programming:")
-    print(program_msg)
-    print(res)
-    print('\n\n\n')
 
 
 def generate_single_cycle_architecture():
