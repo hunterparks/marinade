@@ -4,9 +4,12 @@ lists as constructed. This object is to be used by the simulator to run the
 processor and should be produced by the configuration parser
 """
 
+from collections import OrderedDict, Iterable
+
 from components.core.clock import Clock
 from components.core.reset import Reset
 
+from components.abstract.hooks import Hook, InputHook, InternalHook
 
 
 class Architecture:
@@ -29,6 +32,11 @@ class Architecture:
         self._main_reset = reset
 
         #set dictionary references
+        if not isinstance(hooks,OrderedDict):
+            raise TypeError('Hooks must be an ordered dictionary for search')
+        if not isinstance(entities,OrderedDict):
+            raise TypeError('Entites must be an ordered dictionary for search')
+
         self._hook_dict = hooks
         self._entity_dict = entities
 
@@ -45,23 +53,61 @@ class Architecture:
 
     def hook(self,message):
         "Returns objects messages from hook call"
+        #parameter check
+        if not isinstance(message,dict):
+            return {'architecture-hooks' : {'error' : 'invalid message type'}}
+
+        #match to message type
         ret_val = {}
         if 'inspect' in message:
             h_list = message['inspect']
-            for h in h_list:
-                ret_val.update({h : self._hook_dict[h].inspect()})
+            if isinstance(h_list,Iterable) and not isinstance(h_list,str):
+                for h in h_list:
+                    try:
+                        if isinstance(self._hook_dict[h],Hook):
+                            rmsg = self._hook_dict[h].inspect()
+                            ret_val.update({h : rmsg})
+                        else:
+                            ret_val.update({h : {'error' : 'hook is not of valid type'}})
+                    except KeyError:
+                        ret_val.update({h : {'error' : 'hook not in architecture'}})
+            else:
+                ret_val.update({'architecture-hooks-inspect' : {'error' : 'invalid message format'}})
+
         elif 'modify' in message:
             modify = message['modify']
-            name = modify['name']
-            self._hook_dict[name].modify(modify['parameters'])
-            ret_val.update({name : True})
+            try:
+                name = modify['name']
+            except KeyError:
+                ret_val.update({'architecture-hooks-modify' : {'error' : 'invalid message format'}})
+                return ret_val
+            try:
+                if isinstance(self._hook_dict[name],InternalHook):
+                    rmsg = self._hook_dict[name].modify(modify['parameters'])
+                    ret_val.update({name : rmsg})
+                else:
+                    ret_val.update({name : {'error' : 'hook is not of valid type'}})
+            except KeyError:
+                ret_val.update({name : {'error' : 'hook not in architecture'}})
+
         elif 'generate' in message:
             generate = message['generate']
-            name = generate['name']
-            self._hook_dict[name].generate(generate['parameters'])
-            ret_val.update({name : True})
+            try:
+                name = generate['name']
+            except KeyError:
+                ret_val.update({'architecture-hooks-generate' : {'error' : 'invalid message format'}})
+                return ret_val
+            try:
+                if isinstance(self._hook_dict[name],InputHook):
+                    rmsg = self._hook_dict[name].generate(generate['parameters'])
+                    ret_val.update({name : rmsg})
+                else:
+                    ret_val.update({name : {'error' : 'hook is not of valid type'}})
+            except KeyError:
+                ret_val.update({name : {'error' : 'hook not in architecture'}})
+
         else:
-            raise Exception('Message contents invalid')
+            ret_val.update({'architecture-hooks' : {'error' : 'invalid message format'}})
         return ret_val
 
 
@@ -73,22 +119,24 @@ class Architecture:
 
     def time_run(self,time=0,steps=1):
         "Runs a timing simulation"
-        while time < steps * self._time_step:
-            self.time_step(time)
-            time += self._time_step
-        return time
+        t = time
+        while t < (steps * self._time_step + time):
+            self.time_step(t)
+            t += self._time_step
+        return t
 
 
     def logic_run(self,time=0,steps=1):
         "Runs a logic simulation or one full clock cycle"
-        while time <  2 * steps * self._logic_step:
-            self.time_step(time)
-            time += self._logic_step
-        return time
+        t = time
+        while t <  (2 * steps * self._logic_step + time):
+            self.time_step(t)
+            t += self._logic_step
+        return t
 
 
     def reset(self):
         "Toggles the main reset to active state, runs a logic step"
         self._main_reset.generate({'reset' : True})
-        logic_run()
+        self.logic_run()
         self._main_reset.generate({'reset' : False})
