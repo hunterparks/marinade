@@ -32,7 +32,9 @@
     "electron": "npm run electron:dev:dynamic",
     "electron:dev": "npm run build; electron .",
     "electron:dev:dynamic": "concurrently \"npm run start\" \"electron . dynamic\"",
-    "electron:prod": "npm run build:prod; electron ."
+    "electron:prod": "npm run build:prod; electron .",
+    "docker:start": "docker start sentry-redis sentry-postgres sentry-web-01 sentry-worker-01 sentry-cron",
+    "docker:stop": "docker stop sentry-redis sentry-postgres sentry-web-01 sentry-worker-01 sentry-cron"
   },
   "private": true,
   "dependencies": {
