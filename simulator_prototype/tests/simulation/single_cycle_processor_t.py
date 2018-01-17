@@ -5,6 +5,7 @@ written to JSON files and Excel files.
 
 import unittest
 import sys
+import os
 sys.path.insert(0, '../../')
 
 import json
@@ -123,10 +124,7 @@ class SingleCycleProcessor_t(unittest.TestCase):
         }
 
         # generate JSON through simulation
-        if __name__ == '__main__':
-            resultPath = 'results\\'
-        else:
-            resultPath = 'simulation\\results\\'
+        resultPath = os.path.dirname(os.path.realpath(__file__)) + '\\results\\'
         resultPath = resultPath + filename + '_result'
         self._run_simulation(resultPath,program,15,msg_inspect)
 
@@ -134,10 +132,7 @@ class SingleCycleProcessor_t(unittest.TestCase):
         self._process_json_to_excel(resultPath,msg_inspect['inspect'])
 
         #process results against template
-        if __name__ == '__main__':
-            templatePath = 'results\\'
-        else:
-            templatePath = 'simulation\\templates\\'
+        templatePath = os.path.dirname(os.path.realpath(__file__)) + '\\templates\\'
         templatePath = templatePath + filename + '_template'
 
         return self._compare_against_template(templatePath,resultPath)
