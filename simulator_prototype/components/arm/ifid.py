@@ -113,7 +113,14 @@ class Ifid(Sequential):
         """
         Returns a dictionary message to the user
         """
-        return {'type': 'ifid', 'instrf': self._instrf.read(), 'instrd': self._instrd.read()}
+        return {'type': 'ifid register', 'state': self._instrd.read()}
+
+
+    def modify(self, data = None):
+        """
+        Return message noting that is register cannot be modified
+        """
+        return {'error': 'ifid register cannot be modified'}
 
 
     def run(self, time = None):

@@ -153,6 +153,9 @@ class Exmem(Sequential):
         self._enable = enable
         self._enable_type = enable_type
 
+        self._state = ExmemState(self._pcsrcm, self._regwrsm, self._regwrm, self._memwrm, 
+                                self._regsrcm, self._wd3sm, self._fm, self._rd2m, self._ra3m)
+
 
     def on_rising_edge(self):
         """
@@ -194,7 +197,14 @@ class Exmem(Sequential):
 
     def inspect(self):
         "Returns a dictionary message to the user"
-        pass
+        return {'type': 'exmem register', 'state': self._state}
+
+
+    def modify(self, data = None):
+        """
+        Return message noting that is register cannot be modified
+        """
+        return {'error' : 'exmem register cannot be modified'}
 
 
     def run(self, time = None):
@@ -213,3 +223,30 @@ class Exmem(Sequential):
             elif self._clk.read() == 0 and self._prev_clk_state == 1:
                 self.on_falling_edge()
         self._prev_clk_state = self._clk.read()
+
+
+class ExmemState():
+    """
+    Stores the exmem registers state
+    Used in the Exmem class's inspect method
+    Note: Do not make new instances of this class outside of the Exmem class
+    """
+
+    def __init__(self, pcsrcm, regwrsm, regwrm, memwrm, regsrcm, wd3sm, fm, rd2m, ra3m):
+        self._pcsrcm = pcsrcm
+        self._regwrsm = regwrsm
+        self._regwrm = regwrm
+        self._memwrm = memwrm
+        self._regsrcm = regsrcm
+        self._wd3sm = wd3sm
+        self._fm = fm
+        self._rd2m = rd2m
+        self._ra3m = ra3m
+
+
+    def get_state(self):
+        return {'pcsrcm': self._pcsrcm.read(), 'regwrsm': self._regwrsm.read(),
+                'regwrem': self._regwrm.read(), 'memwrm': self._memwrm.read(),
+                'regsrcm': self._regsrcm.read(), 'wd3sm': self._wd3sm.read(),
+                'fm': self._fm.read(), 'rd2m': self._rd2m.read(),
+                'ra3m': self._ra3m.read()}

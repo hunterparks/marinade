@@ -133,6 +133,9 @@ class Memwd(Sequential):
         self._enable = enable
         self._enable_type = enable_type
 
+        self._state = MemwbState(self._pcsrcw, self._regwrsw, self._regwrw, self._regsrcw, 
+                                self._wd3sw, self._fw, self._rdw, self._ra3w)
+
     
     def on_rising_edge(self):
         "Implements clock rising behavior: captures data if latch type matches"
@@ -167,7 +170,15 @@ class Memwd(Sequential):
 
     def inspect(self):
         "Returns a dictionary message to the user"
-        pass
+        return {'type': 'memwb register', 'state': self._state}
+
+
+    def modify(self, data = None):
+        """
+        Return message noting that is register cannot be modified
+        """
+        return {'error' : 'memwb register cannot be modified'}
+
 
     def run(self, time = None):
         "Timestep handler function - seeqeuntially asserts output"
@@ -185,3 +196,28 @@ class Memwd(Sequential):
             elif self._clk.read() == 0 and self._prev_clk_state == 1:
                 self.on_falling_edge()
         self._prev_clk_state = self._clk.read()
+
+
+class MemwbState():
+    """
+    Stores the exmem registers state
+    Used in the Exmem class's inspect method
+    Note: Do not make new instances of this class outside of the Exmem class
+    """
+
+    def __init__(self, pcsrcw, regwrsw, regwrw, regsrcw, wd3sw, fw, rdw, ra3w):
+        self._pcsrcw = pcsrcw
+        self._regwrsw = regwrsw
+        self._regwrw = regwrw
+        self._regsrcw = regsrcw
+        self._wd3sw = wd3sw
+        self._fw = fw
+        self._rdw = rdw
+        self._ra3w = ra3w
+
+
+    def get_state(self):
+        return {'pcsrcw': self._pcsrcw.read(), 'regwrsw': self._regwrsw.read(),
+                'regwrew': self._regwrw.read(), 'regsrcw': self._regsrcw.read(),
+                'wd3sw': self._wd3sw.read(), 'fw': self._fw.read(), 
+                'rdw': self._rdw.read(), 'ra3w': self._ra3w.read()}

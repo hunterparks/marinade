@@ -237,6 +237,11 @@ class Idex(Sequential):
         self._enable = enable
         self._enable_type = enable_type
 
+        self._state = IdexState(self._pcsrce, self._regwre, self._alusrcbe, self._aluse, 
+                                self._aluflagwre, self._memwre, self._regsrce, self._wd3se,
+                                self._rd1e, self._rd2e, self._imm32e, self._ra1e, self._ra2e,
+                                self._ra3e)
+
 
     def on_rising_edge(self):
         """
@@ -329,7 +334,14 @@ class Idex(Sequential):
         """
         Returns a dictionary message to the user
         """
-        pass
+        return {'type': 'idex register', 'state': self._state}
+
+
+    def modify(self, data = None):
+        """
+        Return message noting that is register cannot be modified
+        """
+        return {'error' : 'idex register cannot be modified'}
 
 
     def run(self, time = None):
@@ -350,3 +362,39 @@ class Idex(Sequential):
             elif self._clk.read() == 0 and self._prev_clk_state == 1:
                 self.on_falling_edge()
         self._prev_clk_state = self._clk.read()
+
+
+class IdexState():
+    """
+    Stores the idex registers state
+    Used in the Idex class's inspect method
+    Note: Do not make new instances of this class outside of the Idex class
+    """
+
+    def __init__(self, pcsrce, regwrse, regwre, alusrcbe, aluse, aluflagwre, memwre, regsrce,
+                wd3se, rd1e, rd2e, imm32e, ra1e, ra2e, ra3e):
+        self._pcsrce = pcsrce
+        self._regwrse = regwrse
+        self._regwre = regwre
+        self._alusrcbe = alusrcbe
+        self._aluse = aluse
+        self._aluflagwre = aluflagwre
+        self._memwre = memwre
+        self._regsrce = regsrce
+        self._wd3se = wd3se
+        self._rd1e = rd1e
+        self._rd2e = rd2e
+        self._imm32e = imm32e
+        self._ra1e = ra1e
+        self._ra2e = ra2e
+        self._ra3e = ra3e
+
+    def get_state(self):
+        return {'pcsrce': self._pcsrce.read(), 'regwrse': self._regwrse.read(),
+                'regwre': self._regwre.read(), 'alusrcbe': self._alusrcbe.read(),
+                'aluse': self._aluse.read(), 'aluflagwre': self._aluflagwre.read(),
+                'memwre': self._memwre.read(), 'regsrce': self._regsrce.read(),
+                'wd3se': self._wd3se.read(), 'rd1e': self._rd1e.read(),
+                'rd2e': self._rd2e.read(), 'imm32e': self._imm32e.read(),
+                'ra1e': self._ra1e.read(), 'ra2e': self._ra2e.read(),
+                'ra3e': self._ra3e.read()}
