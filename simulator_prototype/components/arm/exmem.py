@@ -12,7 +12,6 @@ class Exmem(Sequential):
     This specialized register sits between the decode and execute stages of the
     processor
     """
-
     def __init__(self, pcsrce, regwrse, regwre, memwre, regsrce, wd3se, rd2e, fe, ra3e, clk,
                 pcsrcm, regwrsm, regwrm, memwrm, regsrcm, wd3sm, fm, rd2m, ra3m,
                 edge_type = Latch_Type.RISING_EDGE, enable = None,
@@ -27,7 +26,7 @@ class Exmem(Sequential):
             wd3se: selects what data to write to the regfile
             rd2e: register value
             fe: output of execute stage
-            ra3e: register number or constant 14
+            ra3e: register number
             clk: clock
             enable: enables component (not typically used)
         outputs:
@@ -123,8 +122,10 @@ class Exmem(Sequential):
             raise ValueError('The ra3m bus must have a size of 4 bits')
         if not Latch_Type.valid(edge_type):
             raise ValueError('Invalid latch edge type')
-        if not isinstance(enable, iBusRead) or (enable is not None and enable.size() != 1):
-            raise ValueError('The enable input must have a size of 1 bit')
+        if not isinstance(enable, iBusRead) or enable is not None:
+            raise ValueError('The enable bus must be readable')
+        elif enable is not None and enable.size() != 1:
+            raise ValueError('The enable bus must have a size of 1 bit')
         if not Logic_States.valid(enable_type):
             raise ValueError('Invalid enable state')
 
@@ -157,7 +158,6 @@ class Exmem(Sequential):
         """
         Implements clock rising behavior: captures data if latch type matches
         """
-
         if self._edge_type == Latch_Type.RISING_EDGE or self._edge_type == Latch_Type.BOTH_EDGE:
             self._pcsrcm.write(self._pcsrce.read())
             self._regwrsm.write(self._regwrse.read())
@@ -198,5 +198,18 @@ class Exmem(Sequential):
 
 
     def run(self, time = None):
-        "Timestep handler function -sequentially asserts output"
-        pass
+        "Timestep handler function - sequentially asserts output"
+        # process enable line
+        e = True
+        if self._enable is not None:
+            if self._enable_type == Logic_States.ACTIVE_LOW:
+                e = self._enable_type.read() == 0
+            else:
+                e = self._enable.read() == 1          
+        # check for clock change
+        if e:
+            if self._clk.read() == 1 and self._prev_clk_state == 0:
+                self.on_rising_edge()
+            elif self._clk.read() == 0 and self._prev_clk_state == 1:
+                self.on_falling_edge()
+        self._prev_clk_state = self._clk.read()

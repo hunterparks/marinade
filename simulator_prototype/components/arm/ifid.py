@@ -57,8 +57,10 @@ class Ifid(Sequential):
             raise ValueError('Invalid latch edge type')
         if not Logic_States.valid(flush_type):
             raise ValueError('Invalid flush state')
-        if not isinstance(enable, iBusRead) or (enable is not None and enable.size() != 1):
-            raise ValueError('The enable input must have a size of 1 bit')
+        if not isinstance(enable, iBusRead) or enable is not None:
+            raise ValueError('The enable bus must be readable')
+        elif enable is not None and enable.size() != 1:
+            raise ValueError('The enable bus must have a size of 1 bit')
         if not Logic_States.valid(enable_type):
             raise ValueError('Invalid enable state')
 

@@ -193,8 +193,10 @@ class Idex(Sequential):
             raise ValueError('Invalid latch edge type')
         if not Logic_States.valid(flush_type):
             raise ValueError('Invalid flush state')
-        if not isinstance(enable, iBusRead) or (enable is not None and enable.size() != 1):
-            raise ValueError('The enable input must have a size of 1 bit')
+        if not isinstance(enable, iBusRead) or enable is not None:
+            raise ValueError('The enable bus must be readable')
+        elif enable is not None and enable.size() != 1:
+            raise ValueError('The enable bus must have a size of 1 bit')
         if not Logic_States.valid(enable_type):
             raise ValueError('Invalid enable state')
 
@@ -334,15 +336,13 @@ class Idex(Sequential):
         """
         Timestep handler function - sequentially asserts output
         """
-
         # process enable line
         e = True
         if self._enable is not None:
             if self._enable_type == Logic_States.ACTIVE_LOW:
                 e = self._enable_type.read() == 0
             else:
-                e = self._enable.read() == 1
-                
+                e = self._enable.read() == 1          
         # check for clock change
         if e:
             if self._clk.read() == 1 and self._prev_clk_state == 0:
