@@ -101,7 +101,7 @@ class Memory_t(unittest.TestCase):
 
     def test_modify(self):
         """
-        tests the memories modify function
+        tests the memory's modify function
         """
         a = Bus(32)
         wd = Bus(32)
@@ -120,7 +120,7 @@ class Memory_t(unittest.TestCase):
 
     def test_run(self):
         """
-        tests the memories run function
+        tests the memory's run function
         """
         a = Bus(32)
         wd = Bus(32)
