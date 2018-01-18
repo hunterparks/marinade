@@ -32,6 +32,7 @@ from components.core.logic_input import LogicInput
 from components.arm.alu import Alu
 from components.arm.memory import Memory
 from components.arm.extender import Extender
+from components.arm.program_memory import ProgramMemory
 from components.arm.register_file_wo_pc import RegisterFile_wo_PC
 from components.arm.controller_single_cycle import ControllerSingleCycle
 
@@ -65,8 +66,6 @@ def generate_single_cycle_architecture():
     hooks.update({'const8': Constant(32, 8)})
     hooks.update({'const4': Constant(32, 4)})
     hooks.update({'const14': Constant(4, 14)})
-    hooks.update({'pmd': LogicInput(32, 0)})
-    hooks.update({'pmwr': LogicInput(1, 0)})
 
     # define buses
     hooks.update({'pc': Bus(32, 0)})
@@ -130,8 +129,7 @@ def generate_single_cycle_architecture():
                                         edge_type=Latch_Type.FALLING_EDGE)})
     entities.update({'add8': Adder(32, hooks['pc'], hooks['const8'], hooks['pc8'])})
     entities.update({'add4': Adder(32, hooks['pc'], hooks['const4'], hooks['pc4'])})
-    entities.update({'progmem': Memory(hooks['pc'], hooks['pmd'], hooks['pmwr'],
-                                       hooks['clk'], hooks['rst'], hooks['instr'])})
+    entities.update({'progmem': ProgramMemory(hooks['pc'],hooks['rst'], hooks['clk'], hooks['instr'])})
 
     # DECODE
     entities.update({'instr_subset': BusSubset(hooks['instr'],

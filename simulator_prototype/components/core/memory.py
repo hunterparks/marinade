@@ -210,7 +210,10 @@ class Memory(MemoryBlock):
 
             # store data
             for i in range(0, len(data)):
-                self._write_word_to_memory(start + i, data[i])
+                b_index = (start - self._start_address + i) % (2**self._necessary_length)
+                if b_index + self._start_address < self._end_address:  # address is valid
+                    self._assigned_memory[b_index + self._start_address] = data[i]
+
             return {'success': True}
 
     def run(self, time=None):
@@ -224,6 +227,12 @@ class Memory(MemoryBlock):
             elif self._clock.read() == 0 and self._prev_clock_state == 1:
                 self.on_falling_edge()
         self._prev_clock_state = self._clock.read()
+
+        # check for reset event
+        if self._reset_type == Logic_States.ACTIVE_LOW and self._reset.read() == 0:
+            self.on_reset()
+        elif self._reset_type == Logic_States.ACTIVE_HIGH and self._reset.read() == 1:
+            self.on_reset()
 
         # read is asynchronous
         self._read.write(self._read_word_from_memory(self._address.read()))
