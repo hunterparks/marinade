@@ -8,8 +8,6 @@ from components.core.bus_subset import BusSubset
 from components.core.bus import Bus
 import math
 
-# TODO document and write unit test
-
 
 class ProgramMemory(Memory):
     """

@@ -22,7 +22,7 @@ from components.arm.alu import Alu
 from components.core.bus_subset import BusSubset
 from components.core.bus_join import BusJoin
 from components.core.constant import Constant
-from components.arm.memory import Memory
+from components.arm.data_memory import DataMemory
 from components.arm.extender import Extender
 from components.arm.controller_single_cycle import ControllerSingleCycle
 

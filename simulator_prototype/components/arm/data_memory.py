@@ -7,8 +7,6 @@ from components.core.bus_subset import BusSubset
 from components.core.bus import Bus
 import math
 
-# TODO document and write unit test
-
 
 class DataMemory(Memory):
     """
@@ -43,7 +41,9 @@ class DataMemory(Memory):
             memwr_type : Activation state for storing on write clock edge
         """
         # ghost memory on bus to lower needed bits
-        if default_size == 0:
+        if default_size < 0:
+            raise ValueError('Size must be within valid range')
+        elif default_size == 0:
             size = 0
         elif default_size < 2:
             size = 1
