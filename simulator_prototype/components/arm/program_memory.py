@@ -18,14 +18,24 @@ class ProgramMemory(Memory):
     not allow writes from inside the architecture.
 
     Note to program this memory use the modify functionality.
+
+    Note that address space is ghosted if the address bus is greater than the
+    size defined for the module.
     """
 
     def __init__(self, address, rst, clk, read, default_size=4096,
-                 default_value=0, edge_type=Latch_Type.FALLING_EDGE,
-                 rst_type=Logic_States.ACTIVE_HIGH,
-                 memwr_type=Logic_States.ACTIVE_HIGH):
+                 default_value=0, rst_type=Logic_States.ACTIVE_HIGH):
         """
+        Buses
+            address : word sized address bus to access program memory
+            rst : Reset bus to clear memory
+            clk : --ignored but must be valid
+            read : word sized bus with addressed instruction
 
+        Configuration
+            default_size : size of program memory space in bytes
+            default_value : byte value to load into unassigned memory cells
+            rst_type : Activation state for reset line
         """
         # disable write behavior
         self._wd_const = Constant(32, 0)
@@ -44,8 +54,8 @@ class ProgramMemory(Memory):
 
         # Construct generalized memory passing parameters
         Memory.__init__(self, default_size, 4, 0, self._address_general, self._wd_const,
-                        self._we_const, rst, clk, read, default_value, edge_type,
-                        rst_type, memwr_type)
+                        self._we_const, rst, clk, read, default_value, Latch_Type.FALLING_EDGE,
+                        rst_type, Logic_States.ACTIVE_HIGH)
 
     def run(self, time=None):
         """

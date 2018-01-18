@@ -30,8 +30,8 @@ from components.core.bus_subset import BusSubset
 from components.core.logic_input import LogicInput
 
 from components.arm.alu import Alu
-from components.arm.memory import Memory
 from components.arm.extender import Extender
+from components.arm.data_memory import DataMemory
 from components.arm.program_memory import ProgramMemory
 from components.arm.register_file_wo_pc import RegisterFile_wo_PC
 from components.arm.controller_single_cycle import ControllerSingleCycle
@@ -179,7 +179,7 @@ def generate_single_cycle_architecture():
                                                               hooks['v'], hooks['n'], hooks['z']], [(0, 1), (1, 2), (2, 3), (3, 4)])})
 
     # MEMORY & WRITE-BACK
-    entities.update({'datamem': Memory(hooks['aluf'], hooks['rd2'], hooks['memwr'],
+    entities.update({'datamem': DataMemory(hooks['aluf'], hooks['rd2'], hooks['memwr'],
                                        hooks['rst'], hooks['clk'], hooks['memrd'])})
     entities.update({'wdb_mux': Mux(32, [hooks['memrd'], hooks['aluf']],
                                     hooks['regsrc'], hooks['wdb'])})
