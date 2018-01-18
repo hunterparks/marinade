@@ -1,6 +1,10 @@
+import { HttpClientModule } from '@angular/common/http';
 import { ErrorHandler, NgModule } from '@angular/core';
+import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
+
 import * as Raven from 'raven-js';
+import { WebsocketService } from '../services/websocket.service';
 import { AppComponent } from './app.component';
 
 Raven
@@ -16,11 +20,16 @@ export class RavenErrorHandler implements ErrorHandler {
 @NgModule({
   bootstrap: [AppComponent],
   declarations: [
-    AppComponent
+    AppComponent,
   ],
   imports: [
-    BrowserModule
+    BrowserModule,
+    FormsModule,
+    HttpClientModule,
   ],
-  providers: [ { provide: ErrorHandler, useClass: RavenErrorHandler } ]
+  providers: [
+    WebsocketService,
+    { provide: ErrorHandler, useClass: RavenErrorHandler }
+  ]
 })
 export class AppModule { }
