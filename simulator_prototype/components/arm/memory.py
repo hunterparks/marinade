@@ -2,12 +2,11 @@
 ARM memory object for use in ARMv4 architecture
 """
 
-#TODO maybe we should generalize this class (-> Core) and then produce datamem and progmem components (-> arm)
+# TODO maybe we should generalize this class (-> Core) and then produce datamem and progmem components (-> arm)
 
 from components.abstract.ibus import iBusRead, iBusWrite
 from components.abstract.memory_block import MemoryBlock, Latch_Type, Logic_States
 import limits
-
 
 
 class Memory(MemoryBlock):
@@ -19,8 +18,8 @@ class Memory(MemoryBlock):
     0x81818181.
     """
 
-    def __init__(self, a, wd, memwr, rst, clk, rd, edge_type = Latch_Type.FALLING_EDGE,
-                rst_type = Logic_States.ACTIVE_LOW, memwr_type = Logic_States.ACTIVE_LOW):
+    def __init__(self, a, wd, memwr, rst, clk, rd, edge_type=Latch_Type.FALLING_EDGE,
+                 rst_type=Logic_States.ACTIVE_LOW, memwr_type=Logic_States.ACTIVE_LOW):
         """
         inputs:
             a: memory address
@@ -79,14 +78,12 @@ class Memory(MemoryBlock):
         self._memwr_type = memwr_type
         self._assigned_memory = {}
 
-
     def on_rising_edge(self):
         """
         implements clock rising behavior: captures data if latching type matches
         """
         if self._edge_type == Latch_Type.RISING_EDGE or self._edge_type == Latch_Type.BOTH_EDGE:
             self._assigned_memory[self._a.read()] = self._wd.read()
-
 
     def on_falling_edge(self):
         """
@@ -95,38 +92,35 @@ class Memory(MemoryBlock):
         if self._edge_type == Latch_Type.FALLING_EDGE or self._edge_type == Latch_Type.BOTH_EDGE:
             self._assigned_memory[self._a.read()] = self._wd.read()
 
-
     def on_reset(self):
         """
         wipes out all memory
         """
         self._assigned_memory = {}
 
-
     def inspect(self):
         """
         returns dictionary message to user
         """
-        #TODO printout memory when inspected
+        # TODO printout memory when inspected
         return {'type': 'memory', 'size': len(self._assigned_memory)}
-
 
     def modify(self, message):
         """
         allows for memory modification outside of the normal program flow
         """
-        #TODO this needs to return a JSON not an error
+        # TODO this needs to return a JSON not an error
 
         if 'start' not in message or 'data' not in message:
-            raise ValueError('The message argurment must be a dictionary that includes a "start" key and a "data" key')
+            raise ValueError(
+                'The message argurment must be a dictionary that includes a "start" key and a "data" key')
         start_address = message['start']
         modified_memory = message['data']
         offset = 0
         for data in modified_memory:
             self._assigned_memory[start_address + offset] = data
-            #TODO this needs to account for rollover for fixed size memory
+            # TODO this needs to account for rollover for fixed size memory
             offset = offset + 4
-
 
     def view_memory_address(self, address):
         """
@@ -137,8 +131,7 @@ class Memory(MemoryBlock):
         else:
             return self._assigned_memory[address]
 
-
-    def run(self, time = None):
+    def run(self, time=None):
         """
         allows the memory to operatate during normal program execution
         """

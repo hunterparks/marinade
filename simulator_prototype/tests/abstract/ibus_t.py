@@ -4,9 +4,8 @@ Test iBus, iBusRead, iBusWrite functionality
 
 import unittest
 import sys
-sys.path.insert(0,'../../')
+sys.path.insert(0, '../../')
 from components.abstract.ibus import iBus, iBusRead, iBusWrite
-
 
 
 class iBus_t(unittest.TestCase):

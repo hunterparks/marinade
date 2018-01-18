@@ -6,19 +6,18 @@ from components.abstract.ibus import iBusRead, iBusWrite
 from components.abstract.sequential import Sequential, Latch_Type, Logic_States
 
 
-
 class Idex(Sequential):
     """
     This specialized register sits between the decode and execute stages of the processor
     """
 
     def __init__(self, pcsrcd, regwrsd, regwrd, alusrcbd, alusd, aluflagwrd,
-                memwrd, regsrcd, wd3sd, rd1d, rd2d, imm32d, ra1d, ra2d, ra3d,
-                flush, clk, pcsrce, regwrse, regwre, alusrcbe, aluse, aluflagwre,
-                memwre, regsrce, wd3se, rd1e, rd2e, imm32e, ra1e, rd2e, imm32e,
-                ra1e, ra2e, ra3e, edge_type = Latch_Type.RISING_EDGE,
-                flush_type = Logic_States.ACTIVE_HIGH, enable = None,
-                enable_type = Logic_States.ACTIVE_HIGH):
+                 memwrd, regsrcd, wd3sd, rd1d, rd2d, imm32d, ra1d, ra2d, ra3d,
+                 flush, clk, pcsrce, regwrse, regwre, alusrcbe, aluse, aluflagwre,
+                 memwre, regsrce, wd3se, rd1e, rd2e, imm32e, ra1e, rd2e, imm32e,
+                 ra1e, ra2e, ra3e, edge_type=Latch_Type.RISING_EDGE,
+                 flush_type=Logic_States.ACTIVE_HIGH, enable=None,
+                 enable_type=Logic_States.ACTIVE_HIGH):
         """
         inputs:
             pcsrcd: selects the next instruction given to the fetch stage
@@ -235,7 +234,6 @@ class Idex(Sequential):
         self._enable = enable
         self._enable_type = enable_type
 
-
     def on_rising_edge(self):
         """
         Implements clock rising behavior: captures data if latch type matches
@@ -274,7 +272,6 @@ class Idex(Sequential):
                 self._ra1e.write(self._ra1d.read())
                 self._ra2e.write(self._ra2d.read())
                 self._ra3e.write(self._ra3d.read())
-
 
     def on_falling_edge(self):
         """
@@ -315,13 +312,11 @@ class Idex(Sequential):
                 self._ra2e.write(self._ra2d.read())
                 self._ra3e.write(self._ra3d.read())
 
-
     def on_reset(self):
         """
         Not used for this register
         """
         pass
-
 
     def insepct(self):
         """
@@ -329,8 +324,7 @@ class Idex(Sequential):
         """
         pass
 
-
-    def run(self, time = None):
+    def run(self, time=None):
         """
         Timestep handler function - sequentially asserts output
         """
@@ -342,7 +336,7 @@ class Idex(Sequential):
                 e = self._enable_type.read() == 0
             else:
                 e = self._enable.read() == 1
-                
+
         # check for clock change
         if e:
             if self._clk.read() == 1 and self._prev_clk_state == 0:

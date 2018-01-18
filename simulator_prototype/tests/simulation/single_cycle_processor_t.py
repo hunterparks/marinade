@@ -13,7 +13,6 @@ import tablib
 import single_cycle_poc
 
 
-
 class SingleCycleProcessor_t(unittest.TestCase):
     """
     SingleCycle processor will be validated after simulation for a number of
@@ -22,7 +21,7 @@ class SingleCycleProcessor_t(unittest.TestCase):
     """
 
     @staticmethod
-    def _run_simulation(filepath,program,cycles,inspect_msg):
+    def _run_simulation(filepath, program, cycles, inspect_msg):
         """
         Iterate through a logical simulation of processor for defined cycles.
         On each iteration capture using the defined message, save results to
@@ -31,13 +30,13 @@ class SingleCycleProcessor_t(unittest.TestCase):
         Note that an architecture program is just a list of machine-code
         """
 
-        #open json file
+        # open json file
         tf = open(filepath + '.json', 'w')
         tf.write('{"Run":[')
 
         # generate architecture / program
         arch, hooks = single_cycle_poc.generate_single_cycle_architecture()
-        single_cycle_poc.program_single_cycle_architecture(arch,program)
+        single_cycle_poc.program_single_cycle_architecture(arch, program)
 
         # run simulation
         count = 0
@@ -52,16 +51,15 @@ class SingleCycleProcessor_t(unittest.TestCase):
         tf.write(']}')
         tf.close()
 
-
     @staticmethod
-    def _process_json_to_excel(filepath,headers):
+    def _process_json_to_excel(filepath, headers):
         """
         Parse JSON file into excel table for comparison and visualization
         """
         data = tablib.Dataset()
         data.headers = headers
 
-        #parse input file
+        # parse input file
         with open(filepath + '.json', mode='r') as input_json_file:
             input_dict = json.loads(input_json_file.read())
 
@@ -73,9 +71,8 @@ class SingleCycleProcessor_t(unittest.TestCase):
         with open(filepath + '.xls', 'wb') as f:
             f.write(data.xls)
 
-
     @staticmethod
-    def _compare_against_template(templatePath,testPath):
+    def _compare_against_template(templatePath, testPath):
         """
         Compares two excel tables for same contents. Returns true if passes
         else false.
@@ -88,8 +85,7 @@ class SingleCycleProcessor_t(unittest.TestCase):
         templatef.close()
         return template.dict == test.dict
 
-
-    def _generic_test_procedure(self,filename,program):
+    def _generic_test_procedure(self, filename, program):
         """
         General form of complete simulation test procedure.
          1) Runs simulation
@@ -98,7 +94,7 @@ class SingleCycleProcessor_t(unittest.TestCase):
          4) Compares against template Excel file
         """
         msg_inspect = {
-            'inspect' : [
+            'inspect': [
                 'clk',
                 'rst',
                 'wdb',
@@ -126,17 +122,16 @@ class SingleCycleProcessor_t(unittest.TestCase):
         # generate JSON through simulation
         resultPath = os.path.dirname(os.path.realpath(__file__)) + '\\results\\'
         resultPath = resultPath + filename + '_result'
-        self._run_simulation(resultPath,program,15,msg_inspect)
+        self._run_simulation(resultPath, program, 15, msg_inspect)
 
-        #generate results in excel table for tracking
-        self._process_json_to_excel(resultPath,msg_inspect['inspect'])
+        # generate results in excel table for tracking
+        self._process_json_to_excel(resultPath, msg_inspect['inspect'])
 
-        #process results against template
+        # process results against template
         templatePath = os.path.dirname(os.path.realpath(__file__)) + '\\templates\\'
         templatePath = templatePath + filename + '_template'
 
-        return self._compare_against_template(templatePath,resultPath)
-
+        return self._compare_against_template(templatePath, resultPath)
 
     def test_demo_program(self):
         """
@@ -156,8 +151,7 @@ class SingleCycleProcessor_t(unittest.TestCase):
             0xE59C6000,
             0xEAFFFFFD
         ]
-        self.assertTrue(self._generic_test_procedure('single_cycle_demo',demo_program))
-
+        self.assertTrue(self._generic_test_procedure('single_cycle_demo', demo_program))
 
     def test_all_instruction_program(self):
         """
@@ -211,7 +205,7 @@ class SingleCycleProcessor_t(unittest.TestCase):
             0xE1A0F00E
         ]
 
-        self.assertTrue(self._generic_test_procedure('single_cycle_full',full_program))
+        self.assertTrue(self._generic_test_procedure('single_cycle_full', full_program))
 
 
 if __name__ == '__main__':

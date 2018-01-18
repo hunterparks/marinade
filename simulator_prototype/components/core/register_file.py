@@ -131,9 +131,9 @@ class RegisterFile(Sequential):
             return {'error' : 'expecting message to be provided'}
         elif 'data' not in message or 'start' not in message:
             return {'error' : 'invalid format for message'}
-
         start = message['start']
         data = message['data']
+        
         if not isinstance(start, int) or start < 0 or start >= self._num_reg:
             return {'error' : 'start index must be an integer in valid range'}
         elif not isinstance(data, list):

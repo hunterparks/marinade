@@ -13,3 +13,4 @@ from core.mux_t import Mux_t
 from core.register_t import Register_t
 from core.reset_t import Reset_t
 from core.register_file_t import RegisterFile_t
+from core.memory_t import Memory_t as Core_Memory_t

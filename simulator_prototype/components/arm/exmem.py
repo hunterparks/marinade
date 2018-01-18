@@ -6,7 +6,6 @@ from components.abstract.sequential import Sequential, Latch_Type, Logic_States
 from components.core.bus import iBusRead, iBusWrite
 
 
-
 class Exmem(Sequential):
     """
     This specialized register sits between the decode and execute stages of the
@@ -14,9 +13,9 @@ class Exmem(Sequential):
     """
 
     def __init__(self, pcsrce, regwrse, regwre, memwre, regsrce, wd3se, rd2e, fe, ra3e, clk,
-                pcsrcm, regwrsm, regwrm, memwrm, regsrcm, wd3sm, fm, rd2m, ra3m,
-                edge_type = Latch_Type.RISING_EDGE, enable = None,
-                enable_type = Logic_States.ACTIVE_HIGH):
+                 pcsrcm, regwrsm, regwrm, memwrm, regsrcm, wd3sm, fm, rd2m, ra3m,
+                 edge_type=Latch_Type.RISING_EDGE, enable=None,
+                 enable_type=Logic_States.ACTIVE_HIGH):
         """
         inputs:
             pcsrce: selects the instruction given to the fetch stage
@@ -152,7 +151,6 @@ class Exmem(Sequential):
         self._enable = enable
         self._enable_type = enable_type
 
-
     def on_rising_edge(self):
         """
         Implements clock rising behavior: captures data if latch type matches
@@ -168,7 +166,6 @@ class Exmem(Sequential):
             self._fm.write(self._fm.read())
             self._rd2m.write(self._rd2m.read())
             self._ra3m.write(self._ra3m.read())
-
 
     def on_falling_edge(self):
         """
@@ -186,17 +183,14 @@ class Exmem(Sequential):
             self._rd2m.write(self._rd2m.read())
             self._ra3m.write(self._ra3m.read())
 
-
     def on_reset(self):
         "Not used for this register"
         pass
-
 
     def inspect(self):
         "Returns a dictionary message to the user"
         pass
 
-
-    def run(self, time = None):
+    def run(self, time=None):
         "Timestep handler function -sequentially asserts output"
         pass

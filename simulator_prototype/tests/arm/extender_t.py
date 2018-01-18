@@ -9,7 +9,6 @@ from components.arm.extender import Extender
 from components.core.bus import Bus
 
 
-
 class Extender_t(unittest.TestCase):
     """
     Tests Extender's constructor and run functionality
@@ -36,7 +35,6 @@ class Extender_t(unittest.TestCase):
         exts = Bus(1)
         with self.assertRaises(ValueError):
             e = Extender(imm, exts, imm32)
-
 
     def test_run(self):
         """

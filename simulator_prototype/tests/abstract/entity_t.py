@@ -4,9 +4,8 @@ Test abstract component Entity
 
 import unittest
 import sys
-sys.path.insert(0,'../../')
+sys.path.insert(0, '../../')
 from components.abstract.entity import Entity
-
 
 
 class Entity_t(unittest.TestCase):

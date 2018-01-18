@@ -6,7 +6,6 @@ from components.abstract.combinational import Combinational
 from components.abstract.ibus import iBusRead, iBusWrite
 
 
-
 class Alu(Combinational):
     """
     ALU object operates on a and b word sized inputs. Operations are selected
@@ -28,12 +27,11 @@ class Alu(Combinational):
     ALUS_ADD_CMD = 0    # F = A + B
     ALUS_SUB_CMD = 1    # F = A - B
     ALUS_AND_CMD = 2    # F = A & B
-    ALUS_OR_CMD  = 3    # F = A | B
+    ALUS_OR_CMD = 3    # F = A | B
     ALUS_XOR_CMD = 4    # F = A ^ B
-    ALUS_A_CMD   = 5    # F = A
-    ALUS_B_CMD   = 6    # F = B
+    ALUS_A_CMD = 5    # F = A
+    ALUS_B_CMD = 6    # F = B
     ALUS_MUL_CMD = 7    # F = A * B
-
 
     def __init__(self, a, b, alus, f, c, v, n, z):
         """
@@ -91,9 +89,8 @@ class Alu(Combinational):
         self._n = n
         self._z = z
 
-
     @staticmethod
-    def _generate_f(alus,a,b):
+    def _generate_f(alus, a, b):
         """
         ALU result computed as indicated for the enumerated control signal.
         Note most significant bit triggers a write 1 regardless of lower bits.
@@ -114,12 +111,11 @@ class Alu(Combinational):
             return b
         elif alus == Alu.ALUS_MUL_CMD:
             return (a * b) & (2**32 - 1)
-        else: # generate 1
+        else:  # generate 1
             return 1
 
-
     @staticmethod
-    def _generate_c(alus,a,b):
+    def _generate_c(alus, a, b):
         """
         Carry result is 1 if overflow occurred during operation (add, sub)
         else 0.
@@ -127,11 +123,10 @@ class Alu(Combinational):
         operation = (alus == Alu.ALUS_ADD_CMD or alus == Alu.ALUS_SUB_CMD)
         a_msb = ((a & 0x80000000) >> 31)
         b_msb = ((b & 0x80000000) >> 31)
-        return 1 if operation and a_msb == 1 and b_msb  == 1 else 0
-
+        return 1 if operation and a_msb == 1 and b_msb == 1 else 0
 
     @staticmethod
-    def _generate_v(alus,a,b,f):
+    def _generate_v(alus, a, b, f):
         """
         Signed overflow returns 1 if during operation a sign change occurs
         else 0.
@@ -155,14 +150,12 @@ class Alu(Combinational):
 
         return retval
 
-
     @staticmethod
     def _generate_n(f):
         """
         Result is negative if two's compliment of f msb is 1 else 0
         """
         return (f & 0x80000000) >> 31
-
 
     @staticmethod
     def _generate_z(f):
@@ -171,19 +164,18 @@ class Alu(Combinational):
         """
         return 1 if f == 0 else 0
 
-
-    def run(self, time = None):
+    def run(self, time=None):
         "implements run functionality for the alu"
 
-        #sample input signals
+        # sample input signals
         a = self._a.read()
         b = self._b.read()
         alus = self._alus.read()
 
-        #output computed output signals
-        f = self._generate_f(alus,a,b)
+        # output computed output signals
+        f = self._generate_f(alus, a, b)
         self._f.write(f)
-        self._c.write(self._generate_c(alus,a,b))
-        self._v.write(self._generate_v(alus,a,b,f))
+        self._c.write(self._generate_c(alus, a, b))
+        self._v.write(self._generate_v(alus, a, b, f))
         self._n.write(self._generate_n(f))
         self._z.write(self._generate_z(f))

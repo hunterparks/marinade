@@ -4,9 +4,8 @@ Test abstract component Controller
 
 import unittest
 import sys
-sys.path.insert(0,'../../')
+sys.path.insert(0, '../../')
 from components.abstract.controller import Controller
-
 
 
 class Controller_t(unittest.TestCase):

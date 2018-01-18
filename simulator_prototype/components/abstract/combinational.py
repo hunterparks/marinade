@@ -6,6 +6,7 @@ entities for the architecture construction process.
 from abc import ABC, abstractmethod
 from components.abstract.entity import Entity
 
+
 class Combinational(Entity):
     """
     Interface to define a combinational logic compoent as distinct from

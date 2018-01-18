@@ -9,7 +9,6 @@ from components.arm.alu import Alu
 from components.core.bus import Bus
 
 
-
 class Alu_t(unittest.TestCase):
     """
     Tests Alu's constructor and run functionality
@@ -34,7 +33,6 @@ class Alu_t(unittest.TestCase):
         # test case 2
         with self.assertRaises(ValueError):
             test_alu = Alu(a, b, alus, c, f, v, n, z)
-
 
     def test_run(self):
         """

@@ -4,9 +4,8 @@ Test abstract hooks: Hook, InputHook, InternalHook, OutputHook
 
 import unittest
 import sys
-sys.path.insert(0,'../../')
+sys.path.insert(0, '../../')
 from components.abstract.hooks import Hook, InputHook, OutputHook, InternalHook
-
 
 
 class Hook_t(unittest.TestCase):
@@ -35,6 +34,7 @@ class OutputHook_t(unittest.TestCase):
     """
     Tests OutputHook interface for error on construction
     """
+
     def test_OutputHook(self):
         "Prove Constructor fails as abstract"
         with self.assertRaises(Exception):
