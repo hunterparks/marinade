@@ -6,7 +6,6 @@ from components.abstract.combinational import Combinational
 from components.abstract.ibus import iBusRead, iBusWrite
 
 
-
 class Extender(Combinational):
     """
     Extender object extends immediate field from instruction to word length for
@@ -38,8 +37,7 @@ class Extender(Combinational):
         self._exts = exts
         self._imm32 = imm32
 
-
-    def run(self, time = None):
+    def run(self, time=None):
         """
         exts = 0 for data processing instructions
         exts = 1 for load and store instructions

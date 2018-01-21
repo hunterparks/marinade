@@ -7,7 +7,6 @@ should be asserted at start of cycle.
 from abc import ABC, abstractmethod
 
 
-
 class Hook(ABC):
     """
     Abstract Hook interface to define application inspection
@@ -19,17 +18,15 @@ class Hook(ABC):
         return NotImplemented
 
 
-
 class InputHook(Hook):
     """
     Abstract Hook for module message generation
     """
 
     @abstractmethod
-    def generate(self,message=None):
+    def generate(self, message=None):
         "Hook method to generate signals to the rest of the network"
         return NotImplemented
-
 
 
 class OutputHook(Hook):
@@ -39,7 +36,6 @@ class OutputHook(Hook):
     pass
 
 
-
 class InternalHook(Hook):
     """
     Abstraction on Hook to define a subtype intended to be embedded inside
@@ -47,6 +43,6 @@ class InternalHook(Hook):
     """
 
     @abstractmethod
-    def modify(self,data=None):
+    def modify(self, data=None):
         "Hook method to modify internal data for element"
         return NotImplemented

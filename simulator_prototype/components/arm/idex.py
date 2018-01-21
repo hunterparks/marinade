@@ -6,19 +6,17 @@ from components.abstract.ibus import iBusRead, iBusWrite
 from components.abstract.sequential import Sequential, Latch_Type, Logic_States
 
 
-
 class Idex(Sequential):
     """
     This specialized register sits between the decode and execute stages of the processor
     """
 
     def __init__(self, pcsrcd, regwrsd, regwrd, alusrcbd, alusd, aluflagwrd,
-                memwrd, regsrcd, wd3sd, rd1d, rd2d, imm32d, ra1d, ra2d, ra3d,
-                flush, clk, pcsrce, regwrse, regwre, alusrcbe, aluse, aluflagwre,
-                memwre, regsrce, wd3se, rd1e, rd2e, imm32e, ra1e, rd2e, imm32e,
-                ra1e, ra2e, ra3e, edge_type = Latch_Type.RISING_EDGE,
-                flush_type = Logic_States.ACTIVE_HIGH, enable = None,
-                enable_type = Logic_States.ACTIVE_HIGH):
+                 memwrd, regsrcd, wd3sd, rd1d, rd2d, imm32d, ra1d, ra2d, ra3d,
+                 flush, clk, pcsrce, regwrse, regwre, alusrcbe, aluse, aluflagwre,
+                 memwre, regsrce, wd3se, rd1e, rd2e, imm32e, ra1e, ra2e, ra3e,
+                 edge_type=Latch_Type.RISING_EDGE, flush_type=Logic_States.ACTIVE_HIGH,
+                 enable=None, enable_type=Logic_States.ACTIVE_HIGH):
         """
         inputs:
             pcsrcd: selects the next instruction given to the fetch stage
@@ -220,6 +218,7 @@ class Idex(Sequential):
         self._prev_clk_state = self._clk.read()
         self._pcsrce = pcsrce
         self._regwre = regwre
+        self._regwrse = regwrse
         self._alusrcbe = alusrcbe
         self._aluse = aluse
         self._aluflagwre = aluflagwre
@@ -237,10 +236,10 @@ class Idex(Sequential):
         self._enable = enable
         self._enable_type = enable_type
 
-        self._state = IdexState(self._pcsrce, self._regwre, self._alusrcbe, self._aluse, 
-                                self._aluflagwre, self._memwre, self._regsrce, self._wd3se,
-                                self._rd1e, self._rd2e, self._imm32e, self._ra1e, self._ra2e,
-                                self._ra3e)
+        self._state = IdexState(self._pcsrce, self._regwrse, self._regwre, self._alusrcbe, 
+                                self._aluse, self._aluflagwre, self._memwre, self._regsrce, 
+                                self._wd3se, self._rd1e, self._rd2e, self._imm32e, self._ra1e,
+                                self._ra2e, self._ra3e)
 
 
     def on_rising_edge(self):
@@ -282,7 +281,6 @@ class Idex(Sequential):
                 self._ra2e.write(self._ra2d.read())
                 self._ra3e.write(self._ra3d.read())
 
-
     def on_falling_edge(self):
         """
         Implements clock falling behavior: captures data if latch type matches
@@ -322,13 +320,11 @@ class Idex(Sequential):
                 self._ra2e.write(self._ra2d.read())
                 self._ra3e.write(self._ra3d.read())
 
-
     def on_reset(self):
         """
         Not used for this register
         """
         pass
-
 
     def insepct(self):
         """
@@ -343,8 +339,7 @@ class Idex(Sequential):
         """
         return {'error' : 'idex register cannot be modified'}
 
-
-    def run(self, time = None):
+    def run(self, time=None):
         """
         Timestep handler function - sequentially asserts output
         """

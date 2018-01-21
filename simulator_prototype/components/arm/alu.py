@@ -1,11 +1,9 @@
 """
 ARM ALU object for use in ARMv4 architecture
 """
-#TODO refactor run to static functions
 
 from components.abstract.combinational import Combinational
 from components.abstract.ibus import iBusRead, iBusWrite
-
 
 
 class Alu(Combinational):
@@ -25,6 +23,15 @@ class Alu(Combinational):
     outputed. An external register is necessary to maintain state of condition
     signals.
     """
+
+    ALUS_ADD_CMD = 0    # F = A + B
+    ALUS_SUB_CMD = 1    # F = A - B
+    ALUS_AND_CMD = 2    # F = A & B
+    ALUS_OR_CMD = 3    # F = A | B
+    ALUS_XOR_CMD = 4    # F = A ^ B
+    ALUS_A_CMD = 5    # F = A
+    ALUS_B_CMD = 6    # F = B
+    ALUS_MUL_CMD = 7    # F = A * B
 
     def __init__(self, a, b, alus, f, c, v, n, z):
         """
@@ -82,80 +89,93 @@ class Alu(Combinational):
         self._n = n
         self._z = z
 
+    @staticmethod
+    def _generate_f(alus, a, b):
+        """
+        ALU result computed as indicated for the enumerated control signal.
+        Note most significant bit triggers a write 1 regardless of lower bits.
+        """
+        if alus == Alu.ALUS_ADD_CMD:
+            return (a + b) & (2**32 - 1)
+        elif alus == Alu.ALUS_SUB_CMD:
+            return (a - b) & (2**32 - 1)
+        elif alus == Alu.ALUS_AND_CMD:
+            return a & b
+        elif alus == Alu.ALUS_OR_CMD:
+            return a | b
+        elif alus == Alu.ALUS_XOR_CMD:
+            return a ^ b
+        elif alus == Alu.ALUS_A_CMD:
+            return a
+        elif alus == Alu.ALUS_B_CMD:
+            return b
+        elif alus == Alu.ALUS_MUL_CMD:
+            return (a * b) & (2**32 - 1)
+        else:  # generate 1
+            return 1
 
-    def run(self, time = None):
+    @staticmethod
+    def _generate_c(alus, a, b):
+        """
+        Carry result is 1 if overflow occurred during operation (add, sub)
+        else 0.
+        """
+        operation = (alus == Alu.ALUS_ADD_CMD or alus == Alu.ALUS_SUB_CMD)
+        a_msb = ((a & 0x80000000) >> 31)
+        b_msb = ((b & 0x80000000) >> 31)
+        return 1 if operation and a_msb == 1 and b_msb == 1 else 0
+
+    @staticmethod
+    def _generate_v(alus, a, b, f):
+        """
+        Signed overflow returns 1 if during operation a sign change occurs
+        else 0.
+        """
+        retval = 0
+        a_msb = (a & 0x80000000) >> 31
+        b_msb = (b & 0x80000000) >> 31
+        f_msb = (f & 0x80000000) >> 31
+
+        if alus == Alu.ALUS_ADD_CMD and a_msb == b_msb and f_msb != a_msb:
+            retval = 1
+        elif alus == Alu.ALUS_SUB_CMD and a_msb != b_msb and f_msb == b_msb:
+            retval = 1
+        elif alus == Alu.ALUS_MUL_CMD and a_msb == b_msb:
+            if f_msb != a_msb and a_msb == 0:
+                retval = 1
+            elif f_msb == a_msb and a_msb == 1:
+                retval = 1
+        else:
+            retval = 0
+
+        return retval
+
+    @staticmethod
+    def _generate_n(f):
+        """
+        Result is negative if two's compliment of f msb is 1 else 0
+        """
+        return (f & 0x80000000) >> 31
+
+    @staticmethod
+    def _generate_z(f):
+        """
+        Result is zero if f is zero
+        """
+        return 1 if f == 0 else 0
+
+    def run(self, time=None):
         "implements run functionality for the alu"
 
-        #TODO perhaps abstract the actual math operation and the identification?
-        if self._alus.read() == 0:
-            # bitwise add
-            self._f.write((self._a.read() + self._b.read()) & (2**32 - 1))
-            self.carry()
-            self.signed_overflow('add')
-        elif self._alus.read() == 1:
-            # bitwise subtract
-            self._f.write((self._a.read() - self._b.read()) & (2**32 - 1))
-            self.carry()
-            self.signed_overflow('sub')
-        elif self._alus.read() == 2:
-            # bitwise and
-            self._f.write(self._a.read() & self._b.read())
-        elif self._alus.read() == 3:
-            # bitwise or
-            self._f.write(self._a.read() | self._b.read())
-        elif self._alus.read() == 4:
-            # bitwise xor
-            self._f.write(self._a.read() ^ self._b.read())
-        elif self._alus.read() == 5:
-            # bitwise pass a
-            self._f.write(self._a.read())
-        elif self._alus.read() == 6:
-            # bitwise pass b
-            self._f.write(self._b.read())
-        elif self._alus.read() == 7:
-            # bitwise multiplication
-            self._f.write((self._a.read() * self._b.read()) & (2**32 - 1))
-            self.signed_overflow('mul')
-        else:
-            # generate 1
-            self._f.write(1)
+        # sample input signals
+        a = self._a.read()
+        b = self._b.read()
+        alus = self._alus.read()
 
-        # negative
-        self._n.write(self._f.read() >> 31)
-
-        # zero
-        if self._f.read() == 0:
-            self._z.write(1)
-        else:
-            self._z.write(0)
-
-    def carry(self):
-        #TODO perhaps write these as static methods
-        if self._a.read() >> 31 and self._b.read() >> 31:
-            self._c.write(1)
-        else:
-            self._c.write(0)
-
-    def signed_overflow(self, operation):
-        #TODO perhaps write these as static methods
-        if operation == 'add':
-            if self._a.read() >> 31 == self._b.read() >> 31:
-                if self._f.read() >> 31 != self._a.read() >> 31:
-                    self._v.write(1)
-            else:
-                self._v.write(0)
-        elif operation == 'subtract' or operation == 'sub':
-            if self._a.read() >> 31 != self._b.read() >> 31:
-                if self._f.read() >> 31 == self._b.read() >> 31:
-                    self._v.write(1)
-            else:
-                self._v.write(0)
-        elif operation == 'multiply' or operation == 'mul':
-            if self._a.read() >> 31 == self._b.read() >> 31 and self._a.read() >> 31 == 0:
-                if self._f.read() >> 31 != self._a.read() >> 31:
-                    self._v.write(1)
-            elif self._a.read() >> 31 == self._b.read() >> 31 and self._a.read() >> 31 == 1:
-                if self._f.read() >> 31 == self._a.read() >> 31:
-                    self._v.write(1)
-            else:
-                self._v.write(0)
+        # output computed output signals
+        f = self._generate_f(alus, a, b)
+        self._f.write(f)
+        self._c.write(self._generate_c(alus, a, b))
+        self._v.write(self._generate_v(alus, a, b, f))
+        self._n.write(self._generate_n(f))
+        self._z.write(self._generate_z(f))

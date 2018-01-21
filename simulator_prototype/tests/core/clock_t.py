@@ -4,10 +4,9 @@ Tests core component Clock
 
 import unittest
 import sys
-sys.path.insert(0,'../../')
+sys.path.insert(0, '../../')
 from components.core.clock import Clock
 import limits
-
 
 
 class Clock_t(unittest.TestCase):
@@ -29,17 +28,16 @@ class Clock_t(unittest.TestCase):
 
         valid_f = (limits.MAX_FREQUENCY - limits.MIN_FREQUENCY) / 2
         with self.assertRaises(TypeError):
-            l = Clock(valid_f,'8')
+            l = Clock(valid_f, '8')
         with self.assertRaises(TypeError):
-            l = Clock(valid_f,-1)
+            l = Clock(valid_f, -1)
         with self.assertRaises(TypeError):
-            l = Clock(valid_f,2)
+            l = Clock(valid_f, 2)
 
-        l = Clock(limits.MIN_FREQUENCY,1)
+        l = Clock(limits.MIN_FREQUENCY, 1)
         self.assertTrue(l.size() == 1 and l.read() == 1 and l.frequency() == limits.MIN_FREQUENCY)
-        l= Clock(limits.MAX_FREQUENCY)
+        l = Clock(limits.MAX_FREQUENCY)
         self.assertTrue(l.size() == 1 and l.read() == 0 and l.frequency() == limits.MAX_FREQUENCY)
-
 
     def test_inspect(self):
         "Check inspect for valid data presentation"
@@ -49,7 +47,6 @@ class Clock_t(unittest.TestCase):
         self.assertTrue(ins['size'] == 1)
         self.assertTrue(ins['state'] == 0)
         self.assertTrue(ins['frequency'] == 10)
-
 
     def test_generate(self):
         "Check generate handler for valid and invalid message"
@@ -64,25 +61,25 @@ class Clock_t(unittest.TestCase):
         self.assertTrue('error' in rm)
 
         m = {
-            'state' : '0'
+            'state': '0'
         }
         rm = l.generate(m)
         self.assertTrue('error' in rm)
 
         m = {
-            'state' : -1
+            'state': -1
         }
         rm = l.generate(m)
         self.assertTrue('error' in rm)
 
         m = {
-            'state' : 2
+            'state': 2
         }
         rm = l.generate(m)
         self.assertTrue('error' in rm)
 
         m = {
-            'state' : 1
+            'state': 1
         }
         rm = l.generate(m)
         self.assertTrue('success' in rm and rm['success'])
@@ -90,42 +87,33 @@ class Clock_t(unittest.TestCase):
         self.assertTrue(l.read() == 1)
 
         m = {
-            'frequency' : limits.MAX_FREQUENCY + 1
+            'frequency': limits.MAX_FREQUENCY + 1
         }
         rm = l.generate(m)
         self.assertTrue('error' in rm)
 
         m = {
-            'frequency' : limits.MIN_FREQUENCY - 1
+            'frequency': limits.MIN_FREQUENCY - 1
         }
         rm = l.generate(m)
         self.assertTrue('error' in rm)
 
         m = {
-            'frequency' : '0'
+            'frequency': '0'
         }
         rm = l.generate(m)
         self.assertTrue('error' in rm)
 
         m = {
-            'frequency' : '0',
-            'state' : '0'
+            'frequency': '0',
+            'state': '0'
         }
         rm = l.generate(m)
         self.assertTrue('error' in rm)
 
         m = {
-            'frequency' : 10,
-            'state' : '0'
-        }
-        rm = l.generate(m)
-        self.assertTrue('error' in rm)
-        self.assertFalse(l.frequency() == 10)
-        self.assertTrue(l.read() == 1)
-
-        m = {
-            'frequency' : '10',
-            'state' : 0
+            'frequency': 10,
+            'state': '0'
         }
         rm = l.generate(m)
         self.assertTrue('error' in rm)
@@ -133,20 +121,27 @@ class Clock_t(unittest.TestCase):
         self.assertTrue(l.read() == 1)
 
         m = {
-            'frequency' : 10,
-            'state' : 0
+            'frequency': '10',
+            'state': 0
+        }
+        rm = l.generate(m)
+        self.assertTrue('error' in rm)
+        self.assertFalse(l.frequency() == 10)
+        self.assertTrue(l.read() == 1)
+
+        m = {
+            'frequency': 10,
+            'state': 0
         }
         rm = l.generate(m)
         self.assertTrue('success' in rm and rm['success'])
         self.assertTrue(l.frequency() == 10)
         self.assertTrue(l.read() == 0)
 
-
     def test_read(self):
         "Valid data on read"
         l = Clock(10)
         self.assertTrue(l.read() == 0)
-
 
     def test_write(self):
         "Exception expected on write"
@@ -155,16 +150,14 @@ class Clock_t(unittest.TestCase):
         with self.assertRaises(Exception):
             l.write(1)
 
-
     def test_size(self):
         "Valid bus size presented"
         l = Clock(50)
         self.assertTrue(l.size() == 1)
 
-
     def test_run(self):
         "Verifies correct time based simulation"
-        c = Clock(1,0) # 1Hz
+        c = Clock(1, 0)  # 1Hz
 
         c.run(0)
         self.assertTrue(c.read() == 0)

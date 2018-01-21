@@ -10,12 +10,13 @@ whether that be per fastest clock or faster. (Recall Nyquist 2f_comp = f_arch)
 
 from abc import ABC, abstractmethod
 
+
 class Entity(ABC):
     """
     Entity is interface to define the architecture simulation functionality
     """
 
     @abstractmethod
-    def run(self,time):
+    def run(self, time):
         "Implement this in each concrete child to run in the architecture"
         return NotImplemented

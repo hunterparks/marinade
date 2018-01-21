@@ -1,7 +1,8 @@
 import unittest
 import sys
-sys.path.insert(0,'../../')
+sys.path.insert(0, '../../')
 from components.core.reset import Reset
+
 
 class Reset_t(unittest.TestCase):
 
@@ -15,9 +16,8 @@ class Reset_t(unittest.TestCase):
             l = Reset(2)
         l = Reset(1)
         self.assertTrue(l.size() == 1 and l.read() == 1)
-        l= Reset()
+        l = Reset()
         self.assertTrue(l.size() == 1 and l.read() == 0)
-        
 
     def test_inspect(self):
         "Check inspect for valid data presentation"
@@ -26,7 +26,6 @@ class Reset_t(unittest.TestCase):
         self.assertTrue(ins['type'] == 'reset')
         self.assertTrue(ins['size'] == 1)
         self.assertTrue(ins['state'] == 1)
-
 
     def test_generate(self):
         "Check generate handler for valid and invalid message"
@@ -41,25 +40,25 @@ class Reset_t(unittest.TestCase):
         self.assertTrue('error' in rm)
 
         m = {
-            'state' : '0'
+            'state': '0'
         }
         rm = l.generate(m)
         self.assertTrue('error' in rm)
 
         m = {
-            'state' : -1
+            'state': -1
         }
         rm = l.generate(m)
         self.assertTrue('error' in rm)
 
         m = {
-            'state' : 2
+            'state': 2
         }
         rm = l.generate(m)
         self.assertTrue('error' in rm)
 
         m = {
-            'state' : 1
+            'state': 1
         }
         rm = l.generate(m)
         self.assertTrue('success' in rm and rm['success'])
@@ -67,25 +66,23 @@ class Reset_t(unittest.TestCase):
         self.assertTrue(l.read() == 1)
 
         m = {
-            'reset' : False
+            'reset': False
         }
         rm = l.generate(m)
         self.assertTrue('success' in rm and rm['success'])
         self.assertTrue(l.read() == 0)
 
         m = {
-            'reset' : True
+            'reset': True
         }
         rm = l.generate(m)
         self.assertTrue('success' in rm and rm['success'])
         self.assertTrue(l.read() == 1)
-
 
     def test_read(self):
         "Valid data on read"
         l = Reset()
         self.assertTrue(l.read() == 0)
-
 
     def test_write(self):
         "Exception expected on write"
@@ -93,7 +90,6 @@ class Reset_t(unittest.TestCase):
 
         with self.assertRaises(Exception):
             l.write(1)
-
 
     def test_size(self):
         "Valid bus size presented"

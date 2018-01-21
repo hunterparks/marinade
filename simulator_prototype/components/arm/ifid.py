@@ -6,15 +6,14 @@ from components.abstract.ibus import iBusRead, iBusWrite
 from components.abstract.sequential import Sequential, Latch_Type, Logic_States
 
 
-
 class Ifid(Sequential):
     """
     This specialized register sits between the fetch and decode stages of the processor
     """
 
-    def __init__(self, instrf, stall, flush, clk, instrd, default_state = 0,
-                edge_type = Latch_Type.RISING_EDGE, flush_type = Logic_States.ACTIVE_HIGH,
-                enable = None, enable_type = Logic_States.ACTIVE_HIGH):
+    def __init__(self, instrf, stall, flush, clk, instrd, default_state=0,
+                 edge_type=Latch_Type.RISING_EDGE, flush_type=Logic_States.ACTIVE_HIGH,
+                 enable=None, enable_type=Logic_States.ACTIVE_HIGH):
         """
         inputs:
             instrf: the fetched instruction
@@ -77,7 +76,6 @@ class Ifid(Sequential):
         self._enable = enable
         self._enable_type = enable_type
 
-
     def on_rising_edge(self):
         """
         Implements clock rising behavior: captures data if latching type matches
@@ -88,7 +86,6 @@ class Ifid(Sequential):
                 self._instrd.write(0)
             else:
                 self._instrd.write(self._instrf.read())
-
 
     def on_falling_edge(self):
         """
@@ -101,13 +98,11 @@ class Ifid(Sequential):
             else:
                 self._instrd.write(self._instrf.read())
 
-
     def on_reset(self):
         """
         Not used for this register
         """
         pass
-
 
     def inspect(self):
         """
@@ -122,8 +117,7 @@ class Ifid(Sequential):
         """
         return {'error': 'ifid register cannot be modified'}
 
-
-    def run(self, time = None):
+    def run(self, time=None):
         """
         Timestep handler function - sequentially asserts output
         """

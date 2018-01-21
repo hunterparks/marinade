@@ -1,4 +1,6 @@
-
+"""
+Test arm component ControllerSingleCycle
+"""
 
 import unittest
 import sys
@@ -6,7 +8,11 @@ sys.path.insert(0, '../../')
 from components.arm.controller_single_cycle import ControllerSingleCycle
 from components.core.bus import Bus
 
+
 class ControllerSingleCycle_t(unittest.TestCase):
+    """
+    Test ControllerSingleCycle's constructor, run and hook functionality
+    """
 
     def test_constructor(self):
         "tests 4 bad constructors - not all possible constructors tested"
@@ -355,10 +361,11 @@ class ControllerSingleCycle_t(unittest.TestCase):
                                     regdst, regwrs, regwr, exts, alusrcb, alus, aluflagwr, memwr,
                                     regsrc, wd3s)
         mod = scc.modify(None)
-        self.assertTrue('error' in mod) #modify is not implemented for controller
+        self.assertTrue('error' in mod)  # modify is not implemented for controller
 
-        mod = scc.modify({'state' : 0})
-        self.assertTrue('error' in mod) #modify is not implemented for controller
+        mod = scc.modify({'state': 0})
+        self.assertTrue('error' in mod)  # modify is not implemented for controller
+
 
 if __name__ == '__main__':
     unittest.main()

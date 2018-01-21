@@ -6,7 +6,6 @@ from components.core.register_file import RegisterFile as _RegisterFile
 from components.core.register_file import Latch_Type, Logic_States
 
 
-
 class RegisterFile_wo_PC(_RegisterFile):
     """
     ARM specific register file of length 16 with bit-width of 32.
@@ -14,9 +13,9 @@ class RegisterFile_wo_PC(_RegisterFile):
     Note that this component is a wrapper on core component
     """
 
-    def __init__(self,clock,reset,write_enable, write_data, a1, a2, a3, rd1, rd2,
-                 edge_type = Latch_Type.RISING_EDGE, reset_type = Logic_States.ACTIVE_HIGH,
-                 enable_type = Logic_States.ACTIVE_HIGH):
+    def __init__(self, clock, reset, write_enable, write_data, a1, a2, a3, rd1, rd2,
+                 edge_type=Latch_Type.RISING_EDGE, reset_type=Logic_States.ACTIVE_HIGH,
+                 enable_type=Logic_States.ACTIVE_HIGH):
         """
             Constructor will check for valid parameters, exception thrown on invalid
 
@@ -35,6 +34,6 @@ class RegisterFile_wo_PC(_RegisterFile):
                 reset_type : Register reset signal active (for all)
                 enable_type : Register file write enable active state
         """
-        _RegisterFile.__init__(self,16,32,clock,reset,a3,write_data,[a1,a2],
-                               [rd1,rd2],write_enable,0,edge_type,reset_type,
+        _RegisterFile.__init__(self, 16, 32, clock, reset, a3, write_data, [a1, a2],
+                               [rd1, rd2], write_enable, 0, edge_type, reset_type,
                                enable_type)

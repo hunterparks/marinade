@@ -1,18 +1,27 @@
+"""
+Tests arm component Extender
+"""
+
 import unittest
 import sys
 sys.path.insert(0, '../../')
 from components.arm.extender import Extender
 from components.core.bus import Bus
 
+
 class Extender_t(unittest.TestCase):
+    """
+    Tests Extender's constructor and run functionality
+    """
 
     def test_constructor(self):
-        '''
+        """
         tests 3 bad constructors - all possible bad constructors tested
-        ''' 
+        """
+
         imm = Bus(23)
         exts = Bus(2)
-        imm32 = Bus(32) 
+        imm32 = Bus(32)
         # test case 1
         with self.assertRaises(ValueError):
             e = Extender(imm, exts, imm32)
@@ -28,9 +37,10 @@ class Extender_t(unittest.TestCase):
             e = Extender(imm, exts, imm32)
 
     def test_run(self):
-        '''
+        """
         tests the enxtender's run function
-        '''
+        """
+
         imm = Bus(24)
         imm32 = Bus(32)
         exts = Bus(2)
@@ -54,6 +64,7 @@ class Extender_t(unittest.TestCase):
         imm.write(0b100000000001001111101000)
         e.run()
         self.assertEqual(imm32.read(), 0b11111110000000000100111110100000)
+
 
 if __name__ == '__main__':
     unittest.main()
