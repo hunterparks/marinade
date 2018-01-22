@@ -6,6 +6,7 @@ import * as Raven from 'raven-js';
 import { AppComponent } from './app.component';
 import { WebsocketService } from './services/websocket.service';
 import { SentrySettings } from './settings/sentry/local.sentry.settings';
+import { SimulatorComponent } from './components/pages/simulator/simulator.component';
 
 Raven.config(SentrySettings.getURL()).install();
 Raven.setTagsContext({
@@ -23,6 +24,7 @@ export class RavenErrorHandler implements ErrorHandler {
   bootstrap: [AppComponent],
   declarations: [
     AppComponent,
+    SimulatorComponent,
   ],
   imports: [
     BrowserModule,
@@ -31,7 +33,7 @@ export class RavenErrorHandler implements ErrorHandler {
   ],
   providers: [
     WebsocketService,
-    { provide: ErrorHandler, useClass: RavenErrorHandler }
+    // { provide: ErrorHandler, useClass: RavenErrorHandler }
   ]
 })
 export class AppModule { }
