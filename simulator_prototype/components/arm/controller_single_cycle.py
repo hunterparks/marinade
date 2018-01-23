@@ -379,7 +379,7 @@ class ControllerSingleCycle(Controller):
         """
         WDS3 <= '1' when a bl instruction is run else '0'
         """
-        if op == 0b10 and ((funct & 0b010000) >> 4) == 0b1:  # NOTE changed shift
+        if op == 0b10 and ((funct & 0b010000) >> 4) == 0b1:
             return 0b1
         else:
             return 0b0
