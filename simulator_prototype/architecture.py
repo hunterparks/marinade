@@ -52,8 +52,69 @@ class Architecture:
 
         self._time_step = time_step
 
+    def inspect(self, message):
+        "Returns object's messages from hook call"
+        ret_val = {}
+        if isinstance(message, Iterable) and not isinstance(message, str):
+            for h in message:
+                try:
+                    if isinstance(self._hook_dict[h], Hook):
+                        rmsg = self._hook_dict[h].inspect()
+                        ret_val.update({h: rmsg})
+                    else:
+                        ret_val.update({h: {'error': 'hook is not of valid type'}})
+                except KeyError:
+                    ret_val.update({h: {'error': 'hook not in architecture'}})
+        else:
+            ret_val.update({'architecture-hooks-inspect': {'error': 'invalid message format'}})
+        return ret_val
+
+    def modify(self, message):
+        "Returns object's messages from hook call"
+        # parameter check
+        if not isinstance(message, dict):
+            return {'architecture-modify': {'error': 'invalid message type'}}
+
+        ret_val = {}
+        try:
+            name = message['name']
+        except KeyError:
+            ret_val.update({'architecture-hooks-modify': {'error': 'invalid message format'}})
+            return ret_val
+        try:
+            if isinstance(self._hook_dict[name], InternalHook):
+                rmsg = self._hook_dict[name].modify(message['parameters'])
+                ret_val.update({name: rmsg})
+            else:
+                ret_val.update({name: {'error': 'hook is not of valid type'}})
+        except KeyError:
+            ret_val.update({name: {'error': 'hook not in architecture'}})
+        return ret_val
+
+    def generate(self, message):
+        "Returns object's messages from hook call"
+        # parameter check
+        if not isinstance(message, dict):
+            return {'architecture-modify': {'error': 'invalid message type'}}
+
+        ret_val = {}
+        try:
+            name = message['name']
+        except KeyError:
+            ret_val.update({'architecture-hooks-generate': {'error': 'invalid message format'}})
+            return ret_val
+        try:
+            if isinstance(self._hook_dict[name], InputHook):
+                rmsg = self._hook_dict[name].generate(message['parameters'])
+                ret_val.update({name: rmsg})
+            else:
+                ret_val.update({name: {'error': 'hook is not of valid type'}})
+        except KeyError:
+            ret_val.update({name: {'error': 'hook not in architecture'}})
+        return ret_val
+
     def hook(self, message):
-        "Returns objects messages from hook call"
+        "Returns object's messages from hook call"
         # parameter check
         if not isinstance(message, dict):
             return {'architecture-hooks': {'error': 'invalid message type'}}
@@ -61,52 +122,11 @@ class Architecture:
         # match to message type
         ret_val = {}
         if 'inspect' in message:
-            h_list = message['inspect']
-            if isinstance(h_list, Iterable) and not isinstance(h_list, str):
-                for h in h_list:
-                    try:
-                        if isinstance(self._hook_dict[h], Hook):
-                            rmsg = self._hook_dict[h].inspect()
-                            ret_val.update({h: rmsg})
-                        else:
-                            ret_val.update({h: {'error': 'hook is not of valid type'}})
-                    except KeyError:
-                        ret_val.update({h: {'error': 'hook not in architecture'}})
-            else:
-                ret_val.update({'architecture-hooks-inspect': {'error': 'invalid message format'}})
-
+            ret_val = self.inspect(message['inspect'])
         elif 'modify' in message:
-            modify = message['modify']
-            try:
-                name = modify['name']
-            except KeyError:
-                ret_val.update({'architecture-hooks-modify': {'error': 'invalid message format'}})
-                return ret_val
-            try:
-                if isinstance(self._hook_dict[name], InternalHook):
-                    rmsg = self._hook_dict[name].modify(modify['parameters'])
-                    ret_val.update({name: rmsg})
-                else:
-                    ret_val.update({name: {'error': 'hook is not of valid type'}})
-            except KeyError:
-                ret_val.update({name: {'error': 'hook not in architecture'}})
-
+            ret_val = self.modify(message['modify'])
         elif 'generate' in message:
-            generate = message['generate']
-            try:
-                name = generate['name']
-            except KeyError:
-                ret_val.update({'architecture-hooks-generate': {'error': 'invalid message format'}})
-                return ret_val
-            try:
-                if isinstance(self._hook_dict[name], InputHook):
-                    rmsg = self._hook_dict[name].generate(generate['parameters'])
-                    ret_val.update({name: rmsg})
-                else:
-                    ret_val.update({name: {'error': 'hook is not of valid type'}})
-            except KeyError:
-                ret_val.update({name: {'error': 'hook not in architecture'}})
-
+            ret_val = self.generate(message['generate'])
         else:
             ret_val.update({'architecture-hooks': {'error': 'invalid message format'}})
         return ret_val

@@ -89,6 +89,119 @@ class Architecture_t(unittest.TestCase):
         # construct valid architecture with contents
         arch = Architecture(0.25, hooks['clk'], hooks['rst'], hooks, entities)
 
+    def test_inspect(self):
+        """
+        Test inspect interface for valid object inspection
+        """
+        arch, hooks, entities = self._generate_architecture()
+
+        # valid case
+        rmsg = arch.inspect(hooks)
+        self.assertEqual(rmsg['reg']['state'], 255)
+        self.assertEqual(rmsg['clk']['state'], 0)
+        self.assertEqual(rmsg['rst']['state'], 0)
+        self.assertEqual(rmsg['d_bus']['state'], 0)
+        self.assertEqual(rmsg['q_bus']['state'], 0)
+        self.assertEqual(rmsg['const_1']['state'], 1)
+
+        # invalid missing hook in architecture
+        rmsg = arch.inspect(['test'])
+        self.assertTrue('error' in rmsg['test'])
+
+        # invalid not an iterable type
+        rmsg = arch.inspect(7)
+        self.assertTrue('error' in rmsg['architecture-hooks-inspect'])
+
+        # invalid not an iterable type
+        rmsg = arch.inspect(None)
+        self.assertTrue('error' in rmsg['architecture-hooks-inspect'])
+
+        # invalid hook type does not support inspect
+        hooks.update({'test': Adder(8, hooks['d_bus'], hooks['q_bus'], Bus(8))})
+        rmsg = arch.inspect(['test'])
+        self.assertTrue('error' in rmsg['test'])
+
+        # invalid string is not used as an iterable
+        hooks.update({'test': Adder(8, hooks['d_bus'], hooks['q_bus'], Bus(8))})
+        rmsg = arch.inspect('test')
+        self.assertTrue('error' in rmsg['architecture-hooks-inspect'])
+
+        # test with empty
+        arch = Architecture(0.25, Clock(1), Reset(), OrderedDict(), OrderedDict())
+        arch.inspect([])
+
+    def test_modify(self):
+        """
+        Test modify interface for valid object modify
+        """
+        arch, hooks, entities = self._generate_architecture()
+
+        # valid operation
+        rmsg = arch.hook({'inspect': ['reg']})
+        self.assertEqual(rmsg['reg']['state'], 255)
+        rmsg = arch.modify({'name': 'reg', 'parameters': {'state': 15}})
+        self.assertTrue('reg' in rmsg)
+        self.assertTrue(rmsg['reg']['success'])
+        rmsg = arch.hook({'inspect': ['reg']})
+        self.assertEqual(rmsg['reg']['state'], 15)
+
+        # invalid (lack of entity name)
+        rmsg = arch.modify({'came': 'reg', 'parameters': {'state': 25}})
+        self.assertTrue('error' in rmsg['architecture-hooks-modify'])
+        rmsg = arch.hook({'inspect': ['reg']})
+        self.assertEqual(rmsg['reg']['state'], 15)
+
+        # invalid hook is not in architecture
+        rmsg = arch.modify({'name': 'test', 'parameters': {'state': 35}})
+        self.assertTrue('error' in rmsg['test'])
+
+        # invalid, hook does not support modify
+        rmsg = arch.modify({'name': 'rst', 'parameters': {'state': 45}})
+        self.assertTrue('error' in rmsg['rst'])
+        rmsg = arch.hook({'inspect': ['rst']})
+        self.assertEqual(rmsg['rst']['state'], 0)
+
+        # test with empty
+        arch = Architecture(0.25, Clock(1), Reset(), OrderedDict(), OrderedDict())
+        rmsg = arch.modify({'name': 'test', 'parameters': {'state': 99}})
+        self.assertTrue('error' in rmsg['test'])
+
+    def test_generate(self):
+        """
+        Test generate interface for valid object generate
+        """
+        arch, hooks, entities = self._generate_architecture()
+
+        # valid operation
+        rmsg = arch.hook({'inspect': ['clk']})
+        self.assertEqual(rmsg['clk']['state'], 0)
+        rmsg = arch.generate({'name': 'clk', 'parameters': {'state': 1}})
+        self.assertTrue('clk' in rmsg)
+        self.assertTrue(rmsg['clk']['success'])
+        rmsg = arch.hook({'inspect': ['clk']})
+        self.assertEqual(rmsg['clk']['state'], 1)
+
+        # invalid (lack of entity name)
+        rmsg = arch.generate({'came': 'clk', 'parameters': {'state': 0}})
+        self.assertTrue('error' in rmsg['architecture-hooks-generate'])
+        rmsg = arch.hook({'inspect': ['clk']})
+        self.assertEqual(rmsg['clk']['state'], 1)
+
+        # invalid hook is not in architecture
+        rmsg = arch.generate({'name': 'test', 'parameters': {'state': 0}})
+        self.assertTrue('error' in rmsg['test'])
+
+        # invalid, hook does not support generate
+        rmsg = arch.generate({'name': 'reg', 'parameters': {'state': 0}})
+        self.assertTrue('error' in rmsg['reg'])
+        rmsg = arch.hook({'inspect': ['reg']})
+        self.assertEqual(rmsg['reg']['state'], 255)
+
+        # test with empty
+        arch = Architecture(0.25, Clock(1), Reset(), OrderedDict(), OrderedDict())
+        rmsg = arch.generate({'name': 'test', 'parameters': {'state': 99}})
+        self.assertTrue('error' in rmsg['test'])
+
     def test_hook(self):
         """
         Test hook interface for general behavior
