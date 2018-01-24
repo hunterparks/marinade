@@ -9,7 +9,7 @@ class ControllerPipeline(Controller):
     status flags. Output is the control paths for the architecture which
     will be enforced until the next instruction.
     """
-    def __init__(self, cond, op, funct, rd, bit4, c, v, n, z, pcsrcd, pcwrd, regsad, regdstd,
+    def __init__(self, cond, op, funct, rd, bit4, c, v, n, z, stalld, pcsrcd, pcwrd, regsad, regdstd,
                 regwrsd, regwrd, extsd, alusrcbd, alusd, aluflagwrd, memwrd, regsrcd, wd3sd):
         """
         inputs:
@@ -73,6 +73,10 @@ class ControllerPipeline(Controller):
             raise TypeError('The z bus must be readable')
         elif z.size() != 1:
             raise ValueError('The z bus must have a size of 1-bit')
+        if not isinstance(stalld, iBusRead):
+            raise TypeError('The stalld bus must be readable')
+        elif stalld.size() != 1:
+            raise ValueError('The stalld bus must have a size of 1 bit')
 
         self._cond = cond
         self._op = op
@@ -83,6 +87,7 @@ class ControllerPipeline(Controller):
         self._v = v
         self._n = n
         self._z = z
+        self._stalld = stalld
 
         #Control output buses
         if not isinstance(pcsrcd, iBusRead):
@@ -173,12 +178,15 @@ class ControllerPipeline(Controller):
 
 
     @staticmethod
-    def _generate_pcwrd():
+    def _generate_pcwrd(stalld):
         """
         PCWRD <= '1'
         Note: Might need to change
         """
-        return 0b1
+        if stalld.read() == 1:
+            return 0
+        else:
+            return 0b1
 
 
     @staticmethod
@@ -357,7 +365,7 @@ class ControllerPipeline(Controller):
 
 
     @staticmethod
-    def _generate_memwr(op, funct):
+    def _generate_memwrd(op, funct):
         """
         MEMWR <= '1' allows data to be written to data memory (str
                  instructions)
@@ -370,7 +378,7 @@ class ControllerPipeline(Controller):
 
 
     @staticmethod
-    def _generate_regsrc(op, funct):
+    def _generate_regsrcd(op, funct):
         """
         REGSRC <= '1' when output of ALU is feedback (ldr instructions)
         REGSRC <= '0' when output of data mem is feedback
@@ -382,7 +390,7 @@ class ControllerPipeline(Controller):
 
 
     @staticmethod
-    def _generate_wd3s(op, funct):
+    def _generate_wd3sd(op, funct):
         """
         WDS3 <= '1' when a bl instruction is run else '0'
         """
@@ -402,21 +410,22 @@ class ControllerPipeline(Controller):
         cond = self._cond.read()
         rd = self._rd.read()
         z = self._z.read()
+        stalld = self._stalld.read()
 
         # Generate control outputs
-        self._pcsrcd.write(self._generate_pcsrc(op, cond, rd, z))
-        self._pcwrd.write(self._generate_pcwr())
-        self._regsad.write(self._generate_regsa(op, bit4, funct))
-        self._regdstd.write(self._generate_regdst(op, bit4, funct))
-        self._regwrsd.write(self._generate_regwrs(op, bit4, funct))
-        self._regwrd.write(self._generate_regwr(op, funct))
-        self._extsd.write(self._generate_exts(op, funct))
-        self._alusrcbd.write(self._generate_alusrcb(op, funct, bit4))
-        self._alusd.write(self._generate_alus(op, bit4, funct))
-        self._aluflagwrd.write(self._generate_aluflagwr(op, funct))
-        self._memwrd.write(self._generate_memwr(op, funct))
-        self._regsrcd.write(self._generate_regsrc(op, funct))
-        self._wd3sd.write(self._generate_wd3s(op, funct))
+        self._pcsrcd.write(self._generate_pcsrcd(op, cond, rd, z))
+        self._pcwrd.write(self._generate_pcwrd(stalld))
+        self._regsad.write(self._generate_regsad(op, bit4, funct))
+        self._regdstd.write(self._generate_regdstd(op, bit4, funct))
+        self._regwrsd.write(self._generate_regwrsd(op, bit4, funct))
+        self._regwrd.write(self._generate_regwrd(op, funct))
+        self._extsd.write(self._generate_extsd(op, funct))
+        self._alusrcbd.write(self._generate_alusrcbd(op, funct, bit4))
+        self._alusd.write(self._generate_alusd(op, bit4, funct))
+        self._aluflagwrd.write(self._generate_aluflagwrd(op, funct))
+        self._memwrd.write(self._generate_memwrd(op, funct))
+        self._regsrcd.write(self._generate_regsrcd(op, funct))
+        self._wd3sd.write(self._generate_wd3sd(op, funct))
 
 
     def inspect(self):
