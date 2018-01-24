@@ -33,6 +33,9 @@ import asyncio
 import websockets
 import json
 
+from sentry import initialize_sentry
+sentry = initialize_sentry()
+
 
 import single_cycle_poc
 
@@ -87,23 +90,23 @@ if __name__ == "__main__":
     }
 
     # test file
-    tf = open('single_cycle_data_output.txt', 'w')
-    tf.write('{"Run":[')
+    #tf = open('single_cycle_data_output.txt', 'w')
+    #tf.write('{"Run":[')
 
     count = 0
     while count < 15:
         print('----------------------------------------------------------------')
         rstr = json.dumps(arch.hook(msg_inspect))
         print(rstr)
-        if count > 0:
-            tf.write(",")
-        tf.write(rstr)
+#        if count > 0:
+#            tf.write(",")
+#        tf.write(rstr)
         arch.logic_run()
         time.sleep(0.5)
         count += 1
 
-    tf.write(']}')
-    tf.close()
+    #tf.write(']}')
+    #tf.close()
 
     quit()
 
