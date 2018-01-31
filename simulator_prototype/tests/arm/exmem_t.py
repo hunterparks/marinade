@@ -13,7 +13,7 @@ class Exmem_t(unittest.TestCase):
     "Unit tests for exmem class"
 
     def test_constructor(self):
-        "Tests constructors with valid and invalid configuration"
+        "Tests constructor with valid and invalid configuration"
         pcsrce = Bus(2)
         regwrse = Bus(2)
         regwre = Bus(1)

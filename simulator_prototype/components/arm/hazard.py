@@ -1,6 +1,6 @@
 from components.abstract.ibus import iBusRead, iBusWrite
 
-class hazardController():
+class HazardController():
 
     def __init__(self, ra1d, ra2d, ra1e, ra2e, ra3e, ra3m, ra3w, regwrm,
                 regwrw, regsrce, regsrcw, memwrm, pcsrcd, fwda, fwdb, fwds,

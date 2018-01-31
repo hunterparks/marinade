@@ -13,7 +13,7 @@ class Memwb_t(unittest.TestCase):
     "Unit tests for Memwb class"
 
     def test_constructor(self):
-        "Tests constructors with valid and invalid configuration"
+        "Tests constructor with valid and invalid configuration"
         pcsrcm = Bus(2)
         regwrsm = Bus(2)
         regwrm = Bus(1)

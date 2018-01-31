@@ -13,7 +13,7 @@ class Ifid_t(unittest.TestCase):
     "Unit test for Ifid class"
 
     def test_constructor(self):
-        "Tests constructors with valid and invalid configuration"
+        "Tests constructor with valid and invalid configuration"
         instrf = Bus(32)
         stall = Bus(1)
         flush = Bus(1)

@@ -13,7 +13,7 @@ class Idex_t(unittest.TestCase):
     "Unit tests for idex class"
 
     def test_constructor(self):
-        "Tests constructors with valid and invalid configurations"
+        "Tests constructor with valid and invalid configurations"
         pcsrcd = Bus(2)
         regwrsd = Bus(2)
         regwrd = Bus(1)

@@ -1,7 +1,3 @@
-"""
-
-"""
-
 from components.abstract.ibus import iBusRead, iBusWrite
 from components.abstract.sequential import Sequential, Latch_Type, Logic_States
 
