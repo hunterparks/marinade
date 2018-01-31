@@ -51,7 +51,7 @@ class Extender_t(unittest.TestCase):
         # test case 4
         exts.write(0)
         e.run()
-        self.assertEqual(imm32.read(), 0b11101000)
+        self.assertEqual(imm32.read(), 0xA0000003)
         # test case 5
         exts.write(1)
         e.run()

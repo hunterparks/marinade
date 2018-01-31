@@ -29,11 +29,11 @@ from components.core.constant import Constant
 from components.core.bus_subset import BusSubset
 from components.core.logic_input import LogicInput
 
-from components.arm.alu import Alu
+from components.arm.alu_demo import Alu
 from components.arm.extender import Extender
 from components.arm.data_memory import DataMemory
 from components.arm.program_memory import ProgramMemory
-from components.arm.register_file_wo_pc import RegisterFile_wo_PC
+from components.arm.register_file_demo import RegisterFile
 from components.arm.controller_single_cycle import ControllerSingleCycle
 
 from architecture import Architecture
@@ -129,7 +129,8 @@ def generate_single_cycle_architecture():
                                         edge_type=Latch_Type.FALLING_EDGE)})
     entities.update({'add8': Adder(32, hooks['pc'], hooks['const8'], hooks['pc8'])})
     entities.update({'add4': Adder(32, hooks['pc'], hooks['const4'], hooks['pc4'])})
-    entities.update({'progmem': ProgramMemory(hooks['pc'],hooks['rst'], hooks['clk'], hooks['instr'])})
+    entities.update({'progmem': ProgramMemory(
+        hooks['pc'], hooks['rst'], hooks['clk'], hooks['instr'])})
 
     # DECODE
     entities.update({'instr_subset': BusSubset(hooks['instr'],
@@ -160,9 +161,9 @@ def generate_single_cycle_architecture():
                                     hooks['rwd'])})
     entities.update({'extimm': Extender(hooks['instr_23_0'], hooks['exts'],
                                         hooks['imm32'])})
-    entities.update({'regfile': RegisterFile_wo_PC(hooks['clk'], hooks['rst'],
-                                                   hooks['regwr'], hooks['rwd'], hooks['ra1'], hooks['ra2'],
-                                                   hooks['ra3'], hooks['rd1'], hooks['rd2'])})
+    entities.update({'regfile': RegisterFile(hooks['clk'], hooks['rst'],
+                                             hooks['regwr'], hooks['rwd'], hooks['ra1'], hooks['ra2'],
+                                             hooks['ra3'], hooks['rd1'], hooks['rd2'])})
 
     # EXECUTE
     entities.update({'alu_mux': Mux(32, [hooks['imm32'], hooks['rd2']],
@@ -180,7 +181,7 @@ def generate_single_cycle_architecture():
 
     # MEMORY & WRITE-BACK
     entities.update({'datamem': DataMemory(hooks['aluf'], hooks['rd2'], hooks['memwr'],
-                                       hooks['rst'], hooks['clk'], hooks['memrd'])})
+                                           hooks['rst'], hooks['clk'], hooks['memrd'])})
     entities.update({'wdb_mux': Mux(32, [hooks['memrd'], hooks['aluf']],
                                     hooks['regsrc'], hooks['wdb'])})
     entities.update({'pcwb_mux': Mux(32, [hooks['branch'], hooks['pc4'], hooks['wdb']],

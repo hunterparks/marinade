@@ -21,11 +21,13 @@ class Alu_t(unittest.TestCase):
 
         a = Bus(31)
         b = Bus(32)
+        ar = Bus(32)
         alus = Bus(4)
         shift = Bus(5)
         cin = Bus(1)
         shiftOp = Bus(2)
-        shiftEn = Bus(1)
+        shiftCtrl = Bus(2)
+        accEn = Bus(1)
         f = Bus(32)
         c = Bus(1)
         v = Bus(1)
@@ -34,10 +36,10 @@ class Alu_t(unittest.TestCase):
 
         # test case 1
         with self.assertRaises(ValueError):
-            test_alu = Alu(a, b, alus, shift, cin, shiftOp, shiftEn, f, c, v, n, z)
+            test_alu = Alu(a, b, ar, alus, shift, cin, shiftOp, shiftCtrl, accEn, f, c, v, n, z)
         # test case 2
         with self.assertRaises(ValueError):
-            test_alu = Alu(Bus(32), Bus(32), alus, shift, cin, shiftOp, shiftEn, c, f, v, n, z)
+            test_alu = Alu(Bus(32), Bus(32), ar, alus, shift, cin, shiftOp, shiftCtrl, accEn, c, f, v, n, z)
 
     def test_run(self):
         """
@@ -46,11 +48,13 @@ class Alu_t(unittest.TestCase):
 
         a = Bus(32)
         b = Bus(32)
+        ar = Bus(32)
         alus = Bus(4)
         shift = Bus(5)
         cin = Bus(1)
         shiftOp = Bus(2)
-        shiftEn = Bus(1)
+        shiftCtrl = Bus(2)
+        accEn = Bus(1)
         f = Bus(32)
         c = Bus(1)
         v = Bus(1)
@@ -58,25 +62,25 @@ class Alu_t(unittest.TestCase):
         z = Bus(1)
 
         # initialize alu
-        test_alu = Alu(a, b, alus, shift, cin, shiftOp, shiftEn, f, c, v, n, z)
+        test_alu = Alu(a, b, ar, alus, shift, cin, shiftOp, shiftCtrl, accEn, f, c, v, n, z)
 
-        #test shifter left logical
+        #test shifter left logical constant
         a.write(0)
         b.write(0xAA)
         alus.write(6)
         shift.write(1)
         shiftOp.write(0)
-        shiftEn.write(1)
+        shiftCtrl.write(1)
         test_alu.run()
         self.assertEqual(f.read(),0x154)
 
-        #test shifter right logical
+        #test shifter right logical constant
         a.write(0)
         b.write(0xAA)
         alus.write(6)
         shift.write(1)
         shiftOp.write(1)
-        shiftEn.write(1)
+        shiftCtrl.write(1)
         test_alu.run()
         self.assertEqual(f.read(),0x55)
 
@@ -85,17 +89,17 @@ class Alu_t(unittest.TestCase):
         alus.write(6)
         shift.write(1)
         shiftOp.write(1)
-        shiftEn.write(1)
+        shiftCtrl.write(1)
         test_alu.run()
         self.assertEqual(f.read(),0x7FFFFFF8)
 
-        #test shifter right arithmetic
+        #test shifter right arithmetic constant
         a.write(0)
         b.write(0xF0)
         alus.write(6)
         shift.write(1)
         shiftOp.write(2)
-        shiftEn.write(1)
+        shiftCtrl.write(1)
         test_alu.run()
         self.assertEqual(f.read(),0x78)
 
@@ -104,22 +108,90 @@ class Alu_t(unittest.TestCase):
         alus.write(6)
         shift.write(1)
         shiftOp.write(2)
-        shiftEn.write(1)
+        shiftCtrl.write(1)
         test_alu.run()
         self.assertEqual(f.read(),0xFFFFFFF8)
 
-        #test shifter right roll
+        #test shifter right roll constant
         a.write(0)
         b.write(0xF)
         alus.write(6)
         shift.write(4)
         shiftOp.write(3)
-        shiftEn.write(1)
+        shiftCtrl.write(1)
         test_alu.run()
         self.assertEqual(f.read(),0xF0000000)
 
+
+
+        #test shifter left logical register
+        a.write(0)
+        b.write(0xAA)
+        ar.write(0xF01)
+        alus.write(6)
+        shift.write(0xF)
+        shiftOp.write(0)
+        shiftCtrl.write(3)
+        test_alu.run()
+        self.assertEqual(f.read(),0x154)
+
+        #test shifter right logical register
+        a.write(0)
+        b.write(0xAA)
+        ar.write(0xF01)
+        alus.write(6)
+        shift.write(0xF)
+        shiftOp.write(1)
+        shiftCtrl.write(3)
+        test_alu.run()
+        self.assertEqual(f.read(),0x55)
+
+        a.write(0)
+        b.write(0xFFFFFFF0)
+        ar.write(0xF01)
+        alus.write(6)
+        shift.write(0xF)
+        shiftOp.write(1)
+        shiftCtrl.write(3)
+        test_alu.run()
+        self.assertEqual(f.read(),0x7FFFFFF8)
+
+        #test shifter right arithmetic register
+        a.write(0)
+        b.write(0xF0)
+        ar.write(0xF01)
+        alus.write(6)
+        shift.write(0xF)
+        shiftOp.write(2)
+        shiftCtrl.write(3)
+        test_alu.run()
+        self.assertEqual(f.read(),0x78)
+
+        a.write(0)
+        b.write(0xFFFFFFF0)
+        ar.write(0xF01)
+        alus.write(6)
+        shift.write(0xF)
+        shiftOp.write(2)
+        shiftCtrl.write(3)
+        test_alu.run()
+        self.assertEqual(f.read(),0xFFFFFFF8)
+
+        #test shifter right roll register
+        a.write(0)
+        b.write(0xF)
+        ar.write(0xF04)
+        alus.write(6)
+        shift.write(0xF)
+        shiftOp.write(3)
+        shiftCtrl.write(3)
+        test_alu.run()
+        self.assertEqual(f.read(),0xF0000000)
+
+
+
         #disable shifter for rest of test
-        shiftEn.write(0)
+        shiftCtrl.write(0)
 
         #test alus add
         a.write(5)
@@ -350,12 +422,12 @@ class Alu_t(unittest.TestCase):
         self.assertEqual(c.read(), 0)
         self.assertEqual(v.read(), 0)
 
-        #test reserved for future case
+        #test not
         a.write(2)
-        b.write(5)
+        b.write(1)
         alus.write(13)
         test_alu.run()
-        self.assertEqual(f.read(), 0xFFFFFFFF)
+        self.assertEqual(f.read(), 0xFFFFFFFE)
         self.assertEqual(z.read(), 0)
         self.assertEqual(n.read(), 1)
         self.assertEqual(c.read(), 0)
@@ -382,6 +454,31 @@ class Alu_t(unittest.TestCase):
         self.assertEqual(n.read(), 0)
         self.assertEqual(c.read(), 0)
         self.assertEqual(v.read(), 0)
+
+        # test MLA behavior using accumulate
+        a.write(5)
+        b.write(5)
+        ar.write(45)
+        alus.write(7)
+        accEn.write(1)
+        test_alu.run()
+        self.assertEqual(f.read(), 70)
+        self.assertEqual(z.read(), 0)
+        self.assertEqual(n.read(), 0)
+        self.assertEqual(c.read(), 0)
+        self.assertEqual(v.read(), 0)
+
+        a.write(0x3FFFFFFF)
+        b.write(2)
+        ar.write(2)
+        alus.write(7)
+        accEn.write(1)
+        test_alu.run()
+        self.assertEqual(f.read(), 0x80000000)
+        self.assertEqual(z.read(), 0)
+        self.assertEqual(n.read(), 1)
+        self.assertEqual(c.read(), 0)
+        self.assertEqual(v.read(), 1)
 
 
 if __name__ == '__main__':

@@ -49,20 +49,24 @@ class Alu(Combinational):
     ALUS_RSB_CMD = 10       # F = B - A
     ALUS_RSB_W_C_CMD = 11   # F = B - A - Cin
     ALUS_AND_NOT_CMD = 12   # F = A & ~B
-    ALUS_RSVD_FUTURE = 13   # F = -1
+    ALUS_NOT_B_CMD = 13     # F = ~B
     ALUS_GEN_0_CMD = 14     # F = 0
     ALUS_GEN_1_CMD = 15     # F = 1
 
-    def __init__(self, a, b, alus, shift, cin, shiftOp, shiftEn, f, cout, v, n, z):
+    def __init__(self, a, b, ar, alus, shift, cin, shiftOp, shiftCtrl, accEn, f, cout, v, n, z):
         """
         inputs:
             a: 32-bit input to the alu
             b: 32-bit input to the alu
+            ar: 32-bit input to alu either for barrel shifting or as accumulate
             alus: 4-bit control signal for the alu
             shift: 5-bit barrel shift value
             cin: carry bit
             shiftOp: commands the barrel shifter on b to perform operation
-            shiftEn: control signal to either perform shift or not
+            shiftCtrl: control signal to either perform shift or not
+                        B(0) is enable bit, shift on [0] disable on [0]
+                        B(2) is select either register [1] or constant shift [0]
+            accEn: accumulate enable add ar to alu result before f if [1]
         outputs:
             f: 32-bit output to the alu
             cout: carry bit
@@ -79,6 +83,10 @@ class Alu(Combinational):
             raise TypeError('The b bus must be readable')
         elif b.size() != 32:
             raise ValueError('The b bus must have a size of 32-bits')
+        if not isinstance(ar, iBusRead):
+            raise TypeError('The ar bus must be readable')
+        elif ar.size() != 32:
+            raise ValueError('The ar bus must have a size of 32-bits')
         if not isinstance(alus, iBusRead):
             raise TypeError('The alus bus must be readable')
         elif alus.size() != 4:
@@ -95,10 +103,14 @@ class Alu(Combinational):
             raise TypeError('The shiftOp bus must be readable')
         elif shiftOp.size() != 2:
             raise ValueError('The shiftOp bus must have a size of 2-bits')
-        if not isinstance(shiftEn, iBusRead):
-            raise TypeError('The shiftEn bus must be readable')
-        elif shiftEn.size() != 1:
-            raise ValueError('The shiftEn bus must have a size of 1-bit')
+        if not isinstance(shiftCtrl, iBusRead):
+            raise TypeError('The shiftCtrl bus must be readable')
+        elif shiftCtrl.size() != 2:
+            raise ValueError('The shiftCtrl bus must have a size of 1-bit')
+        if not isinstance(accEn, iBusRead):
+            raise TypeError('The accEn bus must be readable')
+        elif accEn.size() != 1:
+            raise ValueError('The accEn bus must have a size of 1-bit')
         if not isinstance(f, iBusWrite):
             raise TypeError('The f bus must be writeable')
         elif f.size() != 32:
@@ -122,11 +134,13 @@ class Alu(Combinational):
 
         self._a = a
         self._b = b
+        self._ar = ar
         self._alus = alus
         self._sh = shift
         self._shop = shiftOp
-        self._shen = shiftEn
+        self._shcr = shiftCtrl
         self._cin = cin
+        self._accEn = accEn
         self._f = f
         self._cout = cout
         self._v = v
@@ -167,8 +181,8 @@ class Alu(Combinational):
             return (b - a - (~cin)%2) & (2**33 - 1)
         elif alus == Alu.ALUS_AND_NOT_CMD:
             return a & (~b)
-        elif alus == Alu.ALUS_RSVD_FUTURE:
-            return -1
+        elif alus == Alu.ALUS_NOT_B_CMD:
+            return (~b) & (2**33 - 1)
         elif alus == Alu.ALUS_GEN_0_CMD:
             return 0
         elif alus == Alu.ALUS_GEN_1_CMD:
@@ -213,7 +227,6 @@ class Alu(Combinational):
                 retval = 1
         else:
             retval = 0
-
         return retval
 
     @staticmethod
@@ -264,12 +277,22 @@ class Alu(Combinational):
         shift = self._sh.read()
         cin = self._cin.read()
 
-        # barrel shift on b
-        if self._shen.read() == 1:
-            b = self._barrel_shift(b, self._sh.read(), self._shop.read())
+        # barrel shift on b either register or immediate
+        if (self._shcr.read() & 0x1) == 1:
+            if (self._shcr.read() & 0x2) == 0x2:
+                sh = self._ar.read() & 0xFF
+            else:
+                sh = self._sh.read()
+            b = self._barrel_shift(b, sh, self._shop.read())
+
+        # calculate ALU result
+        f = self._generate_f(alus, a, b, cin)
+
+        # accumulate
+        if self._accEn.read():
+            f += self._ar.read()
 
         # output computed output signals
-        f = self._generate_f(alus, a, b, cin)
         self._f.write(f & (2**32 - 1))
         self._cout.write(self._generate_c(alus, f))
         self._v.write(self._generate_v(alus, a, b, self._f.read()))
