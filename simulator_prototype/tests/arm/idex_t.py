@@ -47,13 +47,13 @@ class Idex_t(unittest.TestCase):
         ra2e = Bus(4)
         ra3e = Bus(4)
 
-        badBus = Bus(7)
-        notBusType = 'w'
+        invalidBusSize = Bus(7)
+        invalidBusType = 'w'
 
         with self.assertRaises(ValueError):
             idex = Idex(pcsrcd, regwrsd, regwrd, alusrcbd, alusd, aluflagwrd,
                         memwrd, regsrcd, wd3sd, rd1d, rd2d, imm32d, ra1d, ra2d,
-                        ra3d, flush, clk, badBus, regwrse, regwre, alusrcbe, 
+                        ra3d, flush, clk, invalidBusSize, regwrse, regwre, alusrcbe, 
                         aluse, aluflagwre, memwre, regsrce, wd3se, rd1e, rd2e,
                         imm32e, ra1e, ra2e, ra3e)
 
@@ -62,7 +62,7 @@ class Idex_t(unittest.TestCase):
                         memwrd, regsrcd, wd3sd, rd1d, rd2d, imm32d, ra1d, ra2d,
                         ra3d, flush, clk, pcsrce, regwrse, regwre, alusrcbe, 
                         aluse, aluflagwre, memwre, regsrce, wd3se, rd1e, rd2e,
-                        imm32e, ra1e, notBusType, ra3e)
+                        imm32e, ra1e, invalidBusType, ra3e)
 
         idex = Idex(pcsrcd, regwrsd, regwrd, alusrcbd, alusd, aluflagwrd,
                     memwrd, regsrcd, wd3sd, rd1d, rd2d, imm32d, ra1d, ra2d,
@@ -298,9 +298,9 @@ class Idex_t(unittest.TestCase):
         rd1d.write(0xE3A0A000)
         ra3d.write(12)
         idex.run()
-        self.assertEqual(regwrse.read(), 0)
-        self.assertEqual(rd1e.read(), 0)
-        self.assertEqual(ra3e.read(), 0)
+        self.assertNotEqual(regwrsd.read(), regwrse.read())
+        self.assertNotEqual(rd1d.read(), rd1e.read())
+        self.assertNotEqual(ra3d.read(), ra3e.read())
         clk.write(1)
         idex.run()
         self.assertEqual(regwrsd.read(), regwrse.read())
@@ -311,9 +311,9 @@ class Idex_t(unittest.TestCase):
         flush.write(1)
         clk.write(1)
         idex.run()
-        self.assertEqual(regwrse.read(), 0)
-        self.assertEqual(rd1e.read(), 0)
-        self.assertEqual(ra3e.read(), 0)
+        self.assertNotEqual(regwrsd.read(), regwrse.read())
+        self.assertNotEqual(rd1d.read(), rd1e.read())
+        self.assertNotEqual(ra3d.read(), ra3e.read())
 
 
 

@@ -121,7 +121,7 @@ class Exmem(Sequential):
             raise ValueError('The ra3m bus must have a size of 4 bits')
         if not Latch_Type.valid(edge_type):
             raise ValueError('Invalid latch edge type')
-        if not isinstance(enable, iBusRead) or enable is not None:
+        if enable is not None and not isinstance(enable, iBusRead):
             raise ValueError('The enable bus must be readable')
         elif enable is not None and enable.size() != 1:
             raise ValueError('The enable bus must have a size of 1 bit')
@@ -167,9 +167,9 @@ class Exmem(Sequential):
             self._memwrm.write(self._memwre.read())
             self._regsrcm.write(self._regsrce.read())
             self._wd3sm.write(self._wd3se.read())
-            self._fm.write(self._fm.read())
-            self._rd2m.write(self._rd2m.read())
-            self._ra3m.write(self._ra3m.read())
+            self._fm.write(self._fe.read())
+            self._rd2m.write(self._rd2e.read())
+            self._ra3m.write(self._ra3e.read())
 
     def on_falling_edge(self):
         """
@@ -183,9 +183,9 @@ class Exmem(Sequential):
             self._memwrm.write(self._memwre.read())
             self._regsrcm.write(self._regsrce.read())
             self._wd3sm.write(self._wd3se.read())
-            self._fm.write(self._fm.read())
-            self._rd2m.write(self._rd2m.read())
-            self._ra3m.write(self._ra3m.read())
+            self._fm.write(self._fe.read())
+            self._rd2m.write(self._rd2e.read())
+            self._ra3m.write(self._ra3e.read())
 
     def on_reset(self):
         "Not used for this register"

@@ -20,11 +20,11 @@ class Ifid_t(unittest.TestCase):
         clk = Bus(1)
         instrd = Bus(32)
 
-        badBus = Bus(7)
+        invalidBusSize = Bus(7)
         notBusType = 'w'
 
         with self.assertRaises(ValueError):
-            ifid = Ifid(instrf, badBus, flush, clk, instrd)
+            ifid = Ifid(instrf, invalidBusSize, flush, clk, instrd)
 
         with self.assertRaises(TypeError):
             ifid = Ifid(notBusType, stall, flush, clk, instrd)
@@ -107,7 +107,14 @@ class Ifid_t(unittest.TestCase):
         clk.write(1)
         ifid.run()
         self.assertEqual(instrf.read(), instrd.read())
+        clk.write(0)
+        ifid.run()
+        clk.write(1)
+        flush.write(1)
+        ifid.run()
+        self.assertNotEqual(instrf.read(), instrd.read())
         
+
 
 if __name__ == '__main__':
     unittest.main()

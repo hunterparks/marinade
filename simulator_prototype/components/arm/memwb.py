@@ -1,7 +1,7 @@
 from components.abstract.ibus import iBusRead, iBusWrite
 from components.abstract.sequential import Sequential, Latch_Type, Logic_States
 
-class Memwd(Sequential):
+class Memwb(Sequential):
     """
     This specialized register sits between the memory and write back stages
     """
@@ -104,7 +104,7 @@ class Memwd(Sequential):
             raise ValueError('The ra3w bus must have a size of 4 bits')
         if not Latch_Type.valid(edge_type):
             raise ValueError('Invalid latch edge type')
-        if not isinstance(enable, iBusRead) or enable is not None:
+        if enable is not None and not isinstance(enable, iBusRead):
             raise ValueError('The enable bus must be readable')
         elif enable is not None and enable.size() != 1:
             raise ValueError('The enable bus must have a size of 1 bit')
@@ -142,25 +142,25 @@ class Memwd(Sequential):
         if self._edge_type == Latch_Type.RISING_EDGE or self._edge_type == Latch_Type.BOTH_EDGE:
             self._pcsrcw.write(self._pcsrcm.read())
             self._regwrsw.write(self._regwrsm.read())
-            self._regwrw.write(self._regwrw.read())
-            self._regsrcw.write(self._regwrw.read())
+            self._regwrw.write(self._regwrm.read())
+            self._regsrcw.write(self._regsrcm.read())
             self._wd3sw.write(self._wd3sm.read())
-            self._fw.write(self._fw.read())
+            self._fw.write(self._fm.read())
             self._rdw.write(self._rdm.read())
-            self._ra3w.write(self._ra3w.read())
+            self._ra3w.write(self._ra3m.read())
     
 
     def on_falling_edge(self):
         "Implements clock rising behavior: captures data if latch type matches"
-        if self._edge_type == Latch_Type.RISING_EDGE or self._edge_type == Latch_Type.BOTH_EDGE:
+        if self._edge_type == Latch_Type.FALLING_EDGE or self._edge_type == Latch_Type.BOTH_EDGE:
             self._pcsrcw.write(self._pcsrcm.read())
             self._regwrsw.write(self._regwrsm.read())
-            self._regwrw.write(self._regwrw.read())
-            self._regsrcw.write(self._regwrw.read())
+            self._regwrw.write(self._regwrm.read())
+            self._regsrcw.write(self._regsrcm.read())
             self._wd3sw.write(self._wd3sm.read())
-            self._fw.write(self._fw.read())
+            self._fw.write(self._fm.read())
             self._rdw.write(self._rdm.read())
-            self._ra3w.write(self._ra3w.read())
+            self._ra3w.write(self._ra3m.read())
 
     
     def on_reset(self):
