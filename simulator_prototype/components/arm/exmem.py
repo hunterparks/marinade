@@ -92,15 +92,15 @@ class Exmem(Sequential):
         elif regwrsm.size() != 2:
             raise ValueError('The regwrsm bus must have a size of 2 bits')
         if not isinstance(regwrm, iBusWrite):
-            raise TypeError('The regwrm bus must be writeable')
+            raise TypeError('The regwrm bus must be writable')
         elif regwrm.size() != 1:
             raise ValueError('The regwrm bus must have a size of 1 bit')
         if not isinstance(memwrm, iBusWrite):
-            raise TypeError('The memwrm bus must be writeable')
+            raise TypeError('The memwrm bus must be writable')
         elif memwrm.size() != 1:
             raise ValueError('The memwrm bus must have a size of 1 bit')
         if not isinstance(regsrcm, iBusWrite):
-            raise TypeError('The regsrcm bus must be writeable')
+            raise TypeError('The regsrcm bus must be writable')
         elif regsrcm.size() != 1:
             raise ValueError('The regsrcm bus must have a size of 1 bit')
         if not isinstance(wd3sm, iBusWrite):

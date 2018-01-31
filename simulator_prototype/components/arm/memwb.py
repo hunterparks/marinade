@@ -83,7 +83,7 @@ class Memwd(Sequential):
         elif regwrw.size() != 1:
             raise ValueError('The regwrw bus must have a size of 1 bit')
         if not isinstance(regsrcw, iBusWrite):
-            raise TypeError('The regsrcw bus must be writeable')
+            raise TypeError('The regsrcw bus must be writable')
         elif regsrcw.size() != 1:
             raise ValueError('The regsrcw bus must have a size of 1 bit')
         if not isinstance(wd3sw, iBusWrite):

@@ -60,7 +60,7 @@ class Alu(Combinational):
         elif alus.size() != 4:
             raise ValueError('The alus bus must have a size of 4-bits')
         if not isinstance(f, iBusWrite):
-            raise TypeError('The f bus must be writeable')
+            raise TypeError('The f bus must be writable')
         elif f.size() != 32:
             raise ValueError('The f bus must have a size of 32-bits')
         if not isinstance(c, iBusWrite):
@@ -68,15 +68,15 @@ class Alu(Combinational):
         elif c.size() != 1:
             raise ValueError('The c bus must have a size of 1-bit')
         if not isinstance(v, iBusWrite):
-            raise TypeError('The v bus must be writeable')
+            raise TypeError('The v bus must be writable')
         elif v.size() != 1:
             raise ValueError('The v bus must have a szie of 1-bit')
         if not isinstance(n, iBusWrite):
-            raise TypeError('The n bus must be writeable')
+            raise TypeError('The n bus must be writable')
         elif n.size() != 1:
             raise ValueError('The n bus must have a size of 1-bit')
         if not isinstance(z, iBusWrite):
-            raise TypeError('The z bus must be writeable')
+            raise TypeError('The z bus must be writable')
         elif z.size() != 1:
             raise ValueError('The z bus must have a size of 1-bit')
 

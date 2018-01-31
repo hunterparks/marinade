@@ -47,7 +47,7 @@ class Ifid(Sequential):
         elif clk.size() != 1:
             raise ValueError('The clock bus must have a size of 1 bit')
         if not isinstance(instrd, iBusWrite):
-            raise TypeError('The instrd bus must be writeable')
+            raise TypeError('The instrd bus must be writable')
         elif instrd.size() != 32:
             raise ValueError('The instrd bus must have a size of 32 bits')
         if not isinstance(default_state, int) or default_state < 0 or default_state >= 2**32:
@@ -56,7 +56,7 @@ class Ifid(Sequential):
             raise ValueError('Invalid latch edge type')
         if not Logic_States.valid(flush_type):
             raise ValueError('Invalid flush state')
-        if not isinstance(enable, iBusRead) or enable is not None:
+        if enable is not None and not isinstance(enable, iBusRead):
             raise ValueError('The enable bus must be readable')
         elif enable is not None and enable.size() != 1:
             raise ValueError('The enable bus must have a size of 1 bit')
