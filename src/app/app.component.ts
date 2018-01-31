@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 
-import { WebsocketService } from '../services/websocket.service';
+import { WebsocketService } from './services/websocket.service';
 
 @Component({
   selector: 'marinade-root',
