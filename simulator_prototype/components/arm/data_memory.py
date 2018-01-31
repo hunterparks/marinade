@@ -5,6 +5,7 @@ ARM specific data memory module with 32-bit width.
 from components.core.memory import Memory, Latch_Type, Logic_States
 from components.core.bus_subset import BusSubset
 from components.core.bus import Bus
+from components.core.constant import Constant
 import math
 
 
@@ -40,6 +41,10 @@ class DataMemory(Memory):
             rst_type : Activation state for reset line
             memwr_type : Activation state for storing on write clock edge
         """
+
+        # default mode to word access
+        self._mode_const = Constant(2, 3)
+
         # ghost memory on bus to lower needed bits
         if default_size < 0:
             raise ValueError('Size must be within valid range')
@@ -55,8 +60,8 @@ class DataMemory(Memory):
 
         # Construct generalized memory passing parameters
         Memory.__init__(self, default_size, 4, 0, self._address_general, write,
-                        writeEnable, reset, clock, read, default_value,
-                        edge_type, rst_type, memwr_type)
+                        writeEnable, reset, clock, self._mode_const, read,
+                        default_value, edge_type, rst_type, memwr_type)
 
     def run(self, time=None):
         """

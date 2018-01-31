@@ -39,6 +39,9 @@ class ProgramMemory(Memory):
         self._wd_const = Constant(32, 0)
         self._we_const = Constant(1, 0)
 
+        # default mode to word access
+        self._mode_const = Constant(2, 3)
+
         # ghost memory on bus to lower needed bits
         if default_size == 0:
             size = 0
@@ -52,8 +55,8 @@ class ProgramMemory(Memory):
 
         # Construct generalized memory passing parameters
         Memory.__init__(self, default_size, 4, 0, self._address_general, self._wd_const,
-                        self._we_const, rst, clk, read, default_value, Latch_Type.FALLING_EDGE,
-                        rst_type, Logic_States.ACTIVE_HIGH)
+                        self._we_const, rst, clk, self._mode_const, read, default_value,
+                        Latch_Type.FALLING_EDGE, rst_type, Logic_States.ACTIVE_HIGH)
 
     def run(self, time=None):
         """

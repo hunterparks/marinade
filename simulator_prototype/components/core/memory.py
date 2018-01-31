@@ -18,8 +18,13 @@ class Memory(MemoryBlock):
     Note that this component assumes big-endian word storage
     """
 
+    MEM_MODE_OFF = 0
+    MEM_MODE_BYTE = 1
+    MEM_MODE_HALF = 2
+    MEM_MODE_WORD = 3
+
     def __init__(self, size, bytesPerWord, startingAddress, address, write,
-                 writeEnable, reset, clock, read, default_value=0,
+                 writeEnable, reset, clock, accessMode, read, default_value=0,
                  edge_type=Latch_Type.FALLING_EDGE,
                  reset_type=Logic_States.ACTIVE_HIGH,
                  writeEnable_type=Logic_States.ACTIVE_HIGH):
@@ -37,6 +42,11 @@ class Memory(MemoryBlock):
             writeEnable: control signal used to all memory to be written to
             reset: clears all assigned memory
             clock: input clock
+            accessMode : type of read, write as
+                    0b00 : "off"
+                    0b01 : "byte"
+                    0b10 : "half-word"
+                    0b11 : "word"
         outputs:
             read: output of memory that was read from
 
@@ -110,6 +120,10 @@ class Memory(MemoryBlock):
             raise TypeError('The clock bus must be readable')
         elif clock.size() != 1:
             raise ValueError('The clock bus must have a size of 1 bit')
+        if not isinstance(accessMode, iBusRead):
+            raise TypeError('The accessMode bus must be readable')
+        elif accessMode.size() != 2:
+            raise ValueError('The accessMode bus must have a size of 2 bit')
         if not isinstance(read, iBusWrite):
             raise TypeError('The read must must be writable')
         elif read.size() != self._bitWidth:
@@ -122,15 +136,16 @@ class Memory(MemoryBlock):
         self._clock = clock
         self._prev_clock_state = self._clock.read()
         self._read = read
+        self._mode = accessMode
 
         # define memory space as bytes
         self._assigned_memory = {}
 
     def _write_word_to_memory(self, address, word):
         """
-        Splits a word intp byetes and stored them into memory. Note that this
+        Splits a word intp bytes and stored them into memory. Note that this
         device does support address rollover on edge case, however memory limits
-        will be inforced.
+        will be enforced.
         """
         for i in range(0, self._bitWidth // 8):
             b_index = (address - self._start_address + i) % (2**self._necessary_length)
@@ -156,13 +171,76 @@ class Memory(MemoryBlock):
                 word |= self._default_value << (self._bitWidth - 8 * (i + 1))
         return word
 
+    def _write_half_to_memory(self, address, word):
+        """
+        Splits a half-word intp bytes and stored them into memory. Note that this
+        device does support address rollover on edge case, however memory limits
+        will be enforced.
+        """
+        for i in range(0, (self._bitWidth // 2) // 8):
+            b_index = (address - self._start_address + i) % (2**self._necessary_length)
+            if b_index + self._start_address < self._end_address:  # address is valid
+                byte = (word >> ((self._bitWidth // 2) - 8 * (i + 1))) & 0xFF
+                self._assigned_memory[b_index + self._start_address] = byte
+
+    def _read_half_from_memory(self, address):
+        """
+        Read a half-word from bute addressable memory.
+        Note that this device does support rollover of address space for edge
+        case.
+
+        Returns an integer of memory unit defined word size
+        """
+        word = 0
+        for i in range(0, (self._bitWidth // 2) // 8):
+            b_index = (address - self._start_address + i) % (2**self._necessary_length)
+            if b_index in self._assigned_memory:
+                b_index += self._start_address
+                word |= self._assigned_memory[b_index] << ((self._bitWidth // 2) - 8 * (i + 1))
+            else:
+                word |= self._default_value << ((self._bitWidth // 2) - 8 * (i + 1))
+        return word
+
+    def _write_byte_to_memory(self, address, word):
+        """
+        Write a byte from byte addressable memory.Note that this device does
+        support address rollover on edge case, however memory limits will be
+        enforced.
+        """
+        b_index = (address - self._start_address) % (2**self._necessary_length)
+        if b_index + self._start_address < self._end_address:  # address is valid
+            byte = word & 0xFF
+            self._assigned_memory[b_index + self._start_address] = byte
+
+    def _read_byte_from_memory(self, address):
+        """
+        Read a byte from byte addressable memory
+        Note that this device does support rollover of address space for edge
+        case.
+
+        Returns an integer of memory unit defined word size
+        """
+        word = 0
+        b_index = (address - self._start_address + i) % (2**self._necessary_length)
+        if b_index in self._assigned_memory:
+            b_index += self._start_address
+            word = self._assigned_memory[b_index]
+        else:
+            word = self._default_value
+        return word
+
     def on_rising_edge(self):
         """
         implements clock rising behavior: captures data if latching type matches
         """
         address = self._address.read()
         if self._edge_type == Latch_Type.RISING_EDGE or self._edge_type == Latch_Type.BOTH_EDGE:
-            self._write_word_to_memory(address, self._write.read())
+            if self._mode.read() == Memory.MEM_MODE_WORD:
+                self._write_word_to_memory(address, self._write.read())
+            elif self._mode.read() == Memory.MEM_MODE_HALF:
+                self._write_half_to_memory(address, self._write.read())
+            elif self._mode.read() == Memory.MEM_MODE_BYTE:
+                self._write_byte_to_memory(address, self._write.read())
 
     def on_falling_edge(self):
         """
@@ -170,7 +248,13 @@ class Memory(MemoryBlock):
         """
         address = self._address.read()
         if self._edge_type == Latch_Type.FALLING_EDGE or self._edge_type == Latch_Type.BOTH_EDGE:
-            self._write_word_to_memory(address, self._write.read())
+            if self._mode.read() == Memory.MEM_MODE_WORD:
+                self._write_word_to_memory(address, self._write.read())
+            elif self._mode.read() == Memory.MEM_MODE_HALF:
+                self._write_half_to_memory(address, self._write.read())
+            elif self._mode.read() == Memory.MEM_MODE_BYTE:
+                self._write_byte_to_memory(address, self._write.read())
+
 
     def on_reset(self):
         """
@@ -235,4 +319,11 @@ class Memory(MemoryBlock):
             self.on_reset()
 
         # read is asynchronous
-        self._read.write(self._read_word_from_memory(self._address.read()))
+        read = 0
+        if self._mode.read() == Memory.MEM_MODE_WORD:
+            read = self._read_word_from_memory(self._address.read())
+        elif self._mode.read() == Memory.MEM_MODE_HALF:
+            read = self._read_half_from_memory(self._address.read())
+        elif self._mode.read() == Memory.MEM_MODE_BYTE:
+            read = self._read_byte_from_memory(self._address.read())
+        self._read.write(read)
