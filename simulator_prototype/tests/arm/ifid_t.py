@@ -4,7 +4,7 @@ Tests arm state register ifid
 
 import unittest
 import sys
-sys.path.insert(0, '/sto/Documents/SeniorDesign/marinade/simulator_prototype/')
+sys.path.insert(0, '../../')
 from components.arm.ifid import Ifid
 from components.core.bus import Bus
 from components.abstract.sequential import Latch_Type, Logic_States

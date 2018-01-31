@@ -4,7 +4,7 @@ Tests arm state register exmem
 
 import unittest
 import sys
-sys.path.insert(0, '/sto/Documents/SeniorDesign/marinade/simulator_prototype/')
+sys.path.insert(0, '../../')
 from components.arm.exmem import Exmem
 from components.core.bus import Bus
 
