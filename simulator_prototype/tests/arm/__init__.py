@@ -10,3 +10,4 @@ from arm.program_memory_t import ProgramMemory_t
 from arm.register_file_demo_t import RegisterFile_Demo_t
 from arm.register_file_full_t import RegisterFile_Full_t
 from arm.controller_single_cycle_t import ControllerSingleCycle_t
+from arm.memory_read_sign_extend_t import MemoryReadSignExtender_t
