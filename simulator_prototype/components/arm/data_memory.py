@@ -21,7 +21,7 @@ class DataMemory(Memory):
     """
 
     def __init__(self, address, write, writeEnable, reset, clock, read,
-                 default_size=4096, default_value=0x81,
+                 mode=None, default_size=4096, default_value=0x81,
                  edge_type=Latch_Type.FALLING_EDGE,
                  rst_type=Logic_States.ACTIVE_HIGH,
                  memwr_type=Logic_States.ACTIVE_HIGH):
@@ -33,6 +33,11 @@ class DataMemory(Memory):
             reset : System reset line to clear memory
             clock: System clock line to store memory
             read : word sized bus (32-bit) to read from addressed cell
+            mode : 2-bit bus signaling read type of memory
+                        0 = memory off (return 0) (no write)
+                        1 = byte access (read/write ignores upper bits)
+                        2 = half-word access (read/write ignores upper bits)
+                        3 = word access (default)
 
         Configuration
             default_size : size of program memory space in bytes
@@ -41,9 +46,9 @@ class DataMemory(Memory):
             rst_type : Activation state for reset line
             memwr_type : Activation state for storing on write clock edge
         """
-
-        # default mode to word access
-        self._mode_const = Constant(2, 3)
+        #handle optional accessMode bus
+        if mode is None:
+            mode = Constant(2, 3)
 
         # ghost memory on bus to lower needed bits
         if default_size < 0:
@@ -60,7 +65,7 @@ class DataMemory(Memory):
 
         # Construct generalized memory passing parameters
         Memory.__init__(self, default_size, 4, 0, self._address_general, write,
-                        writeEnable, reset, clock, self._mode_const, read,
+                        writeEnable, reset, clock, mode, read,
                         default_value, edge_type, rst_type, memwr_type)
 
     def run(self, time=None):

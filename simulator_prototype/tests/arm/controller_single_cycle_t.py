@@ -332,7 +332,7 @@ class ControllerSingleCycle_t(unittest.TestCase):
         self.assertTrue(ins['state'] is None)
 
     def test_modify(self):
-        "tests the single cycle processor inspect method"
+        "tests the single cycle processor modify method"
 
         cond = Bus(4)
         op = Bus(2)
@@ -364,6 +364,38 @@ class ControllerSingleCycle_t(unittest.TestCase):
         self.assertTrue('error' in mod)  # modify is not implemented for controller
 
         mod = scc.modify({'state': 0})
+        self.assertTrue('error' in mod)  # modify is not implemented for controller
+
+    def test_clear(self):
+        "tests the single cycle processor clear method"
+
+        cond = Bus(4)
+        op = Bus(2)
+        funct = Bus(6)
+        rd = Bus(4)
+        bit4 = Bus(1)
+        c = Bus(1)
+        v = Bus(1)
+        n = Bus(1)
+        z = Bus(1)
+        pcsrc = Bus(2)
+        pcwr = Bus(1)
+        regsa = Bus(1)
+        regdst = Bus(2)
+        regwrs = Bus(2)
+        regwr = Bus(1)
+        exts = Bus(2)
+        alusrcb = Bus(1)
+        alus = Bus(4)
+        aluflagwr = Bus(1)
+        memwr = Bus(1)
+        regsrc = Bus(1)
+        wd3s = Bus(1)
+        # initialize single cycle controller
+        scc = ControllerSingleCycle(cond, op, funct, rd, bit4, c, v, n, z, pcsrc, pcwr, regsa,
+                                    regdst, regwrs, regwr, exts, alusrcb, alus, aluflagwr, memwr,
+                                    regsrc, wd3s)
+        mod = scc.clear()
         self.assertTrue('error' in mod)  # modify is not implemented for controller
 
 

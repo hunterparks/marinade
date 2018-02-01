@@ -113,6 +113,23 @@ class Architecture:
             ret_val.update({name: {'error': 'hook not in architecture'}})
         return ret_val
 
+    def clear(self,message):
+        "Returns object's messages from hook call"
+        ret_val = {}
+        if isinstance(message, Iterable) and not isinstance(message, str):
+            for h in message:
+                try:
+                    if isinstance(self._hook_dict[h], InternalHook):
+                        rmsg = self._hook_dict[h].clear()
+                        ret_val.update({h: rmsg})
+                    else:
+                        ret_val.update({h: {'error': 'hook is not of valid type'}})
+                except KeyError:
+                    ret_val.update({h: {'error': 'hook not in architecture'}})
+        else:
+            ret_val.update({'architecture-hooks-clear': {'error': 'invalid message format'}})
+        return ret_val
+
     def hook(self, message):
         "Returns object's messages from hook call"
         # parameter check
@@ -127,6 +144,8 @@ class Architecture:
             ret_val = self.modify(message['modify'])
         elif 'generate' in message:
             ret_val = self.generate(message['generate'])
+        elif 'clear' in message:
+            ret_val = self.clear(message['clear'])
         else:
             ret_val.update({'architecture-hooks': {'error': 'invalid message format'}})
         return ret_val

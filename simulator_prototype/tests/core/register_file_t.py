@@ -360,6 +360,35 @@ class RegisterFile_t(unittest.TestCase):
             rgf.run()
             self.assertTrue(rd0.read() == rd1.read())
 
+    def test_clear(self):
+        "Tests regfile's clear method"
+        clk = Bus(1, 0)
+        rst = Bus(1, 0)
+        wa = Bus(4, 0)
+        wd = Bus(8, 10)
+        ra0 = Bus(4, 0)
+        ra1 = Bus(4, 0)
+        rd0 = Bus(8)
+        rd1 = Bus(8)
+        en = Bus(1, 0)
+
+        rgf = RegisterFile(16, 8, clk, rst, wa, wd, [ra0, ra1], [rd0, rd1], en)
+
+        # write data
+        msg = rgf.modify({'start': 0, 'data': [2, 4]})
+        msg = rgf.inspect()
+        self.assertEqual(msg['state'][0], 2)
+        self.assertEqual(msg['state'][1], 4)
+
+        # clear
+        msg = rgf.clear()
+        self.assertTrue('success' in msg)
+
+        # verify empty
+        msg = rgf.inspect()
+        self.assertEqual(msg['state'][0], 0)
+        self.assertEqual(msg['state'][1], 0)
+
 
 if __name__ == '__main__':
     unittest.main()

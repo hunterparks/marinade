@@ -115,8 +115,8 @@ class RegisterFile(Sequential):
     def inspect(self):
         "Returns dictionary message to user"
         states = []
-        for d in self._datas:
-            states.append(d.read())
+        for r in self._regs:
+            states.append(r.inspect()['state'])
 
         return {
             'type': 'register',
@@ -153,6 +153,11 @@ class RegisterFile(Sequential):
             if 'error' not in retval:
                 retval.update({'success': True})
             return retval
+
+    def clear(self):
+        "Hook method to clear memory, thereby returning it to default value"
+        self.on_reset()
+        return {'success': True}
 
     def on_rising_edge(self):
         "Not useful since enable bit is inactive but triggers rising edge on all"

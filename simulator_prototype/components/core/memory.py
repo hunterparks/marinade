@@ -255,7 +255,6 @@ class Memory(MemoryBlock):
             elif self._mode.read() == Memory.MEM_MODE_BYTE:
                 self._write_byte_to_memory(address, self._write.read())
 
-
     def on_reset(self):
         """
         wipes out all memory
@@ -299,6 +298,11 @@ class Memory(MemoryBlock):
                     self._assigned_memory[b_index + self._start_address] = data[i]
 
             return {'success': True}
+
+    def clear(self):
+        "Hook method to clear memory, thereby returning it to default value"
+        self.on_reset()
+        return {'success': True}
 
     def run(self, time=None):
         """

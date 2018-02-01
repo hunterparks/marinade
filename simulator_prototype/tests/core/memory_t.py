@@ -25,7 +25,7 @@ class Memory_t(unittest.TestCase):
         w = Bus(16, 0)
         r = Bus(16, 0)
         en = Bus(1, 0)
-        accessMode = Bus(2,3)
+        accessMode = Bus(2, 3)
 
         # Test configuration parameters
         with self.assertRaises(TypeError):
@@ -134,7 +134,7 @@ class Memory_t(unittest.TestCase):
         memwr = Bus(1)
         reset = Bus(1)
         clock = Bus(1)
-        accessMode = Bus(2,0)
+        accessMode = Bus(2, 0)
 
         # 32-bit memory words
         wd = Bus(32)
@@ -147,10 +147,10 @@ class Memory_t(unittest.TestCase):
         memwr.write(1)
         mem.on_falling_edge()
         msg = mem.inspect()
-        self.assertEqual(msg['state'][0],0xFF)
-        self.assertEqual(msg['state'][1],0xFF)
-        self.assertEqual(msg['state'][2],0xFF)
-        self.assertEqual(msg['state'][3],0xFF)
+        self.assertEqual(msg['state'][0], 0xFF)
+        self.assertEqual(msg['state'][1], 0xFF)
+        self.assertEqual(msg['state'][2], 0xFF)
+        self.assertEqual(msg['state'][3], 0xFF)
 
         wd = Bus(32)
         rd = Bus(32)
@@ -162,7 +162,7 @@ class Memory_t(unittest.TestCase):
         memwr.write(1)
         mem.on_falling_edge()
         msg = mem.inspect()
-        self.assertEqual(len(msg['state'].keys()),0)
+        self.assertEqual(len(msg['state'].keys()), 0)
 
         # 24-bit memory words
         wd = Bus(24)
@@ -175,9 +175,9 @@ class Memory_t(unittest.TestCase):
         memwr.write(1)
         mem.on_falling_edge()
         msg = mem.inspect()
-        self.assertEqual(msg['state'][0],0xFF)
-        self.assertEqual(msg['state'][1],0xFF)
-        self.assertEqual(msg['state'][2],0xFF)
+        self.assertEqual(msg['state'][0], 0xFF)
+        self.assertEqual(msg['state'][1], 0xFF)
+        self.assertEqual(msg['state'][2], 0xFF)
 
         wd = Bus(24)
         rd = Bus(24)
@@ -189,8 +189,8 @@ class Memory_t(unittest.TestCase):
         memwr.write(1)
         mem.on_falling_edge()
         msg = mem.inspect()
-        self.assertEqual(msg['state'][0],0xFF)
-        self.assertEqual(len(msg['state'].keys()),1)
+        self.assertEqual(msg['state'][0], 0xFF)
+        self.assertEqual(len(msg['state'].keys()), 1)
 
         # 16-bit memory words
         wd = Bus(16)
@@ -203,8 +203,8 @@ class Memory_t(unittest.TestCase):
         memwr.write(1)
         mem.on_falling_edge()
         msg = mem.inspect()
-        self.assertEqual(msg['state'][0],0xFF)
-        self.assertEqual(len(msg['state'].keys()),1)
+        self.assertEqual(msg['state'][0], 0xFF)
+        self.assertEqual(len(msg['state'].keys()), 1)
 
         wd = Bus(16)
         rd = Bus(16)
@@ -216,8 +216,8 @@ class Memory_t(unittest.TestCase):
         memwr.write(1)
         mem.on_falling_edge()
         msg = mem.inspect()
-        self.assertEqual(msg['state'][0],0xFF)
-        self.assertEqual(len(msg['state'].keys()),1)
+        self.assertEqual(msg['state'][0], 0xFF)
+        self.assertEqual(len(msg['state'].keys()), 1)
 
         # 8-bit memory words
         wd = Bus(8)
@@ -230,8 +230,8 @@ class Memory_t(unittest.TestCase):
         memwr.write(1)
         mem.on_falling_edge()
         msg = mem.inspect()
-        self.assertEqual(msg['state'][0],0xFF)
-        self.assertEqual(len(msg['state'].keys()),1)
+        self.assertEqual(msg['state'][0], 0xFF)
+        self.assertEqual(len(msg['state'].keys()), 1)
 
         wd = Bus(8)
         rd = Bus(8)
@@ -243,19 +243,19 @@ class Memory_t(unittest.TestCase):
         memwr.write(1)
         mem.on_falling_edge()
         msg = mem.inspect()
-        self.assertEqual(len(msg['state'].keys()),0)
+        self.assertEqual(len(msg['state'].keys()), 0)
 
         wd = Bus(8)
         rd = Bus(8)
         mem = Memory(1024, 1, 0, a, wd, memwr, reset, clock, accessMode, rd)
 
-        accessMode.write(2) #half of byte is invalid since min is bytes (so off)
+        accessMode.write(2)  # half of byte is invalid since min is bytes (so off)
         a.write(0)
         wd.write(0xFF)
         memwr.write(1)
         mem.on_falling_edge()
         msg = mem.inspect()
-        self.assertEqual(len(msg['state'].keys()),0)
+        self.assertEqual(len(msg['state'].keys()), 0)
 
         wd = Bus(8)
         rd = Bus(8)
@@ -267,8 +267,8 @@ class Memory_t(unittest.TestCase):
         memwr.write(1)
         mem.on_falling_edge()
         msg = mem.inspect()
-        self.assertEqual(msg['state'][0],0xFF)
-        self.assertEqual(len(msg['state'].keys()),1)
+        self.assertEqual(msg['state'][0], 0xFF)
+        self.assertEqual(len(msg['state'].keys()), 1)
 
     def test_on_rising_edge(self):
         """
@@ -280,7 +280,7 @@ class Memory_t(unittest.TestCase):
         w = Bus(32, 10)
         r = Bus(32, 0)
         en = Bus(1, 1)
-        accessMode = Bus(2,3)
+        accessMode = Bus(2, 3)
 
         mem = Memory(1024, 4, 0, a, w, en, rst, clk, accessMode, r,
                      default_value=55, edge_type=Latch_Type.FALLING_EDGE)
@@ -303,7 +303,7 @@ class Memory_t(unittest.TestCase):
         w = Bus(32, 10)
         r = Bus(32, 0)
         en = Bus(1, 1)
-        accessMode = Bus(2,3)
+        accessMode = Bus(2, 3)
 
         mem = Memory(1024, 4, 0, a, w, en, rst, clk, accessMode, r,
                      default_value=55, edge_type=Latch_Type.RISING_EDGE)
@@ -326,7 +326,7 @@ class Memory_t(unittest.TestCase):
         reset = Bus(1)
         clock = Bus(1)
         rd = Bus(32)
-        accessMode = Bus(2,3)
+        accessMode = Bus(2, 3)
 
         mem = Memory(1024, 4, 0, a, wd, memwr, reset, clock, accessMode, rd)
 
@@ -338,10 +338,10 @@ class Memory_t(unittest.TestCase):
         mem.on_falling_edge()
 
         msg = mem.inspect()
-        self.assertEqual(len(msg['state'].keys()),8)
+        self.assertEqual(len(msg['state'].keys()), 8)
         mem.on_reset()
         msg = mem.inspect()
-        self.assertEqual(len(msg['state'].keys()),0)
+        self.assertEqual(len(msg['state'].keys()), 0)
 
     def test_inspect(self):
         """
@@ -353,13 +353,13 @@ class Memory_t(unittest.TestCase):
         reset = Bus(1)
         clock = Bus(1)
         rd = Bus(8)
-        accessMode = Bus(2,3)
+        accessMode = Bus(2, 3)
 
         mem = Memory(1024, 1, 4, a, wd, memwr, reset, clock, accessMode, rd)
         msg = mem.inspect()
-        self.assertEqual(msg['type'],'Memory')
-        self.assertEqual(msg['size'],1024)
-        self.assertEqual(len(msg['state'].keys()),0)
+        self.assertEqual(msg['type'], 'Memory')
+        self.assertEqual(msg['size'], 1024)
+        self.assertEqual(len(msg['state'].keys()), 0)
 
         a.write(0x4)
         wd.write(1)
@@ -369,11 +369,11 @@ class Memory_t(unittest.TestCase):
         mem.on_falling_edge()
 
         msg = mem.inspect()
-        self.assertEqual(msg['type'],'Memory')
-        self.assertEqual(msg['size'],1024)
-        self.assertEqual(len(msg['state'].keys()),2)
-        self.assertEqual(msg['state'][0x4],1)
-        self.assertEqual(msg['state'][0xC],201)
+        self.assertEqual(msg['type'], 'Memory')
+        self.assertEqual(msg['size'], 1024)
+        self.assertEqual(len(msg['state'].keys()), 2)
+        self.assertEqual(msg['state'][0x4], 1)
+        self.assertEqual(msg['state'][0xC], 201)
 
     def test_modify(self):
         """
@@ -385,7 +385,7 @@ class Memory_t(unittest.TestCase):
         reset = Bus(1)
         clock = Bus(1)
         rd = Bus(8)
-        accessMode = Bus(2,3)
+        accessMode = Bus(2, 3)
 
         mem = Memory(2, 1, 0, a, wd, memwr, reset, clock, accessMode, rd)
 
@@ -491,7 +491,7 @@ class Memory_t(unittest.TestCase):
         reset = Bus(1)
         clock = Bus(1)
         rd = Bus(8)
-        accessMode = Bus(2,3)
+        accessMode = Bus(2, 3)
 
         mem = Memory(3, 1, 0, a, wd, memwr, reset, clock, accessMode, rd, default_value=37)
 
@@ -512,12 +512,36 @@ class Memory_t(unittest.TestCase):
         for i in range(0, 3):
             a.write(i)
             mem.run()
-            self.assertEqual(rd.read(),i * 25)
+            self.assertEqual(rd.read(), i * 25)
 
         # read from invalid memory address
         a.write(3)
         mem.run()
-        self.assertEqual(rd.read(),37)
+        self.assertEqual(rd.read(), 37)
+
+    def test_clear(self):
+        "Tests memory's clear method"
+        a = Bus(2)
+        wd = Bus(8)
+        memwr = Bus(1)
+        reset = Bus(1)
+        clock = Bus(1)
+        rd = Bus(8)
+        accessMode = Bus(2, 3)
+
+        mem = Memory(3, 1, 0, a, wd, memwr, reset, clock, accessMode, rd, default_value=37)
+
+        # write memory
+        mem.modify({'start': 0, 'data': [55]})
+        msg = mem.inspect()
+        self.assertNotEqual(len(msg['state'].keys()), 0)
+
+        # clear and prove empty
+        msg = mem.clear()
+        self.assertTrue('success' in msg)
+
+        msg = mem.inspect()
+        self.assertEqual(len(msg['state'].keys()), 0)
 
 
 if __name__ == '__main__':
