@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import {ARCHITECTURE, ARCHITECTURE2} from './simulator.model';
+import { ARCHITECTURE, ARCHITECTURE2, ARCHITECTURE3 } from './simulator.model';
 
 @Component({
   selector: 'marinade-simulator',
@@ -11,9 +11,32 @@ export class SimulatorComponent {
   private mouseStartX: number = -1;
   private mouseStartY: number = -1;
   private tracking: boolean = false;
-  public architecture: string = ARCHITECTURE + ARCHITECTURE2;
-  public viewBoxUpperLeftX: number = 0;
-  public viewBoxUpperLeftY: number = 0;
+  private viewBoxHeight: number = 905;
+  private viewBoxUpperLeftX: number = 0;
+  private viewBoxUpperLeftY: number = 0;
+  private viewBoxWidth: number = 1600;
+
+  public architecture: string = ARCHITECTURE + ARCHITECTURE2 + ARCHITECTURE3;
+  public scale: number = 1;
+  public viewBox: string = '0 0 1600 905';
+
+  private updateViewBox(): string {
+    if (this.viewBoxUpperLeftX < -1400) {
+      this.viewBoxUpperLeftX = -1400;
+    }
+    if (this.viewBoxUpperLeftX > 1400) {
+      this.viewBoxUpperLeftX = 1400;
+    }
+    if (this.viewBoxUpperLeftY < -700) {
+      this.viewBoxUpperLeftY = -700;
+    }
+    if (this.viewBoxUpperLeftY > 800) {
+      this.viewBoxUpperLeftY = 800;
+    }
+    this.viewBox = this.viewBoxUpperLeftX + ' ' + this.viewBoxUpperLeftY + ' ' +
+      this.viewBoxWidth / this.scale + ' ' + this.viewBoxHeight / this.scale;
+    return this.viewBox;
+  }
 
   public onClick(event: MouseEvent): void {
     this.mouseStartX = event.x;
@@ -23,15 +46,39 @@ export class SimulatorComponent {
 
   public onMove(event: MouseEvent): void {
     if (this.tracking) {
-      this.viewBoxUpperLeftX = event.x - this.mouseStartX;
-      this.viewBoxUpperLeftY = event.y - this.mouseStartY;
+      this.viewBoxUpperLeftX = this.viewBoxUpperLeftX -  1.5 * (event.x - this.mouseStartX);
+      this.viewBoxUpperLeftY = this.viewBoxUpperLeftY - 1.5 * (event.y - this.mouseStartY);
+      this.updateViewBox();
+      this.mouseStartX = event.x;
+      this.mouseStartY = event.y;
     }
   }
 
-  public onRelease(event: MouseEvent): void {
-    this.mouseStartX = -1;
-    this.mouseStartY = -1;
+  public onRelease(): void {
+    this.mouseStartX = 0;
+    this.mouseStartY = 0;
     this.tracking = false;
+  }
+
+  public onWheel(event: MouseWheelEvent): void {
+    let oldScale: number = this.scale;
+    this.scale += event.wheelDelta / 600;
+    if (this.scale < 0.6) {
+      this.scale = 0.6;
+    }
+    if (this.scale > 2.0) {
+      this.scale = 2.0;
+    }
+    let deltaX: number = (event.layerX - this.viewBoxUpperLeftX) * (this.scale - oldScale);
+    let deltaY: number = (event.layerY - this.viewBoxUpperLeftY) * (this.scale - oldScale);
+    this.viewBoxUpperLeftX += deltaX;
+    this.viewBoxUpperLeftY += deltaY;
+    this.updateViewBox();
+  }
+
+  public reset(): void {
+    this.viewBox = '0 0 1600 905';
+    this.scale = 1;
   }
 
 }

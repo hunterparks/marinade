@@ -452,7 +452,8 @@ export const ARCHITECTURE: string =
   '          3:1\n' +
   '        </text>\n' +
   '      </switch>\n' +
-  '    </g>\n' +
+  '    </g>\n';
+export const ARCHITECTURE2: string =
   '    <rect x="847" y="234" width="70" height="280" fill="#ffffff" stroke="#000000" pointer-events="none"/>\n' +
   '    <g transform="translate(860.5,365.5)">\n' +
   '      <switch>\n' +
@@ -929,7 +930,7 @@ export const ARCHITECTURE: string =
   '        </text>\n' +
   '      </switch>\n' +
   '    </g>\n';
-export const ARCHITECTURE2: string =
+export const ARCHITECTURE3: string =
   '    <path d="M 787 274 L 817 274 L 817 254 L 840.63 254" fill="none" stroke="#000000" stroke-miterlimit="10"\n' +
   '          pointer-events="none"/>\n' +
   '    <path d="M 845.88 254 L 838.88 257.5 L 840.63 254 L 838.88 250.5 Z" fill="#000000" stroke="#000000"\n' +
