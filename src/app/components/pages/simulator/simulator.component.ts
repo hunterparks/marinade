@@ -1,5 +1,8 @@
 import { Component } from '@angular/core';
-import { ARCHITECTURE, ARCHITECTURE2, ARCHITECTURE3 } from './simulator.model';
+import {
+  ARCHITECTURE1, ARCHITECTURE2, ARCHITECTURE3, ARCHITECTURE4, ARCHITECTURE5, ARCHITECTURE6, ARCHITECTURE7,
+  ARCHITECTURE8, ARCHITECTURE9
+} from './simulator.model';
 
 @Component({
   selector: 'marinade-simulator',
@@ -16,7 +19,8 @@ export class SimulatorComponent {
   private viewBoxUpperLeftY: number = 0;
   private viewBoxWidth: number = 1600;
 
-  public architecture: string = ARCHITECTURE + ARCHITECTURE2 + ARCHITECTURE3;
+  public architecture: string = ARCHITECTURE1 + ARCHITECTURE2 + ARCHITECTURE3 + ARCHITECTURE4 + ARCHITECTURE5 +
+                                ARCHITECTURE6 + ARCHITECTURE7 + ARCHITECTURE8 + ARCHITECTURE9;
   public scale: number = 1;
   public viewBox: string = '0 0 1600 905';
 
@@ -46,8 +50,8 @@ export class SimulatorComponent {
 
   public onMove(event: MouseEvent): void {
     if (this.tracking) {
-      this.viewBoxUpperLeftX = this.viewBoxUpperLeftX -  1.5 * (event.x - this.mouseStartX);
-      this.viewBoxUpperLeftY = this.viewBoxUpperLeftY - 1.5 * (event.y - this.mouseStartY);
+      this.viewBoxUpperLeftX = this.viewBoxUpperLeftX - (event.x - this.mouseStartX) / this.scale;
+      this.viewBoxUpperLeftY = this.viewBoxUpperLeftY - (event.y - this.mouseStartY) / this.scale;
       this.updateViewBox();
       this.mouseStartX = event.x;
       this.mouseStartY = event.y;
@@ -60,9 +64,9 @@ export class SimulatorComponent {
     this.tracking = false;
   }
 
-  public onWheel(event: MouseWheelEvent): void {
+  public onWheel(event: WheelEvent): void {
     let oldScale: number = this.scale;
-    this.scale += event.wheelDelta / 600;
+    this.scale += event.deltaY / 400;
     if (this.scale < 0.6) {
       this.scale = 0.6;
     }
