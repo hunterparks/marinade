@@ -186,7 +186,9 @@ class RegisterFile(Sequential):
 
         # write data to register
         if e:
-            self._ens[self._waddr.read()].write(1)
+            a = self._waddr.read()
+            if a < self._num_reg:
+                self._ens[a].write(1)
 
         # check for reset event
         if self._reset_type == Logic_States.ACTIVE_LOW and self._reset.read() == 0:
@@ -200,8 +202,14 @@ class RegisterFile(Sequential):
 
         # read from registers and assert output
         for i in range(len(self._raddrs)):
-            self._rdatas[i].write(self._datas[self._raddrs[i].read()].read())
+            a = self._raddrs[i].read()
+            if a < self._num_reg:
+                self._rdatas[i].write(self._datas[a].read())
+            else:
+                self._rdatas[i].write(0)
 
         # clear enable flags for register selected
         if e:
-            self._ens[self._waddr.read()].write(0)
+            a = self._waddr.read()
+            if a < self._num_reg:
+                self._ens[a].write(0)
