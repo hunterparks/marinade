@@ -11,7 +11,7 @@ import {
 })
 export class SimulatorComponent {
 
-  private static readonly DEFAULT_VIEWBOX_HEIGHT: number = 905;
+  private static readonly DEFAULT_VIEWBOX_HEIGHT: number = 900;
   private static readonly DEFAULT_VIEWBOX_SCALE: number = 1;
   private static readonly DEFAULT_VIEWBOX_UPPER_LEFT_X: number = 0;
   private static readonly DEFAULT_VIEWBOX_UPPER_LEFT_Y: number = 0;
@@ -23,7 +23,7 @@ export class SimulatorComponent {
   private mouseStartX: number = -1;
   private mouseStartY: number = -1;
   private tracking: boolean = false;
-  private viewBoxHeight: number = 905;
+  private viewBoxHeight: number = 900;
   private viewBoxUpperLeftX: number = 0;
   private viewBoxUpperLeftY: number = 0;
   private viewBoxWidth: number = 1600;
@@ -31,20 +31,24 @@ export class SimulatorComponent {
   public architecture: string = ARCHITECTURE1 + ARCHITECTURE2 + ARCHITECTURE3 + ARCHITECTURE4 + ARCHITECTURE5 +
                                 ARCHITECTURE6 + ARCHITECTURE7 + ARCHITECTURE8 + ARCHITECTURE9;
   public scale: number = 1;
-  public viewBox: string = '0 0 1600 905';
+  public viewBox: string = '0 0 1600 900';
 
   private updateViewBox(): void {
-    if (this.viewBoxUpperLeftX < -1200) {
-      this.viewBoxUpperLeftX = -1200;
+    // Bound the architecture on the left
+    if (this.viewBoxUpperLeftX < -this.viewBoxWidth * 0.5) {
+      this.viewBoxUpperLeftX = -this.viewBoxWidth * 0.5;
     }
-    if (this.viewBoxUpperLeftX > 1200) {
-      this.viewBoxUpperLeftX = 1200;
+    // Bound the architecture on the right
+    if (this.viewBoxUpperLeftX / this.scale > this.viewBoxWidth) {
+      this.viewBoxUpperLeftX = this.viewBoxWidth * (this.scale - SimulatorComponent.MAX_SCALE);
     }
-    if (this.viewBoxUpperLeftY < -600) {
-      this.viewBoxUpperLeftY = -600;
+    // Bound the architecture on the top
+    if (this.viewBoxUpperLeftY < -this.viewBoxHeight * 0.5) {
+      this.viewBoxUpperLeftY = -this.viewBoxHeight * 0.5;
     }
-    if (this.viewBoxUpperLeftY > 600) {
-      this.viewBoxUpperLeftY = 600;
+    // Bound the architecture on the bottom
+    if (this.viewBoxUpperLeftY / this.scale > this.viewBoxHeight) {
+      this.viewBoxUpperLeftY = this.viewBoxHeight * (this.scale - SimulatorComponent.MAX_SCALE);
     }
     this.viewBox = this.viewBoxUpperLeftX + ' ' + this.viewBoxUpperLeftY + ' ' +
                    this.viewBoxWidth + ' ' + this.viewBoxHeight;
@@ -92,7 +96,6 @@ export class SimulatorComponent {
   }
 
   public onWheel(event: WheelEvent): void {
-    let oldScale: number = this.scale;
     this.scale += event.deltaY / 400;
     if (this.scale < SimulatorComponent.MIN_SCALE) {
       this.scale = SimulatorComponent.MIN_SCALE;
@@ -100,15 +103,14 @@ export class SimulatorComponent {
     if (this.scale > SimulatorComponent.MAX_SCALE) {
       this.scale = SimulatorComponent.MAX_SCALE;
     }
-    if (event.deltaY < 0) {
-      this.viewBoxUpperLeftX = (this.viewBoxWidth + this.viewBoxUpperLeftX) / oldScale * (this.scale - oldScale);
-      this.viewBoxUpperLeftY = (this.viewBoxHeight + this.viewBoxUpperLeftY) / oldScale * (this.scale - oldScale);
-    } else {
-      this.viewBoxUpperLeftX += (event.layerX - this.viewBoxUpperLeftX) / oldScale * (this.scale - oldScale);
-      this.viewBoxUpperLeftY += (event.layerY - this.viewBoxUpperLeftY) / oldScale * (this.scale - oldScale);
-    }
+    let oldCenterX: number = this.viewBoxWidth / 2;
+    let oldCenterY: number = this.viewBoxHeight / 2;
     this.viewBoxHeight = SimulatorComponent.DEFAULT_VIEWBOX_HEIGHT / this.scale;
     this.viewBoxWidth = SimulatorComponent.DEFAULT_VIEWBOX_WIDTH / this.scale;
+    let centerX: number = this.viewBoxWidth / 2;
+    let centerY: number = this.viewBoxHeight / 2;
+    this.viewBoxUpperLeftX += oldCenterX - centerX;
+    this.viewBoxUpperLeftY += oldCenterY - centerY;
     this.updateViewBox();
   }
 
