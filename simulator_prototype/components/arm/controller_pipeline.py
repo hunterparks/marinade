@@ -22,6 +22,7 @@ class ControllerPipeline(Controller):
             v: signed overflow bit
             n: negative bit
             z: zero bit
+            stalld: used to detect if the controller is stalled
         outputs:
             pcsrcd: selects the instruction given to the fetch stage
             pcwrd: always a 1 for the single cycle processor
@@ -183,10 +184,10 @@ class ControllerPipeline(Controller):
         PCWRD <= '1'
         Note: Might need to change
         """
-        if stalld.read() == 1:
+        if stalld == 1:
             return 0
         else:
-            return 0b1
+            return 1
 
 
     @staticmethod

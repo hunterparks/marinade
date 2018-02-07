@@ -134,7 +134,7 @@ class HazardController():
     @staticmethod
     def _generate_fwds(ra3m, ra3w, memwrm):
         # If pipeline processor does not work - check the code below
-        if ra3m.read() == ra3w.read() and memwrm == 1:
+        if ra3m.read() == ra3w.read() and memwrm.read() == 1:
             return 1        # Use-store hazard
         else:
             return 0        # No use-store hazard
@@ -162,10 +162,10 @@ class HazardController():
     @staticmethod
     def _generate_flushe():
         '''
-        Method is not implemented because branch hazards are being detected in
+        Method returns 0 because branch hazards are being detected in
         the decode stage
         '''
-        pass
+        return 0
 
 
     def run(self, time = None):

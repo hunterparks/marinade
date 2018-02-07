@@ -15,7 +15,7 @@ class ControllerSingleCycle_t(unittest.TestCase):
     """
 
     def test_constructor(self):
-        "tests 4 bad constructors - not all possible constructors tested"
+        "Tests 4 bad constructors - not all possible constructors tested"
 
         cond = Bus(4)
         op = Bus(2)
@@ -60,8 +60,9 @@ class ControllerSingleCycle_t(unittest.TestCase):
                                         regdst, regwr, regwrs, alusrcb, exts, alus, aluflagwr,
                                         memwr, regsrc, wd3s)
 
+
     def test_run(self):
-        "tests the signle cycle processors run method"
+        "Tests the signle cycle processors run method"
 
         cond = Bus(4)
         op = Bus(2)
@@ -298,8 +299,9 @@ class ControllerSingleCycle_t(unittest.TestCase):
         scc.run()
         self.assertEqual(wd3s.read(), 0)
 
+
     def test_inspect(self):
-        "tests the single cycle processors inspect method"
+        "Tests the single cycle processors inspect method"
 
         cond = Bus(4)
         op = Bus(2)
@@ -331,8 +333,9 @@ class ControllerSingleCycle_t(unittest.TestCase):
         self.assertTrue(ins['type'] == 'sc-controller')
         self.assertTrue(ins['state'] is None)
 
+
     def test_modify(self):
-        "tests the single cycle processor inspect method"
+        "Tests the single cycle processor inspect method"
 
         cond = Bus(4)
         op = Bus(2)
