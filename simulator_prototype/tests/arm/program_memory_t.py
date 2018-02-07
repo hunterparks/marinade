@@ -19,59 +19,51 @@ class ProgramMemory_t(unittest.TestCase):
         "Constructor with valid and invalid configuration"
         ad = Bus(32, 0)
         rst = Bus(1, 0)
-        clk = Bus(1, 0)
         rd = Bus(32, 0)
 
         # test invalid configurations
         with self.assertRaises(ValueError):
-            mem = ProgramMemory(ad, rst, clk, rd, -1, 0x81, Logic_States.ACTIVE_HIGH)
+            mem = ProgramMemory(ad, rst, rd, -1, 0x81, Logic_States.ACTIVE_HIGH)
 
         with self.assertRaises(TypeError):
-            mem = ProgramMemory(ad, rst, clk, rd, 0, 0x81, Logic_States.ACTIVE_HIGH)
+            mem = ProgramMemory(ad, rst, rd, 0, 0x81, Logic_States.ACTIVE_HIGH)
 
         with self.assertRaises(TypeError):
-            mem = ProgramMemory(ad, rst, clk, rd, '0', 0x81, Logic_States.ACTIVE_HIGH)
+            mem = ProgramMemory(ad, rst, rd, '0', 0x81, Logic_States.ACTIVE_HIGH)
 
         with self.assertRaises(TypeError):
-            mem = ProgramMemory(ad, rst, clk, rd, 4, '0x81', Logic_States.ACTIVE_HIGH)
+            mem = ProgramMemory(ad, rst, rd, 4, '0x81', Logic_States.ACTIVE_HIGH)
 
         with self.assertRaises(ValueError):
-            mem = ProgramMemory(ad, rst, clk, rd, 4, -1, Logic_States.ACTIVE_HIGH)
+            mem = ProgramMemory(ad, rst, rd, 4, -1, Logic_States.ACTIVE_HIGH)
 
         with self.assertRaises(ValueError):
-            mem = ProgramMemory(ad, rst, clk, rd, 4, 0x81, 'Logic_States.ACTIVE_HIGH')
+            mem = ProgramMemory(ad, rst, rd, 4, 0x81, 'Logic_States.ACTIVE_HIGH')
 
         # test invalid buses
         with self.assertRaises(TypeError):
-            mem = ProgramMemory('ad', rst, clk, rd, 64, 0x81, Logic_States.ACTIVE_HIGH)
+            mem = ProgramMemory('ad', rst, rd, 64, 0x81, Logic_States.ACTIVE_HIGH)
 
         with self.assertRaises(ValueError):
             a = Bus(3)
-            mem = ProgramMemory(a, rst, clk, rd, 64, 0x81, Logic_States.ACTIVE_HIGH)
+            mem = ProgramMemory(a, rst, rd, 64, 0x81, Logic_States.ACTIVE_HIGH)
 
         with self.assertRaises(TypeError):
-            mem = ProgramMemory(ad, 'rst', clk, rd, 64, 0x81, Logic_States.ACTIVE_HIGH)
+            mem = ProgramMemory(ad, 'rst', rd, 64, 0x81, Logic_States.ACTIVE_HIGH)
 
         with self.assertRaises(ValueError):
             r = Bus(2)
-            mem = ProgramMemory(ad, r, clk, rd, 64, 0x81, Logic_States.ACTIVE_HIGH)
+            mem = ProgramMemory(ad, r, rd, 64, 0x81, Logic_States.ACTIVE_HIGH)
 
         with self.assertRaises(TypeError):
-            mem = ProgramMemory(ad, rst, 'clk', rd, 64, 0x81, Logic_States.ACTIVE_HIGH)
-
-        with self.assertRaises(ValueError):
-            c = Bus(2)
-            mem = ProgramMemory(ad, rst, c, rd, 64, 0x81, Logic_States.ACTIVE_HIGH)
-
-        with self.assertRaises(TypeError):
-            mem = ProgramMemory(ad, rst, clk, 'rd', 64, 0x81, Logic_States.ACTIVE_HIGH)
+            mem = ProgramMemory(ad, rst, 'rd', 64, 0x81, Logic_States.ACTIVE_HIGH)
 
         with self.assertRaises(ValueError):
             r = Bus(33)
-            mem = ProgramMemory(ad, rst, clk, r, 64, 0x81, Logic_States.ACTIVE_HIGH)
+            mem = ProgramMemory(ad, rst, r, 64, 0x81, Logic_States.ACTIVE_HIGH)
 
         # valid construction
-        mem = ProgramMemory(ad, rst, clk, rd, 64, 0x81, Logic_States.ACTIVE_HIGH)
+        mem = ProgramMemory(ad, rst, rd, 64, 0x81, Logic_States.ACTIVE_HIGH)
 
     def test_run(self):
         """
@@ -79,10 +71,9 @@ class ProgramMemory_t(unittest.TestCase):
         """
         ad = Bus(32, 0)
         rst = Bus(1, 0)
-        clk = Bus(1, 0)
         rd = Bus(32, 0)
 
-        mem = ProgramMemory(ad, rst, clk, rd, default_size=32)
+        mem = ProgramMemory(ad, rst, rd, default_size=32)
 
         # "flash" data to program memory
         data = []
@@ -98,6 +89,11 @@ class ProgramMemory_t(unittest.TestCase):
             for j in range(0, 4):
                 word |= data[i * 4 + j] << (32 - ((j + 1) * 8))
             self.assertEqual(rd.read(), word)
+
+        # test clear message proving empty
+        mem.clear()
+        msg = mem.inspect()
+        self.assertEqual(len(msg['state'].keys()),0)
 
 
 if __name__ == '__main__':

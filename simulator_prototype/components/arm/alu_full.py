@@ -106,7 +106,7 @@ class Alu(Combinational):
         if not isinstance(shiftCtrl, iBusRead):
             raise TypeError('The shiftCtrl bus must be readable')
         elif shiftCtrl.size() != 2:
-            raise ValueError('The shiftCtrl bus must have a size of 1-bit')
+            raise ValueError('The shiftCtrl bus must have a size of 2-bit')
         if not isinstance(accEn, iBusRead):
             raise TypeError('The accEn bus must be readable')
         elif accEn.size() != 1:
