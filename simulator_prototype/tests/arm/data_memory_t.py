@@ -23,97 +23,107 @@ class DataMemory_t(unittest.TestCase):
         rst = Bus(1, 0)
         clk = Bus(1, 0)
         rd = Bus(32, 0)
+        am = Bus(2,0)
 
         # test invalid configurations
         with self.assertRaises(ValueError):
-            mem = DataMemory(ad, wd, we, rst, clk, rd, -1, 0x81, Latch_Type.FALLING_EDGE,
+            mem = DataMemory(ad, wd, we, rst, clk, rd, am, -1, 0x81, Latch_Type.FALLING_EDGE,
                              Logic_States.ACTIVE_HIGH, Logic_States.ACTIVE_HIGH)
 
         with self.assertRaises(TypeError):
-            mem = DataMemory(ad, wd, we, rst, clk, rd, 0, 0x81, Latch_Type.FALLING_EDGE,
+            mem = DataMemory(ad, wd, we, rst, clk, rd, am, 0, 0x81, Latch_Type.FALLING_EDGE,
                              Logic_States.ACTIVE_HIGH, Logic_States.ACTIVE_HIGH)
 
         with self.assertRaises(TypeError):
-            mem = DataMemory(ad, wd, we, rst, clk, rd, '0', 0x81, Latch_Type.FALLING_EDGE,
+            mem = DataMemory(ad, wd, we, rst, clk, rd, am, '0', 0x81, Latch_Type.FALLING_EDGE,
                              Logic_States.ACTIVE_HIGH, Logic_States.ACTIVE_HIGH)
 
         with self.assertRaises(TypeError):
-            mem = DataMemory(ad, wd, we, rst, clk, rd, 4, '-1', Latch_Type.FALLING_EDGE,
+            mem = DataMemory(ad, wd, we, rst, clk, rd, am, 4, '-1', Latch_Type.FALLING_EDGE,
                              Logic_States.ACTIVE_HIGH, Logic_States.ACTIVE_HIGH)
 
         with self.assertRaises(ValueError):
-            mem = DataMemory(ad, wd, we, rst, clk, rd, 4, -1, Latch_Type.FALLING_EDGE,
+            mem = DataMemory(ad, wd, we, rst, clk, rd, am, 4, -1, Latch_Type.FALLING_EDGE,
                              Logic_States.ACTIVE_HIGH, Logic_States.ACTIVE_HIGH)
 
         with self.assertRaises(ValueError):
-            mem = DataMemory(ad, wd, we, rst, clk, rd, 4, 0, 'Latch_Type.FALLING_EDGE',
+            mem = DataMemory(ad, wd, we, rst, clk, rd, am, 4, 0, 'Latch_Type.FALLING_EDGE',
                              Logic_States.ACTIVE_HIGH, Logic_States.ACTIVE_HIGH)
 
         with self.assertRaises(ValueError):
-            mem = DataMemory(ad, wd, we, rst, clk, rd, 4, 0, Latch_Type.FALLING_EDGE,
+            mem = DataMemory(ad, wd, we, rst, clk, rd, am, 4, 0, Latch_Type.FALLING_EDGE,
                              [Logic_States.ACTIVE_HIGH], Logic_States.ACTIVE_HIGH)
 
         with self.assertRaises(ValueError):
-            mem = DataMemory(ad, wd, we, rst, clk, rd, 4, 0, Latch_Type.FALLING_EDGE,
+            mem = DataMemory(ad, wd, we, rst, clk, rd, am, 4, 0, Latch_Type.FALLING_EDGE,
                              [Logic_States.ACTIVE_HIGH], None)
 
         # test invalid buses
         with self.assertRaises(TypeError):
-            mem = DataMemory('a', wd, we, rst, clk, rd, 64, 0, Latch_Type.FALLING_EDGE,
+            mem = DataMemory('a', wd, we, rst, clk, rd, am, 64, 0, Latch_Type.FALLING_EDGE,
                              Logic_States.ACTIVE_HIGH, Logic_States.ACTIVE_HIGH)
 
         with self.assertRaises(ValueError):
             a = Bus(3)
-            mem = DataMemory(a, wd, we, rst, clk, rd, 64, 0, Latch_Type.FALLING_EDGE,
+            mem = DataMemory(a, wd, we, rst, clk, rd, am, 64, 0, Latch_Type.FALLING_EDGE,
                              Logic_States.ACTIVE_HIGH, Logic_States.ACTIVE_HIGH)
 
         with self.assertRaises(TypeError):
-            mem = DataMemory(ad, 'wd', we, rst, clk, rd, 64, 0, Latch_Type.FALLING_EDGE,
+            mem = DataMemory(ad, 'wd', we, rst, clk, rd, am, 64, 0, Latch_Type.FALLING_EDGE,
                              Logic_States.ACTIVE_HIGH, Logic_States.ACTIVE_HIGH)
 
         with self.assertRaises(ValueError):
             w = Bus(31)
-            mem = DataMemory(ad, w, we, rst, clk, rd, 64, 0, Latch_Type.FALLING_EDGE,
+            mem = DataMemory(ad, w, we, rst, clk, rd, am, 64, 0, Latch_Type.FALLING_EDGE,
                              Logic_States.ACTIVE_HIGH, Logic_States.ACTIVE_HIGH)
 
         with self.assertRaises(TypeError):
-            mem = DataMemory(ad, wd, 'we', rst, clk, rd, 64, 0, Latch_Type.FALLING_EDGE,
+            mem = DataMemory(ad, wd, 'we', rst, clk, rd, am, 64, 0, Latch_Type.FALLING_EDGE,
                              Logic_States.ACTIVE_HIGH, Logic_States.ACTIVE_HIGH)
 
         with self.assertRaises(ValueError):
             w = Bus(2)
-            mem = DataMemory(ad, wd, w, rst, clk, rd, 64, 0, Latch_Type.FALLING_EDGE,
+            mem = DataMemory(ad, wd, w, rst, clk, rd, am, 64, 0, Latch_Type.FALLING_EDGE,
                              Logic_States.ACTIVE_HIGH, Logic_States.ACTIVE_HIGH)
 
         with self.assertRaises(TypeError):
-            mem = DataMemory(ad, wd, we, 'rst', clk, rd, 64, 0, Latch_Type.FALLING_EDGE,
+            mem = DataMemory(ad, wd, we, 'rst', clk, rd, am, 64, 0, Latch_Type.FALLING_EDGE,
                              Logic_States.ACTIVE_HIGH, Logic_States.ACTIVE_HIGH)
 
         with self.assertRaises(ValueError):
             r = Bus(2)
-            mem = DataMemory(ad, wd, we, r, clk, rd, 64, 0, Latch_Type.FALLING_EDGE,
+            mem = DataMemory(ad, wd, we, r, clk, rd, am, 64, 0, Latch_Type.FALLING_EDGE,
                              Logic_States.ACTIVE_HIGH, Logic_States.ACTIVE_HIGH)
 
         with self.assertRaises(TypeError):
-            mem = DataMemory(ad, wd, we, rst, 'clk', rd, 64, 0, Latch_Type.FALLING_EDGE,
+            mem = DataMemory(ad, wd, we, rst, 'clk', rd, am, 64, 0, Latch_Type.FALLING_EDGE,
                              Logic_States.ACTIVE_HIGH, Logic_States.ACTIVE_HIGH)
 
         with self.assertRaises(ValueError):
             c = Bus(2)
-            mem = DataMemory(ad, wd, we, rst, c, rd, 64, 0, Latch_Type.FALLING_EDGE,
+            mem = DataMemory(ad, wd, we, rst, c, rd, am, 64, 0, Latch_Type.FALLING_EDGE,
                              Logic_States.ACTIVE_HIGH, Logic_States.ACTIVE_HIGH)
 
         with self.assertRaises(TypeError):
-            mem = DataMemory(ad, wd, we, rst, clk, 'rd', 64, 0, Latch_Type.FALLING_EDGE,
+            mem = DataMemory(ad, wd, we, rst, clk, 'rd', am, 64, 0, Latch_Type.FALLING_EDGE,
                              Logic_States.ACTIVE_HIGH, Logic_States.ACTIVE_HIGH)
 
         with self.assertRaises(ValueError):
             r = Bus(33)
-            mem = DataMemory(ad, wd, we, rst, clk, r, 64, 0, Latch_Type.FALLING_EDGE,
+            mem = DataMemory(ad, wd, we, rst, clk, r, am, 64, 0, Latch_Type.FALLING_EDGE,
+                             Logic_States.ACTIVE_HIGH, Logic_States.ACTIVE_HIGH)
+
+        with self.assertRaises(TypeError):
+            mem = DataMemory(ad, wd, we, rst, clk, rd, 'am', 64, 0, Latch_Type.FALLING_EDGE,
+                             Logic_States.ACTIVE_HIGH, Logic_States.ACTIVE_HIGH)
+
+        with self.assertRaises(ValueError):
+            a = Bus(1)
+            mem = DataMemory(ad, wd, we, rst, clk, rd, a, 64, 0, Latch_Type.FALLING_EDGE,
                              Logic_States.ACTIVE_HIGH, Logic_States.ACTIVE_HIGH)
 
         # valid construction
-        mem = DataMemory(ad, wd, we, rst, clk, rd, 16, 0x81,
+        mem = DataMemory(ad, wd, we, rst, clk, rd, am, 16, 0x81,
                          Latch_Type.FALLING_EDGE, Logic_States.ACTIVE_HIGH,
                          Logic_States.ACTIVE_HIGH)
 

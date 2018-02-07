@@ -455,6 +455,44 @@ class Architecture_t(unittest.TestCase):
         arch = Architecture(0.25, Clock(1), Reset(), OrderedDict(), OrderedDict())
         arch.reset()
 
+    def test_clear(self):
+        """
+        Test clear hook behavior
+        """
+        arch, hooks, entities = self._generate_architecture()
+
+        #write data
+        msg = arch.modify({'name':'reg','parameters':{'state':25}})
+        msg = arch.inspect(['reg'])
+        self.assertEqual(msg['reg']['state'],25)
+
+        # clear memory
+        msg = arch.clear(['reg'])
+        self.assertTrue('success' in msg['reg'])
+
+        # validate clear
+        msg = arch.inspect(['reg'])
+        self.assertEqual(msg['reg']['state'],0xFF)
+
+    def test_hook_clear(self):
+        """
+        Test hook clear behavior
+        """
+        arch, hooks, entities = self._generate_architecture()
+
+        #write data
+        msg = arch.hook({'modify':{'name':'reg','parameters':{'state':25}}})
+        msg = arch.hook({'inspect':['reg']})
+        self.assertEqual(msg['reg']['state'],25)
+
+        # clear memory
+        msg = arch.hook({'clear':['reg']})
+        self.assertTrue('success' in msg['reg'])
+
+        # validate clear
+        msg = arch.hook({'inspect':['reg']})
+        self.assertEqual(msg['reg']['state'],0xFF)
+
 
 if __name__ == '__main__':
     unittest.main()

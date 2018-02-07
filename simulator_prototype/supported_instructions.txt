@@ -1,0 +1,42 @@
+Demo architectures:
+  <TODO fill this with relevant list>
+
+Full architecture:
+  Implemented:
+    ADC
+    ADD
+    AND
+    B
+    BIC
+    BL
+    CMN
+    CMP
+    EOR
+    LDR
+    MLA
+    MOV
+    MUL
+    MVN
+    ORR
+    RSB
+    RSC
+    SBC
+    STR
+    SUB
+    TEQ
+    TST
+  Not Implemented:
+    BX
+    CDP
+    LDC
+    MCR
+    MRC
+    MRS
+    MSR
+    SMULL
+    STC
+    STM
+    SWI
+    SWP
+    UMLAL
+    UMULL

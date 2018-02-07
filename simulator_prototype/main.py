@@ -16,9 +16,9 @@ from components.abstract.sequential import Latch_Type, Logic_States
 
 from components.core.register import Register
 from components.core.adder import Adder
-from components.arm.register_file_wo_pc import RegisterFile_wo_PC
+from components.arm.register_file_demo import RegisterFile
 from components.core.mux import Mux
-from components.arm.alu import Alu
+from components.arm.alu_demo import Alu
 from components.core.bus_subset import BusSubset
 from components.core.bus_join import BusJoin
 from components.core.constant import Constant

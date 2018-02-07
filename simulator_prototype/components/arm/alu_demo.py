@@ -27,10 +27,10 @@ class Alu(Combinational):
     ALUS_ADD_CMD = 0    # F = A + B
     ALUS_SUB_CMD = 1    # F = A - B
     ALUS_AND_CMD = 2    # F = A & B
-    ALUS_OR_CMD = 3    # F = A | B
+    ALUS_OR_CMD = 3     # F = A | B
     ALUS_XOR_CMD = 4    # F = A ^ B
-    ALUS_A_CMD = 5    # F = A
-    ALUS_B_CMD = 6    # F = B
+    ALUS_A_CMD = 5      # F = A
+    ALUS_B_CMD = 6      # F = B
     ALUS_MUL_CMD = 7    # F = A * B
 
     def __init__(self, a, b, alus, f, c, v, n, z):

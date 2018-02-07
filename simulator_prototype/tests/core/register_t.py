@@ -268,6 +268,27 @@ class Register_t(unittest.TestCase):
         reg.run()
         self.assertTrue(q_bus.read() == 0)
 
+    def test_clear(self):
+        "Tests memory's clear method"
+        clk = Bus(1, 0)
+        rst = Bus(1, 0)
+        d_bus = Bus(8, 0)
+        q_bus = Bus(8, 0)
+        reg = Register(8, clk, rst, d_bus, q_bus, 1)
+
+        #write data
+        reg.modify({'state':0xFF})
+        msg = reg.inspect()
+        self.assertEqual(msg['state'],0xFF)
+
+        #clear data
+        msg = reg.clear()
+        self.assertTrue('success' in msg)
+
+        #validate clear
+        msg = reg.inspect()
+        self.assertEqual(msg['state'],1)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -46,3 +46,8 @@ class InternalHook(Hook):
     def modify(self, data=None):
         "Hook method to modify internal data for element"
         return NotImplemented
+
+    @abstractmethod
+    def clear(self):
+        "Hook method to clear memory, thereby returning it to default value"
+        return NotImplemented

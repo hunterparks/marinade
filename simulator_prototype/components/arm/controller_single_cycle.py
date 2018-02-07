@@ -418,6 +418,10 @@ class ControllerSingleCycle(Controller):
         "Return message noting that this controller does not contain state"
         return {'error': 'sc-controller does not contain state'}
 
+    def clear(self):
+        "Not implemented for single cycle"
+        return {'error': 'sc-controller does not contain state'}
+
     def on_rising_edge(self):
         "Not implemented for single cycle"
         pass

@@ -103,6 +103,11 @@ class Register(Sequential):
         else:
             return {'error': 'data in message does not match internal size'}
 
+    def clear(self):
+        "Hook method to clear memory, thereby returning it to default value"
+        self.on_reset()
+        return {'success': True}
+
     def run(self, time=None):
         "Timestep handler function clocks data into register and asserts output"
 
