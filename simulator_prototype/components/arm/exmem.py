@@ -187,6 +187,7 @@ class Exmem(Sequential):
         "Not used for this register"
         pass
 
+
     def inspect(self):
         "Returns a dictionary message to the user"
         return {'type': 'exmem register', 'state': self._state}
@@ -197,6 +198,11 @@ class Exmem(Sequential):
         Return message noting that is register cannot be modified
         """
         return {'error' : 'exmem register cannot be modified'}
+
+
+    def clear(self):
+        "Return a message noting that the exmem register cannot be cleared"
+        return {'error': 'exmem register cannot be cleared'}
 
 
     def run(self, time = None):

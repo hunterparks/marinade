@@ -10,7 +10,7 @@ class ControllerPipeline(Controller):
     will be enforced until the next instruction.
     """
     def __init__(self, cond, op, funct, rd, bit4, c, v, n, z, stalld, pcsrcd, pcwrd, regsad, regdstd,
-                regwrsd, regwrd, extsd, alusrcbd, alusd, aluflagwrd, memwrd, regsrcd, wd3sd):
+                 regwrsd, regwrd, extsd, alusrcbd, alusd, aluflagwrd, memwrd, regsrcd, wd3sd):
         """
         inputs:
             cond: 4-bits that represent bits 31..28 of the instruction
@@ -437,6 +437,11 @@ class ControllerPipeline(Controller):
     def modify(self, data=None):
         "Return message noting that this controller does not contain state"
         return {'error': 'pipeline-controller does not contain state'}
+
+
+    def clear(self):
+        "Return a message noting that the controller cannot be cleared"
+        return {'error': 'pipeline-controller cannot be cleared'}
 
 
     def on_rising_edge(self):

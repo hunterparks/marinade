@@ -180,6 +180,11 @@ class Memwb(Sequential):
         return {'error' : 'memwb register cannot be modified'}
 
 
+    def clear(self):
+        "Return a message noting that the memwb register cannot be cleared"
+        return {'error': 'memwb register cannot be cleared'}
+
+
     def run(self, time = None):
         "Timestep handler function - seeqeuntially asserts output"
         # process enable line

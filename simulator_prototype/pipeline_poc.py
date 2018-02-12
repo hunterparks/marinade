@@ -29,12 +29,18 @@ from components.core.constant import Constant
 from components.core.bus_subset import BusSubset
 from components.core.logic_input import LogicInput
 
-from components.arm.alu import Alu
+from components.arm.alu_demo import Alu
 from components.arm.extender import Extender
 from components.arm.data_memory import DataMemory
 from components.arm.program_memory import ProgramMemory
-from components.arm.register_file_wo_pc import RegisterFile_wo_PC
-from components.arm.controller_single_cycle import ControllerSingleCycle
+from components.arm.register_file_demo import RegisterFile
+from components.arm.controller_pipeline import ControllerPipeline
+from components.arm.ifid import Ifid
+from components.arm.idex import Idex
+from components.arm.exmem import Exmem
+from components.arm.memwb import Memwb
+from components.arm.controller_pipeline import ControllerPipeline
+from components.arm.hazard import HazardController
 
 from architecture import Architecture
 
@@ -57,134 +63,221 @@ def program_pipeline_architecture(arch, program):
 def generate_pipeline_architecture():
     "Illustrates the necessary process to construct an architecture"
 
-    # define system resources
+    ########## define system resources ##########
     clk = Clock(10, 0)
     rst = Reset(0)
     hooks = OrderedDict([('clk', clk), ('rst', rst)])
 
-    # define input hooks and constants
-    hooks.update({'const8': Constant(32, 8)})
+    ########## define input hooks and constants ##########
     hooks.update({'const4': Constant(32, 4)})
+    hooks.update({'const8': Constant(32, 8)})
     hooks.update({'const14': Constant(4, 14)})
 
-    # define buses
+    ########## define buses ##########
     hooks.update({'pc': Bus(32, 0)})
-    hooks.update({'pc8': Bus(32, 0)})
     hooks.update({'pc4': Bus(32, 0)})
-    hooks.update({'instr': Bus(32, 0)})
-    hooks.update({'instr_23_0': Bus(24, 0)})
-    hooks.update({'instr_19_16': Bus(4, 0)})
-    hooks.update({'instr_3_0': Bus(4, 0)})
-    hooks.update({'instr_15_12': Bus(4, 0)})
-    hooks.update({'instr_11_8': Bus(4, 0)})
-    hooks.update({'instr_31_28': Bus(4, 0)})
-    hooks.update({'instr_27_26': Bus(2, 0)})
-    hooks.update({'instr_25_20': Bus(6, 0)})
-    hooks.update({'instr_4_4': Bus(1, 0)})
-    hooks.update({'imm32': Bus(32, 0)})
-    hooks.update({'ra1': Bus(4, 0)})
-    hooks.update({'ra2': Bus(4, 0)})
-    hooks.update({'ra3': Bus(4, 0)})
-    hooks.update({'rwd': Bus(32, 0)})
+    hooks.update({'pc8': Bus(32, 0)})
+    hooks.update({'baddr': Bus(32, 0)})
+    hooks.update({'nextaddr': Bus(32, 0)})
+    hooks.update({'instrf': Bus(32, 0)})
+    hooks.update({'instrd': Bus(32, 0)})
+    hooks.update({'instrd_31_28': Bus(4, 0)})
+    hooks.update({'instrd_27_26': Bus(2, 0)})
+    hooks.update({'instrd_25_20': Bus(6, 0)})
+    hooks.update({'instrd_19_16': Bus(4, 0)})
+    hooks.update({'instrd_15_12': Bus(4, 0)})
+    hooks.update({'instrd_11_8': Bus(4, 0)})
+    hooks.update({'instrd_4': Bus(1, 0)})
+    hooks.update({'instrd_3_0': Bus(4, 0)})
+    hooks.update({'instrd_23_0': Bus(24, 0)})
+    hooks.update({'imm32d': Bus(32, 0)})
+    hooks.update({'imm32e': Bus(32, 0)})
+    hooks.update({'rdm': Bus(32, 0)})
+    hooks.update({'rdw': Bus(32, 0)})
     hooks.update({'rd1': Bus(32, 0)})
     hooks.update({'rd2': Bus(32, 0)})
+    hooks.update({'rd1d': Bus(32, 0)})
+    hooks.update({'rd2d': Bus(32, 0)})
+    hooks.update({'rd1e': Bus(32, 0)})
+    hooks.update({'rd2e': Bus(32, 0)})
+    hooks.update({'rd2m': Bus(32, 0)})
+    hooks.update({'ra1d', Bus(4, 0)})
+    hooks.update({'ra2d': Bus(4, 0)})
+    hooks.update({'ra3d': Bus(4, 0)})
+    hooks.update({'ra1e', Bus(4, 0)})
+    hooks.update({'ra2e': Bus(4, 0)})
+    hooks.update({'ra3e': Bus(4, 0)})
+    hooks.update({'ra3m': Bus(4, 0)})
+    hooks.update({'ra3w': Bus(4, 0)})
+    hooks.update({'fe': Bus(32, 0)})
+    hooks.update({'fm': Bus(32, 0)})
+    hooks.update({'fw': Bus(32, 0)})
     hooks.update({'alub': Bus(32, 0)})
-    hooks.update({'branch': Bus(32, 0)})
-    hooks.update({'aluf': Bus(32, 0)})
     hooks.update({'aluc': Bus(1, 0)})
     hooks.update({'aluv': Bus(1, 0)})
     hooks.update({'alun': Bus(1, 0)})
     hooks.update({'aluz': Bus(1, 0)})
-    hooks.update({'aluflag': Bus(4, 0)})
-    hooks.update({'flag': Bus(4, 0)})
     hooks.update({'c': Bus(1, 0)})
     hooks.update({'v': Bus(1, 0)})
     hooks.update({'n': Bus(1, 0)})
     hooks.update({'z': Bus(1, 0)})
-    hooks.update({'memrd': Bus(32, 0)})
-    hooks.update({'wdb': Bus(32, 0)})
-    hooks.update({'pcwb': Bus(32, 0)})
+    hooks.update({'aluflag': Bus(4, 0)})
+    hooks.update({'flag': Bus(4, 0)})
+    hooks.update({'data': Bus(32, 0)})
+    hooks.update({'wd': Bus(32, 0)})
+    hooks.update({'wd3': Bus(32, 0)})
 
-    # control signals
-    hooks.update({'pcwr': Bus(1, 0)})
-    hooks.update({'regsa': Bus(1, 0)})
-    hooks.update({'regdst': Bus(2, 0)})
-    hooks.update({'regwrs': Bus(2, 0)})
-    hooks.update({'wdbs': Bus(1, 0)})
-    hooks.update({'regwr': Bus(1, 0)})
-    hooks.update({'exts': Bus(2, 0)})
-    hooks.update({'alu8rcb': Bus(1, 0)})
-    hooks.update({'alus': Bus(4, 0)})
-    hooks.update({'aluflagwr': Bus(1, 0)})
-    hooks.update({'memwr': Bus(1, 0)})
-    hooks.update({'regsrc': Bus(1, 0)})
-    hooks.update({'pcsrc': Bus(2, 0)})
+    ########## control signals ##########
+    # decode stage
+    hooks.update({'pcsrcd': Bus(2, 0)})
+    hooks.update({'pcwrd': Bus(1, 0)})
+    hooks.update({'regsad': Bus(1, 0)})
+    hooks.update({'regdstd': Bus(2, 0)})
+    hooks.update({'regwrsd': Bus(2, 0)})
+    hooks.update({'regwrd': Bus(1, 0)})
+    hooks.update({'extsd': Bus(2, 0)})
+    hooks.update({'alusrcbd': Bus(1, 0)})
+    hooks.update({'alusd': Bus(4, 0)})
+    hooks.update({'aluflagwrd': Bus(1, 0)})
+    hooks.update({'memwrd': Bus(1, 0)})
+    hooks.update({'regsrcd': Bus(1, 0)})
+    hooks.update({'wd3sd': Bus(1, 0)})
+    # execute stage
+    hooks.update({'pcsrce': Bus(2, 0)})
+    hooks.update({'regwrse': Bus(2, 0)})
+    hooks.update({'regwre': Bus(1, 0)})
+    hooks.update({'alusrcbe': Bus(1, 0)})
+    hooks.update({'aluse': Bus(4, 0)})
+    hooks.update({'aluflagwre': Bus(1, 0)})
+    hooks.update({'memwre': Bus(1, 0)})
+    hooks.update({'regsrce': Bus(1, 0)})
+    hooks.update({'wd3se': Bus(1, 0)})
+    # memory stage
+    hooks.update({'pcsrcm': Bus(2, 0)})
+    hooks.update({'regwrsm': Bus(2, 0)})
+    hooks.update({'regwrm': Bus(1, 0)})
+    hooks.update({'memwrm': Bus(1, 0)})
+    hooks.update({'regsrcm': Bus(1, 0)})
+    hooks.update({'wd3sm': Bus(1, 0)})
+    # write back stage
+    hooks.update({'pcsrcw': Bus(2, 0)})
+    hooks.update({'regwrsw': Bus(2, 0)})
+    hooks.update({'regwrw': Bus(1, 0)})
+    hooks.update({'regsrcw': Bus(1, 0)})
+    hooks.update({'wd3sw': Bus(1, 0)})
 
-    # generate components
+    ########## hazard control signals ##########
+    hooks.update({'fwda': Bus(2, 0)})
+    hooks.update({'fwdb': Bus(2, 0)})
+    hooks.update({'fwds': Bus(1, 0)})
+    hooks.update({'stalld': Bus(1, 0)})
+    hooks.update({'flushd': Bus(1, 0)})
+    hooks.update({'flushe': Bus(1, 0)})
 
-    # FETCH
+    ########## generate components ##########
+    # fetch
     entities = OrderedDict([('clk', clk)])
+    entities.update({'addr_mux': Mux(32, [hooks['braddr'], hooks['pc4'], hooks['wd3'], 
+                                     hooks['pcsrcd'], hooks['nextaddr'])})
     entities.update({'pc_reg': Register(32, hooks['clk'], hooks['rst'],
-                                        hooks['pcwb'], hooks['pc'], 0, enable=hooks['pcwr'],
+                                        hooks['nextaddr'], hooks['pc'], 0, enable=hooks['pcwrd'],
                                         edge_type=Latch_Type.FALLING_EDGE)})
     entities.update({'add8': Adder(32, hooks['pc'], hooks['const8'], hooks['pc8'])})
     entities.update({'add4': Adder(32, hooks['pc'], hooks['const4'], hooks['pc4'])})
-    entities.update({'progmem': ProgramMemory(hooks['pc'],hooks['rst'], hooks['clk'], hooks['instr'])})
-
-    # DECODE
-    entities.update({'instr_subset': BusSubset(hooks['instr'],
-                                               [hooks['instr_23_0'], hooks['instr_19_16'],
-                                                hooks['instr_3_0'], hooks['instr_15_12'],
-                                                hooks['instr_11_8'], hooks['instr_31_28'],
+    entities.update({'progmem': ProgramMemory(hooks['pc'], hooks['rst'], hooks['clk'], 
+                                              hooks['instrf'])})
+    # ifid
+    entities.update({'ifid': Ifid(hooks['instrf'], hooks['stalld'], hooks['flushd'], hooks['clk']), 
+                                  hooks['instrd']})
+    # decode
+    entities.update({'instr_subset': BusSubset(hooks['instr'],  
+                                               [hooks['instr_23_0'], hooks['instr_31_28'],
                                                 hooks['instr_27_26'], hooks['instr_25_20'],
-                                                hooks['instr_4_4']],
-                                               [(0, 24), (16, 20), (0, 4), (12, 16), (8, 12), (28, 32), (26, 28), (20, 26), (4, 5)])})
-
-    entities.update({'controller': ControllerSingleCycle(hooks['instr_31_28'],
-                                                         hooks['instr_27_26'], hooks['instr_25_20'],
-                                                         hooks['instr_15_12'], hooks['instr_4_4'],
-                                                         hooks['c'], hooks['v'], hooks['n'], hooks['z'],
-                                                         hooks['pcsrc'], hooks['pcwr'], hooks['regsa'],
-                                                         hooks['regdst'], hooks['regwrs'], hooks['regwr'],
-                                                         hooks['exts'], hooks['alu8rcb'], hooks['alus'],
-                                                         hooks['aluflagwr'], hooks['memwr'], hooks['regsrc'],
-                                                         hooks['wdbs'])})
-
-    entities.update({'ra1_mux': Mux(4, [hooks['instr_3_0'], hooks['instr_19_16']],
-                                    hooks['regsa'], hooks['ra1'])})
-    entities.update({'ra2_mux': Mux(4, [hooks['instr_11_8'], hooks['instr_3_0'],
-                                        hooks['instr_15_12']], hooks['regdst'], hooks['ra2'])})
-    entities.update({'ra3_mux': Mux(4, [hooks['instr_19_16'], hooks['instr_15_12'],
-                                        hooks['const14']], hooks['regwrs'], hooks['ra3'])})
-    entities.update({'rwd_mux': Mux(32, [hooks['wdb'], hooks['pc4']], hooks['wdbs'],
-                                    hooks['rwd'])})
-    entities.update({'extimm': Extender(hooks['instr_23_0'], hooks['exts'],
-                                        hooks['imm32'])})
-    entities.update({'regfile': RegisterFile_wo_PC(hooks['clk'], hooks['rst'],
-                                                   hooks['regwr'], hooks['rwd'], hooks['ra1'], hooks['ra2'],
-                                                   hooks['ra3'], hooks['rd1'], hooks['rd2'])})
-
-    # EXECUTE
-    entities.update({'alu_mux': Mux(32, [hooks['imm32'], hooks['rd2']],
-                                    hooks['alu8rcb'], hooks['alub'])})
-    entities.update({'add_br': Adder(32, hooks['pc8'], hooks['imm32'], hooks['branch'])})
-    entities.update({'alu': Alu(hooks['rd1'], hooks['alub'], hooks['alus'],
-                                hooks['aluf'], hooks['aluc'], hooks['aluv'], hooks['alun'],
-                                hooks['aluz'])})
-    entities.update({'aluflag_join': BusJoin([hooks['aluc'], hooks['aluv'],
-                                              hooks['alun'], hooks['aluz']], hooks['aluflag'])})
+                                                hooks['instr_19_16'], hooks['instr_15_12'],
+                                                hooks['instr_11_8'], hooks['instr_4'],
+                                                hooks['instr_3_0']],
+                                               [(0, 24), (28, 32), (26, 28), (20, 26), (16, 20), (12, 16), (8, 12), (4, 4), (0, 4)])})
+    entities.update({'ra1_mux': Mux(4, [hooks['instr_3_0'], hooks['instr_19_16']], hooks['regsad'], 
+                                    hooks['ra1d'])})
+    entities.update({'ra2_mux': Mux(4, [hooks['instr_11_8'], hooks['instr_3_0'], hooks['instr_15_12']], 
+                                    hooks['regdstd'], hooks['ra2d'])})
+    entities.update({'ra3_mux': Mux(4, [hooks['instr_19_16'], hooks['instr_15_12'], hooks['const14']], 
+                                    hooks['regwrsw'], hooks['ra3d'])})
+    entities.update({'rwd_mux': Mux(32, [hooks['wd3'], hooks['pc4']], hooks['wd3sw'], hooks['wd'])})
+    entities.update({'add_branch': Adder(32, hooks['pc8'], hooks['imm32d'], hooks['braddr'])})
+    entities.update({'extimm': Extender(hooks['instr_23_0'], hooks['extsd'], hooks['imm32d'])})
+    entities.update({'regfile': RegisterFile(hooks['clk'], hooks['rst'], hooks['regwrw'], hooks['wd'],
+                                             hooks['ra1d'], hooks['ra2d'], hooks['ra3w'], hooks['rd1d'], 
+                                             hooks['rd2d'])})
+    # ifid register
+    entities.update({'idex': Idex(hooks['pcsrcd'], hooks['regwrsd'], hooks['regwrd'], 
+                                  hooks['alusrcbd'], hooks['alusd'], hooks['aluflagwrd'],
+                                  hooks['memwrd'], hooks['regsrcd'], hooks['regsrcd'], 
+                                  hooks['wd3sd'], hooks['rd1d'], hooks['rd2d'], hooks['imm32d'],
+                                  hooks['ra1d'], hooks['ra2d'], hooks['ra3d'], hooks['flushe'],
+                                  hooks['clk'], hooks['pcsrce'], hooks['regwrse'], hooks['regwre'],
+                                  hooks['alusrcbe'], hooks['aluse'], hooks['aluflagwre'],
+                                  hooks['memwre'], hooks['regsrce'], hooks['wd3se'], hooks['rd1e'],
+                                  hooks['rd2e'], hooks['imm32e'], hooks['ra1e'], hooks['ra2e'],
+                                  hooks['ra3e'])})
+    # execute
+    entities.update({'fwda_mux': Mux(32, [hooks['rdw'], hooks['fm'], hooks['fw'], hooks['rd1e']],
+                                      hooks['fwda'], hooks['rd1'])})
+    entities.update({'fwdb_mux': Mux(32, [hooks['rdw'], hooks['fm'], hooks['fw'], hooks['rd2e']],
+                                      hooks['fwda'], hooks['rd2'])})
+    entities.update({'alu_mux': Mux(32, [hooks['imm32'], hooks['rd2']], hooks['alusrcbe'], 
+                                    hooks['alub'])})
+    entities.update({'alu': Alu(hooks['rd1'], hooks['alub'], hooks['aluse'], hooks['fe'], 
+                                hooks['aluc'], hooks['aluv'], hooks['alun'], hooks['aluz'])})
+    entities.update({'aluflag_join': BusJoin([hooks['aluc'], hooks['aluv'], hooks['alun'], 
+                                             hooks['aluz']], hooks['aluflag'])})
     entities.update({'aluflag_reg': Register(4, hooks['clk'], hooks['rst'],
-                                             hooks['aluflag'], hooks['flag'], enable=hooks['aluflagwr'])})
+                                             hooks['aluflag'], hooks['flag'], 
+                                             enable=hooks['aluflagwre'])})
     entities.update({'flag_subset': BusSubset(hooks['flag'], [hooks['c'],
-                                                              hooks['v'], hooks['n'], hooks['z']], [(0, 1), (1, 2), (2, 3), (3, 4)])})
-
-    # MEMORY & WRITE-BACK
-    entities.update({'datamem': DataMemory(hooks['aluf'], hooks['rd2'], hooks['memwr'],
-                                       hooks['rst'], hooks['clk'], hooks['memrd'])})
-    entities.update({'wdb_mux': Mux(32, [hooks['memrd'], hooks['aluf']],
-                                    hooks['regsrc'], hooks['wdb'])})
-    entities.update({'pcwb_mux': Mux(32, [hooks['branch'], hooks['pc4'], hooks['wdb']],
-                                     hooks['pcsrc'], hooks['pcwb'])})
+                                              hooks['v'], hooks['n'], hooks['z']], [(0, 1), (1, 2),
+                                              (2, 3), (3, 4)])})
+    # exmem
+    entities.update({'exmem': Exmem(hooks['pcsrce'], hooks['regwrse'], hooks['regwre'], 
+                                    hooks['memwre'], hooks['regsrce'], hooks['wd3se'], 
+                                    hooks['rd2e'], hooks['fe'], hooks['ra3e'], hooks['clk'],
+                                    hooks['pcsrcm'], hooks['regwrsm'], hooks['regwrm'],
+                                    hooks['memwrm'], hooks['regsrcm'], hooks['wd3sm'],
+                                    hooks['fm'], hooks['rd2m'], hooks['ra3m'])})
+    # memory
+    entities.update({'fwds_mux': Mux(32, [hooks['rd2m'], hooks['wd3']], hooks['fwds'], 
+                                     hooks['data'])})
+    entities.update({'datamem': DataMemory(hooks['fm'], hooks['data'], hooks['memwrm'],
+                                           hooks['rst'], hooks['clk'], hooks['rdm'])})
+    # memwb
+    entities.update('memwb': Memwb(hooks['pcsrcm'], hooks['regwrsm'], hooks['regwrm'],
+                                   hooks['regsrcm'], hooks['wd3sm'], hooks['fm'], hooks['rdm'],
+                                   hooks['ra3m'], hooks['clk'], hooks['pcsrcw'], hooks['regwrsw'],
+                                   hooks['regwrw'], hooks['regsrcw'], hooks['wd3sw'],
+                                   hooks['fw'], hooks['rdw'], hooks['ra3w']))
+    # writeback
+    entities.update({'wd3_mux': Mux(32, [hooks['rdw'], hooks['fw']],
+                                    hooks['regsrcw'], hooks['wd3'])})
+    # controller
+    entities.update({'controller': ControllerPipeline(hooks['instr_31_28'], hooks['instr_27_26'], 
+                                                      hooks['instr_25_20'], hooks['instr_15_12'], 
+                                                      hooks['instr_4'], hooks['c'], hooks['v'], 
+                                                      hooks['n'], hooks['z'], hooks['stalld'], 
+                                                      hooks['pcsrcd'], hooks['pcwrd'], hooks['regsad'],
+                                                      hooks['regdstd'], hooks['regwrsd'], hooks['regwrd'],
+                                                      hooks['extsd'], hooks['alusrcbd'], hooks['alusd'],
+                                                      hooks['aluflagwrd'], hooks['memwrd'], 
+                                                      hooks['regsrcd'], hooks['wdbsd'])})
+    # hazard controller
+    entities.update({'hazard_controller': HazardController(hooks['ra1d'], hooks['ra2d'], 
+                                                           hooks['ra1e'], hooks['ra2e'],
+                                                           hooks['ra3e'], hooks['ra3m'],
+                                                           hooks['ra3w'], hooks['regwrm'],
+                                                           hooks['regwrw'], hooks['memwrm'],
+                                                           hooks['pcsrcd'], hooks['fwda'],
+                                                           hooks['fwdb'], hooks['fwds'],
+                                                           hooks['stalld'], hooks['flushd'],
+                                                           hooks['flushe'])})
 
     # place memory (Internal) hooks into hook list
     hooks.update({'pc_reg': entities['pc_reg']})
@@ -193,6 +286,11 @@ def generate_pipeline_architecture():
     hooks.update({'aluflag_reg': entities['aluflag_reg']})
     hooks.update({'datamem': entities['datamem']})
     hooks.update({'controller': entities['controller']})
+    hooks.update({'hazard_controller': entities['hazard_controller']})
+    hooks.update({'ifid': entities['ifid']})
+    hooks.update({'idex': entities['idex']})
+    hooks.update({'exmem': entities['exmem']})
+    hooks.update({'memwb': entities['memwb']})
 
     # generate simulatable architecture
     arch = Architecture(0.0001, clk, rst, hooks, entities)

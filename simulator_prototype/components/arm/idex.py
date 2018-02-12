@@ -336,6 +336,12 @@ class Idex(Sequential):
         """
         return {'error' : 'idex register cannot be modified'}
 
+
+    def clear(self):
+        "Return a message noting that the idex register cannot be cleared"
+        return {'error': 'idex register cannot be cleared'}
+
+
     def run(self, time=None):
         """
         Timestep handler function - sequentially asserts output

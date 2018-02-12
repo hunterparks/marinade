@@ -113,6 +113,12 @@ class Ifid(Sequential):
         """
         return {'error': 'ifid register cannot be modified'}
 
+
+    def clear(self):
+        "Return a message noting that the ifid register cannot be cleared"
+        return {'error': 'ifid register cannot be cleared'}
+
+
     def run(self, time=None):
         """
         Timestep handler function - sequentially asserts output
