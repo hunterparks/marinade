@@ -12,18 +12,22 @@ export class BusComponent implements OnInit {
   // The highlighted bus color (when moused over)
   private static HIGHLIGHT_COLOR: string = '#ff0000';
 
+  // The svg paths for the arrow heads
+  public arrows: string[] = [];
+  // Input string with a list of coordinates
+  @Input('svg-bus') public bus: { 'junction'?: number, 'paths': string[] } = null;
   // The active color of the bus
   public color: string = BusComponent.DEFAULT_COLOR;
-  // Input string with a list of coordinates
-  @Input('svg-bus') public path: string = '';
-  // Generated svg path
-  public svg: string = '';
+  // The junction point for a complex bus
+  public junction: any = null;
+  // Generated svg paths for the bus
+  public paths: string[] = [];
 
   /**
-   * Determines the direction of the arrow using the last two points of the path
+   * Determines the direction of the arrows using the last two points of the path
    * @param {number[]} secondLastPoint The second to last point in the path
    * @param {number[]} lastPoint The last point in the path
-   * @returns {string} The direction to draw the arrow in - 'up', 'down', 'left', or 'right'
+   * @returns {string} The direction to draw the arrows in - 'up', 'down', 'left', or 'right'
    */
   private static arrowDirection(secondLastPoint: number[], lastPoint: number[]): string {
     let direction: string = '';
@@ -50,7 +54,8 @@ export class BusComponent implements OnInit {
    * @param {string} direction The direction the arrow head is pointing
    * @param {number} size The size of the arrow head
    */
-  private drawArrow(pointX: number, pointY: number, direction: string, size: number = 4): void {
+  private drawArrow(pointX: number, pointY: number, direction: string, size: number = 5): void {
+    this.arrows.push('');
     // Set up placeholder variables
     let deltaY: number = size;
     let deltaX: number = size;
@@ -62,20 +67,20 @@ export class BusComponent implements OnInit {
       case 'left': deltaX = -deltaX; break;
       case 'right': break;
     }
-    // Append to the svg
+    // Append to the arrow
     if (vertical) {
-      this.svg += ' M ' + pointX + ' ' + pointY;
-      this.svg += ' L ' + (pointX + deltaX) + ' ' + pointY;
-      this.svg += ' L ' + pointX + ' ' + (pointY + deltaY);
-      this.svg += ' L ' + (pointX - deltaX) + ' ' + pointY;
-      this.svg += ' L ' + pointX + ' ' + pointY;
+      this.arrows[this.arrows.length - 1] += ' M ' + pointX + ' ' + pointY;
+      this.arrows[this.arrows.length - 1] += ' L ' + (pointX + deltaX) + ' ' + pointY;
+      this.arrows[this.arrows.length - 1] += ' L ' + pointX + ' ' + (pointY + deltaY);
+      this.arrows[this.arrows.length - 1] += ' L ' + (pointX - deltaX) + ' ' + pointY;
     } else {
-      this.svg += ' M ' + pointX + ' ' + pointY;
-      this.svg += ' L ' + pointX + ' ' + (pointY + deltaY);
-      this.svg += ' L ' + (pointX + deltaX) + ' ' + pointY;
-      this.svg += ' L ' + pointX + ' ' + (pointY - deltaY);
-      this.svg += ' L ' + pointX + ' ' + pointY;
+      this.arrows[this.arrows.length - 1] += ' M ' + pointX + ' ' + pointY;
+      this.arrows[this.arrows.length - 1] += ' L ' + pointX + ' ' + (pointY + deltaY);
+      this.arrows[this.arrows.length - 1] += ' L ' + (pointX + deltaX) + ' ' + pointY;
+      this.arrows[this.arrows.length - 1] += ' L ' + pointX + ' ' + (pointY - deltaY);
     }
+    // Return to the starting point
+    this.arrows[this.arrows.length - 1] += ' Z';
   }
 
   /**
@@ -83,18 +88,18 @@ export class BusComponent implements OnInit {
    * @param {number[][]} coordinates A list of x, y coordinates that create the line for the bus
    */
   private drawBus(coordinates: number[][]): void {
-    // Reset the svg path
-    this.svg = '';
-    // Iterate through the coordinates and build the svg path
+    // Reset the paths bus
+    this.paths.push('');
+    // Iterate through the coordinates and build the paths bus
     for (let i: number = 0; i < coordinates.length; i++) {
       if (i === 0) {
-        this.svg += 'M ';
+        this.paths[this.paths.length - 1] += 'M ';
       } else {
-        this.svg += ' L ';
+        this.paths[this.paths.length - 1]  += ' L ';
       }
-      this.svg += coordinates[i][0] + ' ' + coordinates[i][1];
+      this.paths[this.paths.length - 1]  += coordinates[i][0] + ' ' + coordinates[i][1];
     }
-    // Draw the arrow using the last two points in the path
+    // Draw the arrows using the last two points in the bus
     this.drawArrow(
       coordinates[coordinates.length - 1][0],
       coordinates[coordinates.length - 1][1],
@@ -106,11 +111,11 @@ export class BusComponent implements OnInit {
    * Parses the points on the line that create the bus
    * @returns {number[][]} A list of x, y coordinates that create the line for the bus
    */
-  private parsePoints(): number[][] {
+  private parsePoints(path: string): number[][] {
     // Create the coordinates array
     let coordinates: number[][] = [];
     // Split on commas to separate pairs of x, y coordinates
-    this.path.split(',').forEach((line: string) => {
+    path.split(',').forEach((line: string) => {
       // Split each set of points on the space, and parse as numbers
       coordinates.push(line.trim().split(' ').map(Number));
     });
@@ -118,11 +123,19 @@ export class BusComponent implements OnInit {
   }
 
   /**
-   * Read the input path and draw the bus
+   * Read the input object and draw the bus
    */
   public ngOnInit(): void {
-    let coordinates: number[][] = this.parsePoints();
-    this.drawBus(coordinates);
+    for (let path: string of this.bus['paths']) {
+      let coordinates: number[][] = this.parsePoints(path);
+      this.drawBus(coordinates);
+    }
+    if (this.bus['junction']) {
+      this.junction = {
+        'x': this.bus['junction']['x'],
+        'y': this.bus['junction']['y']
+      };
+    }
   }
 
   /**
