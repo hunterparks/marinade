@@ -126,7 +126,7 @@ export class BusComponent implements OnInit {
    * Read the input object and draw the bus
    */
   public ngOnInit(): void {
-    for (let path: string of this.bus['paths']) {
+    for (let path of this.bus['paths']) {
       let coordinates: number[][] = this.parsePoints(path);
       this.drawBus(coordinates);
     }
