@@ -1,6 +1,6 @@
 export const ARCHITECTURE1: string = '<g transform="translate(0.5,0.5)">\n' +
-  '  <path d="M 637 377 L 637 60 L 17 60 L 17 461 L 155.63 461" fill="none" stroke="#000000" stroke-miterlimit="10"\n' +
-  '        pointer-events="none"/>\n' +
+  // '  <path d="M 637 377 L 637 60 L 17 60 L 17 461 L 155.63 461" fill="none" stroke="#000000" stroke-miterlimit="10"\n' +
+  // '        pointer-events="none"/>\n' +
   '  <path d="M 160.88 461 L 153.88 464.5 L 155.63 461 L 153.88 457.5 Z" fill="#000000" stroke="#000000"\n' +
   '        stroke-miterlimit="10" pointer-events="none"/>\n' +
   '  <ellipse cx="272" cy="107" rx="2" ry="2" fill="#000000" stroke="#000000" pointer-events="none"/>\n' +

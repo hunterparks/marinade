@@ -3,6 +3,8 @@ import {
   ARCHITECTURE1, ARCHITECTURE2, ARCHITECTURE3, ARCHITECTURE4, ARCHITECTURE5, ARCHITECTURE6, ARCHITECTURE7,
   ARCHITECTURE8, ARCHITECTURE9
 } from './simulator.model';
+import { BUSES } from "../../common/simulator/bus/buses.model";
+import { REGISTERS } from "../../common/simulator/register/registers.model";
 
 @Component({
   selector: 'marinade-simulator',
@@ -28,8 +30,11 @@ export class SimulatorComponent {
   private viewBoxUpperLeftY: number = 0;
   private viewBoxWidth: number = 1600;
 
-  public architecture: string = ARCHITECTURE1 + ARCHITECTURE2 + ARCHITECTURE3 + ARCHITECTURE4 + ARCHITECTURE5 +
-                                ARCHITECTURE6 + ARCHITECTURE7 + ARCHITECTURE8 + ARCHITECTURE9;
+  public architecture: string = ARCHITECTURE1;// + ARCHITECTURE2 + ARCHITECTURE3 + ARCHITECTURE4 + ARCHITECTURE5 +
+                                //ARCHITECTURE6 + ARCHITECTURE7 + ARCHITECTURE8 + ARCHITECTURE9;
+
+  public buses: string[] = BUSES;
+  public registers: any[] = REGISTERS;
   public scale: number = 1;
   public viewBox: string = '0 0 1600 900';
 

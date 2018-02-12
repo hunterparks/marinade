@@ -4,10 +4,13 @@ import { FormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import * as Raven from 'raven-js';
 import { AppComponent } from './app.component';
+import { BusComponent } from './components/common/simulator/bus/bus.component';
+import { MuxComponent } from './components/common/simulator/mux/mux.component';
 import { SimulatorComponent } from './components/pages/simulator/simulator.component';
 import { SafeHtmlPipe } from './pipes/safe-html.pipe';
 import { WebsocketService } from './services/websocket.service';
 import { SentrySettings } from './settings/sentry/local.sentry.settings';
+import { RegisterComponent } from './components/common/simulator/register/register.component';
 
 Raven.config(SentrySettings.getURL()).install();
 Raven.setTagsContext({
@@ -27,6 +30,9 @@ export class RavenErrorHandler implements ErrorHandler {
     AppComponent,
     SimulatorComponent,
     SafeHtmlPipe,
+    MuxComponent,
+    BusComponent,
+    RegisterComponent,
   ],
   imports: [
     BrowserModule,
