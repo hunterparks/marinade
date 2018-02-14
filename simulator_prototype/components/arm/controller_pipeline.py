@@ -181,13 +181,13 @@ class ControllerPipeline(Controller):
     @staticmethod
     def _generate_pcwrd(stalld):
         """
-        PCWRD <= '1'
-        Note: Might need to change
+        PCWRD <= '0' only if pipeline is stalled
         """
-        if stalld == 1:
-            return 0
-        else:
-            return 1
+        #if stalld == 1:
+        #    return 0
+        #else:
+        #    return 1
+        return 1
 
 
     @staticmethod

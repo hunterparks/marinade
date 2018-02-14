@@ -10,7 +10,7 @@ sys.path.insert(0, '../../')
 
 import json
 import tablib
-import single_cycle_poc
+import pipeline_poc
 
 
 class PipelineProcessor_t(unittest.TestCase):
@@ -35,8 +35,8 @@ class PipelineProcessor_t(unittest.TestCase):
         tf.write('{"Run":[')
 
         # generate architecture / program
-        arch, hooks = single_cycle_poc.generate_single_cycle_architecture()
-        single_cycle_poc.program_single_cycle_architecture(arch, program)
+        arch, hooks = pipeline_poc.generate_pipeline_architecture()
+        pipeline_poc.program_pipeline_architecture(arch, program)
 
         # run simulation
         count = 0
@@ -97,32 +97,25 @@ class PipelineProcessor_t(unittest.TestCase):
             'inspect': [
                 'clk',
                 'rst',
-                'wdb',
+                'instrf',
+                'wd3',
                 'pc4',
-                'branch',
-                'instr',
-                'pcsrc',
-                'pcwr',
-                'regsa',
-                'regdst',
-                'regwrs',
-                'regwr',
-                'exts',
-                'alus',
-                'aluflagwr',
-                'memwr',
-                'regsrc',
-                'wdbs',
-                'imm32',
-                'rd1',
-                'rd2',
+                'ra1e',
+                'ra2e',
+                'ra3m',
+                'ra3w',
+                'fwda',
+                'fwdb',
+                'rd1d',
+                'rd2d',
+                'imm32d'
             ]
         }
 
         # generate JSON through simulation
         resultPath = os.path.dirname(os.path.realpath(__file__)) + '\\results\\'
         resultPath = resultPath + filename + '_result'
-        self._run_simulation(resultPath, program, 15, msg_inspect)
+        self._run_simulation(resultPath, program, 31, msg_inspect)
 
         # generate results in excel table for tracking
         self._process_json_to_excel(resultPath, msg_inspect['inspect'])
@@ -138,25 +131,45 @@ class PipelineProcessor_t(unittest.TestCase):
         Test against a simple demo program to prove general operation
         """
         demo_program = [
-            0xE3, 0xA0, 0x80, 0x0A,
-            0xE2, 0x88, 0x90, 0x01,
-            0xE0, 0x09, 0x09, 0x98,
-            0xE3, 0xA0, 0xA0, 0x00,
-            0xE2, 0x4A, 0xA0, 0x20,
-            0xE0, 0x19, 0xA0, 0x0A,
-            0x0A, 0x00, 0x00, 0x02,
-            0xE3, 0xA0, 0xB0, 0x01,
-            0xE3, 0xA0, 0xC0, 0x04,
-            0xE5, 0x8C, 0xB0, 0x00,
-            0xE5, 0x9C, 0x60, 0x00,
-            0xEA, 0xFF, 0xFF, 0xFD
+            0xE3, 0xA0, 0xA0, 0x0A,
+            0xE3, 0xA0, 0x90, 0x09,
+            0xE3, 0xA0, 0x80, 0x08,
+            0xE3, 0xA0, 0x70, 0x07,
+            0xE3, 0xA0, 0x60, 0x06,
+            0xE3, 0xA0, 0x50, 0x05,
+            0xE3, 0xA0, 0x40, 0x04,
+            0xE3, 0xA0, 0x30, 0x03,
+            0xE3, 0xA0, 0x20, 0x02,
+            0xE3, 0xA0, 0x10, 0x01,
+            0xE0, 0x8A, 0xC0, 0x09,
+            0xE0, 0x8C, 0xC0, 0x08,
+            0xE0, 0x8C, 0xC0, 0x07,
+            0xE0, 0x8C, 0xC0, 0x06,
+            0xE0, 0x8C, 0xC0, 0x05,
+            0xE0, 0x84, 0xC0, 0x0C,
+            0xE0, 0x83, 0xC0, 0x0C,
+            0xE0, 0x82, 0xC0, 0x0C,
+            0xE0, 0x81, 0xC0, 0x0C,
+            0xE3, 0xA0, 0x00, 0x00,
+            0xE3, 0xA0, 0x10, 0x01,
+            0xE3, 0xA0, 0x20, 0x04,
+            0xE2, 0x40, 0x00, 0x20,
+            0xE0, 0x0C, 0xC0, 0x00,
+            0xE5, 0x82, 0xC0, 0x00,
+            0xE5, 0x92, 0x60, 0x00,
+            0xE5, 0x92, 0x60, 0x00,
+            0xE5, 0x92, 0x60, 0x00,
+            0xE5, 0x92, 0x60, 0x00,
+            0xE5, 0x92, 0x60, 0x00
         ]
-        self.assertTrue(self._generic_test_procedure('single_cycle_demo', demo_program))
+        self.assertTrue(self._generic_test_procedure('pipeline_demo', demo_program))
 
     def test_all_instruction_program(self):
         """
         Test against a program that covers all instructions to flex architecture
         simulation.
+        """
+        pass
         """
         full_program = [
             0xE3, 0xA0, 0x00, 0xFF,
@@ -205,7 +218,8 @@ class PipelineProcessor_t(unittest.TestCase):
             0xE1, 0xA0, 0xF0, 0x0E
         ]
 
-        self.assertTrue(self._generic_test_procedure('single_cycle_full', full_program))
+        self.assertTrue(self._generic_test_procedure('pipeline_full', full_program))
+        """
 
 
 if __name__ == '__main__':

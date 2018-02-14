@@ -108,9 +108,9 @@ class HazardController():
     @staticmethod
     def _generate_fwda(ra1e, ra3m, ra3w, regwrm, regwrw, regsrcw):
         # If pipeline processor does not work - check the if statement below
-        if ra1e.read() == ra3w.read() and regsrcw.read() == 1:
-            return 0b11     # Load-use hazard occured
-        elif ra1e.read() == ra3m.read() and regwrm.read() == 1:
+        #if ra1e.read() == ra3w.read() and regsrcw.read() == 1:
+            #return 0b11     # Load-use hazard occured
+        if ra1e.read() == ra3m.read() and regwrm.read() == 1:
             return 0b10     # Register-use hazard occured
         elif ra1e.read() == ra3w.read() and regwrw.read() == 1:
             return 0b01     # Register-use hazard occured
@@ -121,9 +121,9 @@ class HazardController():
     @staticmethod
     def _generate_fwdb(ra2e, ra3m, ra3w, regwrm, regwrw, regsrcw):
         # If pipeline processor does not work - check the if statement below
-        if ra2e.read() == ra3w.read() and regsrcw.read() == 1:
-            return 0b11     # Load-use hazard occured
-        elif ra2e.read() == ra3m.read() and regwrm.read() == 1:
+        #if ra2e.read() == ra3w.read() and regsrcw.read() == 1:
+            #return 0b11     # Load-use hazard occured
+        if ra2e.read() == ra3m.read() and regwrm.read() == 1:
             return 0b10     # Register-use hazard occured
         elif ra2e.read() == ra3w.read() and regwrw.read() == 1:
             return 0b01     # Register-use hazard occured
