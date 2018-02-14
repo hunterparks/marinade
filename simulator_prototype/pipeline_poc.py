@@ -177,8 +177,6 @@ def generate_pipeline_architecture():
     ########## generate components ##########
     # fetch
     entities = OrderedDict([('clk', clk)])
-    entities.update({'addr_mux': Mux(32, [hooks['braddr'], hooks['pc4'], hooks['wd3']], 
-                                     hooks['pcsrcd'], hooks['nextaddr'])})
     entities.update({'pc_reg': Register(32, hooks['clk'], hooks['rst'],
                                         hooks['nextaddr'], hooks['pc'], 0, enable=hooks['pcwrd'],
                                         edge_type=Latch_Type.FALLING_EDGE)})
@@ -197,6 +195,15 @@ def generate_pipeline_architecture():
                                                 hooks['instrd_11_8'], hooks['instrd_4'],
                                                 hooks['instrd_3_0']],
                                                [(0, 24), (28, 32), (26, 28), (20, 26), (16, 20), (12, 16), (8, 12), (4, 5), (0, 4)])})
+    entities.update({'controller': ControllerPipeline(hooks['instrd_31_28'], hooks['instrd_27_26'], 
+                                                      hooks['instrd_25_20'], hooks['instrd_15_12'], 
+                                                      hooks['instrd_4'], hooks['c'], hooks['v'], 
+                                                      hooks['n'], hooks['z'], hooks['stalld'], 
+                                                      hooks['pcsrcd'], hooks['pcwrd'], hooks['regsad'],
+                                                      hooks['regdstd'], hooks['regwrsd'], hooks['regwrd'],
+                                                      hooks['extsd'], hooks['alusrcbd'], hooks['alusd'],
+                                                      hooks['aluflagwrd'], hooks['memwrd'], 
+                                                      hooks['regsrcd'], hooks['wd3sd'])})
     entities.update({'ra1_mux': Mux(4, [hooks['instrd_3_0'], hooks['instrd_19_16']], hooks['regsad'], 
                                     hooks['ra1d'])})
     entities.update({'ra2_mux': Mux(4, [hooks['instrd_11_8'], hooks['instrd_3_0'], hooks['instrd_15_12']], 
@@ -221,6 +228,18 @@ def generate_pipeline_architecture():
                                   hooks['rd2e'], hooks['imm32e'], hooks['ra1e'], hooks['ra2e'],
                                   hooks['ra3e'])})
     # execute
+    """
+    entities.update({'hazard_controller': HazardController(hooks['ra1d'], hooks['ra2d'], 
+                                                           hooks['ra1e'], hooks['ra2e'],
+                                                           hooks['ra3e'], hooks['ra3m'],
+                                                           hooks['ra3w'], hooks['regwrm'],
+                                                           hooks['regwrw'], hooks['regsrce'],
+                                                           hooks['regsrcw'], hooks['memwrm'],
+                                                           hooks['pcsrcd'], hooks['fwda'],
+                                                           hooks['fwdb'], hooks['fwds'],
+                                                           hooks['stalld'], hooks['flushd'],
+                                                           hooks['flushe'])})
+    """
     entities.update({'fwda_mux': Mux(32, [hooks['rdw'], hooks['fm'], hooks['fw'], hooks['rd1e']],
                                       hooks['fwda'], hooks['rd1'])})
     entities.update({'fwdb_mux': Mux(32, [hooks['rdw'], hooks['fm'], hooks['fw'], hooks['rd2e']],
@@ -258,27 +277,8 @@ def generate_pipeline_architecture():
     # writeback
     entities.update({'wd3_mux': Mux(32, [hooks['rdw'], hooks['fw']],
                                     hooks['regsrcw'], hooks['wd3'])})
-    # controller
-    entities.update({'controller': ControllerPipeline(hooks['instrd_31_28'], hooks['instrd_27_26'], 
-                                                      hooks['instrd_25_20'], hooks['instrd_15_12'], 
-                                                      hooks['instrd_4'], hooks['c'], hooks['v'], 
-                                                      hooks['n'], hooks['z'], hooks['stalld'], 
-                                                      hooks['pcsrcd'], hooks['pcwrd'], hooks['regsad'],
-                                                      hooks['regdstd'], hooks['regwrsd'], hooks['regwrd'],
-                                                      hooks['extsd'], hooks['alusrcbd'], hooks['alusd'],
-                                                      hooks['aluflagwrd'], hooks['memwrd'], 
-                                                      hooks['regsrcd'], hooks['wd3sd'])})
-    # hazard controller
-    entities.update({'hazard_controller': HazardController(hooks['ra1d'], hooks['ra2d'], 
-                                                           hooks['ra1e'], hooks['ra2e'],
-                                                           hooks['ra3e'], hooks['ra3m'],
-                                                           hooks['ra3w'], hooks['regwrm'],
-                                                           hooks['regwrw'], hooks['regsrce'],
-                                                           hooks['regsrcw'], hooks['memwrm'],
-                                                           hooks['pcsrcd'], hooks['fwda'],
-                                                           hooks['fwdb'], hooks['fwds'],
-                                                           hooks['stalld'], hooks['flushd'],
-                                                           hooks['flushe'])})
+    entities.update({'addr_mux': Mux(32, [hooks['braddr'], hooks['pc4'], hooks['wd3']], 
+                                     hooks['pcsrcd'], hooks['nextaddr'])})
 
     # place memory (Internal) hooks into hook list
     hooks.update({'pc_reg': entities['pc_reg']})
@@ -287,7 +287,7 @@ def generate_pipeline_architecture():
     hooks.update({'aluflag_reg': entities['aluflag_reg']})
     hooks.update({'datamem': entities['datamem']})
     hooks.update({'controller': entities['controller']})
-    hooks.update({'hazard_controller': entities['hazard_controller']})
+    #hooks.update({'hazard_controller': entities['hazard_controller']})
     hooks.update({'ifid': entities['ifid']})
     hooks.update({'idex': entities['idex']})
     hooks.update({'exmem': entities['exmem']})
