@@ -34,7 +34,7 @@ from components.arm.extender import Extender
 from components.arm.data_memory import DataMemory
 from components.arm.program_memory import ProgramMemory
 from components.arm.register_file_demo import RegisterFile
-from components.arm.controller_single_cycle import ControllerSingleCycle
+from components.arm.controller_single_cycle_demo import ControllerSingleCycle
 
 from architecture import Architecture
 
