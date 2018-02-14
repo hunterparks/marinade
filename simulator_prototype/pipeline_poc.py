@@ -209,7 +209,7 @@ def generate_pipeline_architecture():
     entities.update({'regfile': RegisterFile(hooks['clk'], hooks['rst'], hooks['regwrw'], hooks['wd'],
                                              hooks['ra1d'], hooks['ra2d'], hooks['ra3w'], hooks['rd1d'], 
                                              hooks['rd2d'])})
-    # ifid register
+    # idex register
     entities.update({'idex': Idex(hooks['pcsrcd'], hooks['regwrsd'], hooks['regwrd'], 
                                   hooks['alusrcbd'], hooks['alusd'], hooks['aluflagwrd'],
                                   hooks['memwrd'], hooks['regsrcd'], 
