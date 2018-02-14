@@ -1,139 +1,319 @@
+from abc import ABC, abstractmethod
 from bs4 import BeautifulSoup
+
 import json
 import os
-dir = os.path.dirname(__file__)
-base_output_file = os.path.join(dir, '../../src/app/components/common/simulator')
+import re
+
+current_directory = os.path.dirname(__file__)
+base_output_file = os.path.join(current_directory, '../../src/app/components/common/simulator')
 
 input_file = open('/Users/Alex/Downloads/pipeline_architecture.svg', 'r')
-bus_model_file = open(base_output_file + '/bus/buses.model.ts', 'w')
-register_model_file = open(base_output_file + '/register/registers.model.ts', 'w')
-mux_model_file = open(base_output_file + '/mux/muxes.model.ts', 'w')
 
 # Read the input file and set up beautifulsoup
-text = ''
+input_text = ''
 for line in input_file:
-  text += line
-soup = BeautifulSoup(text, "xml")
+    input_text += line
+soup = BeautifulSoup(input_text, "xml")
 
 # TODO: handle multiple junctions on a single bus
 # TODO: make approximations for points that are close together? rounding?
-# TODO: clean up duplicates more reliably
+
+
+class Element(ABC):
+
+    @abstractmethod
+    def parse_svg(self, svg):
+        pass
+
+    @abstractmethod
+    def to_dict(self):
+        pass
+
+    @abstractmethod
+    def validate(self, svg):
+        return False
+
+
+class Collection:
+    component_type = None
+    typescript_file = None
+    typescript_name = None
+    typescript_type = None
+
+    def __init__(self, component_type):
+        self.elements = []
+        if component_type == 'label':
+            self.typescript_file = base_output_file + '/label/labels.model.ts'
+            self.typescript_name = 'LABELS'
+            self.typescript_type = 'any[]'
+            self.component_type = 'label'
+        elif component_type == 'mux':
+            self.typescript_file = base_output_file + '/mux/muxes.model.ts'
+            self.typescript_name = 'MUXES'
+            self.typescript_type = 'any[]'
+            self.component_type = 'mux'
+        elif component_type == 'register':
+            self.typescript_file = base_output_file + '/register/registers.model.ts'
+            self.typescript_name = 'REGISTERS'
+            self.typescript_type = 'any[]'
+            self.component_type = 'register'
+        elif component_type == 'bus':
+            self.typescript_file = base_output_file + '/bus/buses.model.ts'
+            self.typescript_name = 'BUSES'
+            self.typescript_type = 'any[]'
+            self.component_type = 'bus'
+
+    def to_typescript(self):
+        return json.dumps([element.to_dict() for element in self.elements], indent=2).replace('"', '\'')
+
+    def commit(self):
+        if self.typescript_name and self.typescript_type and self.typescript_file:
+            print(self.component_type + ': ' + str(len(self.elements)) + ' parsed.')
+            file = open(self.typescript_file, 'w')
+            file.write('export const ' + self.typescript_name + ': ' + self.typescript_type + ' = ')
+            file.write(self.to_typescript())
+            file.write(';\n')
+            return True
+        return False
+
+    def add(self, element):
+        if element.__class__.__name__.lower() == self.component_type:
+            if element.valid:
+                self.elements.append(element)
+
+    def __len__(self):
+        return len(self.elements)
+
+    def __unicode__(self):
+        return self.to_typescript()
+
+
+class Bus(Element):
+
+    def __init__(self, junction=None, path=None):
+        self.valid = True
+        # if junctions:
+        self.junctions = [junction]
+        # if paths:
+        self.paths = [path]
+
+    def to_dict(self):
+        return {
+          'junctions': [junction.to_dict() for junction in self.junctions],
+          'paths': [path.to_dict() for path in self.paths]
+        }
+
+    def parse_svg(self, svg):
+        pass
+
+    def validate(self, svg):
+        return True
+
+    @staticmethod
+    def intersection(junction, segment):
+      crossproduct = (junction.x - segment.points[0].y) * (segment.points[1].x - segment.points[0].x) - \
+                     (junction.x - segment.points[0].x) * (segment.points[1].y - segment.points[0].y)
+      if abs(crossproduct) > 0.01:
+          return False
+
+      dotproduct = (junction.x - segment.points[0].x) * (segment.points[1].x - segment.points[0].x) + \
+                   (junction.y - segment.points[0].y) * (segment.points[1].y - segment.points[0].y)
+      if dotproduct < 0:
+          return False
+
+      squaredlengthba = (segment.points[1].x - segment.points[0].x) * (segment.points[1].x - segment.points[0].x) + \
+                        (segment.points[1].y - segment.points[0].y) * (segment.points[1].y - segment.points[0].y)
+      if dotproduct > squaredlengthba:
+          return False
+      return True
+
+
+
+class Point(Element):
+
+    def __init__(self, svg):
+        self.x, self.y = self.parse_svg(svg)
+
+    def parse_svg(self, svg):
+        self.validate(svg)
+        return [float(x) for x in svg.split(' ')]
+
+    def to_dict(self):
+        return {
+            'x': self.x,
+            'y': self.y
+        }
+
+    def validate(self, svg):
+        self.valid = True
+
+
+class Junction(Point):
+
+    def __eq__(self, other):
+        if self.__class__.__name__ == other.__class__.__name__:
+            return self.x == other.x and self.y == other.y
+        return False
+
+    def parse_svg(self, svg):
+        self.validate(svg)
+        return float(svg.attrs['cx']), float(svg.attrs['cy'])
+
+    def validate(self, svg):
+        self.valid = svg.attrs['rx'] == svg.attrs['ry']
+
+class Path(Element):
+
+    def __init__(self, svg):
+        self.points = self.parse_svg(svg)
+
+    def __eq__(self, other):
+        if self.__class__.__name__ == other.__class__.__name__:
+            return self.to_dict() == other.to_dict()
+        return False
+
+    def parse_svg(self, svg):
+        points = []
+        svg_str = str(str(svg.attrs['d']).replace('M ', '').replace(' L ', ', ').replace('Z', '').strip())
+        for point in svg_str.split(', '):
+            points.append(Point(point))
+        self.validate(svg)
+        return points
+
+    def to_dict(self):
+        return ', '.join(str(point.x) + ' ' + str(point.y) for point in self.points)
+
+    def validate(self, svg):
+        return True
+
+
+class Label(Element):
+
+    def __init__(self, svg):
+        self.size, self.text, self.x, self.y = self.parse_svg(svg)
+
+    def parse_svg(self, svg):
+        parent = svg.find_previous('g').attrs['transform'].replace('translate(', '').replace(')', '')
+        x = float(svg.attrs['x']) + float(parent.split(',')[0])
+        y = float(svg.attrs['y']) + float(parent.split(',')[1])
+        size = svg.attrs['font-size']
+        self.validate(svg)
+        if self.valid:
+            return size, svg.get_text(), x, y
+        return -1, '', -1, -1
+
+    def to_dict(self):
+        return {
+            'size': self.size,
+            'text': self.text,
+            'x': self.x,
+            'y': self.y,
+        }
+
+    def validate(self, svg):
+        self.valid = re.sub(r'\s+', ' ', svg.get_text()).strip() != '[Not supported by viewer]'
+
+
+class Mux(Element):
+
+    def __init__(self, svg):
+        self.color, self.path = self.parse_svg(svg)
+
+    def parse_svg(self, svg):
+        color = svg.attrs['fill']
+        path = str(str(svg.attrs['d']).replace('M ', '').replace(' L ', ', ').replace('Z', '').strip())
+        self.validate(svg)
+        return color, path
+
+    def to_dict(self):
+        return {
+            'color': self.color,
+            'path': self.path
+        }
+
+    def validate(self, svg):
+        self.valid = True
+
+
+# TODO: classify into more components, currently is just any rectangle
+class Register(Element):
+
+    def __init__(self, svg):
+        self.color, self.height, self.width, self.x, self.y = self.parse_svg(svg)
+
+    def parse_svg(self, svg):
+        color = svg.attrs['fill']
+        height = svg.attrs['height']
+        width = svg.attrs['width']
+        x = svg.attrs['x']
+        y = svg.attrs['y']
+        self.validate(svg)
+        return color, height, width, x, y
+
+    def to_dict(self):
+        return {
+            'color': self.color,
+            'height': self.height,
+            'width': self.width,
+            'x': self.x,
+            'y': self.y
+        }
+
+    def validate(self, svg):
+        self.valid = True
+
 
 # ====================================
-# Find the bus junctions (ellipses)
+# Find the bus text
 # ====================================
-ellipses = soup.find_all('ellipse')
-junctions = []
-for ellipse in ellipses:
-  if ellipse.attrs['rx'] == ellipse.attrs['ry']:
-    junctions.append({
-      'x': ellipse.attrs['cx'],
-      'y': ellipse.attrs['cy'],
-    })
-# Remove duplicates
-junctions = [dict(t) for t in set([tuple(d.items()) for d in junctions])]
-
-# ====================================
-# Find the buses (paths without fill)
-# ====================================
-paths = []
-complex_buses = dict()
-for line in soup.find_all('path'):
-  # Skip the paths with a fill - buses don't have fill
-  if line.attrs['fill'] == 'none':
-    # Remove the SVG-specific code, create coordinate pairs
-    new_line = str(str(line.attrs['d']).replace('M ', '').replace(' L ', ', ').replace('Z', '').strip())
-    points = []
-    for pair in new_line.split(', '):
-      points.append([float(point) for point in pair.split()])
-    for i in range(len(points) - 1):
-      current = {
-        'x': points[i][0],
-        'y': points[i][1]
-      }
-      next = {
-        'x': points[i + 1][0],
-        'y': points[i + 1][1]
-      }
-      complex_bus = False
-      for junction in junctions:
-        crossproduct = (float(junction['y']) - current['y']) * (next['x'] - current['x']) - (float(junction['x']) - current['x']) * (next['y'] - current['y'])
-        if abs(crossproduct) > 0.01: continue  # (or != 0 if using integers)
-
-        dotproduct = (float(junction['x']) - current['x']) * (next['x'] - current['x']) + (float(junction['y']) - current['y']) * (next['y'] - current['y'])
-        if dotproduct < 0: continue
-
-        squaredlengthba = (next['x'] - current['x']) * (next['x'] - current['x']) + (next['y'] - current['y']) * (next['y'] - current['y'])
-        if dotproduct > squaredlengthba: continue
-        if complex_buses.get(str(junction), None):
-          if new_line not in complex_buses.get(str(junction)):
-            complex_buses[str(junction)].append(new_line)
-            complex_bus = True
-        else:
-          complex_buses[str(junction)] = [new_line]
-          complex_bus = True
-      if not complex_bus:
-        paths.append(new_line)
-# Remove duplicates
-paths = list(set(paths))
-paths = [{'paths': [path]} for path in paths]
-# Reformat complex buses
-for key, value in complex_buses.items():
-  paths.append({
-    'junction': json.loads(key.replace('\'', '"')),
-    'paths': value
-  })
-# Print the number found
-print(str(len(paths)) + ' buses parsed.')
-# Write the results to the bus model file
-# TODO: write all to a single configuration file
-bus_model_file.write('export const BUSES: any[] = ')
-bus_model_file.write(json.dumps(paths, indent=2).replace('"', '\''))
-bus_model_file.write(';\n')
+labels = Collection('label')
+for label in soup.find_all('text'):
+    labels.add(Label(label))
+labels.commit()
 
 # ====================================
 # Find the registers (rectangles)
 # ====================================
-rects = soup.find_all('rect')
-registers = []
-for rect in rects:
-  # Get the needed register attributes
-  registers.append({
-    'color': rect.attrs['fill'],
-    'height': rect.attrs['height'],
-    'width': rect.attrs['width'],
-    'x': rect.attrs['x'],
-    'y': rect.attrs['y']
-  })
-# Remove duplicates
-registers = [dict(t) for t in set([tuple(d.items()) for d in registers])]
-# Print the number found
-print(str(len(registers)) + ' registers parsed.')
-# Write the results to the register model file
-# TODO: write all to a single configuration file
-register_model_file.write('export const REGISTERS: any[] = ')
-register_model_file.write(json.dumps(registers, indent=2).replace('"', '\''))
-register_model_file.write(';\n')
+registers = Collection('register')
+for rect in soup.find_all('rect'):
+    # Get the needed register attributes
+    registers.add(Register(rect))
+registers.commit()
 
 # ====================================
 # Find the muxes (paths with fill)
 # ====================================
-paths = []
-muxes = []
+muxes = Collection('mux')
 for line in soup.find_all('path'):
-  if line.attrs['fill'] != 'none' and line.attrs['fill'] != '#000000':
-    new_line = str(str(line.attrs['d']).replace('M ', '').replace(' L ', ', ').replace('Z', '').strip())
-    # Get the needed mux attributes
-    muxes.append({
-      'color': line.attrs['fill'],
-      'path': new_line
-    })
-# Remove duplicates
-muxes = [dict(t) for t in set([tuple(d.items()) for d in muxes])]
-# Print the number found
-print(str(len(muxes)) + ' muxes parsed.')
-# Write the results to the mux model file
-# TODO: write all to a single configuration file
-mux_model_file.write('export const MUXES: any[] = ')
-mux_model_file.write(json.dumps(muxes, indent=2).replace('"', '\''))
-mux_model_file.write(';\n')
+    if line.attrs['fill'] != 'none' and line.attrs['fill'] != '#000000':
+        muxes.add(Mux(line))
+muxes.commit()
+
+junctions = []
+for junction in soup.find_all('ellipse'):
+    junctions.append(Junction(junction))
+paths = []
+for line in soup.find_all('path'):
+    if line.attrs['fill'] == 'none':
+        paths.append(Path(line))
+
+buses = Collection('bus')
+count = 0
+print(len(junctions), len(paths))
+for junction in junctions: # iterate through all junctions
+  for path in paths: # iterate through all paths
+      junction_added = False
+      path_added = False
+      if Bus.intersection(junction, path): # if current path/junction pair intersects...
+        for bus in buses.elements: #iterate through all existing buses
+          if junction in bus.junctions: # if current junction already is part of a bus
+            bus.paths.append(path)
+            path_added = True
+          if path in bus.paths: # or if current path is already part of a bus
+            bus.junctions.append(junction)
+            junction_added = True
+      if not (path_added or junction_added):
+        buses.add(Bus(junction, path))
+buses.commit()
+print(len(buses))

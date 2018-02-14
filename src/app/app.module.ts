@@ -5,6 +5,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import * as Raven from 'raven-js';
 import { AppComponent } from './app.component';
 import { BusComponent } from './components/common/simulator/bus/bus.component';
+import { LabelComponent } from './components/common/simulator/label/label.component';
 import { MuxComponent } from './components/common/simulator/mux/mux.component';
 import { RegisterComponent } from './components/common/simulator/register/register.component';
 import { SimulatorComponent } from './components/pages/simulator/simulator.component';
@@ -33,6 +34,7 @@ export class RavenErrorHandler implements ErrorHandler {
     MuxComponent,
     BusComponent,
     RegisterComponent,
+    LabelComponent,
   ],
   imports: [
     BrowserModule,

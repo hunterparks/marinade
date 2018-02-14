@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { BUSES } from '../../common/simulator/bus/buses.model';
+import { LABELS } from '../../common/simulator/label/labels.model';
 import { MUXES } from '../../common/simulator/mux/muxes.model';
 import { REGISTERS } from '../../common/simulator/register/registers.model';
 
@@ -28,6 +29,7 @@ export class SimulatorComponent {
   private viewBoxWidth: number = 1600;
 
   public buses: any[] = BUSES;
+  public labels: any[] = LABELS;
   public muxes: any[] = MUXES;
   public registers: any[] = REGISTERS;
 

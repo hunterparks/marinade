@@ -6,6 +6,7 @@
     <svg:g *ngFor="let bus of buses" [svg-bus]="bus" />
     <svg:g *ngFor="let register of registers" [svg-register]="register" />
     <svg:g *ngFor="let mux of muxes" [svg-mux]="mux" />
+    <svg:g *ngFor="let label of labels" [svg-label]="label" />
   </svg>
 </div>
 <button (click)="reset()">Reset</button>

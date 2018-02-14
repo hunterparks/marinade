@@ -19,7 +19,7 @@ export class BusComponent implements OnInit {
   // The active color of the bus
   public color: string = BusComponent.DEFAULT_COLOR;
   // The junction point for a complex bus
-  public junction: any = null;
+  public junctions: any[] = [];
   // Generated svg paths for the bus
   public paths: string[] = [];
 
@@ -130,11 +130,8 @@ export class BusComponent implements OnInit {
       let coordinates: number[][] = this.parsePoints(path);
       this.drawBus(coordinates);
     }
-    if (this.bus['junction']) {
-      this.junction = {
-        'x': this.bus['junction']['x'],
-        'y': this.bus['junction']['y']
-      };
+    if (this.bus['junctions']) {
+      this.junctions = this.bus['junctions'];
     }
   }
 
