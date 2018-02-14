@@ -98,17 +98,31 @@ class PipelineProcessor_t(unittest.TestCase):
                 'clk',
                 'rst',
                 'instrf',
+                'instrd',
                 'wd3',
                 'pc4',
                 'ra1e',
                 'ra2e',
+                'ra3e',
                 'ra3m',
                 'ra3w',
+                'fe',
+                'fm',
+                'fw',
                 'fwda',
                 'fwdb',
                 'rd1d',
+                'rd1',
                 'rd2d',
-                'imm32d'
+                'rd2e',
+                'rd2',
+                'rd2m',
+                'imm32d',
+                'imm32e',
+                'alub',
+                'aluse',
+                'regwrw',
+                'regsrcw'
             ]
         }
 
