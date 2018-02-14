@@ -30,6 +30,7 @@ from components.core.bus_subset import BusSubset
 from components.core.logic_input import LogicInput
 
 from components.arm.alu_demo import Alu
+from components.arm.alu_flag_register import ALUFlagRegister
 from components.arm.extender import Extender
 from components.arm.data_memory import DataMemory
 from components.arm.program_memory import ProgramMemory
@@ -172,12 +173,10 @@ def generate_single_cycle_architecture():
     entities.update({'alu': Alu(hooks['rd1'], hooks['alub'], hooks['alus'],
                                 hooks['aluf'], hooks['aluc'], hooks['aluv'], hooks['alun'],
                                 hooks['aluz'])})
-    entities.update({'aluflag_join': BusJoin([hooks['aluc'], hooks['aluv'],
-                                              hooks['alun'], hooks['aluz']], hooks['aluflag'])})
-    entities.update({'aluflag_reg': Register(4, hooks['clk'], hooks['rst'],
-                                             hooks['aluflag'], hooks['flag'], enable=hooks['aluflagwr'])})
-    entities.update({'flag_subset': BusSubset(hooks['flag'], [hooks['c'],
-                                                              hooks['v'], hooks['n'], hooks['z']], [(0, 1), (1, 2), (2, 3), (3, 4)])})
+    entities.update({'aluflag_reg': ALUFlagRegister(hooks['aluc'], hooks['aluv'], hooks['alun'],
+                                                    hooks['aluz'], hooks['rst'], hooks['clk'],
+                                                    hooks['aluflagwr'], hooks['c'], hooks['v'],
+                                                    hooks['n'], hooks['z'])})
 
     # MEMORY & WRITE-BACK
     entities.update({'datamem': DataMemory(hooks['aluf'], hooks['rd2'], hooks['memwr'],
