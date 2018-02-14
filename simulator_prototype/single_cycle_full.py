@@ -40,6 +40,7 @@ from components.arm.data_memory import DataMemory
 from components.arm.program_memory import ProgramMemory
 from components.arm.register_file_full import RegisterFile
 from components.arm.controller_single_cycle_full import ControllerSingleCycle
+from components.arm.memory_read_sign_extend import MemoryReadSignExtender
 
 from architecture import Architecture
 
@@ -119,7 +120,7 @@ def generate_single_cycle_architecture():
     hooks.update({'wdbs': Bus(1, 0)})
     hooks.update({'regwr': Bus(1, 0)})
     hooks.update({'exts': Bus(2, 0)})
-    hooks.update({'alu8rcb': Bus(1, 0)})
+    hooks.update({'alusrcb': Bus(1, 0)})
     hooks.update({'alus': Bus(4, 0)})
     hooks.update({'aluflagwr': Bus(1, 0)})
     hooks.update({'shop': Bus(2, 0)})
@@ -148,7 +149,12 @@ def generate_single_cycle_architecture():
                                                 hooks['instr_11_8'], hooks['instr_11_7']],
                                                [(0, 24), (16, 20), (0, 4), (12, 16), (8, 12), (7, 12)])})
 
-    # TODO add controller
+    entities.update({'controller': ControllerSingleCycle(hooks['instr'], hooks['c'], hooks['v'],
+                                                         hooks['n'], hooks['z'], hooks['pcsrc'],
+                                                         hooks['pcwr'], hooks['regsa'], hooks['regdst'], hooks['regsb'], hooks['regwrs'],
+                                                         hooks['regwr'], hooks['exts'], hooks['alusrcb'], hooks['alus'], hooks['shop'],
+                                                         hooks['shctrl'], hooks['accen'], hooks['aluflagwr'], hooks['memty'], hooks['memwr'],
+                                                         hooks['memexts'], hooks['regsrc'], hooks['wdbs'])})
 
     entities.update({'ra1_mux': Mux(4, [hooks['instr_3_0'], hooks['instr_19_16']],
                                     hooks['regsa'], hooks['ra1'])})
@@ -169,10 +175,10 @@ def generate_single_cycle_architecture():
 
     # EXECUTE
     entities.update({'alu_mux': Mux(32, [hooks['imm32'], hooks['rd2']],
-                                    hooks['alu8rcb'], hooks['alub'])})
+                                    hooks['alusrcb'], hooks['alub'])})
     entities.update({'add_br': Adder(32, hooks['pc8'], hooks['imm32'], hooks['branch'])})
     entities.update({'alu': Alu(hooks['rd1'], hooks['alub'], hooks['rd3'], hooks['alus'],
-                                hooks['instr_11_7'], hooks['c'] hooks['shop'], hooks['shctrl']
+                                hooks['instr_11_7'], hooks['c'], hooks['shop'], hooks['shctrl'],
                                 hooks['accen'], hooks['aluf'], hooks['aluc'], hooks['aluv'],
                                 hooks['alun'], hooks['aluz'])})
 

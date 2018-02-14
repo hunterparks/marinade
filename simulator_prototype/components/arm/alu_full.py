@@ -65,7 +65,7 @@ class Alu(Combinational):
             shiftOp: commands the barrel shifter on b to perform operation
             shiftCtrl: control signal to either perform shift or not
                         B(0) is enable bit, shift on [0] disable on [0]
-                        B(2) is select either register [1] or constant shift [0]
+                        B(1) is select either register [1] or constant shift [0]
             accEn: accumulate enable add ar to alu result before f if [1]
         outputs:
             f: 32-bit output to the alu
