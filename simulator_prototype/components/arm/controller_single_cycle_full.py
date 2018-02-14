@@ -4,7 +4,7 @@ Single-cycle controller as derived by Larry Skuse's VHDL work.
 
 from components.abstract.controller import Controller
 from components.abstract.ibus import iBusRead, iBusWrite
-
+import components.arm.arm_v4_isa as ISA
 
 class ControllerSingleCycle(Controller):
     """
@@ -171,9 +171,240 @@ class ControllerSingleCycle(Controller):
         self._regsrc = regsrc
         self._wd3s = wd3s
 
+
+    @staticmethod
+    def _generate_pcsrc(op, cond, rd, z):
+        """
+        PCSRC <= B"10" when a data processing instruction modifies pc
+        PCSRC <= B"01" for pc+4
+        PCSRC <= B"00" for branch instructions where condition is met
+        """
+        if op == 0b10 and cond == 0b1110:
+            return 0b00
+        elif op == 0b10 and cond == 0b0000 and z == 0b1:
+            return 0b00
+        elif op == 0b10 and cond == 0b0001 and z == 0b0:
+            return 0b00
+        elif op == 0b00 and rd == 0b1111:
+            return 0b10
+        else:
+            return 0b01
+
+    @staticmethod
+    def _generate_pcwr():
+        """
+        PCWR <= '1' for single cycle processor
+        """
+        return 0b1
+
+    @staticmethod
+    def _generate_regsa(op, bit4, funct):
+        """
+        REGSA <= '1' to select Rn (data processing instructions)
+        REGSA <= '0' to select Rn (mul instruction)
+        """
+        if op == 0b00 and bit4 == 0b1 and (funct == 0b000000 or funct == 0b000001):
+            return 0b0
+        else:
+            return 0b1
+
+    @staticmethod
+    def _generate_regdst(op, bit4, funct):
+        """
+        REGDST <= B"10" to select Rd (str instruction)
+        REGDST <= B"01" to select Rm (data processing intructions)
+        REGDST <= B"00" to select Rm (mul instruction)
+        """
+        if op == 0b01 and funct == 0b011000:
+            return 0b10
+        elif op == 0b00 and bit4 == 0b1 and (funct == 0b000000 or funct == 0b000001):
+            return 0b00
+        else:
+            return 0b01
+
+    @staticmethod
+    def _generate_regwrs(op, bit4, funct):
+        """
+        REGWRS <= B"10" to select LR (bl instruction)
+        REGWRS <= B"01" to select Rd (data processing instruction)
+        REGWRS <= B"00" to select Rd (mul instruction)
+        """
+        if op == 0b10 and ((funct & 0b010000) >> 4) == 0b1:
+            return 0b10
+        elif op == 0b00 and bit4 == 0b1 and (funct == 0b000000 or funct == 0b000001):
+            return 0b00
+        else:
+            return 0b01
+
+    @staticmethod
+    def _generate_regwr(op, funct):
+        """
+        REGWR <= '1' when an instruction writes back to the regfile
+        REGWR <= '0' when an instruction does not write back to the regfile
+             (str, branch, and cmp instructions)
+        """
+        if op == 0b00 and (funct == 0b010101 or funct == 0b110101):
+            return 0b0
+        elif op == 0b01 and funct == 0b011000:
+            return 0b0
+        elif op == 0b10 and ((funct & 0b010000) >> 4) == 0b0:
+            return 0b0
+        else:
+            return 0b1
+
+    @staticmethod
+    def _generate_exts(op, funct):
+        """
+        EXTS <= B"00" for 8-bit immediate (data processing immediate)
+        EXTS <= B"01" for 12-bit immediate (ldr and str instructions)
+        EXTS <= B"10" for branch instruction
+        """
+        if op == 0b10:
+            return 0b10
+        elif op == 0b01 and (funct == 0b011000 or funct == 0b011001):
+            return 0b01
+        else:
+            return 0b00
+
+    @staticmethod
+    def _generate_alusrcb(op, funct, bit4):
+        """
+        ALUSRCB <= '1' when source B requires the output of RD2 (data
+             processing instructions)
+        ALUSRCB <= '0' when source B requires an extended immediate
+        """
+        if op == 0b00:
+            if (funct == 0b000000 or funct == 0b000010 or
+                    funct == 0b000100 or funct == 0b000110 or
+                    funct == 0b001000 or funct == 0b001010 or
+                    funct == 0b001110 or funct == 0b010001 or
+                    funct == 0b010011 or funct == 0b010101 or
+                    funct == 0b010111 or funct == 0b011000 or
+                    funct == 0b011000 or funct == 0b011010 or
+                    funct == 0b011100 or funct == 0b011110 or
+                    funct == 0b000001 or funct == 0b000011 or
+                    funct == 0b000101 or funct == 0b000111 or
+                    funct == 0b001001 or funct == 0b001011 or
+                    funct == 0b011011 or funct == 0b011101 or
+                    funct == 0b011111):
+                return 0b1
+            elif bit4 == 0b1 and (funct == 0b000000 or funct == 0b000001):
+                return 0b1
+            else:
+                return 0b0
+        else:
+            return 0b0
+
+    @staticmethod
+    def _generate_alus(op, bit4, funct):
+        """
+        ALUS <= "0000" for +
+        ALUS <= "0001" for -
+        ALUS <= "0010" for and
+        ALUS <= "0011" for or
+        ALUS <= "0100" for xor
+        ALUS <= "0101" for A
+        ALUS <= "0110" for B
+        ALUS <= "0111" for A*B
+        ALUS <= "1111" for 1
+        """
+        if op == 0b00 and (funct == 0b000000 or funct == 0b000001) and bit4 == 0b1:
+            return 0b0111
+        elif op == 0b00 and (funct == 0b001000 or funct == 0b101000
+                             or funct == 0b001001 or funct == 0b101001):
+            return 0b0000
+        elif op == 0b01 and (funct == 0b011000 or funct == 0b011001):
+            return 0b0000
+        elif op == 0b00 and (funct == 0b000100 or funct == 0b100100
+                             or funct == 0b010101 or funct == 0b110101 or funct == 0b000101
+                             or funct == 100101):
+            return 0b0001
+        elif op == 0b00 and (funct == 0b000000 or funct == 0b100000
+                             or funct == 0b000001 or funct == 0b100001):
+            return 0b0010
+        elif op == 0b00 and (funct == 0b011000 or funct == 0b111000
+                             or funct == 0b011001 or funct == 0b111001):
+            return 0b0011
+        elif op == 0b00 and (funct == 0b000010 or funct == 0b100010
+                             or funct == 0b000011 or funct == 0b100011):
+            return 0b0100
+        elif op == 0b00 and (funct == 0b011010 or funct == 0b111010
+                             or funct == 0b011011 or funct == 0b111011):
+            return 0b0110
+        else:
+            return 0b1111
+
+    @staticmethod
+    def _generate_aluflagwr(op, funct):
+        """
+        ALUFLAGWR <= '1' to set flags (cmp instructions or s bit set)
+        ALUFLAGWR <= '0' flags will not be set
+        """
+        if op == 0b00:
+            # Note: need to look further into the logic when funct is 1
+            if (funct == 0b010101 or funct == 0b110101 or
+                    funct == 0b000001 or funct == 0b100001 or
+                    funct == 0b000011 or funct == 0b100011 or
+                    funct == 0b000101 or funct == 0b100101 or
+                    funct == 0b000111 or funct == 0b100111 or
+                    funct == 0b001001 or funct == 0b101001 or
+                    funct == 0b001011 or funct == 0b101011 or
+                    funct == 0b001101 or funct == 0b101101 or
+                    funct == 0b001111 or funct == 0b101111 or
+                    funct == 0b010001 or funct == 0b110001 or
+                    funct == 0b010011 or funct == 0b110011 or
+                    funct == 0b010111 or funct == 0b110111 or
+                    funct == 0b011001 or funct == 0b111001 or
+                    funct == 0b011011 or funct == 0b111011 or
+                    funct == 0b011101 or funct == 0b111101 or
+                    funct == 0b011111 or funct == 0b111111):
+                return 0b1
+            else:
+                return 0b0
+        else:
+            return 0b0
+
+    @staticmethod
+    def _generate_memwr(op, funct):
+        """
+        MEMWR <= '1' allows data to be written to data memory (str
+                 instructions)
+        MEMWR <= '0' cannot write to data memory
+        """
+        if op == ISA.OpCodes.SINGLE_MEMORY and funct == 0b011000:
+            return 0b1
+        else:
+            return 0b0
+
+    @staticmethod
+    def _generate_regsrc(op, funct):
+        """
+        REGSRC <= '1' when output of ALU is feedback (ldr instructions)
+        REGSRC <= '0' when output of data mem is feedback
+        """
+        if op == ISA.OpCodes.SINGLE_MEMORY and funct == 0b011001:
+            return 0b0
+        else:
+            return 0b1
+
+    @staticmethod
+    def _generate_wd3s(op, funct):
+        """
+        WDS3 <= '1' when a bl instruction is run else '0'
+        """
+        if op == ISA.OpCodes.BRANCH and ((funct & 0b010000) >> 4) == 0b1:
+            return 0b1
+        else:
+            return 0b0
+
+
     def run(self, time=None):
         "Runs a timestep of controller, assert control signals on each"
-        pass
+
+        #parse instruction general
+        instr = self._instr.read()
+        condition = (instr & ISA.InstructionMasks.COND) >> 28
+        operation = (instr & ISA.InstructionMasks.OPCODE) >> 26
 
     def inspect(self):
         "Return message noting that this controller does not contain state"

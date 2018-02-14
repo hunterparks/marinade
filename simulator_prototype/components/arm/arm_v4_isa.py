@@ -8,22 +8,30 @@ set of enumerations.
 
 from enum import Enum
 
-
 class InstructionMasks(Enum):
+    "Main definitions used for general parsing"
     COND = 0xF0000000
+    OPCODE = 0x0C000000
+    FUNCT = 0x03E00000
+    S = 0x00100000
+
+
+class InstructionMasksFull(Enum):
+    "Full definitions for all instruction parsing"
+    COND = 0xF0000000
+    OPCODE = 0x0C000000
 
     class DataProcessing(Enum):
-        FILL = 0x0C000000  # value = 0b00
         I = 0x02000000
-        OPCODE = 0x01D00000
+        CMD = 0x01E00000
         S = 0x00100000
-        OPERAND2 = 0x000003FF
         RN = 0x000F0000
         RD = 0x0000F000
+        OPERAND2 = 0x000003FF
 
         class ImmediateOperand2(Enum):
             ROTATE = 0x00000F00
-            IMM = 0x000000FF
+            IMMEDIATE = 0x000000FF
 
         class RegisterOperand2(Enum):
             ROC = 0x00000010
@@ -37,18 +45,19 @@ class InstructionMasks(Enum):
                 RS = 0x00000F00
                 FILL = 0x00000080  # value  = 0b0
 
-    class Multiply(Enum):
-        FILL_1 = 0x0FC00000  # value = 0b000000
-        A = 0x00200000
+    class Multiply(Enum):  # TODO fix this
+        FILL_1 = 0x03000000  # value = 0b00
+        CMD = 0x00E00000
         S = 0x00100000
-        RN = 0x0000F000
-        RD = 0x000F0000
-        RS = 0x00000F00
+        RD = 0x0000F000
+        RA = 0x000F0000
+        RM = 0x00000F00
         FILL_2 = 0x000000F0  # value = 0b1001
-        RM = 0x0000000F
+        RN = 0x0000000F
 
     class SingleDataSwap(Enum):
-        FILL_1 = 0x0F800000  # value = 0b00010
+        "Ignored by controller implementation"
+        FILL_1 = 0x03800000  # value = 0b00010
         B = 0x00400000
         FILL_2 = 0x00300000  # value = 0b00
         RN = 0x000F0000
@@ -58,7 +67,6 @@ class InstructionMasks(Enum):
         RM = 0x0000000F
 
     class SingleDataTransfer(Enum):
-        FILL_1 = 0x0C000000  # value = 0b01
         I = 0x02000000
         P = 0x01000000
         U = 0x00800000
@@ -67,16 +75,18 @@ class InstructionMasks(Enum):
         L = 0x00100000
         RN = 0x000F0000
         RD = 0x0000F000
-        OFFSET = 0x00000FFF
+        IMMEDIATE = 0x00000FFF
 
     class Undefined(Enum):
-        FILL_1 = 0x0E000000  # value = 0b011
+        "Ignored by controller implementation"
+        FILL_1 = 0x01000000  # value = 0b1
         DONT_CARE_1 = 0x00FFFFE0
         FILL_2 = 0x00000010  # value = 0b1
         DONT_CARE_2 = 0x0000000F
 
     class BlockDataTransfer(Enum):
-        FILL = 0x0E000000
+        "Ignored by controller implementation"
+        FILL = 0x01000000
         P = 0x01000000
         U = 0x00800000
         B = 0x00400000
@@ -86,12 +96,13 @@ class InstructionMasks(Enum):
         REGLIST = 0x0000FFFF
 
     class Branch(Enum):
-        FILL = 0x0E000000  # value = 0b101
+        FILL = 0x01000000  # value = 0b1
         L = 0x01000000
-        OFFSET = 0x00FFFFFF
+        IMMEDIATE = 0x00FFFFFF
 
     class CoprocessorDataTransfer(Enum):
-        FILL = 0x0E000000
+        "Ignored by controller implementation"
+        FILL = 0x01000000
         P = 0x01000000
         U = 0x00800000
         B = 0x00400000
@@ -103,7 +114,8 @@ class InstructionMasks(Enum):
         OFFSET = 0x000000FF
 
     class CoprocessorDataOperation(Enum):
-        FILL_1 = 0x0F000000  # value = 0b1110
+        "Ignored by controller implementation"
+        FILL_1 = 0x03000000  # value = 0b10
         CP_OPC = 0x00F00000
         CRN = 0x000F0000
         CRD = 0x0000F000
@@ -113,7 +125,8 @@ class InstructionMasks(Enum):
         CRM = 0x0000000F
 
     class CoprocessorRegisterTransfer(Enum):
-        FILL_1 = 0x0F000000  # value = 0b1110
+        "Ignored by controller implementation"
+        FILL_1 = 0x03000000  # value = 0b10
         CP_OPC = 0x00E00000
         L = 0x00100000
         CRN = 0x000F0000
@@ -124,7 +137,8 @@ class InstructionMasks(Enum):
         CRM = 0x0000000F
 
     class SoftwareInterrupt(Enum):
-        FILL = 0x0F000000  # value = 0b1111
+        "Ignored by controller implementation"
+        FILL = 0x03000000  # value = 0b11
         IGNORE_BY_PROC = 0x00FFFFFF
 
 
@@ -147,7 +161,14 @@ class ConditionField(Enum):
     NV = 0b1111  # Never
 
 
-class DataOpCodes(Enum):
+class OpCodes(Enum):
+    DATA_PROCESS = 0b00
+    SINGLE_MEMORY = 0b01
+    BRANCH = 0b10  # also memory multiple on this opcode
+    IGNORE = 0b11  # coprocessor, software interrupt
+
+
+class DataCMDCodes(Enum):
     AND = 0b0000  # and
     EOR = 0b0001  # exculsive or
     SUB = 0b0010  # subtract
