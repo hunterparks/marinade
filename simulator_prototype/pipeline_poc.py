@@ -249,9 +249,9 @@ def generate_pipeline_architecture():
                                                            hooks['fwdb'], hooks['fwds'],
                                                            hooks['stalld'], hooks['flushd'],
                                                            hooks['flushe'])})
-    entities.update({'fwda_mux': Mux(32, [hooks['rd1e'], hooks['fm'], hooks['fw'], hooks['rdw']],
+    entities.update({'fwda_mux': Mux(32, [hooks['rd1e'], hooks['fw'], hooks['fm'], hooks['rdw']],
                                       hooks['fwda'], hooks['rd1'])})
-    entities.update({'fwdb_mux': Mux(32, [hooks['rd2e'], hooks['fm'], hooks['fw'], hooks['rdw']],
+    entities.update({'fwdb_mux': Mux(32, [hooks['rd2e'], hooks['fw'], hooks['fm'], hooks['rdw']],
                                       hooks['fwdb'], hooks['rd2'])})
     entities.update({'alu_mux': Mux(32, [hooks['imm32e'], hooks['rd2']], hooks['alusrcbe'], 
                                     hooks['alub'])})
