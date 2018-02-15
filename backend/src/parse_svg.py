@@ -8,7 +8,7 @@ import re
 current_directory = os.path.dirname(__file__)
 base_output_file = os.path.join(current_directory, '../../src/app/components/common/simulator')
 
-input_file = open('/Users/Alex/Downloads/pipeline_architecture.svg', 'r')
+input_file = open('/Users/stoehraj/Downloads/pipeline_architecture.svg', 'r')
 
 # Read the input file and set up beautifulsoup
 input_text = ''
@@ -93,10 +93,14 @@ class Bus(Element):
 
     def __init__(self, junction=None, path=None):
         self.valid = True
-        # if junctions:
-        self.junctions = [junction]
-        # if paths:
-        self.paths = [path]
+        if junction:
+            self.junctions = [junction]
+        else:
+            self.junctions = []
+        if paths:
+            self.paths = [path]
+        else:
+            self.paths = []
 
     def to_dict(self):
         return {
@@ -111,24 +115,56 @@ class Bus(Element):
         return True
 
     @staticmethod
-    def intersection(junction, segment):
-      crossproduct = (junction.x - segment.points[0].y) * (segment.points[1].x - segment.points[0].x) - \
-                     (junction.x - segment.points[0].x) * (segment.points[1].y - segment.points[0].y)
-      if abs(crossproduct) > 0.01:
-          return False
-
-      dotproduct = (junction.x - segment.points[0].x) * (segment.points[1].x - segment.points[0].x) + \
-                   (junction.y - segment.points[0].y) * (segment.points[1].y - segment.points[0].y)
-      if dotproduct < 0:
-          return False
-
-      squaredlengthba = (segment.points[1].x - segment.points[0].x) * (segment.points[1].x - segment.points[0].x) + \
-                        (segment.points[1].y - segment.points[0].y) * (segment.points[1].y - segment.points[0].y)
-      if dotproduct > squaredlengthba:
-          return False
-      return True
-
-
+    # def intersection(junction, segment):
+    #   crossproduct = (junction.x - segment.points[0].y) * (segment.points[1].x - segment.points[0].x) - \
+    #                  (junction.x - segment.points[0].x) * (segment.points[1].y - segment.points[0].y)
+    #   if abs(crossproduct) > 0.01:
+    #       return False
+    #
+    #   dotproduct = (junction.x - segment.points[0].x) * (segment.points[1].x - segment.points[0].x) + \
+    #                (junction.y - segment.points[0].y) * (segment.points[1].y - segment.points[0].y)
+    #   if dotproduct < 0:
+    #       return False
+    #
+    #   squaredlengthba = (segment.points[1].x - segment.points[0].x) * (segment.points[1].x - segment.points[0].x) + \
+    #                     (segment.points[1].y - segment.points[0].y) * (segment.points[1].y - segment.points[0].y)
+    #   if dotproduct > squaredlengthba:
+    #       return False
+    #   return True
+    def intersection(junction, path):
+        for i in range(len(path.points)-1):
+            # crossproduct = (junction.x - path.points[i].y) * (path.points[i+1].x - path.points[i].x) - \
+            #                  (junction.x - path.points[i].x) * (path.points[i+1].y - path.points[i].y)
+            #
+            # dotproduct = (junction.x - path.points[i].x) * (path.points[i+1].x - path.points[i].x) + \
+            #              (junction.y - path.points[i].y) * (path.points[i+1].y - path.points[i].y)
+            #
+            # squaredlengthba = (path.points[i+1].x - path.points[i].x) * (path.points[i+1].x - path.points[i].x) + \
+            #                   (path.points[i+1].y - path.points[i].y) * (path.points[i+1].y - path.points[i].y)
+            # if dotproduct <= squaredlengthba and abs(crossproduct) <= 0.01 and dotproduct >= 0:
+            #     return True
+            # check between points
+            if abs(path.points[i].gety() - path.points[i+1].gety()) < 5: # horizontal line with 4 pixel tolerance
+                if abs(path.points[i].gety() - junction.y) < 5: # same vertical level with 4 pixel tolerance
+                    if path.points[i].getx() > path.points[i+1].getx(): # right to left
+                        if junction.x < path.points[i].getx() and junction.x > path.points[i+1].getx():
+                            return True
+                    elif path.points[i].getx() < path.points[i+1].getx(): # left to right
+                        if junction.x < path.points[i+1].getx() and junction.x > path.points[i].getx():
+                            return True
+            elif abs(path.points[i].getx() - path.points[i+1].getx()) < 5: # vertical line with 4 pixel tolerance
+                if abs(path.points[i].getx() - junction.x) < 5: # same horizontal level with 4 pixel tolerance
+                    if path.points[i].gety() > path.points[i+1].gety(): # down to up
+                        if junction.y < path.points[i].gety() and junction.y > path.points[i+1].gety():
+                            return True
+                    elif path.points[i].gety() < path.points[i+1].gety(): # up to down
+                        if junction.y < path.points[i+1].gety() and junction.y > path.points[i].gety():
+                            return True
+            # check at points
+            if path.points[i].gety() < (junction.y + 5) and path.points[i].gety() > (junction.y -5) \
+              and path.points[i].getx() < (junction.x + 5) and path.points[i].getx() > (junction.x -5):
+                return True
+        return False
 
 class Point(Element):
 
@@ -144,6 +180,12 @@ class Point(Element):
             'x': self.x,
             'y': self.y
         }
+
+    def getx(self):
+        return self.x
+
+    def gety(self):
+        return self.y
 
     def validate(self, svg):
         self.valid = True
@@ -301,19 +343,44 @@ for line in soup.find_all('path'):
 buses = Collection('bus')
 count = 0
 print(len(junctions), len(paths))
-for junction in junctions: # iterate through all junctions
-  for path in paths: # iterate through all paths
-      junction_added = False
-      path_added = False
-      if Bus.intersection(junction, path): # if current path/junction pair intersects...
-        for bus in buses.elements: #iterate through all existing buses
-          if junction in bus.junctions: # if current junction already is part of a bus
-            bus.paths.append(path)
-            path_added = True
-          if path in bus.paths: # or if current path is already part of a bus
-            bus.junctions.append(junction)
-            junction_added = True
-      if not (path_added or junction_added):
-        buses.add(Bus(junction, path))
+# for junction in junctions: # iterate through all junctions
+#     # path_has_junction = False
+#     for path in paths: # iterate through all paths
+#         if Bus.intersection(junction, path): # if current path/junction pair intersects...
+#             # path_has_junction = True
+#             junction_added = False
+#             path_added = False
+#             for bus in buses.elements: # iterate through all existing buses
+#                 if junction in bus.junctions: # if current junction already is part of a bus
+#                     bus.paths.append(path)
+#                     path_added = True
+#                 if path in bus.paths: # or if current path is already part of a bus
+#                     bus.junctions.append(junction)
+#                     junction_added = True
+#             if not (path_added or junction_added):
+#                 buses.add(Bus(junction, path))
+#     #if not path_has_junction:
+#     #   buses.add(Bus(None, path))
+for path in paths:
+    path_has_junction = False
+    for junction in junctions:
+        if Bus.intersection(junction, path):
+            path_has_junction = True
+            create_bus = True # max one bus should be created for path/junction pair
+            for bus in buses.elements:
+                if path in bus.paths and junction in bus.junctions: # not sure if necessary? path/junction pairs only appear once, shouldn't already be together
+                    create_bus = False
+                elif path in bus.paths:
+                    bus.junctions.append(junction) # junction not accounted for, add it
+                    create_bus = False
+                elif junction in bus.junctions:
+                    bus.paths.append(path) # path not accounted for, add it
+                    create_bus = False
+                else:
+                    pass # this can be taken out, just for reading clarity
+            if create_bus:
+                buses.add(Bus(junction, path))
+    if not path_has_junction:
+        buses.add(Bus([], path))
 buses.commit()
 print(len(buses))
