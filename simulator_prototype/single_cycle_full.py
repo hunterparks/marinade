@@ -40,7 +40,6 @@ from components.arm.data_memory import DataMemory
 from components.arm.program_memory import ProgramMemory
 from components.arm.register_file_full import RegisterFile
 from components.arm.controller_single_cycle_full import ControllerSingleCycle
-from components.arm.memory_read_sign_extend import MemoryReadSignExtender
 
 from architecture import Architecture
 
@@ -128,7 +127,6 @@ def generate_single_cycle_architecture():
     hooks.update({'accen': Bus(1, 0)})
     hooks.update({'memwr': Bus(1, 0)})
     hooks.update({'memty': Bus(2, 0)})
-    hooks.update({'memexts': Bus(2, 0)})
     hooks.update({'regsrc': Bus(1, 0)})
     hooks.update({'pcsrc': Bus(2, 0)})
 
@@ -154,7 +152,7 @@ def generate_single_cycle_architecture():
                                                          hooks['pcwr'], hooks['regsa'], hooks['regdst'], hooks['regsb'], hooks['regwrs'],
                                                          hooks['regwr'], hooks['exts'], hooks['alusrcb'], hooks['alus'], hooks['shop'],
                                                          hooks['shctrl'], hooks['accen'], hooks['aluflagwr'], hooks['memty'], hooks['memwr'],
-                                                         hooks['memexts'], hooks['regsrc'], hooks['wdbs'])})
+                                                         hooks['regsrc'], hooks['wdbs'])})
 
     entities.update({'ra1_mux': Mux(4, [hooks['instr_3_0'], hooks['instr_19_16']],
                                     hooks['regsa'], hooks['ra1'])})
@@ -190,11 +188,9 @@ def generate_single_cycle_architecture():
     # MEMORY
     entities.update({'datamem': DataMemory(hooks['aluf'], hooks['rd2'], hooks['memwr'],
                                            hooks['rst'], hooks['clk'], hooks['memrd'], hooks['memty'])})
-    entities.update({'memsignext': MemoryReadSignExtender(hooks['memrd'], hooks['memexts'],
-                                                          hooks['memrd_ext'])})
 
     # WRITE-BACK
-    entities.update({'wdb_mux': Mux(32, [hooks['memrd_ext'], hooks['aluf']],
+    entities.update({'wdb_mux': Mux(32, [hooks['memrd'], hooks['aluf']],
                                     hooks['regsrc'], hooks['wdb'])})
     entities.update({'pcwb_mux': Mux(32, [hooks['branch'], hooks['pc4'], hooks['wdb']],
                                      hooks['pcsrc'], hooks['pcwb'])})

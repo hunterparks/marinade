@@ -8,138 +8,147 @@ set of enumerations.
 
 from enum import Enum
 
-class InstructionMasks(Enum):
-    "Main definitions used for general parsing"
-    COND = 0xF0000000
-    OPCODE = 0x0C000000
-    FUNCT = 0x03E00000
-    S = 0x00100000
+
+def get_condition(instr):
+    return (instr & 0xF0000000) >> 28
 
 
-class InstructionMasksFull(Enum):
-    "Full definitions for all instruction parsing"
-    COND = 0xF0000000
-    OPCODE = 0x0C000000
+def get_opcode(instr):
+    return (instr & 0x0C000000) >> 26
 
-    class DataProcessing(Enum):
-        I = 0x02000000
-        CMD = 0x01E00000
-        S = 0x00100000
-        RN = 0x000F0000
-        RD = 0x0000F000
-        OPERAND2 = 0x000003FF
 
-        class ImmediateOperand2(Enum):
-            ROTATE = 0x00000F00
-            IMMEDIATE = 0x000000FF
+def get_function(instr):
+    return (instr & 0x03F00000) >> 20
 
-        class RegisterOperand2(Enum):
-            ROC = 0x00000010
-            RM = 0x0000000F
-            SHIFT_TYPE = 0x00000060
 
-            class ShiftConstant(Enum):
-                SHIFT_AMOUNT = 0x00000F80
+def parse_function_get_i(funct):
+    return (funct & 0b100000) >> 5
 
-            class ShiftRegister(Enum):
-                RS = 0x00000F00
-                FILL = 0x00000080  # value  = 0b0
 
-    class Multiply(Enum):  # TODO fix this
-        FILL_1 = 0x03000000  # value = 0b00
-        CMD = 0x00E00000
-        S = 0x00100000
-        RD = 0x0000F000
-        RA = 0x000F0000
-        RM = 0x00000F00
-        FILL_2 = 0x000000F0  # value = 0b1001
-        RN = 0x0000000F
+def parse_function_get_cmd(funct, alt=False):
+    if alt:
+        return (funct & 0b001110) >> 1
+    else:
+        return (funct & 0b011110) >> 1
 
-    class SingleDataSwap(Enum):
-        "Ignored by controller implementation"
-        FILL_1 = 0x03800000  # value = 0b00010
-        B = 0x00400000
-        FILL_2 = 0x00300000  # value = 0b00
-        RN = 0x000F0000
-        RD = 0x0000F000
-        FILL_3 = 0x00000F00  # value = 0b0000
-        FILL_4 = 0x000000F0  # value = 0b1001
-        RM = 0x0000000F
 
-    class SingleDataTransfer(Enum):
-        I = 0x02000000
-        P = 0x01000000
-        U = 0x00800000
-        B = 0x00400000
-        W = 0x00200000
-        L = 0x00100000
-        RN = 0x000F0000
-        RD = 0x0000F000
-        IMMEDIATE = 0x00000FFF
+def parse_function_get_s(funct):
+    return (funct & 0b000001) >> 0  # aluflag save
 
-    class Undefined(Enum):
-        "Ignored by controller implementation"
-        FILL_1 = 0x01000000  # value = 0b1
-        DONT_CARE_1 = 0x00FFFFE0
-        FILL_2 = 0x00000010  # value = 0b1
-        DONT_CARE_2 = 0x0000000F
 
-    class BlockDataTransfer(Enum):
-        "Ignored by controller implementation"
-        FILL = 0x01000000
-        P = 0x01000000
-        U = 0x00800000
-        B = 0x00400000
-        W = 0x00200000
-        L = 0x00100000
-        RN = 0x000F0000
-        REGLIST = 0x0000FFFF
+def parse_function_get_p(funct):
+    return (funct & 0b010000) >> 4  # pre/post indexing bit 1 = pre
 
-    class Branch(Enum):
-        FILL = 0x01000000  # value = 0b1
-        L = 0x01000000
-        IMMEDIATE = 0x00FFFFFF
 
-    class CoprocessorDataTransfer(Enum):
-        "Ignored by controller implementation"
-        FILL = 0x01000000
-        P = 0x01000000
-        U = 0x00800000
-        B = 0x00400000
-        W = 0x00200000
-        L = 0x00100000
-        RN = 0x000F0000
-        CRD = 0x0000F000
-        CPN = 0x00000F00
-        OFFSET = 0x000000FF
+def parse_function_get_u(funct):
+    return (funct & 0b001000) >> 3  # up/down bit (offset modification) 1 = up
 
-    class CoprocessorDataOperation(Enum):
-        "Ignored by controller implementation"
-        FILL_1 = 0x03000000  # value = 0b10
-        CP_OPC = 0x00F00000
-        CRN = 0x000F0000
-        CRD = 0x0000F000
-        CPN = 0x00000F00
-        CP = 0x000000E0
-        FILL_2 = 0x00000010  # value  = 0b0
-        CRM = 0x0000000F
 
-    class CoprocessorRegisterTransfer(Enum):
-        "Ignored by controller implementation"
-        FILL_1 = 0x03000000  # value = 0b10
-        CP_OPC = 0x00E00000
-        L = 0x00100000
-        CRN = 0x000F0000
-        RD = 0x0000F000
-        CPN = 0x00000F00
-        CP = 0x000000E0
-        FILL_2 = 0x00000010  # value  = 0b1
-        CRM = 0x0000000F
+def parse_function_get_b(funct):
+    return (funct & 0b000100) >> 2  # unsigned byte is 1 else word
 
-    class SoftwareInterrupt(Enum):
-        "Ignored by controller implementation"
-        FILL = 0x03000000  # value = 0b11
-        IGNORE_BY_PROC = 0x00FFFFFF
+
+def parse_function_get_w(funct):
+    return (funct & 0b000010) >> 1  # write-back to base
+
+
+def parse_function_get_l(funct, alt=False):
+    if alt:
+        return (funct & 0b010000) >> 4  # link
+    else:
+        return (funct & 0b000001) >> 0  # load/store
+
+
+def parse_function_get_a(funct):
+    return (funct & 0b000010) >> 1
+
+
+def get_rn(instr, alt=False):
+    if alt:
+        return (instr & 0x0000000F) >> 0
+    else:
+        return (instr & 0x000F0000) >> 16
+
+
+def get_rd(instr, alt=False):
+    if alt:
+        return (instr & 0x000F0000) >> 16
+    else:
+        return (instr & 0x0000F000) >> 12
+
+
+def get_rm(instr, alt=False):
+    if alt:
+        return (instr & 0x00000F00) >> 8
+    else:
+        return (instr & 0x0000000F) >> 0
+
+
+def get_ra(instr, alt=False):
+    if alt:
+        return (instr & 0x0000F000) >> 12
+    else:
+        return (instr & 0x00000F00) >> 8
+
+
+def get_shift_operand(instr):
+    return (instr & 0x00000FF0) >> 4
+
+
+def parse_shift_operand_get_roi(shift):
+    return (shift & 0x01) >> 0
+
+
+def parse_shift_operand_get_type(shift):
+    return (shift & 0x06) >> 1
+
+
+def parse_shift_operand_get_reg_fill(shift):
+    return (shift & 0x08) >> 3
+
+
+def is_multiply(funct, shift):
+    if parse_function_get_cmd(funct) & 0xE or parse_function_get_i(funct):
+        return False
+    elif parse_shift_operand_get_roi(shift) and parse_shift_operand_get_reg_fill(shift):
+        return True
+    else:
+        return False
+
+
+def condition_met(cond, c, v, n, z):
+    if cond == ConditionField.EQ:
+        return z
+    elif cond == ConditionField.NE:
+        return not z
+    elif cond == ConditionField.CS:
+        return c
+    elif cond == ConditionField.CC:
+        return not c
+    elif cond == ConditionField.MI:
+        return n
+    elif cond == ConditionField.PL:
+        return not n
+    elif cond == ConditionField.VS:
+        return v
+    elif cond == ConditionField.VC:
+        return not v
+    elif cond == ConditionField.HI:
+        return c and not z
+    elif cond == ConditionField.LS:
+        return not c or z
+    elif cond == ConditionField.GE:
+        return n == v
+    elif cond == ConditionField.LT:
+        return n != v
+    elif cond == ConditionField.GT:
+        return not z and (n == v)
+    elif cond == ConditionField.LE:
+        return ((z or n) and not v) or (not n and v)
+    elif cond == ConditionField.AL:
+        return True
+    else:
+        return False
 
 
 class ConditionField(Enum):
@@ -162,10 +171,11 @@ class ConditionField(Enum):
 
 
 class OpCodes(Enum):
-    DATA_PROCESS = 0b00
-    SINGLE_MEMORY = 0b01
-    BRANCH = 0b10  # also memory multiple on this opcode
-    IGNORE = 0b11  # coprocessor, software interrupt
+    DATA_PROCESS = 0b00  # register, immediate, and multiply
+    MEMORY_SINGLE = 0b01  # Read and write
+    MEMORY_MULTIPLE = 0b10  # Access range not supported
+    BRANCH = 0b10  # PC manipulation
+    IGNORE = 0b11  # coprocessor, software interrupt not supported
 
 
 class DataCMDCodes(Enum):

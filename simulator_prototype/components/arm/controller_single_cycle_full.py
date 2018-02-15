@@ -6,6 +6,7 @@ from components.abstract.controller import Controller
 from components.abstract.ibus import iBusRead, iBusWrite
 import components.arm.arm_v4_isa as ISA
 
+
 class ControllerSingleCycle(Controller):
     """
     Single-cycle controller component implements architecture controller
@@ -16,7 +17,7 @@ class ControllerSingleCycle(Controller):
 
     def __init__(self, instruction, c, v, n, z, pcsrc, pcwr, regsa, regdst,
                  regsb, regwrs, regwr, exts, alusrcb, alus, shop, shctrl, accen,
-                 aluflagwr, memty, memwr, memext, regsrc, wd3s):
+                 aluflagwr, memty, memwr, regsrc, wd3s):
         """
         inputs:
             instruction: 32-bit ARMv4 instruction bus for current instruction
@@ -41,7 +42,6 @@ class ControllerSingleCycle(Controller):
             aluflagwr: selects whether the c, v, n, and z flags need to be updated
             memty: memory mode (type of mem-word: off, byte, half, word)
             memwr: selects whether to write to memory
-            memext: arithmetic extend on byte, half-word boundary
             regsrc: selects whether the alu output or data memory is feedback
             wd3s: selects what data to write to the regfile
         """
@@ -142,10 +142,6 @@ class ControllerSingleCycle(Controller):
             raise TypeError('The regsrc bus must be writable')
         elif regsrc.size() != 1:
             raise ValueError('The regsrc bus must have a size of 1-bit')
-        if not isinstance(memext, iBusRead):
-            raise TypeError('The memext bus must be writable')
-        elif memext.size() != 2:
-            raise ValueError('The memext bus must have a size of 2-bits')
         if not isinstance(wd3s, iBusRead):
             raise TypeError('The wd3s bus must be writable')
         elif wd3s.size() != 1:
@@ -167,25 +163,19 @@ class ControllerSingleCycle(Controller):
         self._aluflagwr = aluflagwr
         self._memty = memty
         self._memwr = memwr
-        self._memext = memext
         self._regsrc = regsrc
         self._wd3s = wd3s
 
-
     @staticmethod
-    def _generate_pcsrc(op, cond, rd, z):
+    def _generate_pcsrc(conditionMet, op, rd):
         """
         PCSRC <= B"10" when a data processing instruction modifies pc
         PCSRC <= B"01" for pc+4
         PCSRC <= B"00" for branch instructions where condition is met
         """
-        if op == 0b10 and cond == 0b1110:
+        if op == ISA.OpCodes.BRANCH and conditionMet:
             return 0b00
-        elif op == 0b10 and cond == 0b0000 and z == 0b1:
-            return 0b00
-        elif op == 0b10 and cond == 0b0001 and z == 0b0:
-            return 0b00
-        elif op == 0b00 and rd == 0b1111:
+        elif op == ISA.OpCodes.DATA_PROCESS and rd == 15:
             return 0b10
         else:
             return 0b01
@@ -198,56 +188,73 @@ class ControllerSingleCycle(Controller):
         return 0b1
 
     @staticmethod
-    def _generate_regsa(op, bit4, funct):
+    def _generate_regsa(op, shift, funct):
         """
         REGSA <= '1' to select Rn (data processing instructions)
         REGSA <= '0' to select Rn (mul instruction)
         """
-        if op == 0b00 and bit4 == 0b1 and (funct == 0b000000 or funct == 0b000001):
-            return 0b0
-        else:
-            return 0b1
+        return not (op == ISA.OpCodes.DATA_PROCESS and ISA.is_multiply(funct,shift))
 
     @staticmethod
-    def _generate_regdst(op, bit4, funct):
+    def _generate_regdst(op, shift, funct):
         """
         REGDST <= B"10" to select Rd (str instruction)
         REGDST <= B"01" to select Rm (data processing intructions)
         REGDST <= B"00" to select Rm (mul instruction)
         """
-        if op == 0b01 and funct == 0b011000:
+        if op == ISA.OpCodes.MEMORY_SINGLE and not ISA.parse_function_get_l(funct):
             return 0b10
-        elif op == 0b00 and bit4 == 0b1 and (funct == 0b000000 or funct == 0b000001):
+        elif op == ISA.OpCodes.DATA_PROCESS and ISA.is_multiply(funct,shift):
             return 0b00
         else:
             return 0b01
 
     @staticmethod
-    def _generate_regwrs(op, bit4, funct):
+    def _generate_regsb(op, shift, funct):
+        """
+        REGSB <= '1' to select ra for data processing
+        REGSB <= '0' to select ra for multiply and accumulate
+        """
+        return not (op == ISA.OpCodes.DATA_PROCESS and ISA.is_multiply(funct,shift))
+
+    @staticmethod
+    def _generate_regwrs(op, shift, funct):
         """
         REGWRS <= B"10" to select LR (bl instruction)
         REGWRS <= B"01" to select Rd (data processing instruction)
         REGWRS <= B"00" to select Rd (mul instruction)
         """
-        if op == 0b10 and ((funct & 0b010000) >> 4) == 0b1:
+        if op == ISA.OpCodes.BRANCH and ISA.parse_function_get_l(funct, True):
             return 0b10
-        elif op == 0b00 and bit4 == 0b1 and (funct == 0b000000 or funct == 0b000001):
+        elif op == ISA.OpCodes.DATA_PROCESS and ISA.is_multiply(funct,shift):
             return 0b00
         else:
             return 0b01
 
     @staticmethod
-    def _generate_regwr(op, funct):
+    def _generate_regwr(conditionMet, op, funct, rd):
         """
         REGWR <= '1' when an instruction writes back to the regfile
         REGWR <= '0' when an instruction does not write back to the regfile
              (str, branch, and cmp instructions)
         """
-        if op == 0b00 and (funct == 0b010101 or funct == 0b110101):
+        if not conditionMet:
+            return 0
+
+        if rd == 15:  # PC not in register file, use PC path
             return 0b0
-        elif op == 0b01 and funct == 0b011000:
+        elif op == ISA.OpCodes.DATA_PROCESS:
+             cmd = ISA.parse_function_get_cmd(funct)
+             if (funct == ISA.DataCMDCodes.TST or
+                 funct == ISA.DataCMDCodes.TEQ or
+                 funct == ISA.DataCMDCodes.CMP or
+                 funct == ISA.DataCMDCodes.CMN):
+                return 0b0
+             else:
+                return 0b1
+        elif op == ISA.OpCodes.MEMORY_SINGLE and not ISA.parse_function_get_l(funct):
             return 0b0
-        elif op == 0b10 and ((funct & 0b010000) >> 4) == 0b0:
+        elif op == ISA.OpCodes.BRANCH and ISA.parse_function_get_l(funct,True) == 0b0:
             return 0b0
         else:
             return 0b1
@@ -259,80 +266,126 @@ class ControllerSingleCycle(Controller):
         EXTS <= B"01" for 12-bit immediate (ldr and str instructions)
         EXTS <= B"10" for branch instruction
         """
-        if op == 0b10:
+        if op == ISA.OpCodes.BRANCH:
             return 0b10
-        elif op == 0b01 and (funct == 0b011000 or funct == 0b011001):
+        elif op == ISA.OpCodes.MEMORY_SINGLE and not ISA.parse_function_get_i(funct):
             return 0b01
         else:
             return 0b00
 
     @staticmethod
-    def _generate_alusrcb(op, funct, bit4):
+    def _generate_alusrcb(op, funct):
         """
         ALUSRCB <= '1' when source B requires the output of RD2 (data
              processing instructions)
         ALUSRCB <= '0' when source B requires an extended immediate
         """
-        if op == 0b00:
-            if (funct == 0b000000 or funct == 0b000010 or
-                    funct == 0b000100 or funct == 0b000110 or
-                    funct == 0b001000 or funct == 0b001010 or
-                    funct == 0b001110 or funct == 0b010001 or
-                    funct == 0b010011 or funct == 0b010101 or
-                    funct == 0b010111 or funct == 0b011000 or
-                    funct == 0b011000 or funct == 0b011010 or
-                    funct == 0b011100 or funct == 0b011110 or
-                    funct == 0b000001 or funct == 0b000011 or
-                    funct == 0b000101 or funct == 0b000111 or
-                    funct == 0b001001 or funct == 0b001011 or
-                    funct == 0b011011 or funct == 0b011101 or
-                    funct == 0b011111):
-                return 0b1
-            elif bit4 == 0b1 and (funct == 0b000000 or funct == 0b000001):
-                return 0b1
-            else:
-                return 0b0
+        if op == ISA.OpCodes.MEMORY_SINGLE and ISA.parse_function_get_i(funct):
+            return 0b1
+        elif op == ISA.OpCodes.DATA_PROCESS and not ISA.parse_function_get_i(funct):
+            return 0b1
         else:
             return 0b0
 
     @staticmethod
-    def _generate_alus(op, bit4, funct):
+    def _generate_alus(op, funct, shift):
         """
-        ALUS <= "0000" for +
-        ALUS <= "0001" for -
-        ALUS <= "0010" for and
-        ALUS <= "0011" for or
-        ALUS <= "0100" for xor
+        ALUS <= "0000" for A + B
+        ALUS <= "0001" for A - B
+        ALUS <= "0010" for A & B
+        ALUS <= "0011" for A | B
+        ALUS <= "0100" for A ^ B
         ALUS <= "0101" for A
         ALUS <= "0110" for B
-        ALUS <= "0111" for A*B
+        ALUS <= "0111" for A * B
+        ALUS <= "1000" for A + B + Cin
+        ALUS <= "1001" for A - B - Cin
+        ALUS <= "1010" for B - A
+        ALUS <= "1011" for B - A - Cin
+        ALUS <= "1100" for A & ~ B
+        ALUS <= "1101" for ~ B
+        ALUS <= "1110" for 0
         ALUS <= "1111" for 1
         """
-        if op == 0b00 and (funct == 0b000000 or funct == 0b000001) and bit4 == 0b1:
-            return 0b0111
-        elif op == 0b00 and (funct == 0b001000 or funct == 0b101000
-                             or funct == 0b001001 or funct == 0b101001):
-            return 0b0000
-        elif op == 0b01 and (funct == 0b011000 or funct == 0b011001):
-            return 0b0000
-        elif op == 0b00 and (funct == 0b000100 or funct == 0b100100
-                             or funct == 0b010101 or funct == 0b110101 or funct == 0b000101
-                             or funct == 100101):
-            return 0b0001
-        elif op == 0b00 and (funct == 0b000000 or funct == 0b100000
-                             or funct == 0b000001 or funct == 0b100001):
-            return 0b0010
-        elif op == 0b00 and (funct == 0b011000 or funct == 0b111000
-                             or funct == 0b011001 or funct == 0b111001):
-            return 0b0011
-        elif op == 0b00 and (funct == 0b000010 or funct == 0b100010
-                             or funct == 0b000011 or funct == 0b100011):
-            return 0b0100
-        elif op == 0b00 and (funct == 0b011010 or funct == 0b111010
-                             or funct == 0b011011 or funct == 0b111011):
-            return 0b0110
+        if op == ISA.OpCodes.DATA_PROCESS:
+            if ISA.is_multiply(funct,shift):
+                return 0b0111
+
+            cmd = ISA.parse_function_get_cmd(funct)
+            if cmd == ISA.DataCMDCodes.AND:
+                return 0b0010
+            elif cmd == ISA.DataCMDCodes.EOR:
+                return 0b0100
+            elif cmd == ISA.DataCMDCodes.SUB:
+                return 0b0001
+            elif cmd == ISA.DataCMDCodes.RSB:
+                return 0b1010
+            elif cmd == ISA.DataCMDCodes.ADD:
+                return 0b0000
+            elif cmd == ISA.DataCMDCodes.ADC:
+                return 0b1000
+            elif cmd == ISA.DataCMDCodes.SBC:
+                return 0b1001
+            elif cmd == ISA.DataCMDCodes.RSC:
+                return 0b1011
+            elif cmd == ISA.DataCMDCodes.TST:
+                return 0b0010
+            elif cmd == ISA.DataCMDCodes.TEQ:
+                return 0b0100
+            elif cmd == ISA.DataCMDCodes.CMP:
+                return 0b0001
+            elif cmd == ISA.DataCMDCodes.CMN:
+                return 0b0000
+            elif cmd == ISA.DataCMDCodes.ORR:
+                return 0b0011
+            elif cmd == ISA.DataCMDCodes.MOV:
+                return 0b0110
+            elif cmd == ISA.DataCMDCodes.BIC:
+                return 0b1100
+            elif cmd == ISA.DataCMDCodes.MVN:
+                return 0b1101
+            else:
+                return 0b1111
+        elif op == ISA.OpCodes.MEMORY_SINGLE:
+            if ISA.parse_function_get_p(funct): #pre-index
+                return 0b0000 if ISA.parse_function_get_u(funct) else 0b0001
+            else: #post-index not supported, just pass A
+                return 0b0101
         else:
             return 0b1111
+
+    @staticmethod
+    def _generate_shop(shift):
+        """
+        SHOP <= ShiftType from instruction
+        """
+        return ISA.parse_shift_operand_get_type(shift)
+
+    @staticmethod
+    def _generate_shctrl(op, funct, shift):
+        """
+        SHCTRL <= '00' diabled
+        SHCTRL <= '01' enabled shift using constant for data processing instruction
+        SHCTRL <= '10' diabled
+        SHCTRL <= '11' enabled shift using register ra for data processing instruction
+        """
+        if op == ISA.OpCodes.DATA_PROCESS and not ISA.is_multiply(funct,shift):
+            return (ISA.parse_shift_operand_get_roi(shift) << 1) | 1
+        elif op == ISA.OpCodes.MEMORY_SINGLE and ISA.parse_function_get_i(funct):
+            return (ISA.parse_shift_operand_get_roi(shift) << 1) | 1
+        else:
+            return 0b00
+
+    @staticmethod
+    def _generate_accen(op, funct, shift):
+        """
+        ACCEN <= '1' when accumulate set in multiply instruction (MLA)
+        ACCEN <= '0' otherwise
+        """
+        if op == ISA.OpCodes.DATA_PROCESS and ISA.is_multiply(funct,shift):
+            return ISA.parse_function_get_a(funct)
+        else:
+            return 0b0
 
     @staticmethod
     def _generate_aluflagwr(op, funct):
@@ -340,38 +393,40 @@ class ControllerSingleCycle(Controller):
         ALUFLAGWR <= '1' to set flags (cmp instructions or s bit set)
         ALUFLAGWR <= '0' flags will not be set
         """
-        if op == 0b00:
-            # Note: need to look further into the logic when funct is 1
-            if (funct == 0b010101 or funct == 0b110101 or
-                    funct == 0b000001 or funct == 0b100001 or
-                    funct == 0b000011 or funct == 0b100011 or
-                    funct == 0b000101 or funct == 0b100101 or
-                    funct == 0b000111 or funct == 0b100111 or
-                    funct == 0b001001 or funct == 0b101001 or
-                    funct == 0b001011 or funct == 0b101011 or
-                    funct == 0b001101 or funct == 0b101101 or
-                    funct == 0b001111 or funct == 0b101111 or
-                    funct == 0b010001 or funct == 0b110001 or
-                    funct == 0b010011 or funct == 0b110011 or
-                    funct == 0b010111 or funct == 0b110111 or
-                    funct == 0b011001 or funct == 0b111001 or
-                    funct == 0b011011 or funct == 0b111011 or
-                    funct == 0b011101 or funct == 0b111101 or
-                    funct == 0b011111 or funct == 0b111111):
-                return 0b1
-            else:
-                return 0b0
+        cmd = ISA.parse_function_get_cmd(funct)
+        if op == ISA.OpCodes.DATA_PROCESS and (cmd == ISA.DataCMDCodes.TST or
+           cmd == ISA.DataCMDCodes.TEQ or cmd == ISA.DataCMDCodes.CMP or
+           cmd == ISA.DataCMDCodes.CMN):
+            return 0b1
+        elif op == ISA.OpCodes.DATA_PROCESS and ISA.parse_function_get_s(funct):
+            return 0b1
         else:
             return 0b0
 
     @staticmethod
-    def _generate_memwr(op, funct):
+    def _generate_memty(op, funct):
+        """
+        MEM_TY <= "00" --ignore
+        MEM_TY <= "01" to read in byte mode
+        MEM_TY <= "10" --ignore
+        MEM_TY <= "11" to read in word mode
+        """
+        if op == ISA.OpCodes.MEMORY_SINGLE:
+            return 0b01 if ISA.parse_function_get_b(funct) else 0b11
+        else:
+            return 0b11
+
+    @staticmethod
+    def _generate_memwr(conditionMet, op, funct):
         """
         MEMWR <= '1' allows data to be written to data memory (str
                  instructions)
         MEMWR <= '0' cannot write to data memory
         """
-        if op == ISA.OpCodes.SINGLE_MEMORY and funct == 0b011000:
+        if not conditionMet:
+            return 0b0
+
+        if op == ISA.OpCodes.MEMORY_SINGLE and not ISA.parse_function_get_l(funct):
             return 0b1
         else:
             return 0b0
@@ -382,7 +437,7 @@ class ControllerSingleCycle(Controller):
         REGSRC <= '1' when output of ALU is feedback (ldr instructions)
         REGSRC <= '0' when output of data mem is feedback
         """
-        if op == ISA.OpCodes.SINGLE_MEMORY and funct == 0b011001:
+        if op == ISA.OpCodes.MEMORY_SINGLE and ISA.parse_function_get_l(funct):
             return 0b0
         else:
             return 0b1
@@ -392,19 +447,21 @@ class ControllerSingleCycle(Controller):
         """
         WDS3 <= '1' when a bl instruction is run else '0'
         """
-        if op == ISA.OpCodes.BRANCH and ((funct & 0b010000) >> 4) == 0b1:
-            return 0b1
-        else:
-            return 0b0
-
+        return op == ISA.OpCodes.BRANCH and ISA.parse_function_get_l(funct,True)
 
     def run(self, time=None):
         "Runs a timestep of controller, assert control signals on each"
 
-        #parse instruction general
+        c = self._c.read()
+        v = self._v.read()
+        n = self._n.read()
+        z = self._z.read()
+
+        # parse instruction general
         instr = self._instr.read()
-        condition = (instr & ISA.InstructionMasks.COND) >> 28
-        operation = (instr & ISA.InstructionMasks.OPCODE) >> 26
+        conditionMet = ISA.condition_met(ISA.get_condition(instr),c,v,n,z)
+        operation = ISA.get_opcode(instr)
+        fuction = ISA.get_function(instr)
 
     def inspect(self):
         "Return message noting that this controller does not contain state"
