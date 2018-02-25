@@ -11,15 +11,19 @@ export class BusComponent implements OnInit {
   private static DEFAULT_COLOR: string = '#000000';
   // The highlighted bus color (when moused over)
   private static HIGHLIGHT_COLOR: string = '#ff0000';
+  // The clicked bus color
+  private static SELECT_COLOR: string = '#00ff00';
 
   // The svg paths for the arrow heads
   public arrows: string[] = [];
   // Input string with a list of coordinates
-  @Input('svg-bus') public bus: { 'junction'?: number, 'paths': string[] } = null;
+  @Input('svg-bus') public bus: { 'junction'?: number, 'name': string, 'paths': string[] } = null;
   // The active color of the bus
   public color: string = BusComponent.DEFAULT_COLOR;
   // The junction point for a complex bus
   public junctions: any[] = [];
+  // Text associated with bus
+  public name: string = '';
   // Generated svg paths for the bus
   public paths: string[] = [];
 
@@ -133,6 +137,18 @@ export class BusComponent implements OnInit {
     if (this.bus['junctions']) {
       this.junctions = this.bus['junctions'];
     }
+    if (this.bus['name']) {
+      this.name = this.bus['name'];
+    }
+  }
+
+  /**
+   * Handles the mouseClick event
+   */
+  public onClick(): void {
+    // Change the bus color to the select color
+    this.color = BusComponent.SELECT_COLOR;
+    // Expand hovering tooltip
   }
 
   /**
@@ -141,6 +157,7 @@ export class BusComponent implements OnInit {
   public onEnter(): void {
     // Change the bus color to the highlight color
     this.color = BusComponent.HIGHLIGHT_COLOR;
+    // Spawn hovering tooltip
   }
 
   /**

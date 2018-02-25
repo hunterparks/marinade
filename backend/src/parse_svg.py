@@ -91,6 +91,8 @@ class Collection:
 
 class Bus(Element):
 
+    name = ''
+
     def __init__(self, junction=None, path=None):
         self.valid = True
         if junction:
@@ -105,6 +107,7 @@ class Bus(Element):
     def to_dict(self):
         return {
           'junctions': [junction.to_dict() for junction in self.junctions],
+          'name': self.name,
           'paths': [path.to_dict() for path in self.paths]
         }
 
@@ -178,6 +181,7 @@ class Junction(Point):
     def validate(self, svg):
         self.valid = svg.attrs['rx'] == svg.attrs['ry']
 
+
 class Path(Element):
 
     def __init__(self, svg):
@@ -209,10 +213,10 @@ class Label(Element):
         self.size, self.text, self.x, self.y = self.parse_svg(svg)
 
     def parse_svg(self, svg):
-        parent = svg.find_previous('g').attrs['transform'].replace('translate(', '').replace(')', '')
-        x = float(svg.attrs['x']) + float(parent.split(',')[0])
-        y = float(svg.attrs['y']) + float(parent.split(',')[1])
-        size = svg.attrs['font-size']
+        #parent = svg.find_previous('g').attrs['transform'].replace('translate(', '').replace(')', '')
+        x = float(svg.attrs['x'])# + float(parent.split(',')[0])
+        y = float(svg.attrs['y'])# + float(parent.split(',')[1])
+        size = 6#svg.attrs['font-size']
         self.validate(svg)
         if self.valid:
             return size, svg.get_text(), x, y
@@ -285,7 +289,7 @@ class Register(Element):
 labels = Collection('label')
 for label in soup.find_all('text'):
     labels.add(Label(label))
-labels.commit()
+#labels.commit()
 
 # ====================================
 # Find the registers (rectangles)
@@ -352,12 +356,24 @@ for path in paths:
 
 # transfer path labels to bus labels (EACH BUS SHOULD HAVE ONE)
 # TODO
-# iterate through buses
-    # iterate through paths in bus
-        # does path have a label associated with it?
-            # associate label to bus, remove association from path
-            # break loop
-        # else do nothing
-
+# iterate through labels
+for label in labels.elements:
+    # iterate through buses
+    for bus in buses.elements:
+        bus_named = False
+        # iterate through paths in bus
+        for path in bus.paths:
+            # does path have a label associated with it?
+            if abs(path.points[0].gety() - path.points[1].gety()) < 5: # path is horizontal, most likely comes from a component
+                if label.x > path.points[0].getx()-15 and label.x < path.points[1].getx()+15 and path.points[0].gety() > label.y and path.points[0].gety() - label.y < 25:
+                    # associate label to bus, remove association from path
+                    bus.name = label.text
+                    bus_named = True
+            if bus_named:
+                break;
+                    # break loop
+            # else do nothing
+labels.elements.clear()
+labels.commit()
 buses.commit()
 print(len(buses))
