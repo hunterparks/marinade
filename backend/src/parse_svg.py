@@ -115,35 +115,8 @@ class Bus(Element):
         return True
 
     @staticmethod
-    # def intersection(junction, segment):
-    #   crossproduct = (junction.x - segment.points[0].y) * (segment.points[1].x - segment.points[0].x) - \
-    #                  (junction.x - segment.points[0].x) * (segment.points[1].y - segment.points[0].y)
-    #   if abs(crossproduct) > 0.01:
-    #       return False
-    #
-    #   dotproduct = (junction.x - segment.points[0].x) * (segment.points[1].x - segment.points[0].x) + \
-    #                (junction.y - segment.points[0].y) * (segment.points[1].y - segment.points[0].y)
-    #   if dotproduct < 0:
-    #       return False
-    #
-    #   squaredlengthba = (segment.points[1].x - segment.points[0].x) * (segment.points[1].x - segment.points[0].x) + \
-    #                     (segment.points[1].y - segment.points[0].y) * (segment.points[1].y - segment.points[0].y)
-    #   if dotproduct > squaredlengthba:
-    #       return False
-    #   return True
     def intersection(junction, path):
         for i in range(len(path.points)-1):
-            # crossproduct = (junction.x - path.points[i].y) * (path.points[i+1].x - path.points[i].x) - \
-            #                  (junction.x - path.points[i].x) * (path.points[i+1].y - path.points[i].y)
-            #
-            # dotproduct = (junction.x - path.points[i].x) * (path.points[i+1].x - path.points[i].x) + \
-            #              (junction.y - path.points[i].y) * (path.points[i+1].y - path.points[i].y)
-            #
-            # squaredlengthba = (path.points[i+1].x - path.points[i].x) * (path.points[i+1].x - path.points[i].x) + \
-            #                   (path.points[i+1].y - path.points[i].y) * (path.points[i+1].y - path.points[i].y)
-            # if dotproduct <= squaredlengthba and abs(crossproduct) <= 0.01 and dotproduct >= 0:
-            #     return True
-            # check between points
             if abs(path.points[i].gety() - path.points[i+1].gety()) < 5: # horizontal line with 4 pixel tolerance
                 if abs(path.points[i].gety() - junction.y) < 5: # same vertical level with 4 pixel tolerance
                     if path.points[i].getx() > path.points[i+1].getx(): # right to left
@@ -343,24 +316,18 @@ for line in soup.find_all('path'):
 buses = Collection('bus')
 count = 0
 print(len(junctions), len(paths))
-# for junction in junctions: # iterate through all junctions
-#     # path_has_junction = False
-#     for path in paths: # iterate through all paths
-#         if Bus.intersection(junction, path): # if current path/junction pair intersects...
-#             # path_has_junction = True
-#             junction_added = False
-#             path_added = False
-#             for bus in buses.elements: # iterate through all existing buses
-#                 if junction in bus.junctions: # if current junction already is part of a bus
-#                     bus.paths.append(path)
-#                     path_added = True
-#                 if path in bus.paths: # or if current path is already part of a bus
-#                     bus.junctions.append(junction)
-#                     junction_added = True
-#             if not (path_added or junction_added):
-#                 buses.add(Bus(junction, path))
-#     #if not path_has_junction:
-#     #   buses.add(Bus(None, path))
+# associate labels with paths
+# TODO
+# iterate through labels
+    # iterate through paths
+        # is first segment of path horizontal? (all bus origins should be horizontal coming out of a component)
+            # is label slightly above first segment of path?
+                # associate label and path (label text = id of path?)
+                # break loop (each label should only associate with one path)
+            # else do nothing
+        # else do nothing
+
+# associate path branches and junctions
 for path in paths:
     path_has_junction = False
     for junction in junctions:
@@ -382,5 +349,15 @@ for path in paths:
                 buses.add(Bus(junction, path))
     if not path_has_junction:
         buses.add(Bus([], path))
+
+# transfer path labels to bus labels (EACH BUS SHOULD HAVE ONE)
+# TODO
+# iterate through buses
+    # iterate through paths in bus
+        # does path have a label associated with it?
+            # associate label to bus, remove association from path
+            # break loop
+        # else do nothing
+
 buses.commit()
 print(len(buses))
