@@ -131,7 +131,7 @@ class PipelineProcessor_t(unittest.TestCase):
         # generate JSON through simulation
         resultPath = os.path.dirname(os.path.realpath(__file__)) + '\\results\\'
         resultPath = resultPath + filename + '_result'
-        self._run_simulation(resultPath, program, 34, msg_inspect)
+        self._run_simulation(resultPath, program, 36, msg_inspect)
 
         # generate results in excel table for tracking
         self._process_json_to_excel(resultPath, msg_inspect['inspect'])
@@ -157,9 +157,12 @@ class PipelineProcessor_t(unittest.TestCase):
             0xE3, 0xA0, 0x30, 0x03,     # mov r3, #3
             0xE3, 0xA0, 0x20, 0x02,     # mov r2, #2
             0xE3, 0xA0, 0x10, 0x01,     # mov r1, #1
+            0xE3, 0xA0, 0xD0, 0x0D,     # mov r13, #13
+            0xE5, 0x84, 0xD0, 0x00,     # str r13, [r4]
+            0xE5, 0x94, 0xD0, 0x00,     # ldr r13, [r4]
             0xE5, 0x84, 0x60, 0x00,     # str r6, [r4]
             0xE5, 0x94, 0x50, 0x00,     # ldr r5, [r4]
-            0xE3, 0xA0, 0xB0, 0x0B,     # mov r11, #11
+            0xE3, 0xA0, 0x60, 0x06,     # mov r6, #6
             0xE2, 0x45, 0x50, 0x01,     # sub r5, r5, #1
             0xE0, 0x8A, 0xC0, 0x09,     # add r12, r10, r9
             0xE0, 0x8C, 0xC0, 0x08,     # add r12, r12, r8
