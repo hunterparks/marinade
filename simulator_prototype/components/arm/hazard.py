@@ -3,8 +3,8 @@ from components.abstract.ibus import iBusRead, iBusWrite
 class HazardController():
 
     def __init__(self, ra1d, ra2d, ra1e, ra2e, ra3e, ra3m, ra3w, regwrm,
-                regwrw, regsrce, regsrcw, memwrm, pcsrcd, fwda, fwdb, fwds,
-                stalld, flushd, flushe):
+                regwrw, regsrce, regsrcm, regsrcw, memwrm, pcsrcd, fwda, fwdb,
+                fwds, stalld, flushd, flushe):
         if not isinstance(ra1d, iBusRead):
             raise TypeError('The ra1d bus must be readable')
         elif ra1d.size() != 4:
@@ -45,6 +45,10 @@ class HazardController():
             raise TypeError('The regsrce bus must be readable')
         elif regsrce.size() != 1:
             raise ValueError('The regsrce bus must have a size of 1 bit')
+        if not isinstance(regsrcm, iBusRead):
+            raise TypeError('The regsrcm bus must be readable')
+        elif regsrcm.size() != 1:
+            raise ValueError('The regsrcm bus must have a size of 1 bit')
         if not isinstance(regsrcw, iBusRead):
             raise TypeError('The regsrcw bus must be readable')
         elif regsrcw.size() != 1:
@@ -68,18 +72,19 @@ class HazardController():
         self._regwrm = regwrm
         self._regwrw = regwrw
         self._regsrce = regsrce
+        self._regsrcm = regsrcm
         self._regsrcw = regsrcw
         self._memwrm = memwrm
         self._pcsrcd = pcsrcd
 
         if not isinstance(fwda, iBusWrite):
             raise TypeError('The fwda bus must be writable')
-        elif fwda.size() != 2:
-            raise ValueError('The fwda bus must have a size of 2 bits')
+        elif fwda.size() != 3:
+            raise ValueError('The fwda bus must have a size of 3 bits')
         if not isinstance(fwdb, iBusWrite):
             raise TypeError('The fwdb bus must be writable')
-        elif fwdb.size() != 2:
-            raise ValueError('The fwdb bus must have a size of 2 bits')
+        elif fwdb.size() != 3:
+            raise ValueError('The fwdb bus must have a size of 3 bits')
         if not isinstance(fwds, iBusWrite):
             raise TypeError('The fwds bus must be writable')
         elif fwds.size() != 1:
@@ -106,29 +111,31 @@ class HazardController():
 
     
     @staticmethod
-    def _generate_fwda(ra1e, ra3m, ra3w, regwrm, regwrw, regsrcw):
-        # If pipeline processor does not work - check the if statement below
-        #if ra1e.read() == ra3w.read() and regsrcw.read() == 1:
-            #return 0b11     # Load-use hazard occured
-        if ra1e.read() == ra3m.read() and regwrm.read() == 1:
-            return 0b10     # Register-use hazard occured
-        elif ra1e.read() == ra3w.read() and regwrw.read() == 1:
-            return 0b01     # Register-use hazard occured
+    def _generate_fwda(ra1e, ra3m, ra3w, regwrm, regwrw, regsrcm, regsrcw):
+        if ra1e.read() == ra3m.read() and regwrm.read() == 1 and regsrcm.read() != 0:
+            return 0b010    # Register-use hazard occured
+        elif ra1e.read() == ra3w.read() and regwrw.read() == 1 and regsrcw.read() != 0:
+            return 0b001    # Register-use hazard occured
+        elif ra1e.read() == ra3m.read() and regsrcm.read() == 0:
+            return 0b011    # Load-use hazard occured (in mem)
+        elif ra1e.read() == ra3w.read() and regsrcw.read() == 0:
+            return 0b100    # Load-use hazard occured (in wb)
         else:
-            return 0b00     # No hazard occured
+            return 0b000    # No hazard occured
 
 
     @staticmethod
-    def _generate_fwdb(ra2e, ra3m, ra3w, regwrm, regwrw, regsrcw):
-        # If pipeline processor does not work - check the if statement below
-        #if ra2e.read() == ra3w.read() and regsrcw.read() == 1:
-            #return 0b11     # Load-use hazard occured
-        if ra2e.read() == ra3m.read() and regwrm.read() == 1:
-            return 0b10     # Register-use hazard occured
-        elif ra2e.read() == ra3w.read() and regwrw.read() == 1:
-            return 0b01     # Register-use hazard occured
+    def _generate_fwdb(ra2e, ra3m, ra3w, regwrm, regwrw, regsrcm, regsrcw):
+        if ra2e.read() == ra3m.read() and regwrm.read() == 1 and regsrcm.read() != 0:
+            return 0b010    # Register-use hazard occured
+        elif ra2e.read() == ra3w.read() and regwrw.read() == 1 and regsrcw.read() != 0:
+            return 0b001    # Register-use hazard occured
+        elif ra2e.read() == ra3m.read() and regsrcm.read() == 0:
+            return 0b011    # Load-use hazard occured (in mem)
+        elif ra2e.read() == ra3w.read() and regsrcw.read() == 0:
+            return 0b100    # Load-use hazard occured (in wb)
         else:
-            return 0b00     # No hazard occured
+            return 0b000    # No hazard occured
 
 
     @staticmethod
@@ -182,13 +189,14 @@ class HazardController():
         regwrm = self._regwrm
         regwrw = self._regwrw
         regsrce = self._regsrce
+        regsrcm = self._regsrcm
         regsrcw = self._regsrcw
         memwrm = self._memwrm
         pcsrcd = self._pcsrcd
 
         # Generate control outputs
-        self._fwda.write(self._generate_fwda(ra1e, ra3m, ra3w, regwrm, regwrw, regsrcw))
-        self._fwdb.write(self._generate_fwdb(ra2e, ra3m, ra3w, regwrm, regwrw, regsrcw))
+        self._fwda.write(self._generate_fwda(ra1e, ra3m, ra3w, regwrm, regwrw, regsrcm, regsrcw))
+        self._fwdb.write(self._generate_fwdb(ra2e, ra3m, ra3w, regwrm, regwrw, regsrcm, regsrcw))
         self._fwds.write(self._generate_fwds(ra3m, ra3w, memwrm))
         self._stalld.write(self._generate_stalld(ra1d, ra2d, ra3e, regsrce))
         self._flushd.write(self._generate_flushd(pcsrcd))

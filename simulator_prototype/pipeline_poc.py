@@ -167,8 +167,8 @@ def generate_pipeline_architecture():
     hooks.update({'wd3sw': Bus(1, 0)})
 
     ########## hazard control signals ##########
-    hooks.update({'fwda': Bus(2, 0)})
-    hooks.update({'fwdb': Bus(2, 0)})
+    hooks.update({'fwda': Bus(3, 0)})
+    hooks.update({'fwdb': Bus(3, 0)})
     hooks.update({'fwds': Bus(1, 0)})
     hooks.update({'stalld': Bus(1, 0)})
     hooks.update({'flushd': Bus(1, 0)})
@@ -244,15 +244,15 @@ def generate_pipeline_architecture():
                                                            hooks['ra3e'], hooks['ra3m'],
                                                            hooks['ra3w'], hooks['regwrm'],
                                                            hooks['regwrw'], hooks['regsrce'],
-                                                           hooks['regsrcw'], hooks['memwrm'],
-                                                           hooks['pcsrcd'], hooks['fwda'],
-                                                           hooks['fwdb'], hooks['fwds'],
-                                                           hooks['stalld'], hooks['flushd'],
-                                                           hooks['flushe'])})
-    entities.update({'fwda_mux': Mux(32, [hooks['rd1e'], hooks['fw'], hooks['fm'], hooks['rdw']],
-                                      hooks['fwda'], hooks['rd1'])})
-    entities.update({'fwdb_mux': Mux(32, [hooks['rd2e'], hooks['fw'], hooks['fm'], hooks['rdw']],
-                                      hooks['fwdb'], hooks['rd2'])})
+                                                           hooks['regsrcm'], hooks['regsrcw'],
+                                                           hooks['memwrm'], hooks['pcsrcd'], 
+                                                           hooks['fwda'], hooks['fwdb'], 
+                                                           hooks['fwds'], hooks['stalld'], 
+                                                           hooks['flushd'], hooks['flushe'])})
+    entities.update({'fwda_mux': Mux(32, [hooks['rd1e'], hooks['fw'], hooks['fm'], hooks['rdm'],
+                                      hooks['rdw']], hooks['fwda'], hooks['rd1'])})
+    entities.update({'fwdb_mux': Mux(32, [hooks['rd2e'], hooks['fw'], hooks['fm'], hooks['rdm'],
+                                      hooks['rdw']], hooks['fwdb'], hooks['rd2'])})
     entities.update({'alu_mux': Mux(32, [hooks['imm32e'], hooks['rd2']], hooks['alusrcbe'], 
                                     hooks['alub'])})
     entities.update({'alu': Alu(hooks['rd1'], hooks['alub'], hooks['aluse'], hooks['fe'], 
