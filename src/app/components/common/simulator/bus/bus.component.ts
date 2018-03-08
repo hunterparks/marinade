@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, HostListener, Input, OnInit } from '@angular/core';
 
 @Component({
   selector: '[svg-bus]',
@@ -145,6 +145,7 @@ export class BusComponent implements OnInit {
   /**
    * Handles the mouseClick event
    */
+  @HostListener('click')
   public onClick(): void {
     // Change the bus color to the select color
     this.color = BusComponent.SELECT_COLOR;
@@ -154,7 +155,8 @@ export class BusComponent implements OnInit {
   /**
    * Handles the mouseEnter event
    */
-  public onEnter(): void {
+  @HostListener('mouseenter')
+  public onMouseEnter(): void {
     // Change the bus color to the highlight color
     this.color = BusComponent.HIGHLIGHT_COLOR;
     // Spawn hovering tooltip
@@ -163,7 +165,8 @@ export class BusComponent implements OnInit {
   /**
    * Handles the mouseLeave event
    */
-  public onLeave(): void {
+  @HostListener('mouseleave')
+  public onMouseLeave(): void {
     // Change the bus color to the default color
     this.color = BusComponent.DEFAULT_COLOR;
   }

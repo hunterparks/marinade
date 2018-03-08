@@ -14,21 +14,20 @@ export class AppComponent {
   public simFlag: boolean = false;
 
   constructor(private serial: WebsocketService) {
-    this.serial.messageSubject.subscribe((result: string) => {
-      console.log(result);
-      this.result = result;
-      // var msg = JSON.parse(result);
-      // this.count = msg.b1.state;
-    });
-    this.serial.connect();
-
-    var obj = this
-    setInterval(function() {
-      if(obj.simFlag){
-        obj.step()
-      }
-    }, 1000)
-
+    // this.serial.messageSubject.subscribe((result: string) => {
+    //   console.log(result);
+    //   this.result = result;
+    //   // var msg = JSON.parse(result);
+    //   // this.count = msg.b1.state;
+    // });
+    // this.serial.connect();
+    //
+    // var obj = this
+    // setInterval(function() {
+    //   if(obj.simFlag){
+    //     obj.step()
+    //   }
+    // }, 1000)
   }
 
 

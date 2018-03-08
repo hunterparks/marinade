@@ -8,7 +8,7 @@ import re
 current_directory = os.path.dirname(__file__)
 base_output_file = os.path.join(current_directory, '../../src/app/components/common/simulator')
 
-input_file = open('/Users/stoehraj/Downloads/pipeline_architecture.svg', 'r')
+input_file = open('/Users/alex/Downloads/pipeline_architecture_v5.svg', 'r')
 
 # Read the input file and set up beautifulsoup
 input_text = ''
@@ -120,27 +120,28 @@ class Bus(Element):
     @staticmethod
     def intersection(junction, path):
         for i in range(len(path.points)-1):
-            if abs(path.points[i].gety() - path.points[i+1].gety()) < 5: # horizontal line with 4 pixel tolerance
-                if abs(path.points[i].gety() - junction.y) < 5: # same vertical level with 4 pixel tolerance
-                    if path.points[i].getx() > path.points[i+1].getx(): # right to left
-                        if junction.x < path.points[i].getx() and junction.x > path.points[i+1].getx():
+            if abs(path.points[i].y - path.points[i+1].y) < 5:  # horizontal line with 4 pixel tolerance
+                if abs(path.points[i].y - junction.y) < 5:  # same vertical level with 4 pixel tolerance
+                    if path.points[i].x > path.points[i+1].x:  # right to left
+                        if junction.x < path.points[i].x and junction.x > path.points[i+1].x:
                             return True
-                    elif path.points[i].getx() < path.points[i+1].getx(): # left to right
-                        if junction.x < path.points[i+1].getx() and junction.x > path.points[i].getx():
+                    elif path.points[i].x < path.points[i+1].x:  # left to right
+                        if junction.x < path.points[i+1].x and junction.x > path.points[i].x:
                             return True
-            elif abs(path.points[i].getx() - path.points[i+1].getx()) < 5: # vertical line with 4 pixel tolerance
-                if abs(path.points[i].getx() - junction.x) < 5: # same horizontal level with 4 pixel tolerance
-                    if path.points[i].gety() > path.points[i+1].gety(): # down to up
-                        if junction.y < path.points[i].gety() and junction.y > path.points[i+1].gety():
+            elif abs(path.points[i].x - path.points[i+1].x) < 5:  # vertical line with 4 pixel tolerance
+                if abs(path.points[i].x - junction.x) < 5:  # same horizontal level with 4 pixel tolerance
+                    if path.points[i].y > path.points[i+1].y:  # down to up
+                        if junction.y < path.points[i].y and junction.y > path.points[i+1].y:
                             return True
-                    elif path.points[i].gety() < path.points[i+1].gety(): # up to down
-                        if junction.y < path.points[i+1].gety() and junction.y > path.points[i].gety():
+                    elif path.points[i].y < path.points[i+1].y:  # up to down
+                        if junction.y < path.points[i+1].y and junction.y > path.points[i].y:
                             return True
             # check at points
-            if path.points[i].gety() < (junction.y + 5) and path.points[i].gety() > (junction.y -5) \
-              and path.points[i].getx() < (junction.x + 5) and path.points[i].getx() > (junction.x -5):
+            if path.points[i].y < (junction.y + 5) and path.points[i].y > (junction.y - 5) \
+               and path.points[i].x < (junction.x + 5) and path.points[i].x > (junction.x - 5):
                 return True
         return False
+
 
 class Point(Element):
 
@@ -156,12 +157,6 @@ class Point(Element):
             'x': self.x,
             'y': self.y
         }
-
-    def getx(self):
-        return self.x
-
-    def gety(self):
-        return self.y
 
     def validate(self, svg):
         self.valid = True
@@ -213,10 +208,9 @@ class Label(Element):
         self.size, self.text, self.x, self.y = self.parse_svg(svg)
 
     def parse_svg(self, svg):
-        #parent = svg.find_previous('g').attrs['transform'].replace('translate(', '').replace(')', '')
-        x = float(svg.attrs['x'])# + float(parent.split(',')[0])
-        y = float(svg.attrs['y'])# + float(parent.split(',')[1])
-        size = 6#svg.attrs['font-size']
+        x = float(svg.attrs['x'])
+        y = float(svg.attrs['y'])
+        size = 6
         self.validate(svg)
         if self.valid:
             return size, svg.get_text(), x, y
@@ -289,7 +283,6 @@ class Register(Element):
 labels = Collection('label')
 for label in soup.find_all('text'):
     labels.add(Label(label))
-#labels.commit()
 
 # ====================================
 # Find the registers (rectangles)
@@ -320,16 +313,6 @@ for line in soup.find_all('path'):
 buses = Collection('bus')
 count = 0
 print(len(junctions), len(paths))
-# associate labels with paths
-# TODO
-# iterate through labels
-    # iterate through paths
-        # is first segment of path horizontal? (all bus origins should be horizontal coming out of a component)
-            # is label slightly above first segment of path?
-                # associate label and path (label text = id of path?)
-                # break loop (each label should only associate with one path)
-            # else do nothing
-        # else do nothing
 
 # associate path branches and junctions
 for path in paths:
@@ -337,18 +320,18 @@ for path in paths:
     for junction in junctions:
         if Bus.intersection(junction, path):
             path_has_junction = True
-            create_bus = True # max one bus should be created for path/junction pair
+            create_bus = True  # max one bus should be created for path/junction pair
             for bus in buses.elements:
-                if path in bus.paths and junction in bus.junctions: # not sure if necessary? path/junction pairs only appear once, shouldn't already be together
+                if path in bus.paths and junction in bus.junctions:  # not sure if necessary? path/junction pairs only appear once, shouldn't already be together
                     create_bus = False
                 elif path in bus.paths:
-                    bus.junctions.append(junction) # junction not accounted for, add it
+                    bus.junctions.append(junction)  # junction not accounted for, add it
                     create_bus = False
                 elif junction in bus.junctions:
-                    bus.paths.append(path) # path not accounted for, add it
+                    bus.paths.append(path)  # path not accounted for, add it
                     create_bus = False
                 else:
-                    pass # this can be taken out, just for reading clarity
+                    pass  # this can be taken out, just for reading clarity
             if create_bus:
                 buses.add(Bus(junction, path))
     if not path_has_junction:
@@ -364,8 +347,8 @@ for label in labels.elements:
         # iterate through paths in bus
         for path in bus.paths:
             # does path have a label associated with it?
-            if abs(path.points[0].gety() - path.points[1].gety()) < 15: # path is horizontal, most likely comes from a component
-                if label.x > path.points[0].getx()-15 and label.x < path.points[1].getx()+15 and path.points[0].gety() > (label.y-10) and path.points[0].gety() - label.y < 25:
+            if abs(path.points[0].y - path.points[1].y) < 15: # path is horizontal, most likely comes from a component
+                if label.x > path.points[0].x-15 and label.x < path.points[1].x+15 and path.points[0].y > (label.y-10) and path.points[0].y - label.y < 25:
                     # associate label to bus, remove association from path
                     bus.name = label.text
                     bus_named = True

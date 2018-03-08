@@ -1,15 +1,28 @@
 .architecture
   position: absolute
-  left: 5vw
-  width: 90vw
-  height: 90vh
+  width: 100vw
+  height: 100vh
   float: right
-  background: lightgrey
+  background: deepskyblue
   overflow: hidden
+  padding: 15px
   svg
-    background: deepskyblue
     height: 100%
     width: 100%
     -webkit-user-select: none  /* Chrome all / Safari all */
     -moz-user-select: none     /* Firefox all */
     -ms-user-select: none
+
+  button
+    font-size: 16px
+    border-radius: 0
+    border: none
+    position: absolute
+    right: 45px
+    bottom: 45px
+    padding: 15px 50px
+    color: white
+    background-color: #444
+    &:hover
+      color: #444
+      background-color: white

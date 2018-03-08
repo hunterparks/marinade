@@ -19,7 +19,7 @@
       "testTsconfig": "tsconfig.spec.json",
       "prefix": "marinade",
       "styles": [
-        "styles.css"
+        "styles.sass"
       ],
       "scripts": [],
       "environmentSource": "environments/environment.ts",

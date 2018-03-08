@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Host, HostListener } from '@angular/core';
 import { BUSES } from '../../common/simulator/bus/buses.model';
 import { LABELS } from '../../common/simulator/label/labels.model';
 import { MUXES } from '../../common/simulator/mux/muxes.model';
@@ -61,6 +61,7 @@ export class SimulatorComponent {
    * Start tracking the mouse drag motion
    * @param {MouseEvent} event The MouseEvent that caused the click function to fire
    */
+  @HostListener('mousedown', ['$event'])
   public onClick(event: MouseEvent): void {
     // Note the original location of the cursor
     this.mouseStartX = event.x;
@@ -73,6 +74,7 @@ export class SimulatorComponent {
    * Pan the canvas based on the direction of the cursor movements
    * @param {MouseEvent} event The MouseEvent that caused the move function to fire
    */
+  @HostListener('mousemove', ['$event'])
   public onMove(event: MouseEvent): void {
     // If a click is being held
     if (this.tracking) {
@@ -90,6 +92,7 @@ export class SimulatorComponent {
   /**
    * Stop tracking the mouse drag motion
    */
+  @HostListener('mouseup')
   public onRelease(): void {
     // Reset the mouse tracking locations
     this.mouseStartX = 0;
@@ -98,7 +101,13 @@ export class SimulatorComponent {
     this.tracking = false;
   }
 
+  /**
+   * Scales the viewbox using the mousewheel
+   * @param {WheelEvent} event The mousewheel event that called this function
+   */
+  @HostListener('wheel', ['$event'])
   public onWheel(event: WheelEvent): void {
+    // Adjust the scale
     this.scale += event.deltaY / 400;
     if (this.scale < SimulatorComponent.MIN_SCALE) {
       this.scale = SimulatorComponent.MIN_SCALE;
@@ -106,12 +115,16 @@ export class SimulatorComponent {
     if (this.scale > SimulatorComponent.MAX_SCALE) {
       this.scale = SimulatorComponent.MAX_SCALE;
     }
+    // Find the old center
     let oldCenterX: number = this.viewBoxWidth / 2;
     let oldCenterY: number = this.viewBoxHeight / 2;
+    // Adjust the current height
     this.viewBoxHeight = SimulatorComponent.DEFAULT_VIEWBOX_HEIGHT / this.scale;
     this.viewBoxWidth = SimulatorComponent.DEFAULT_VIEWBOX_WIDTH / this.scale;
+    // Find the new center
     let centerX: number = this.viewBoxWidth / 2;
     let centerY: number = this.viewBoxHeight / 2;
+    // Pan the view so it zooms on the center
     this.viewBoxUpperLeftX += oldCenterX - centerX;
     this.viewBoxUpperLeftY += oldCenterY - centerY;
     this.updateViewBox();
