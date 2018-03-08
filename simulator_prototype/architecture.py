@@ -4,8 +4,6 @@ lists as constructed. This object is to be used by the simulator to run the
 processor and should be produced by the configuration parser
 """
 
-# TODO break hook apart into seperate functions
-
 from collections import OrderedDict, Iterable
 
 from components.core.clock import Clock
@@ -113,7 +111,7 @@ class Architecture:
             ret_val.update({name: {'error': 'hook not in architecture'}})
         return ret_val
 
-    def clear(self,message):
+    def clear(self, message):
         "Returns object's messages from hook call"
         ret_val = {}
         if isinstance(message, Iterable) and not isinstance(message, str):
