@@ -364,8 +364,8 @@ for label in labels.elements:
         # iterate through paths in bus
         for path in bus.paths:
             # does path have a label associated with it?
-            if abs(path.points[0].gety() - path.points[1].gety()) < 5: # path is horizontal, most likely comes from a component
-                if label.x > path.points[0].getx()-15 and label.x < path.points[1].getx()+15 and path.points[0].gety() > label.y and path.points[0].gety() - label.y < 25:
+            if abs(path.points[0].gety() - path.points[1].gety()) < 15: # path is horizontal, most likely comes from a component
+                if label.x > path.points[0].getx()-15 and label.x < path.points[1].getx()+15 and path.points[0].gety() > (label.y-10) and path.points[0].gety() - label.y < 25:
                     # associate label to bus, remove association from path
                     bus.name = label.text
                     bus_named = True
