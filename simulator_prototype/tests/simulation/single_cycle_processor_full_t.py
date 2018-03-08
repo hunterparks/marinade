@@ -114,7 +114,7 @@ class SingleCycleProcessor_t(TestFramework, unittest.TestCase):
         self._set_architecture(single_cycle_full.generate_single_cycle_architecture,
                                single_cycle_full.program_single_cycle_architecture)
         self.assertTrue(self._generic_test_procedure(
-            'single_cycle_full', self.demo_program, 'demo_prog', self.msg_inspect))
+            'single_cycle_full', self.demo_program, len(self.demo_program) / 4 + 2, 'demo_prog', self.msg_inspect))
 
     def test_all_instruction_program(self):
         """
@@ -124,7 +124,7 @@ class SingleCycleProcessor_t(TestFramework, unittest.TestCase):
         self._set_architecture(single_cycle_full.generate_single_cycle_architecture,
                                single_cycle_full.program_single_cycle_architecture)
         self.assertTrue(self._generic_test_procedure(
-            'single_cycle_full', self.full_program, 'full_prog', self.msg_inspect))
+            'single_cycle_full', self.full_program, len(self.full_program) / 4 + 2, 'full_prog', self.msg_inspect))
 
 
 if __name__ == '__main__':

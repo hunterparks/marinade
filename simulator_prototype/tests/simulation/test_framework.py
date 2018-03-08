@@ -91,7 +91,7 @@ class TestFramework:
         templatef.close()
         return template.json == test.json
 
-    def _generic_test_procedure(self, filename, program, programname, inspetables):
+    def _generic_test_procedure(self, filename, program, cycles, programname, inspetables):
         """
         General form of complete simulation test procedure.
          1) Runs simulation
@@ -102,7 +102,7 @@ class TestFramework:
 
         resultPath = os.path.dirname(os.path.realpath(__file__)) + '\\results\\'
         resultPath = resultPath + filename + '_result_' + programname
-        self._run_simulation(resultPath, program, 15, inspetables)
+        self._run_simulation(resultPath, program, cycles, inspetables)
 
         # generate results in excel table for tracking
         self._process_json_to_excel(resultPath, inspetables['inspect'])
