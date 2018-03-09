@@ -158,7 +158,7 @@ def generate_single_cycle_architecture():
                                     hooks['regsa'], hooks['ra1'])})
     entities.update({'ra2_mux': Mux(4, [hooks['instr_11_8'], hooks['instr_3_0'],
                                         hooks['instr_15_12']], hooks['regdst'], hooks['ra2'])})
-    entities.update({'ra2_mux': Mux(4, [hooks['instr_11_8'], hooks['instr_15_12']],
+    entities.update({'ra3_mux': Mux(4, [hooks['instr_11_8'], hooks['instr_15_12']],
                                     hooks['regsb'], hooks['ra3'])})
     entities.update({'wa_mux': Mux(4, [hooks['instr_19_16'], hooks['instr_15_12'],
                                        hooks['const14']], hooks['regwrs'], hooks['wa'])})

@@ -102,7 +102,7 @@ class SingleCycleProcessor_t(TestFramework, unittest.TestCase):
             'wdbs',
             'imm32',
             'rd1',
-            'rd2',
+            'rd2'
         ]
     }
 

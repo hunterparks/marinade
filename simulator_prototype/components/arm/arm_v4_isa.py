@@ -117,35 +117,35 @@ def is_multiply(funct, shift):
 
 
 def condition_met(cond, c, v, n, z):
-    if cond == ConditionField.EQ:
+    if cond == ConditionField.EQ.value:
         return z
-    elif cond == ConditionField.NE:
+    elif cond == ConditionField.NE.value:
         return not z
-    elif cond == ConditionField.CS:
+    elif cond == ConditionField.CS.value:
         return c
-    elif cond == ConditionField.CC:
+    elif cond == ConditionField.CC.value:
         return not c
-    elif cond == ConditionField.MI:
+    elif cond == ConditionField.MI.value:
         return n
-    elif cond == ConditionField.PL:
+    elif cond == ConditionField.PL.value:
         return not n
-    elif cond == ConditionField.VS:
+    elif cond == ConditionField.VS.value:
         return v
-    elif cond == ConditionField.VC:
+    elif cond == ConditionField.VC.value:
         return not v
-    elif cond == ConditionField.HI:
+    elif cond == ConditionField.HI.value:
         return c and not z
-    elif cond == ConditionField.LS:
+    elif cond == ConditionField.LS.value:
         return not c or z
-    elif cond == ConditionField.GE:
+    elif cond == ConditionField.GE.value:
         return n == v
-    elif cond == ConditionField.LT:
+    elif cond == ConditionField.LT.value:
         return n != v
-    elif cond == ConditionField.GT:
+    elif cond == ConditionField.GT.value:
         return not z and (n == v)
-    elif cond == ConditionField.LE:
+    elif cond == ConditionField.LE.value:
         return ((z or n) and not v) or (not n and v)
-    elif cond == ConditionField.AL:
+    elif cond == ConditionField.AL.value:
         return True
     else:
         return False
@@ -171,11 +171,11 @@ class ConditionField(Enum):
 
 
 class OpCodes(Enum):
-    DATA_PROCESS = 0b00  # register, immediate, and multiply
-    MEMORY_SINGLE = 0b01  # Read and write
-    MEMORY_MULTIPLE = 0b10  # Access range not supported
-    BRANCH = 0b10  # PC manipulation
-    IGNORE = 0b11  # coprocessor, software interrupt not supported
+    DATA_PROCESS = 0  # register, immediate, and multiply
+    MEMORY_SINGLE = 1  # Read and write
+    MEMORY_MULTIPLE = 2  # Access range not supported
+    BRANCH = 2  # PC manipulation
+    IGNORE = 3  # coprocessor, software interrupt not supported
 
 
 class DataCMDCodes(Enum):

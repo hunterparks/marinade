@@ -170,6 +170,7 @@ class Alu(Combinational):
         elif alus == Alu.ALUS_B_CMD:
             return b
         elif alus == Alu.ALUS_MUL_CMD:
+            print(a,b,a*b)
             return (a * b) & (2**33 - 1)
         elif alus == Alu.ALUS_ADD_W_C_CMD:
             return (a + b + cin) & (2**33 - 1)

@@ -173,9 +173,9 @@ class ControllerSingleCycle(Controller):
         PCSRC <= B"01" for pc+4
         PCSRC <= B"00" for branch instructions where condition is met
         """
-        if op == ISA.OpCodes.BRANCH and conditionMet:
+        if op == ISA.OpCodes.BRANCH.value and conditionMet:
             return 0b00
-        elif op == ISA.OpCodes.DATA_PROCESS and rd == 15:
+        elif op == ISA.OpCodes.DATA_PROCESS.value and rd == 15:
             return 0b10
         else:
             return 0b01
@@ -193,7 +193,7 @@ class ControllerSingleCycle(Controller):
         REGSA <= '1' to select Rn (data processing instructions)
         REGSA <= '0' to select Rn (mul instruction)
         """
-        return not (op == ISA.OpCodes.DATA_PROCESS and ISA.is_multiply(funct,shift))
+        return not (op == ISA.OpCodes.DATA_PROCESS.value and ISA.is_multiply(funct, shift))
 
     @staticmethod
     def _generate_regdst(op, shift, funct):
@@ -202,9 +202,9 @@ class ControllerSingleCycle(Controller):
         REGDST <= B"01" to select Rm (data processing intructions)
         REGDST <= B"00" to select Rm (mul instruction)
         """
-        if op == ISA.OpCodes.MEMORY_SINGLE and not ISA.parse_function_get_l(funct):
+        if op == ISA.OpCodes.MEMORY_SINGLE.value and not ISA.parse_function_get_l(funct):
             return 0b10
-        elif op == ISA.OpCodes.DATA_PROCESS and ISA.is_multiply(funct,shift):
+        elif op == ISA.OpCodes.DATA_PROCESS.value and ISA.is_multiply(funct, shift):
             return 0b00
         else:
             return 0b01
@@ -215,7 +215,7 @@ class ControllerSingleCycle(Controller):
         REGSB <= '1' to select ra for data processing
         REGSB <= '0' to select ra for multiply and accumulate
         """
-        return not (op == ISA.OpCodes.DATA_PROCESS and ISA.is_multiply(funct,shift))
+        return not (op == ISA.OpCodes.DATA_PROCESS.value and ISA.is_multiply(funct, shift))
 
     @staticmethod
     def _generate_regwrs(op, shift, funct):
@@ -224,9 +224,9 @@ class ControllerSingleCycle(Controller):
         REGWRS <= B"01" to select Rd (data processing instruction)
         REGWRS <= B"00" to select Rd (mul instruction)
         """
-        if op == ISA.OpCodes.BRANCH and ISA.parse_function_get_l(funct, True):
+        if op == ISA.OpCodes.BRANCH.value and ISA.parse_function_get_l(funct, True):
             return 0b10
-        elif op == ISA.OpCodes.DATA_PROCESS and ISA.is_multiply(funct,shift):
+        elif op == ISA.OpCodes.DATA_PROCESS.value and ISA.is_multiply(funct, shift):
             return 0b00
         else:
             return 0b01
@@ -243,18 +243,18 @@ class ControllerSingleCycle(Controller):
 
         if rd == 15:  # PC not in register file, use PC path
             return 0b0
-        elif op == ISA.OpCodes.DATA_PROCESS:
-             cmd = ISA.parse_function_get_cmd(funct)
-             if (funct == ISA.DataCMDCodes.TST or
-                 funct == ISA.DataCMDCodes.TEQ or
-                 funct == ISA.DataCMDCodes.CMP or
-                 funct == ISA.DataCMDCodes.CMN):
+        elif op == ISA.OpCodes.DATA_PROCESS.value:
+            cmd = ISA.parse_function_get_cmd(funct)
+            if (funct == ISA.DataCMDCodes.TST.value or
+                funct == ISA.DataCMDCodes.TEQ.value or
+                funct == ISA.DataCMDCodes.CMP.value or
+                    funct == ISA.DataCMDCodes.CMN.value):
                 return 0b0
-             else:
+            else:
                 return 0b1
-        elif op == ISA.OpCodes.MEMORY_SINGLE and not ISA.parse_function_get_l(funct):
+        elif op == ISA.OpCodes.MEMORY_SINGLE.value and not ISA.parse_function_get_l(funct):
             return 0b0
-        elif op == ISA.OpCodes.BRANCH and ISA.parse_function_get_l(funct,True) == 0b0:
+        elif op == ISA.OpCodes.BRANCH.value and ISA.parse_function_get_l(funct, True) == 0b0:
             return 0b0
         else:
             return 0b1
@@ -266,9 +266,9 @@ class ControllerSingleCycle(Controller):
         EXTS <= B"01" for 12-bit immediate (ldr and str instructions)
         EXTS <= B"10" for branch instruction
         """
-        if op == ISA.OpCodes.BRANCH:
+        if op == ISA.OpCodes.BRANCH.value:
             return 0b10
-        elif op == ISA.OpCodes.MEMORY_SINGLE and not ISA.parse_function_get_i(funct):
+        elif op == ISA.OpCodes.MEMORY_SINGLE.value and not ISA.parse_function_get_i(funct):
             return 0b01
         else:
             return 0b00
@@ -280,9 +280,9 @@ class ControllerSingleCycle(Controller):
              processing instructions)
         ALUSRCB <= '0' when source B requires an extended immediate
         """
-        if op == ISA.OpCodes.MEMORY_SINGLE and ISA.parse_function_get_i(funct):
+        if op == ISA.OpCodes.MEMORY_SINGLE.value and ISA.parse_function_get_i(funct):
             return 0b1
-        elif op == ISA.OpCodes.DATA_PROCESS and not ISA.parse_function_get_i(funct):
+        elif op == ISA.OpCodes.DATA_PROCESS.value and not ISA.parse_function_get_i(funct):
             return 0b1
         else:
             return 0b0
@@ -307,49 +307,49 @@ class ControllerSingleCycle(Controller):
         ALUS <= "1110" for 0
         ALUS <= "1111" for 1
         """
-        if op == ISA.OpCodes.DATA_PROCESS:
-            if ISA.is_multiply(funct,shift):
+        if op == ISA.OpCodes.DATA_PROCESS.value:
+            if ISA.is_multiply(funct, shift):
                 return 0b0111
 
             cmd = ISA.parse_function_get_cmd(funct)
-            if cmd == ISA.DataCMDCodes.AND:
+            if cmd == ISA.DataCMDCodes.AND.value:
                 return 0b0010
-            elif cmd == ISA.DataCMDCodes.EOR:
+            elif cmd == ISA.DataCMDCodes.EOR.value:
                 return 0b0100
-            elif cmd == ISA.DataCMDCodes.SUB:
+            elif cmd == ISA.DataCMDCodes.SUB.value:
                 return 0b0001
-            elif cmd == ISA.DataCMDCodes.RSB:
+            elif cmd == ISA.DataCMDCodes.RSB.value:
                 return 0b1010
-            elif cmd == ISA.DataCMDCodes.ADD:
+            elif cmd == ISA.DataCMDCodes.ADD.value:
                 return 0b0000
-            elif cmd == ISA.DataCMDCodes.ADC:
+            elif cmd == ISA.DataCMDCodes.ADC.value:
                 return 0b1000
-            elif cmd == ISA.DataCMDCodes.SBC:
+            elif cmd == ISA.DataCMDCodes.SBC.value:
                 return 0b1001
-            elif cmd == ISA.DataCMDCodes.RSC:
+            elif cmd == ISA.DataCMDCodes.RSC.value:
                 return 0b1011
-            elif cmd == ISA.DataCMDCodes.TST:
+            elif cmd == ISA.DataCMDCodes.TST.value:
                 return 0b0010
-            elif cmd == ISA.DataCMDCodes.TEQ:
+            elif cmd == ISA.DataCMDCodes.TEQ.value:
                 return 0b0100
-            elif cmd == ISA.DataCMDCodes.CMP:
+            elif cmd == ISA.DataCMDCodes.CMP.value:
                 return 0b0001
-            elif cmd == ISA.DataCMDCodes.CMN:
+            elif cmd == ISA.DataCMDCodes.CMN.value:
                 return 0b0000
-            elif cmd == ISA.DataCMDCodes.ORR:
+            elif cmd == ISA.DataCMDCodes.ORR.value:
                 return 0b0011
-            elif cmd == ISA.DataCMDCodes.MOV:
+            elif cmd == ISA.DataCMDCodes.MOV.value:
                 return 0b0110
-            elif cmd == ISA.DataCMDCodes.BIC:
+            elif cmd == ISA.DataCMDCodes.BIC.value:
                 return 0b1100
-            elif cmd == ISA.DataCMDCodes.MVN:
+            elif cmd == ISA.DataCMDCodes.MVN.value:
                 return 0b1101
             else:
                 return 0b1111
-        elif op == ISA.OpCodes.MEMORY_SINGLE:
-            if ISA.parse_function_get_p(funct): #pre-index
+        elif op == ISA.OpCodes.MEMORY_SINGLE.value:
+            if ISA.parse_function_get_p(funct):  # pre-index
                 return 0b0000 if ISA.parse_function_get_u(funct) else 0b0001
-            else: #post-index not supported, just pass A
+            else:  # post-index not supported, just pass A
                 return 0b0101
         else:
             return 0b1111
@@ -369,9 +369,9 @@ class ControllerSingleCycle(Controller):
         SHCTRL <= '10' diabled
         SHCTRL <= '11' enabled shift using register ra for data processing instruction
         """
-        if op == ISA.OpCodes.DATA_PROCESS and not ISA.is_multiply(funct,shift):
+        if op == ISA.OpCodes.DATA_PROCESS.value and not ISA.is_multiply(funct, shift):
             return (ISA.parse_shift_operand_get_roi(shift) << 1) | 1
-        elif op == ISA.OpCodes.MEMORY_SINGLE and ISA.parse_function_get_i(funct):
+        elif op == ISA.OpCodes.MEMORY_SINGLE.value and ISA.parse_function_get_i(funct):
             return (ISA.parse_shift_operand_get_roi(shift) << 1) | 1
         else:
             return 0b00
@@ -382,7 +382,7 @@ class ControllerSingleCycle(Controller):
         ACCEN <= '1' when accumulate set in multiply instruction (MLA)
         ACCEN <= '0' otherwise
         """
-        if op == ISA.OpCodes.DATA_PROCESS and ISA.is_multiply(funct,shift):
+        if op == ISA.OpCodes.DATA_PROCESS.value and ISA.is_multiply(funct, shift):
             return ISA.parse_function_get_a(funct)
         else:
             return 0b0
@@ -394,11 +394,12 @@ class ControllerSingleCycle(Controller):
         ALUFLAGWR <= '0' flags will not be set
         """
         cmd = ISA.parse_function_get_cmd(funct)
-        if op == ISA.OpCodes.DATA_PROCESS and (cmd == ISA.DataCMDCodes.TST or
-           cmd == ISA.DataCMDCodes.TEQ or cmd == ISA.DataCMDCodes.CMP or
-           cmd == ISA.DataCMDCodes.CMN):
+        if op == ISA.OpCodes.DATA_PROCESS.value and (cmd == ISA.DataCMDCodes.TST.value or
+                                                     cmd == ISA.DataCMDCodes.TEQ.value or
+                                                     cmd == ISA.DataCMDCodes.CMP.value or
+                                                     cmd == ISA.DataCMDCodes.CMN.value):
             return 0b1
-        elif op == ISA.OpCodes.DATA_PROCESS and ISA.parse_function_get_s(funct):
+        elif op == ISA.OpCodes.DATA_PROCESS.value and ISA.parse_function_get_s(funct):
             return 0b1
         else:
             return 0b0
@@ -411,7 +412,7 @@ class ControllerSingleCycle(Controller):
         MEM_TY <= "10" --ignore
         MEM_TY <= "11" to read in word mode
         """
-        if op == ISA.OpCodes.MEMORY_SINGLE:
+        if op == ISA.OpCodes.MEMORY_SINGLE.value:
             return 0b01 if ISA.parse_function_get_b(funct) else 0b11
         else:
             return 0b11
@@ -426,7 +427,7 @@ class ControllerSingleCycle(Controller):
         if not conditionMet:
             return 0b0
 
-        if op == ISA.OpCodes.MEMORY_SINGLE and not ISA.parse_function_get_l(funct):
+        if op == ISA.OpCodes.MEMORY_SINGLE.value and not ISA.parse_function_get_l(funct):
             return 0b1
         else:
             return 0b0
@@ -437,7 +438,7 @@ class ControllerSingleCycle(Controller):
         REGSRC <= '1' when output of ALU is feedback (ldr instructions)
         REGSRC <= '0' when output of data mem is feedback
         """
-        if op == ISA.OpCodes.MEMORY_SINGLE and ISA.parse_function_get_l(funct):
+        if op == ISA.OpCodes.MEMORY_SINGLE.value and ISA.parse_function_get_l(funct):
             return 0b0
         else:
             return 0b1
@@ -447,7 +448,7 @@ class ControllerSingleCycle(Controller):
         """
         WDS3 <= '1' when a bl instruction is run else '0'
         """
-        return op == ISA.OpCodes.BRANCH and ISA.parse_function_get_l(funct,True)
+        return op == ISA.OpCodes.BRANCH.value and ISA.parse_function_get_l(funct, True)
 
     def run(self, time=None):
         "Runs a timestep of controller, assert control signals on each"
@@ -459,9 +460,30 @@ class ControllerSingleCycle(Controller):
 
         # parse instruction general
         instr = self._instr.read()
-        conditionMet = ISA.condition_met(ISA.get_condition(instr),c,v,n,z)
+        conditionMet = ISA.condition_met(ISA.get_condition(instr), c, v, n, z)
         operation = ISA.get_opcode(instr)
-        fuction = ISA.get_function(instr)
+        function = ISA.get_function(instr)
+        shift = ISA.get_shift_operand(instr)
+        rd = ISA.get_rd(instr, ISA.is_multiply(function, shift))
+
+        self._pcsrc.write(self._generate_pcsrc(conditionMet, operation, rd))
+        self._pcwr.write(self._generate_pcwr())
+        self._regsa.write(self._generate_regsa(operation, shift, function))
+        self._regdst.write(self._generate_regdst(operation, shift, function))
+        self._regsb.write(self._generate_regsb(operation, shift, function))
+        self._regwrs.write(self._generate_regwrs(operation, shift, function))
+        self._regwr.write(self._generate_regwr(conditionMet, operation, function, rd))
+        self._exts.write(self._generate_exts(operation, function))
+        self._alusrcb.write(self._generate_alusrcb(operation, function))
+        self._alus.write(self._generate_alus(operation, function, shift))
+        self._shop.write(self._generate_shop(shift))
+        self._shctrl.write(self._generate_shctrl(operation, function, shift))
+        self._accen.write(self._generate_accen(operation, function, shift))
+        self._aluflagwr.write(self._generate_aluflagwr(operation, function))
+        self._memty.write(self._generate_memty(operation, function))
+        self._memwr.write(self._generate_memwr(conditionMet, operation, function))
+        self._regsrc.write(self._generate_regsrc(operation, function))
+        self._wd3s.write(self._generate_wd3s(operation, function))
 
     def inspect(self):
         "Return message noting that this controller does not contain state"
