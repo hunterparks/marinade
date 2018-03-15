@@ -30,8 +30,6 @@ export class AppComponent {
     // }, 1000)
   }
 
-
-
   public onChange(): void {
     /* tslint:disable-next-line: no-console */ // Todo: Remove this output
     // console.log(this.formula);

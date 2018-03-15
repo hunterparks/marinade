@@ -8,7 +8,7 @@ import re
 current_directory = os.path.dirname(__file__)
 base_output_file = os.path.join(current_directory, '../../src/app/components/common/simulator')
 
-input_file = open('/Users/alex/Downloads/pipeline_architecture_v5.svg', 'r')
+input_file = open('/Users/alex/Downloads/pipeline_architecture (6).svg', 'r')
 
 # Read the input file and set up beautifulsoup
 input_text = ''

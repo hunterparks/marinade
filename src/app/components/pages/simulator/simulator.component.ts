@@ -1,4 +1,5 @@
 import { Component, Host, HostListener } from '@angular/core';
+import { TooltipService } from '../../../services/tooltip/tooltip.service';
 import { BUSES } from '../../common/simulator/bus/buses.model';
 import { LABELS } from '../../common/simulator/label/labels.model';
 import { MUXES } from '../../common/simulator/mux/muxes.model';
@@ -35,6 +36,8 @@ export class SimulatorComponent {
 
   public scale: number = 1;
   public viewBox: string = '0 0 1600 900';
+
+  constructor(private tooltipService: TooltipService) {}
 
   private updateViewBox(): void {
     // Bound the architecture on the left
@@ -78,6 +81,10 @@ export class SimulatorComponent {
   public onMove(event: MouseEvent): void {
     // If a click is being held
     if (this.tracking) {
+      this.tooltipService.tooltips.forEach((tooltip: any) => {
+        tooltip.x.next(tooltip.x.getValue() + (event.x - this.mouseStartX) / this.scale);
+        tooltip.y.next(tooltip.y.getValue() + (event.y - this.mouseStartY) / this.scale);
+      });
       // Adjust the top left corner (origin point) based on the location deltas and the scale
       this.viewBoxUpperLeftX = this.viewBoxUpperLeftX - (event.x - this.mouseStartX) / this.scale;
       this.viewBoxUpperLeftY = this.viewBoxUpperLeftY - (event.y - this.mouseStartY) / this.scale;
@@ -107,6 +114,7 @@ export class SimulatorComponent {
    */
   @HostListener('wheel', ['$event'])
   public onWheel(event: WheelEvent): void {
+    // TODO scaling for tooltips
     // Adjust the scale
     this.scale += event.deltaY / 400;
     if (this.scale < SimulatorComponent.MIN_SCALE) {
