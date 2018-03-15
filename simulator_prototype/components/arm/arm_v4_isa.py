@@ -10,22 +10,38 @@ from enum import Enum
 
 
 def get_condition(instr):
+    """
+    Returns condition sub-field from instruction
+    """
     return (instr & 0xF0000000) >> 28
 
 
 def get_opcode(instr):
+    """
+    Returns opcode sub-field from instruction
+    """
     return (instr & 0x0C000000) >> 26
 
 
 def get_function(instr):
+    """
+    Returns function sub-field from instruction
+    """
     return (instr & 0x03F00000) >> 20
 
 
 def parse_function_get_i(funct):
+    """
+    Returns I bit from instructions, determines 2nd operand as immediate or register
+    """
     return (funct & 0b100000) >> 5
 
 
 def parse_function_get_cmd(funct, alt=False):
+    """
+    Returns cmd sub-field from function sub-field
+        alt is branch instruction and memory single instruction
+    """
     if alt:
         return (funct & 0b001110) >> 1
     else:
@@ -33,26 +49,45 @@ def parse_function_get_cmd(funct, alt=False):
 
 
 def parse_function_get_s(funct):
+    """
+    Returns S bit from supported function sub-fields to save ALU flags
+    """
     return (funct & 0b000001) >> 0  # aluflag save
 
 
 def parse_function_get_p(funct):
+    """
+    Returns P bit from memory access sub-field
+    """
     return (funct & 0b010000) >> 4  # pre/post indexing bit 1 = pre
 
 
 def parse_function_get_u(funct):
+    """
+    Returns U bit from memory access sub-field
+    """
     return (funct & 0b001000) >> 3  # up/down bit (offset modification) 1 = up
 
 
 def parse_function_get_b(funct):
+    """
+    Returns B bit from memory access sub-field
+    """
     return (funct & 0b000100) >> 2  # unsigned byte is 1 else word
 
 
 def parse_function_get_w(funct):
+    """
+    Returns W bit from memory access sub-field
+    """
     return (funct & 0b000010) >> 1  # write-back to base
 
 
 def parse_function_get_l(funct, alt=False):
+    """
+    Returns L bit from memory access or branch function sub-field
+        alt is branch instruction
+    """
     if alt:
         return (funct & 0b010000) >> 4  # link
     else:
@@ -60,10 +95,17 @@ def parse_function_get_l(funct, alt=False):
 
 
 def parse_function_get_a(funct):
+    """
+    Returns A bit from memory access sub-field
+    """
     return (funct & 0b000010) >> 1
 
 
 def get_rn(instr, alt=False):
+    """
+    Returns the RN register sub-field from instruction
+        alt means that instruction is multiply
+    """
     if alt:
         return (instr & 0x0000000F) >> 0
     else:
@@ -71,6 +113,10 @@ def get_rn(instr, alt=False):
 
 
 def get_rd(instr, alt=False):
+    """
+    Returns the RD register sub-field from instruction
+        alt means that instruction is multiply
+    """
     if alt:
         return (instr & 0x000F0000) >> 16
     else:
@@ -78,6 +124,10 @@ def get_rd(instr, alt=False):
 
 
 def get_rm(instr, alt=False):
+    """
+    Returns the RM register sub-field from instruction
+        alt means that instruction is multiply
+    """
     if alt:
         return (instr & 0x00000F00) >> 8
     else:
@@ -85,6 +135,10 @@ def get_rm(instr, alt=False):
 
 
 def get_ra(instr, alt=False):
+    """
+    Returns the RA register sub-field from instruction
+        alt means that instruction is multiply
+    """
     if alt:
         return (instr & 0x0000F000) >> 12
     else:
@@ -92,22 +146,38 @@ def get_ra(instr, alt=False):
 
 
 def get_shift_operand(instr):
+    """
+    Returns the shift operand sub-field for parsing
+    """
     return (instr & 0x00000FF0) >> 4
 
 
 def parse_shift_operand_get_roi(shift):
+    """
+    Returns whether the shift operand is register or immediate
+    """
     return (shift & 0x01) >> 0
 
 
 def parse_shift_operand_get_type(shift):
+    """
+    Returns shift operation to perform
+    """
     return (shift & 0x06) >> 1
 
 
 def parse_shift_operand_get_reg_fill(shift):
+    """
+    Returns the fill value for using a register shift (determines validity)
+    """
     return (shift & 0x08) >> 3
 
 
 def is_multiply(funct, shift):
+    """
+    Determines whether the funtion is a multiply instruction
+    Returns boolean
+    """
     if parse_function_get_cmd(funct) & 0xE or parse_function_get_i(funct):
         return False
     elif parse_shift_operand_get_roi(shift) and parse_shift_operand_get_reg_fill(shift):
@@ -117,6 +187,10 @@ def is_multiply(funct, shift):
 
 
 def condition_met(cond, c, v, n, z):
+    """
+    Determines whether the given condition was met according to ALU flag.
+    Returns boolean
+    """
     if cond == ConditionField.EQ.value:
         return z
     elif cond == ConditionField.NE.value:
@@ -152,6 +226,9 @@ def condition_met(cond, c, v, n, z):
 
 
 class ConditionField(Enum):
+    """
+    Defines conditions on instruction
+    """
     EQ = 0b0000  # Z set (equal)
     NE = 0b0001  # Z clear (not equal)
     CS = 0b0010  # C set (unsigned higher or same)
@@ -171,6 +248,9 @@ class ConditionField(Enum):
 
 
 class OpCodes(Enum):
+    """
+    Defines instruction classes
+    """
     DATA_PROCESS = 0  # register, immediate, and multiply
     MEMORY_SINGLE = 1  # Read and write
     MEMORY_MULTIPLE = 2  # Access range not supported
@@ -179,6 +259,9 @@ class OpCodes(Enum):
 
 
 class DataCMDCodes(Enum):
+    """
+    Defines Data Processing Operations
+    """
     AND = 0b0000  # and
     EOR = 0b0001  # exculsive or
     SUB = 0b0010  # subtract
@@ -198,6 +281,9 @@ class DataCMDCodes(Enum):
 
 
 class ShiftType(Enum):
+    """
+    Defines Shifting Operations
+    """
     LL = 0b00  # logical left shift
     LR = 0b01  # logical right shift
     AR = 0b10  # arithmetic right shift
