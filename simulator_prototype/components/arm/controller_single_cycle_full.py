@@ -245,10 +245,10 @@ class ControllerSingleCycle(Controller):
             return 0b0
         elif op == ISA.OpCodes.DATA_PROCESS.value:
             cmd = ISA.parse_function_get_cmd(funct)
-            if (funct == ISA.DataCMDCodes.TST.value or
-                funct == ISA.DataCMDCodes.TEQ.value or
-                funct == ISA.DataCMDCodes.CMP.value or
-                    funct == ISA.DataCMDCodes.CMN.value):
+            if (cmd == ISA.DataCMDCodes.TST.value or
+                cmd == ISA.DataCMDCodes.TEQ.value or
+                cmd == ISA.DataCMDCodes.CMP.value or
+                cmd == ISA.DataCMDCodes.CMN.value):
                 return 0b0
             else:
                 return 0b1

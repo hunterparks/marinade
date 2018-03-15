@@ -122,6 +122,14 @@ class Alu_t(unittest.TestCase):
         test_alu.run()
         self.assertEqual(f.read(),0xF0000000)
 
+        a.write(0)
+        b.write(4)
+        alus.write(6)
+        shift.write(3)
+        shiftOp.write(3)
+        shiftCtrl.write(1)
+        test_alu.run()
+        self.assertEqual(f.read(),0x80000000)
 
 
         #test shifter left logical register

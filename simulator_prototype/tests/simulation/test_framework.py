@@ -89,7 +89,8 @@ class TestFramework:
         template = tablib.Dataset().load(templatef.read())
         testf.close()
         templatef.close()
-        return template.json == test.json
+
+        return test.csv == template.csv
 
     def _generic_test_procedure(self, filename, program, cycles, programname, inspetables):
         """
