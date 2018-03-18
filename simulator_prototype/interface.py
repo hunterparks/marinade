@@ -81,7 +81,7 @@ class Interface:
                 0xEA, 0xFF, 0xFF, 0xFD
             ]
 
-            return arch.hook({'modify':{'name':msg['memory'],'parameters':{'start':0,'data':program}}})
+            return self.arch.hook({'modify':{'name':msg['memory'],'parameters':{'start':0,'data':program}}})
         else:
             return {'status': False, 'error': 'architecture needs to be loaded'}
 
