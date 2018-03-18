@@ -7,14 +7,13 @@ class Exmem(Sequential):
     This specialized register sits between the decode and execute stages of the
     processor
     """
-    def __init__(self, pcsrce, regwrse, regwre, memwre, regsrce, wd3se, rd2e, fe, ra3e, clk,
-                 pcsrcm, regwrsm, regwrm, memwrm, regsrcm, wd3sm, fm, rd2m, ra3m,
+    def __init__(self, pc4e, regwre, memwre, regsrce, wd3se, rd2e, fe, ra3e, clk,
+                 pc4m, regwrm, memwrm, regsrcm, wd3sm, fm, rd2m, ra3m,
                  edge_type=Latch_Type.RISING_EDGE, enable=None,
                  enable_type=Logic_States.ACTIVE_HIGH):
         """
         inputs:
-            pcsrce: selects the instruction given to the fetch stage
-            regwrse: selects which register is passed into input a2 of the regfile
+            pc4e: pc+4
             regwre: selects whether to write back to the refile
             memwre: selects whether to write to memory
             regsrce: selects whether a alu output or memory is feedback
@@ -25,28 +24,23 @@ class Exmem(Sequential):
             clk: clock
             enable: enables component (not typically used)
         outputs:
-            pcsrce: selects the instruction given to the fetch stage
-            regwrse: selects which register is passed into input a2 of the regfile
-            regwre: selects whether to write back to the refile
-            memwre: selects whether to write to memory
-            regsrce: selects whether a alu output or memory is feedback
-            wd3se: selects what data to write to the regfile
-            rd2e: register value
-            fe: output of execute stage
-            ra3e: register number
+            pc4m: pc+4
+            regwrm: selects whether to write back to the refile
+            memwrm: selects whether to write to memory
+            regsrcm: selects whether a alu output or memory is feedback
+            wd3sm: selects what data to write to the regfile
+            rd2m: register value
+            fm: output of execute stage
+            ra3m: register number
 
         enable_type: exmem register data latch type
         enable_type: enable signal active state
         """
 
-        if not isinstance(pcsrce, iBusRead):
-            raise TypeError('The pcsrce bus must be readable')
-        elif pcsrce.size() != 2:
-            raise ValueError('The pcsrce bus must have a size of 2 bits')
-        if not isinstance(regwrse, iBusRead):
-            raise TypeError('The regwrse bus must be readable')
-        elif regwrse.size() != 2:
-            raise ValueError('The regwrs bus must have a size of 2 bits')
+        if not isinstance(pc4e, iBusRead):
+            raise TypeError('The pc4e bus must be readable')
+        elif pc4e.size() != 32:
+            raise ValueError('The pc4e bus must have a size of 32 bits')
         if not isinstance(regwre, iBusRead):
             raise TypeError('The regwre bus must be readable')
         elif regwre.size() != 1:
@@ -79,14 +73,10 @@ class Exmem(Sequential):
             raise TypeError('The clk bus must be readable')
         elif clk.size() != 1:
             raise ValueError('The clk bus must have a size of 1 bit')
-        if not isinstance(pcsrcm, iBusWrite):
-            raise TypeError('The pcsrcm bus must be writable')
-        elif pcsrcm.size() != 2:
-            raise ValueError('The pcsrcm bus must have a size of 2 bits')
-        if not isinstance(regwrsm, iBusWrite):
-            raise TypeError('The regwrsm bus must be readable')
-        elif regwrsm.size() != 2:
-            raise ValueError('The regwrsm bus must have a size of 2 bits')
+        if not isinstance(pc4m, iBusWrite):
+            raise TypeError('The pc4m bus must be writable')
+        elif pc4m.size() != 32:
+            raise ValueError('The pc4m bus must have a size of 32 bits')
         if not isinstance(regwrm, iBusWrite):
             raise TypeError('The regwrm bus must be writable')
         elif regwrm.size() != 1:
@@ -124,8 +114,7 @@ class Exmem(Sequential):
         if not Logic_States.valid(enable_type):
             raise ValueError('Invalid enable state')
 
-        self._pcsrce = pcsrce
-        self._regwrse = regwrse
+        self._pc4e = pc4e
         self._regwre = regwre
         self._memwre = memwre
         self._regsrce = regsrce
@@ -135,8 +124,7 @@ class Exmem(Sequential):
         self._ra3e = ra3e
         self._clk = clk
         self._prev_clk_state = self._clk.read()
-        self._pcsrcm = pcsrcm
-        self._regwrsm = regwrsm
+        self._pc4m = pc4m
         self._regwrm = regwrm
         self._memwrm = memwrm
         self._regsrcm = regsrcm
@@ -148,7 +136,7 @@ class Exmem(Sequential):
         self._enable = enable
         self._enable_type = enable_type
 
-        self._state = ExmemState(self._pcsrcm, self._regwrsm, self._regwrm, self._memwrm, 
+        self._state = ExmemState(self._pc4m, self._regwrm, self._memwrm, 
                                 self._regsrcm, self._wd3sm, self._fm, self._rd2m, self._ra3m)
 
 
@@ -157,8 +145,7 @@ class Exmem(Sequential):
         Implements clock rising behavior: captures data if latch type matches
         """
         if self._edge_type == Latch_Type.RISING_EDGE or self._edge_type == Latch_Type.BOTH_EDGE:
-            self._pcsrcm.write(self._pcsrce.read())
-            self._regwrsm.write(self._regwrse.read())
+            self._pc4m.write(self._pc4e.read())
             self._regwrm.write(self._regwre.read())
             self._memwrm.write(self._memwre.read())
             self._regsrcm.write(self._regsrce.read())
@@ -173,8 +160,7 @@ class Exmem(Sequential):
         """
 
         if self._edge_type == Latch_Type.FALLING_EDGE or self._edge_type == Latch_Type.BOTH_EDGE:
-            self._pcsrcm.write(self._pcsrce.read())
-            self._regwrsm.write(self._regwrse.read())
+            self._pc4m.write(self._pc4e.read())
             self._regwrm.write(self._regwre.read())
             self._memwrm.write(self._memwre.read())
             self._regsrcm.write(self._regsrce.read())
@@ -230,9 +216,8 @@ class ExmemState():
     Note: Do not make new instances of this class outside of the Exmem class
     """
 
-    def __init__(self, pcsrcm, regwrsm, regwrm, memwrm, regsrcm, wd3sm, fm, rd2m, ra3m):
-        self._pcsrcm = pcsrcm
-        self._regwrsm = regwrsm
+    def __init__(self, pc4m, regwrm, memwrm, regsrcm, wd3sm, fm, rd2m, ra3m):
+        self._pc4m = pc4m
         self._regwrm = regwrm
         self._memwrm = memwrm
         self._regsrcm = regsrcm
@@ -243,7 +228,7 @@ class ExmemState():
 
 
     def get_state(self):
-        return {'pcsrcm': self._pcsrcm.read(), 'regwrsm': self._regwrsm.read(),
+        return {'pcsrcm': self._pc4m.read(),
                 'regwrem': self._regwrm.read(), 'memwrm': self._memwrm.read(),
                 'regsrcm': self._regsrcm.read(), 'wd3sm': self._wd3sm.read(),
                 'fm': self._fm.read(), 'rd2m': self._rd2m.read(),

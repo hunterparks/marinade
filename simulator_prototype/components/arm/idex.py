@@ -7,16 +7,15 @@ class Idex(Sequential):
     This specialized register sits between the decode and execute stages of the processor
     """
 
-    def __init__(self, pcsrcd, regwrsd, regwrd, alusrcbd, alusd, aluflagwrd,
+    def __init__(self, pc4d, regwrd, alusrcbd, alusd, aluflagwrd,
                  memwrd, regsrcd, wd3sd, rd1d, rd2d, imm32d, ra1d, ra2d, ra3d,
-                 flush, clk, pcsrce, regwrse, regwre, alusrcbe, aluse, aluflagwre,
+                 flush, clk, pc4e, regwre, alusrcbe, aluse, aluflagwre,
                  memwre, regsrce, wd3se, rd1e, rd2e, imm32e, ra1e, ra2e, ra3e,
                  edge_type=Latch_Type.RISING_EDGE, flush_type=Logic_States.ACTIVE_HIGH,
                  enable=None, enable_type=Logic_States.ACTIVE_HIGH):
         """
         inputs:
-            pcsrcd: selects the next instruction given to the fetch stage
-            regwrsd: selects which register is passed into input a2 of the regfile
+            pc4d: pc+4
             regwrd: selects whether to write back to the regfile
             alusrcbd: selects what value input B of the alu recieves
             alusd: selects the operation of the alu
@@ -34,8 +33,7 @@ class Idex(Sequential):
             clk: clock
             enable: enables component (not typically used)
         outputs:
-            pcsrce: selects the next instruction given to the fetch stage
-            regwrse: selects which register is passed into input a2 of the regfile
+            pc4e: pc+4
             regwre: selects whether to write back to the regfile
             alusrcbe: selects what value input B of the alu recieves
             aluse: selects the operation of the alu
@@ -55,14 +53,10 @@ class Idex(Sequential):
         enable_type: enable signal active state
         """
 
-        if not isinstance(pcsrcd, iBusRead):
-            raise TypeError('The pcsrcd bus must be readable')
-        elif pcsrcd.size() != 2:
-            raise ValueError('The pcsrcd bus must have a size of 2 bits')
-        if not isinstance(regwrsd, iBusRead):
-            raise TypeError('The regwrsd bus must be readable')
-        elif regwrsd.size() != 2:
-            raise ValueError('The regwrsd bus must have a size of 2 bits')
+        if not isinstance(pc4d, iBusRead):
+            raise TypeError('The pc4d bus must be readable')
+        elif pc4d.size() != 32:
+            raise ValueError('The pc4d bus must have a size of 32 bits')
         if not isinstance(regwrd, iBusRead):
             raise TypeError('The regwrd bus must be readable')
         elif regwrd.size() != 1:
@@ -123,14 +117,10 @@ class Idex(Sequential):
             raise TypeError('The clk bus must be readable')
         elif clk.size() != 1:
             raise ValueError('The clk must have a size of 1 bit')
-        if not isinstance(pcsrce, iBusRead):
-            raise TypeError('The pcsrce bus must be writable')
-        elif pcsrce.size() != 2:
-            raise ValueError('The pcsrce bus must have a size of 2 bits')
-        if not isinstance(regwrse, iBusWrite):
-            raise TypeError('The regwrse bus must be writable')
-        elif regwrse.size() != 2:
-            raise ValueError('The regwrse bus must have a size of 2 bits')
+        if not isinstance(pc4e, iBusRead):
+            raise TypeError('The pc4e bus must be readable')
+        elif pc4e.size() != 32:
+            raise ValueError('The pc4e bus must have a size of 32 bits')
         if not isinstance(regwre, iBusWrite):
             raise TypeError('The regwre bus must be writable')
         elif regwre.size() != 1:
@@ -194,8 +184,7 @@ class Idex(Sequential):
         if not Logic_States.valid(enable_type):
             raise ValueError('Invalid enable state')
 
-        self._pcsrcd = pcsrcd
-        self._regwrsd = regwrsd
+        self._pc4d = pc4d
         self._regwrd = regwrd
         self._alusrcbd = alusrcbd
         self._alusd = alusd
@@ -212,9 +201,8 @@ class Idex(Sequential):
         self._flush = flush
         self._clk = clk
         self._prev_clk_state = self._clk.read()
-        self._pcsrce = pcsrce
+        self._pc4e = pc4e
         self._regwre = regwre
-        self._regwrse = regwrse
         self._alusrcbe = alusrcbe
         self._aluse = aluse
         self._aluflagwre = aluflagwre
@@ -232,7 +220,7 @@ class Idex(Sequential):
         self._enable = enable
         self._enable_type = enable_type
 
-        self._state = IdexState(self._pcsrce, self._regwrse, self._regwre, self._alusrcbe, 
+        self._state = IdexState(self._pc4e, self._regwre, self._alusrcbe, 
                                 self._aluse, self._aluflagwre, self._memwre, self._regsrce, 
                                 self._wd3se, self._rd1e, self._rd2e, self._imm32e, self._ra1e,
                                 self._ra2e, self._ra3e)
@@ -245,8 +233,7 @@ class Idex(Sequential):
         if self._edge_type == Latch_Type.RISING_EDGE or self._edge_type == Latch_Type.BOTH_EDGE:
             if ((self._flush_type == Logic_States.ACTIVE_LOW and self._flush.read() == 0)
                     or (self._flush_type == Logic_States.ACTIVE_HIGH and self._flush.read() == 1)):
-                self._pcsrce.write(0)
-                self._regwrse.write(0)
+                self._pc4e.write(0)
                 self._regwre.write(0)
                 self._alusrcbe.write(0)
                 self._aluse.write(0)
@@ -261,8 +248,7 @@ class Idex(Sequential):
                 self._ra2e.write(0)
                 self._ra3e.write(0)
             else:
-                self._pcsrce.write(self._pcsrcd.read())
-                self._regwrse.write(self._regwrsd.read())
+                self._pc4e.write(self._pc4d.read())
                 self._regwre.write(self._regwrd.read())
                 self._alusrcbe.write(self._alusrcbd.read())
                 self._aluse.write(self._alusd.read())
@@ -284,8 +270,7 @@ class Idex(Sequential):
         if self._edge_type == Latch_Type.FALLING_EDGE or self._edge_type == Latch_Type.BOTH_EDGE:
             if ((self._flush_type == Logic_States.ACTIVE_LOW and self._flush.read() == 0)
                     or (self._flush_type == Logic_States.ACTIVE_HIGH and self._flush.read() == 1)):
-                self._pcsrce.write(0)
-                self._regwrse.write(0)
+                self._pc4e.write(0)
                 self._regwre.write(0)
                 self._alusrcbe.write(0)
                 self._aluse.write(0)
@@ -300,8 +285,7 @@ class Idex(Sequential):
                 self._ra2e.write(0)
                 self._ra3e.write(0)
             else:
-                self._pcsrce.write(self._pcsrcd.read())
-                self._regwrse.write(self._regwrsd.read())
+                self._pc4e.write(self._pc4d.read())
                 self._regwre.write(self._regwrd.read())
                 self._alusrcbe.write(self._alusrcbd.read())
                 self._aluse.write(self._alusd.read())
@@ -369,10 +353,9 @@ class IdexState():
     Note: Do not make new instances of this class outside of the Idex class
     """
 
-    def __init__(self, pcsrce, regwrse, regwre, alusrcbe, aluse, aluflagwre, memwre, regsrce,
+    def __init__(self, pc4e, regwre, alusrcbe, aluse, aluflagwre, memwre, regsrce,
                 wd3se, rd1e, rd2e, imm32e, ra1e, ra2e, ra3e):
-        self._pcsrce = pcsrce
-        self._regwrse = regwrse
+        self._pc4e = pc4e
         self._regwre = regwre
         self._alusrcbe = alusrcbe
         self._aluse = aluse
@@ -388,7 +371,7 @@ class IdexState():
         self._ra3e = ra3e
 
     def get_state(self):
-        return {'pcsrce': self._pcsrce.read(), 'regwrse': self._regwrse.read(),
+        return {'pcsrce': self._pc4e.read(),
                 'regwre': self._regwre.read(), 'alusrcbe': self._alusrcbe.read(),
                 'aluse': self._aluse.read(), 'aluflagwre': self._aluflagwre.read(),
                 'memwre': self._memwre.read(), 'regsrce': self._regsrce.read(),
