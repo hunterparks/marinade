@@ -130,7 +130,7 @@ def generate_single_cycle_architecture():
     entities.update({'add8': Adder(32, hooks['pc'], hooks['const8'], hooks['pc8'])})
     entities.update({'add4': Adder(32, hooks['pc'], hooks['const4'], hooks['pc4'])})
     entities.update({'progmem': ProgramMemory(
-        hooks['pc'], hooks['rst'], hooks['clk'], hooks['instr'])})
+        hooks['pc'], Bus(1,0), hooks['clk'], hooks['instr'])})
 
     # DECODE
     entities.update({'instr_subset': BusSubset(hooks['instr'],
