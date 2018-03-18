@@ -182,16 +182,16 @@ def generate_pipeline_architecture():
                                     hooks['regwrw'], hooks['regsrcw'], hooks['wd3sw'],
                                     hooks['fw'], hooks['rdw'], hooks['ra3w'])})
     # exmem
-    entities.update({'exmem': Exmem(hooks['pc4e'], hooks['regwre'], 
-                                    hooks['memwre'], hooks['regsrce'], hooks['wd3se'], 
+    entities.update({'exmem': Exmem(hooks['pc4e'], hooks['regwre'],
+                                    hooks['memwre'], hooks['regsrce'], hooks['wd3se'],
                                     hooks['rd2'], hooks['fe'], hooks['ra3e'], hooks['clk'],
                                     hooks['pc4m'], hooks['regwrm'],
                                     hooks['memwrm'], hooks['regsrcm'], hooks['wd3sm'],
                                     hooks['fm'], hooks['rd2m'], hooks['ra3m'])})
     # idex
-    entities.update({'idex': Idex(hooks['pc4d'], hooks['regwrd'], 
+    entities.update({'idex': Idex(hooks['pc4d'], hooks['regwrd'],
                                   hooks['alusrcbd'], hooks['alusd'], hooks['aluflagwrd'],
-                                  hooks['memwrd'], hooks['regsrcd'], 
+                                  hooks['memwrd'], hooks['regsrcd'],
                                   hooks['wd3sd'], hooks['rd1d'], hooks['rd2d'], hooks['imm32d'],
                                   hooks['ra1d'], hooks['ra2d'], hooks['ra3d'], hooks['flushd'],
                                   hooks['clk'], hooks['pc4e'], hooks['regwre'],
@@ -200,75 +200,75 @@ def generate_pipeline_architecture():
                                   hooks['rd2e'], hooks['imm32e'], hooks['ra1e'], hooks['ra2e'],
                                   hooks['ra3e'])})
     # ifid
-    entities.update({'ifid': Ifid(hooks['pc4f'], hooks['pc8f'], hooks['instrf'], hooks['stallf'], 
-                                  hooks['flushf'], hooks['clk'], hooks['pc4d'], hooks['pc8d'], 
+    entities.update({'ifid': Ifid(hooks['pc4f'], hooks['pc8f'], hooks['instrf'], hooks['stallf'],
+                                  hooks['flushf'], hooks['clk'], hooks['pc4d'], hooks['pc8d'],
                                   hooks['instrd'])})
     # fetch
-    entities.update({'addr_mux': Mux(32, [hooks['braddr'], hooks['pc4d'], hooks['fe']], 
+    entities.update({'addr_mux': Mux(32, [hooks['braddr'], hooks['pc4d'], hooks['fe']],
                                      hooks['pcsrcd'], hooks['nextaddr'])})
     entities.update({'pc_reg': Register(32, hooks['clk'], hooks['rst'],
                                         hooks['nextaddr'], hooks['pc'], 0, enable=hooks['pcwrd'])})
     entities.update({'add8': Adder(32, hooks['pc'], hooks['const8'], hooks['pc8f'])})
     entities.update({'add4': Adder(32, hooks['pc'], hooks['const4'], hooks['pc4f'])})
-    entities.update({'progmem': ProgramMemory(hooks['pc'], hooks['rst'], hooks['clk'], 
+    entities.update({'progmem': ProgramMemory(hooks['pc'], Bus(1,0), hooks['clk'], 
                                               hooks['instrf'])})
     # decode
-    entities.update({'instr_subset': BusSubset(hooks['instrd'],  
+    entities.update({'instr_subset': BusSubset(hooks['instrd'],
                                                [hooks['instrd_23_0'], hooks['instrd_31_28'],
                                                 hooks['instrd_27_26'], hooks['instrd_25_20'],
                                                 hooks['instrd_19_16'], hooks['instrd_15_12'],
                                                 hooks['instrd_11_8'], hooks['instrd_4'],
                                                 hooks['instrd_3_0']],
                                                [(0, 24), (28, 32), (26, 28), (20, 26), (16, 20), (12, 16), (8, 12), (4, 5), (0, 4)])})
-    entities.update({'controller': ControllerPipeline(hooks['instrd_31_28'], hooks['instrd_27_26'], 
-                                                      hooks['instrd_25_20'], hooks['instrd_15_12'], 
-                                                      hooks['instrd_4'], hooks['c'], hooks['v'], 
-                                                      hooks['n'], hooks['z'], hooks['stallf'], 
+    entities.update({'controller': ControllerPipeline(hooks['instrd_31_28'], hooks['instrd_27_26'],
+                                                      hooks['instrd_25_20'], hooks['instrd_15_12'],
+                                                      hooks['instrd_4'], hooks['c'], hooks['v'],
+                                                      hooks['n'], hooks['z'], hooks['stallf'],
                                                       hooks['pcsrcd'], hooks['pcwrd'], hooks['regsad'],
                                                       hooks['regdstd'], hooks['regwrsd'], hooks['regwrd'],
                                                       hooks['extsd'], hooks['alusrcbd'], hooks['alusd'],
-                                                      hooks['aluflagwrd'], hooks['memwrd'], 
+                                                      hooks['aluflagwrd'], hooks['memwrd'],
                                                       hooks['regsrcd'], hooks['wd3sd'])})
-    entities.update({'ra1_mux': Mux(4, [hooks['instrd_3_0'], hooks['instrd_19_16']], hooks['regsad'], 
+    entities.update({'ra1_mux': Mux(4, [hooks['instrd_3_0'], hooks['instrd_19_16']], hooks['regsad'],
                                     hooks['ra1d'])})
-    entities.update({'ra2_mux': Mux(4, [hooks['instrd_11_8'], hooks['instrd_3_0'], hooks['instrd_15_12']], 
+    entities.update({'ra2_mux': Mux(4, [hooks['instrd_11_8'], hooks['instrd_3_0'], hooks['instrd_15_12']],
                                     hooks['regdstd'], hooks['ra2d'])})
-    entities.update({'ra3_mux': Mux(4, [hooks['instrd_19_16'], hooks['instrd_15_12'], hooks['const14']], 
+    entities.update({'ra3_mux': Mux(4, [hooks['instrd_19_16'], hooks['instrd_15_12'], hooks['const14']],
                                     hooks['regwrsd'], hooks['ra3d'])})
     entities.update({'extimm': Extender(hooks['instrd_23_0'], hooks['extsd'], hooks['imm32d'])})
     entities.update({'add_branch': Adder(32, hooks['pc8d'], hooks['imm32d'], hooks['braddr'])})
     entities.update({'regfile': RegisterFile(hooks['clk'], hooks['rst'], hooks['regwrw'], hooks['wd'],
-                                             hooks['ra1d'], hooks['ra2d'], hooks['ra3w'], hooks['rd1d'], 
+                                             hooks['ra1d'], hooks['ra2d'], hooks['ra3w'], hooks['rd1d'],
                                              hooks['rd2d'], edge_type=Latch_Type.FALLING_EDGE)})
     # execute
-    entities.update({'hazard_controller': HazardController(hooks['ra1d'], hooks['ra2d'], 
+    entities.update({'hazard_controller': HazardController(hooks['ra1d'], hooks['ra2d'],
                                                            hooks['ra1e'], hooks['ra2e'],
                                                            hooks['ra3e'], hooks['ra3m'],
                                                            hooks['ra3w'], hooks['regwrm'],
                                                            hooks['regwrw'], hooks['regsrce'],
                                                            hooks['regsrcm'], hooks['regsrcw'],
-                                                           hooks['memwrm'], hooks['pcsrcd'], 
-                                                           hooks['fwda'], hooks['fwdb'], 
-                                                           hooks['fwds'], hooks['stallf'], 
+                                                           hooks['memwrm'], hooks['pcsrcd'],
+                                                           hooks['fwda'], hooks['fwdb'],
+                                                           hooks['fwds'], hooks['stallf'],
                                                            hooks['flushf'], hooks['flushd'])})
     entities.update({'fwda_mux': Mux(32, [hooks['rd1e'], hooks['fw'], hooks['fm'], hooks['rdm'],
                                       hooks['rdw']], hooks['fwda'], hooks['rd1'])})
     entities.update({'fwdb_mux': Mux(32, [hooks['rd2e'], hooks['fw'], hooks['fm'], hooks['rdm'],
                                       hooks['rdw']], hooks['fwdb'], hooks['rd2'])})
-    entities.update({'alu_mux': Mux(32, [hooks['imm32e'], hooks['rd2']], hooks['alusrcbe'], 
+    entities.update({'alu_mux': Mux(32, [hooks['imm32e'], hooks['rd2']], hooks['alusrcbe'],
                                     hooks['alub'])})
-    entities.update({'alu': Alu(hooks['rd1'], hooks['alub'], hooks['aluse'], hooks['fe'], 
+    entities.update({'alu': Alu(hooks['rd1'], hooks['alub'], hooks['aluse'], hooks['fe'],
                                 hooks['aluc'], hooks['aluv'], hooks['alun'], hooks['aluz'])})
-    entities.update({'aluflag_join': BusJoin([hooks['aluc'], hooks['aluv'], hooks['alun'], 
+    entities.update({'aluflag_join': BusJoin([hooks['aluc'], hooks['aluv'], hooks['alun'],
                                              hooks['aluz']], hooks['aluflag'])})
     entities.update({'aluflag_reg': Register(4, hooks['clk'], hooks['rst'],
-                                             hooks['aluflag'], hooks['flag'], 
+                                             hooks['aluflag'], hooks['flag'],
                                              enable=hooks['aluflagwre'])})
     entities.update({'flag_subset': BusSubset(hooks['flag'], [hooks['c'],
                                               hooks['v'], hooks['n'], hooks['z']], [(0, 1), (1, 2),
                                               (2, 3), (3, 4)])})
     # memory
-    entities.update({'fwds_mux': Mux(32, [hooks['rd2m'], hooks['wd3']], hooks['fwds'], 
+    entities.update({'fwds_mux': Mux(32, [hooks['rd2m'], hooks['wd3']], hooks['fwds'],
                                      hooks['data'])})
     entities.update({'datamem': DataMemory(hooks['fm'], hooks['data'], hooks['memwrm'],
                                            hooks['rst'], hooks['clk'], hooks['rdm'])})
