@@ -6,13 +6,12 @@ class Memwb(Sequential):
     This specialized register sits between the memory and write back stages
     """
 
-    def __init__(self, pcsrcm, regwrsm, regwrm, regsrcm, wd3sm, fm, rdm, ra3m, clk, pcsrcw, 
-                regwrsw, regwrw, regsrcw, wd3sw, fw, rdw, ra3w, edge_type = Latch_Type.RISING_EDGE,
-                enable = None, enable_type = Logic_States.ACTIVE_HIGH):
+    def __init__(self, pc4m, regwrm, regsrcm, wd3sm, fm, rdm, ra3m, clk, pc4w, 
+                 regwrw, regsrcw, wd3sw, fw, rdw, ra3w, edge_type = Latch_Type.RISING_EDGE,
+                 enable = None, enable_type = Logic_States.ACTIVE_HIGH):
         """
         inputs:
-            pcsrcm: selects the instruction given to the fetch stage
-            regwrsm: selects which register is passed into input a2 of the regfile
+            pc4m: pc+4
             regwrm: selects whether to write back to the regfile
             regsrcm: selects whether the alu output or memory is feedback
             wd3sm: selects what data to write to the regfile
@@ -22,8 +21,7 @@ class Memwb(Sequential):
             clk: clock
             enable: enables component (not typically used)
         outputs:
-            pcsrcw: selects the instruction given to the fetch stage
-            ragwrsw: selects which register is passed into input a2 of the regfile
+            pc4w: pc+4
             regwrw: selects whether to write back to the regfile
             regsrcw: selects whether the alu output or memory is feedback
             wd3sw: selects what data to write to the regfile
@@ -34,14 +32,10 @@ class Memwb(Sequential):
         edge_type: memwb register data latch type
         enable_type: enable signal active state
         """
-        if not isinstance(pcsrcm, iBusRead):
-            raise TypeError('The pcsrm bus must be readable')
-        elif pcsrcm.size() != 2:
-            raise ValueError('The pcsrm bus must have a size of 2 bits')
-        if not isinstance(regwrsm, iBusRead):
-            raise TypeError('The regwrsm bus must be readable')
-        elif regwrsm.size() != 2:
-            raise ValueError('The regwrsm bus must have a size of 2 bits')
+        if not isinstance(pc4m, iBusRead):
+            raise TypeError('The pc4m bus must be readable')
+        elif pc4m.size() != 32:
+            raise ValueError('The pc4m bus must have a size of 32 bits')
         if not isinstance(regwrm, iBusRead):
             raise TypeError('The regwrm bus must be readable')
         elif regwrm.size() != 1:
@@ -70,14 +64,10 @@ class Memwb(Sequential):
             raise TypeError('The clk bus must be readable')
         elif clk.size() != 1:
             raise ValueError('The clk bus must have a size of 1 bit')
-        if not isinstance(pcsrcw, iBusWrite):
-            raise TypeError('The pcsrcw bus must be writable')
-        elif pcsrcw.size() != 2:
-            raise ValueError('The pcsrcw bus must have a size of 2 bits')
-        if not isinstance(regwrsw, iBusWrite):
-            raise TypeError('The regwrsw bus must be writable')
-        elif regwrsw.size() != 2:
-            raise ValueError('The regwrsw bus must have a size of 2 bits')
+        if not isinstance(pc4w, iBusWrite):
+            raise TypeError('The pc4w bus must be writable')
+        elif pc4w.size() != 32:
+            raise ValueError('The pc4w bus must have a size of 32 bits')
         if not isinstance(regwrw, iBusWrite):
             raise TypeError('The regwrw bus must be writable')
         elif regwrw.size() != 1:
@@ -111,8 +101,7 @@ class Memwb(Sequential):
         if not Logic_States.valid(enable_type):
             raise ValueError('Invalid enable state')
 
-        self._pcsrcm = pcsrcm
-        self._regwrsm = regwrsm
+        self._pc4m = pc4m
         self._regwrm = regwrm
         self._regsrcm = regsrcm
         self._wd3sm = wd3sm
@@ -121,8 +110,7 @@ class Memwb(Sequential):
         self._ra3m = ra3m
         self._clk = clk
         self._prev_clk_state = self._clk.read()
-        self._pcsrcw = pcsrcw
-        self._regwrsw = regwrsw
+        self._pc4w = pc4w
         self._regwrw = regwrw
         self._regsrcw = regsrcw
         self._wd3sw = wd3sw
@@ -133,15 +121,14 @@ class Memwb(Sequential):
         self._enable = enable
         self._enable_type = enable_type
 
-        self._state = MemwbState(self._pcsrcw, self._regwrsw, self._regwrw, self._regsrcw, 
+        self._state = MemwbState(self._pc4w, self._regwrw, self._regsrcw, 
                                 self._wd3sw, self._fw, self._rdw, self._ra3w)
 
     
     def on_rising_edge(self):
         "Implements clock rising behavior: captures data if latch type matches"
         if self._edge_type == Latch_Type.RISING_EDGE or self._edge_type == Latch_Type.BOTH_EDGE:
-            self._pcsrcw.write(self._pcsrcm.read())
-            self._regwrsw.write(self._regwrsm.read())
+            self._pc4w.write(self._pc4m.read())
             self._regwrw.write(self._regwrm.read())
             self._regsrcw.write(self._regsrcm.read())
             self._wd3sw.write(self._wd3sm.read())
@@ -153,8 +140,7 @@ class Memwb(Sequential):
     def on_falling_edge(self):
         "Implements clock rising behavior: captures data if latch type matches"
         if self._edge_type == Latch_Type.FALLING_EDGE or self._edge_type == Latch_Type.BOTH_EDGE:
-            self._pcsrcw.write(self._pcsrcm.read())
-            self._regwrsw.write(self._regwrsm.read())
+            self._pc4w.write(self._pc4m.read())
             self._regwrw.write(self._regwrm.read())
             self._regsrcw.write(self._regsrcm.read())
             self._wd3sw.write(self._wd3sm.read())
@@ -210,9 +196,8 @@ class MemwbState():
     Note: Do not make new instances of this class outside of the Exmem class
     """
 
-    def __init__(self, pcsrcw, regwrsw, regwrw, regsrcw, wd3sw, fw, rdw, ra3w):
-        self._pcsrcw = pcsrcw
-        self._regwrsw = regwrsw
+    def __init__(self, pc4w, regwrw, regsrcw, wd3sw, fw, rdw, ra3w):
+        self._pc4w = pc4w
         self._regwrw = regwrw
         self._regsrcw = regsrcw
         self._wd3sw = wd3sw
@@ -222,7 +207,7 @@ class MemwbState():
 
 
     def get_state(self):
-        return {'pcsrcw': self._pcsrcw.read(), 'regwrsw': self._regwrsw.read(),
+        return {'pcsrcw': self._pc4w.read(),
                 'regwrew': self._regwrw.read(), 'regsrcw': self._regsrcw.read(),
                 'wd3sw': self._wd3sw.read(), 'fw': self._fw.read(), 
                 'rdw': self._rdw.read(), 'ra3w': self._ra3w.read()}
