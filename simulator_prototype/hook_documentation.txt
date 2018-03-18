@@ -15,7 +15,7 @@ Hook interface using the Architecture component.
 			“start” : <starting address for Memory and RegisterFile >,
 			“data” : [ < contents for Memory and RegisterFile >],
 		}
-}
+	}
 }
 
 {

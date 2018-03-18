@@ -80,7 +80,7 @@ class Interface:
                 0xE5, 0x9C, 0x60, 0x00,
                 0xEA, 0xFF, 0xFF, 0xFD
             ]
-
+            #TODO also clear memory
             return self.arch.hook({'modify':{'name':msg['memory'],'parameters':{'start':0,'data':program}}})
         else:
             return {'status': False, 'error': 'architecture needs to be loaded'}
