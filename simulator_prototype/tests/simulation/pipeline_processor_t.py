@@ -100,7 +100,7 @@ class PipelineProcessor_t(unittest.TestCase):
                 'instrf',
                 'instrd',
                 'wd3',
-                'pc4',
+                'pc4d',
                 'ra1e',
                 'ra2e',
                 'ra3e',
@@ -131,7 +131,7 @@ class PipelineProcessor_t(unittest.TestCase):
         # generate JSON through simulation
         resultPath = os.path.dirname(os.path.realpath(__file__)) + '\\results\\'
         resultPath = resultPath + filename + '_result'
-        self._run_simulation(resultPath, program, 36, msg_inspect)
+        self._run_simulation(resultPath, program, 38, msg_inspect)
 
         # generate results in excel table for tracking
         self._process_json_to_excel(resultPath, msg_inspect['inspect'])
@@ -187,6 +187,34 @@ class PipelineProcessor_t(unittest.TestCase):
         ]
         self.assertTrue(self._generic_test_procedure('pipeline_demo', demo_program))
 
+    def test_branch_hazards_program(self):
+        """
+        Tests against a branch hazards program to assure branch hazards work
+        """
+        branch_hazards_program = [
+            0xE3, 0xA0, 0x00, 0x0A,     # mov r0, #10       (main)
+            0xEB, 0x00, 0x00, 0x09,     # bl sumn
+            0xE3, 0xA0, 0xA0, 0x00,     # mov r10, #0       (if)
+            0xE2, 0x4A, 0xA0, 0x20,     # sub r10, r10, #32
+            0xE0, 0x00, 0xA0, 0x0A,     # and r10, r0, r10
+            0xE3, 0x5A, 0x00, 0x00,     # cmp r10, #0
+            0x0A, 0x00, 0x00, 0x01,     # beq done
+            0xE3, 0xA0, 0xB0, 0x01,     # mov r11, #1
+            0xE3, 0xA0, 0xC0, 0x04,     # mov r12, #4
+            0xE5, 0x8C, 0xB0, 0x00,     # str r11, [r12]
+            0xE5, 0x9C, 0x60, 0x00,     # ldr r6, [r12]     (done)
+            0xEA, 0xFF, 0xFF, 0xFD,     # b done
+            0xE3, 0x50, 0x00, 0x00,     # cmp r0, #0        (sumn)
+            0x0A, 0x00, 0x00, 0x04,     # beq sumexit
+            0xE3, 0xA0, 0x10, 0x00,     # mov r1, #0
+            0xE0, 0x81, 0x10, 0x00,     # add r1, r1, r0    (loop)
+            0xE2, 0x50, 0x00, 0x01,     # subs r0, r0, #1
+            0x1A, 0xFF, 0xFF, 0xFC,     # bne loop
+            0xE1, 0xA0, 0x00, 0x01,     # mov r0, r1
+            0xE1, 0xA0, 0xF0, 0x0E      # mov pc, lr        (sumexit)
+        ]
+        self.assertTrue(self._generic_test_procedure('pipeline_branch_hazards', branch_hazards_program))
+
     def test_all_instruction_program(self):
         """
         Test against a program that covers all instructions to flex architecture
@@ -240,7 +268,6 @@ class PipelineProcessor_t(unittest.TestCase):
             0xE0, 0x23, 0x01, 0x92,
             0xE1, 0xA0, 0xF0, 0x0E
         ]
-
         self.assertTrue(self._generic_test_procedure('pipeline_full', full_program))
         """
 

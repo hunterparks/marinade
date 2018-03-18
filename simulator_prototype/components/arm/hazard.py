@@ -4,7 +4,7 @@ class HazardController():
 
     def __init__(self, ra1d, ra2d, ra1e, ra2e, ra3e, ra3m, ra3w, regwrm,
                 regwrw, regsrce, regsrcm, regsrcw, memwrm, pcsrcd, fwda, fwdb,
-                fwds, stalld, flushd, flushe):
+                fwds, stallf, flushf, flushd):
         if not isinstance(ra1d, iBusRead):
             raise TypeError('The ra1d bus must be readable')
         elif ra1d.size() != 4:
@@ -89,25 +89,25 @@ class HazardController():
             raise TypeError('The fwds bus must be writable')
         elif fwds.size() != 1:
             raise ValueError('The fwds bus must have a size of 1 bit')
-        if not isinstance(stalld, iBusWrite):
+        if not isinstance(stallf, iBusWrite):
             raise TypeError('The stalld bus must be writable')
-        elif stalld.size() != 1:
+        elif stallf.size() != 1:
             raise ValueError('The stalld bus must have a size of 1 bit')
-        if not isinstance(flushd, iBusWrite):
+        if not isinstance(flushf, iBusWrite):
             raise TypeError('The flushd bus must be writable')
-        elif flushd.size() != 1:
+        elif flushf.size() != 1:
             raise ValueError('The flushd bus must have a size of 1 bit')
-        if not isinstance(flushe, iBusWrite):
+        if not isinstance(flushd, iBusWrite):
             raise TypeError('The flushe bus must be writable')
-        elif flushe.size() != 1:
+        elif flushd.size() != 1:
             raise ValueError('The flushe bus must have a size of 1 bit')
 
         self._fwda = fwda
         self._fwdb = fwdb
         self._fwds = fwds
-        self._stalld = stalld
+        self._stallf = stallf
+        self._flushf = flushf
         self._flushd = flushd
-        self._flushe = flushe
 
     
     @staticmethod
@@ -148,17 +148,13 @@ class HazardController():
 
 
     @staticmethod
-    def _generate_stalld(ra1d, ra2d, ra3e, regsrce):
-        # If pipeline processor does not work - check the code below
-        if ((ra1d.read() == ra3e.read() or ra2d.read() == ra3e.read()) 
-                and regsrce.read() == 1):
-            return 1        # Load-use hazard occured
-        else:
-            return 0        # No load-use hazard detected
+    def _generate_stallf(ra1d, ra2d, ra3e, regsrce):
+        "Stall not needed for this pipeline processor implementation"
+        return 0
 
 
     @staticmethod
-    def _generate_flushd(pcsrcd):
+    def _generate_flushf(pcsrcd):
         # If pipeline processor does not work - check the code below
         if pcsrcd.read() == 0:
             return 1        # Branch hazard occured
@@ -167,7 +163,7 @@ class HazardController():
 
 
     @staticmethod
-    def _generate_flushe():
+    def _generate_flushd():
         '''
         Method returns 0 because branch hazards are being detected in
         the decode stage
@@ -198,9 +194,9 @@ class HazardController():
         self._fwda.write(self._generate_fwda(ra1e, ra3m, ra3w, regwrm, regwrw, regsrcm, regsrcw))
         self._fwdb.write(self._generate_fwdb(ra2e, ra3m, ra3w, regwrm, regwrw, regsrcm, regsrcw))
         self._fwds.write(self._generate_fwds(ra3m, ra3w, memwrm))
-        self._stalld.write(self._generate_stalld(ra1d, ra2d, ra3e, regsrce))
-        self._flushd.write(self._generate_flushd(pcsrcd))
-        self._flushe.write(self._generate_flushe())
+        self._stallf.write(self._generate_stallf(ra1d, ra2d, ra3e, regsrce))
+        self._flushf.write(self._generate_flushf(pcsrcd))
+        self._flushd.write(self._generate_flushd())
 
 
     def inspect(self):

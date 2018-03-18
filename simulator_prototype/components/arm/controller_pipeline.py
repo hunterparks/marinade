@@ -393,7 +393,7 @@ class ControllerPipeline(Controller):
     @staticmethod
     def _generate_wd3sd(op, funct):
         """
-        WDS3 <= '1' when a bl instruction is run else '0'
+        WD3S <= '1' when a bl instruction is run else '0'
         """
         if op == 0b10 and ((funct & 0b010000) >> 4) == 0b1:  # NOTE changed shift
             return 0b1

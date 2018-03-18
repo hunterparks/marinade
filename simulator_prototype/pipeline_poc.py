@@ -75,8 +75,13 @@ def generate_pipeline_architecture():
 
     ########## define buses ##########
     hooks.update({'pc': Bus(32, 0)})
-    hooks.update({'pc4': Bus(32, 0)})
-    hooks.update({'pc8': Bus(32, 0)})
+    hooks.update({'pc4f': Bus(32, 0)})
+    hooks.update({'pc4d': Bus(32, 0)})
+    hooks.update({'pc4e': Bus(32, 0)})
+    hooks.update({'pc4m': Bus(32, 0)})
+    hooks.update({'pc4w': Bus(32, 0)})
+    hooks.update({'pc8f': Bus(32, 0)})
+    hooks.update({'pc8d': Bus(32, 0)})
     hooks.update({'braddr': Bus(32, 0)})
     hooks.update({'nextaddr': Bus(32, 0)})
     hooks.update({'instrf': Bus(32, 0)})
@@ -143,8 +148,6 @@ def generate_pipeline_architecture():
     hooks.update({'regsrcd': Bus(1, 0)})
     hooks.update({'wd3sd': Bus(1, 0)})
     # execute stage
-    hooks.update({'pcsrce': Bus(2, 0)})
-    hooks.update({'regwrse': Bus(2, 0)})
     hooks.update({'regwre': Bus(1, 0)})
     hooks.update({'alusrcbe': Bus(1, 0)})
     hooks.update({'aluse': Bus(4, 0)})
@@ -153,15 +156,11 @@ def generate_pipeline_architecture():
     hooks.update({'regsrce': Bus(1, 0)})
     hooks.update({'wd3se': Bus(1, 0)})
     # memory stage
-    hooks.update({'pcsrcm': Bus(2, 0)})
-    hooks.update({'regwrsm': Bus(2, 0)})
     hooks.update({'regwrm': Bus(1, 0)})
     hooks.update({'memwrm': Bus(1, 0)})
     hooks.update({'regsrcm': Bus(1, 0)})
     hooks.update({'wd3sm': Bus(1, 0)})
     # write back stage
-    hooks.update({'pcsrcw': Bus(2, 0)})
-    hooks.update({'regwrsw': Bus(2, 0)})
     hooks.update({'regwrw': Bus(1, 0)})
     hooks.update({'regsrcw': Bus(1, 0)})
     hooks.update({'wd3sw': Bus(1, 0)})
@@ -170,44 +169,47 @@ def generate_pipeline_architecture():
     hooks.update({'fwda': Bus(3, 0)})
     hooks.update({'fwdb': Bus(3, 0)})
     hooks.update({'fwds': Bus(1, 0)})
-    hooks.update({'stalld': Bus(1, 0)})
+    hooks.update({'stallf': Bus(1, 0)})
+    hooks.update({'flushf': Bus(1, 0)})
     hooks.update({'flushd': Bus(1, 0)})
-    hooks.update({'flushe': Bus(1, 0)})
 
     ########## generate components ##########
     entities = OrderedDict([('clk', clk)])
     # memwb
-    entities.update({'memwb': Memwb(hooks['pcsrcm'], hooks['regwrsm'], hooks['regwrm'],
-                                   hooks['regsrcm'], hooks['wd3sm'], hooks['fm'], hooks['rdm'],
-                                   hooks['ra3m'], hooks['clk'], hooks['pcsrcw'], hooks['regwrsw'],
-                                   hooks['regwrw'], hooks['regsrcw'], hooks['wd3sw'],
-                                   hooks['fw'], hooks['rdw'], hooks['ra3w'])})
+    entities.update({'memwb': Memwb(hooks['pc4m'], hooks['regwrm'],
+                                    hooks['regsrcm'], hooks['wd3sm'], hooks['fm'], hooks['rdm'],
+                                    hooks['ra3m'], hooks['clk'], hooks['pc4w'],
+                                    hooks['regwrw'], hooks['regsrcw'], hooks['wd3sw'],
+                                    hooks['fw'], hooks['rdw'], hooks['ra3w'])})
     # exmem
-    entities.update({'exmem': Exmem(hooks['pcsrce'], hooks['regwrse'], hooks['regwre'], 
+    entities.update({'exmem': Exmem(hooks['pc4e'], hooks['regwre'], 
                                     hooks['memwre'], hooks['regsrce'], hooks['wd3se'], 
                                     hooks['rd2'], hooks['fe'], hooks['ra3e'], hooks['clk'],
-                                    hooks['pcsrcm'], hooks['regwrsm'], hooks['regwrm'],
+                                    hooks['pc4m'], hooks['regwrm'],
                                     hooks['memwrm'], hooks['regsrcm'], hooks['wd3sm'],
                                     hooks['fm'], hooks['rd2m'], hooks['ra3m'])})
-    # idex register
-    entities.update({'idex': Idex(hooks['pcsrcd'], hooks['regwrsd'], hooks['regwrd'], 
+    # idex
+    entities.update({'idex': Idex(hooks['pc4d'], hooks['regwrd'], 
                                   hooks['alusrcbd'], hooks['alusd'], hooks['aluflagwrd'],
                                   hooks['memwrd'], hooks['regsrcd'], 
                                   hooks['wd3sd'], hooks['rd1d'], hooks['rd2d'], hooks['imm32d'],
-                                  hooks['ra1d'], hooks['ra2d'], hooks['ra3d'], hooks['flushe'],
-                                  hooks['clk'], hooks['pcsrce'], hooks['regwrse'], hooks['regwre'],
+                                  hooks['ra1d'], hooks['ra2d'], hooks['ra3d'], hooks['flushd'],
+                                  hooks['clk'], hooks['pc4e'], hooks['regwre'],
                                   hooks['alusrcbe'], hooks['aluse'], hooks['aluflagwre'],
                                   hooks['memwre'], hooks['regsrce'], hooks['wd3se'], hooks['rd1e'],
                                   hooks['rd2e'], hooks['imm32e'], hooks['ra1e'], hooks['ra2e'],
                                   hooks['ra3e'])})
     # ifid
-    entities.update({'ifid': Ifid(hooks['instrf'], hooks['stalld'], hooks['flushd'], hooks['clk'], 
+    entities.update({'ifid': Ifid(hooks['pc4f'], hooks['pc8f'], hooks['instrf'], hooks['stallf'], 
+                                  hooks['flushf'], hooks['clk'], hooks['pc4d'], hooks['pc8d'], 
                                   hooks['instrd'])})
     # fetch
+    entities.update({'addr_mux': Mux(32, [hooks['braddr'], hooks['pc4d'], hooks['fe']], 
+                                     hooks['pcsrcd'], hooks['nextaddr'])})
     entities.update({'pc_reg': Register(32, hooks['clk'], hooks['rst'],
                                         hooks['nextaddr'], hooks['pc'], 0, enable=hooks['pcwrd'])})
-    entities.update({'add8': Adder(32, hooks['pc'], hooks['const8'], hooks['pc8'])})
-    entities.update({'add4': Adder(32, hooks['pc'], hooks['const4'], hooks['pc4'])})
+    entities.update({'add8': Adder(32, hooks['pc'], hooks['const8'], hooks['pc8f'])})
+    entities.update({'add4': Adder(32, hooks['pc'], hooks['const4'], hooks['pc4f'])})
     entities.update({'progmem': ProgramMemory(hooks['pc'], hooks['rst'], hooks['clk'], 
                                               hooks['instrf'])})
     # decode
@@ -221,7 +223,7 @@ def generate_pipeline_architecture():
     entities.update({'controller': ControllerPipeline(hooks['instrd_31_28'], hooks['instrd_27_26'], 
                                                       hooks['instrd_25_20'], hooks['instrd_15_12'], 
                                                       hooks['instrd_4'], hooks['c'], hooks['v'], 
-                                                      hooks['n'], hooks['z'], hooks['stalld'], 
+                                                      hooks['n'], hooks['z'], hooks['stallf'], 
                                                       hooks['pcsrcd'], hooks['pcwrd'], hooks['regsad'],
                                                       hooks['regdstd'], hooks['regwrsd'], hooks['regwrd'],
                                                       hooks['extsd'], hooks['alusrcbd'], hooks['alusd'],
@@ -234,7 +236,7 @@ def generate_pipeline_architecture():
     entities.update({'ra3_mux': Mux(4, [hooks['instrd_19_16'], hooks['instrd_15_12'], hooks['const14']], 
                                     hooks['regwrsd'], hooks['ra3d'])})
     entities.update({'extimm': Extender(hooks['instrd_23_0'], hooks['extsd'], hooks['imm32d'])})
-    entities.update({'add_branch': Adder(32, hooks['pc8'], hooks['imm32d'], hooks['braddr'])})
+    entities.update({'add_branch': Adder(32, hooks['pc8d'], hooks['imm32d'], hooks['braddr'])})
     entities.update({'regfile': RegisterFile(hooks['clk'], hooks['rst'], hooks['regwrw'], hooks['wd'],
                                              hooks['ra1d'], hooks['ra2d'], hooks['ra3w'], hooks['rd1d'], 
                                              hooks['rd2d'], edge_type=Latch_Type.FALLING_EDGE)})
@@ -247,8 +249,8 @@ def generate_pipeline_architecture():
                                                            hooks['regsrcm'], hooks['regsrcw'],
                                                            hooks['memwrm'], hooks['pcsrcd'], 
                                                            hooks['fwda'], hooks['fwdb'], 
-                                                           hooks['fwds'], hooks['stalld'], 
-                                                           hooks['flushd'], hooks['flushe'])})
+                                                           hooks['fwds'], hooks['stallf'], 
+                                                           hooks['flushf'], hooks['flushd'])})
     entities.update({'fwda_mux': Mux(32, [hooks['rd1e'], hooks['fw'], hooks['fm'], hooks['rdm'],
                                       hooks['rdw']], hooks['fwda'], hooks['rd1'])})
     entities.update({'fwdb_mux': Mux(32, [hooks['rd2e'], hooks['fw'], hooks['fm'], hooks['rdm'],
@@ -273,9 +275,7 @@ def generate_pipeline_architecture():
     # writeback
     entities.update({'wd3_mux': Mux(32, [hooks['rdw'], hooks['fw']],
                                     hooks['regsrcw'], hooks['wd3'])})
-    entities.update({'rwd_mux': Mux(32, [hooks['wd3'], hooks['pc4']], hooks['wd3sw'], hooks['wd'])})
-    entities.update({'addr_mux': Mux(32, [hooks['braddr'], hooks['pc4'], hooks['wd3']], 
-                                     hooks['pcsrcd'], hooks['nextaddr'])})
+    entities.update({'rwd_mux': Mux(32, [hooks['wd3'], hooks['pc4w']], hooks['wd3sw'], hooks['wd'])})
 
     # place memory (Internal) hooks into hook list
     hooks.update({'pc_reg': entities['pc_reg']})
