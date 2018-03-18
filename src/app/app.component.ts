@@ -4,7 +4,7 @@ import { WebsocketService } from './services/websocket.service';
 
 @Component({
   selector: 'marinade-root',
-  styleUrls: ['./app.component.css'],
+  styleUrls: ['./app.component.sass'],
   templateUrl: './app.component.html',
 })
 export class AppComponent {
@@ -14,27 +14,25 @@ export class AppComponent {
   public simFlag: boolean = false;
 
   constructor(private serial: WebsocketService) {
-    this.serial.messageSubject.subscribe((result: string) => {
-      this.result = result;
-      var msg = JSON.parse(result);
-      this.count = msg.b1.state;
-    });
-    this.serial.connect();
-
-    var obj = this
-    setInterval(function() {
-      if(obj.simFlag){
-        obj.step()
-      }
-    }, 1000)
-
+    // this.serial.messageSubject.subscribe((result: string) => {
+    //   console.log(result);
+    //   this.result = result;
+    //   // var msg = JSON.parse(result);
+    //   // this.count = msg.b1.state;
+    // });
+    // this.serial.connect();
+    //
+    // var obj = this
+    // setInterval(function() {
+    //   if(obj.simFlag){
+    //     obj.step()
+    //   }
+    // }, 1000)
   }
-
-
 
   public onChange(): void {
     /* tslint:disable-next-line: no-console */ // Todo: Remove this output
-    console.log(this.formula);
+    // console.log(this.formula);
     this.serial.write(this.formula);
   }
 
