@@ -17,7 +17,7 @@ export class BusComponent implements OnInit {
   // The svg paths for the arrow heads
   public arrows: string[] = [];
   // Input string with a list of coordinates
-  @Input('svg-bus') public bus: { 'junction'?: number, 'name': string, 'paths': string[] } = null;
+  @Input('svg-bus') public bus: { 'data': string, 'junction'?: number, 'name': string, 'paths': string[] } = null;
   // The active color of the bus
   public color: string = BusComponent.DEFAULT_COLOR;
   // The junction point for a complex bus

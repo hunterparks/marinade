@@ -357,6 +357,5 @@ for label in labels.elements:
                     # break loop
             # else do nothing
 labels.elements.clear()
-labels.commit()
 buses.commit()
 print(len(buses))

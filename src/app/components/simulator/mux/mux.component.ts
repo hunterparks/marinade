@@ -7,7 +7,6 @@ import { Component, Input, OnInit } from '@angular/core';
 })
 export class MuxComponent implements OnInit{
 
-  public color: string = '';
   @Input('svg-mux') public mux: any = null;
   public svg: string = '';
 
@@ -79,7 +78,6 @@ export class MuxComponent implements OnInit{
   }
 
   public ngOnInit(): void {
-    this.color = this.mux['color'];
     this.drawMux(this.parsePoints());
   }
 }

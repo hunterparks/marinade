@@ -1,9 +1,10 @@
-import { Component, Host, HostListener } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
+import { TransmitService } from '../../../services/simulator/transmit/transmit.service';
+import { WebsocketService } from '../../../services/simulator/websocket/websocket.service';
 import { TooltipService } from '../../../services/tooltip/tooltip.service';
-import { BUSES } from '../../common/simulator/bus/buses.model';
-import { LABELS } from '../../common/simulator/label/labels.model';
-import { MUXES } from '../../common/simulator/mux/muxes.model';
-import { REGISTERS } from '../../common/simulator/register/registers.model';
+import { BUSES } from '../../simulator/bus/buses.model';
+import { MUXES } from '../../simulator/mux/muxes.model';
+import { REGISTERS } from '../../simulator/register/registers.model';
 
 @Component({
   selector: 'marinade-simulator',
@@ -30,14 +31,18 @@ export class SimulatorComponent {
   private viewBoxWidth: number = 1600;
 
   public buses: any[] = BUSES;
-  public labels: any[] = LABELS;
   public muxes: any[] = MUXES;
   public registers: any[] = REGISTERS;
 
   public scale: number = 1;
   public viewBox: string = '0 0 1600 900';
 
-  constructor(private tooltipService: TooltipService) {}
+  constructor(private tooltipService: TooltipService, private transmit: TransmitService, private websocket: WebsocketService) {
+    this.websocket.connect();
+    this.websocket.messageSubject.subscribe((value: any) => {
+      console.log(value);
+    });
+  }
 
   private updateViewBox(): void {
     // Bound the architecture on the left
@@ -152,6 +157,17 @@ export class SimulatorComponent {
     this.scale = SimulatorComponent.DEFAULT_VIEWBOX_SCALE;
     // Refresh the viewBox with the new properties
     this.updateViewBox();
+  }
+
+  @HostListener('window:keyup', ['$event'])
+  public step(event: KeyboardEvent): void {
+    switch (event.key) {
+      case 'i': this.transmit.inspect(['']); break;
+      case 'l': this.transmit.load(''); break;
+      case 'p': this.transmit.program('', ''); break;
+      case 'r': this.transmit.reset(); break;
+      case 's': this.transmit.step(); break;
+    }
   }
 
 }
