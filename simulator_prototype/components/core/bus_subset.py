@@ -5,6 +5,7 @@ BusSubset component used to break apart a single bus into composite signals
 from components.abstract.entity import Entity
 from components.abstract.ibus import iBusRead, iBusWrite
 
+
 class BusSubset(Entity):
     """
     BusSubset pull multiple output buses together from a common source.
@@ -13,23 +14,23 @@ class BusSubset(Entity):
     sequential.
     """
 
-    def __init__(self,in_b,outs_b,outs_range):
+    def __init__(self, in_b, outs_b, outs_range):
         "Constructor will check for valid parameters, exception thrown on invalid"
 
-        if not isinstance(in_b,iBusRead):
+        if not isinstance(in_b, iBusRead):
             raise TypeError('Input bus must be readable')
         self._input = in_b
 
-        if not isinstance(outs_b,list) or len(outs_b) <= 0:
+        if not isinstance(outs_b, list) or len(outs_b) <= 0:
             raise TypeError('Outputs must be a list with at least one element')
-        elif not all(isinstance(x,iBusWrite) and x.size() <= in_b.size() for x in outs_b):
+        elif not all(isinstance(x, iBusWrite) and x.size() <= in_b.size() for x in outs_b):
             raise ValueError('Output buses must be writable')
         self._outputs = outs_b
 
-        if not isinstance(outs_range,list) or not len(outs_b) == len(outs_range):
+        if not isinstance(outs_range, list) or not len(outs_b) == len(outs_range):
             raise TypeError('Output ranges must be a list corresponding to outputs')
-        for i in range(0,len(outs_range)):
-            if not isinstance(outs_range[i],tuple) or not len(outs_range[i]) == 2:
+        for i in range(0, len(outs_range)):
+            if not isinstance(outs_range[i], tuple) or not len(outs_range[i]) == 2:
                 raise TypeError('Range must be a tuple with two elements')
             elif not outs_range[i][0] < outs_range[i][1]:
                 raise ValueError('Range must start position first')
@@ -39,10 +40,9 @@ class BusSubset(Entity):
                 raise ValueError('Range specified must match corresponding bus size')
         self._range = outs_range
 
-
     def run(self, time=None):
         "Implements bus subset behavior by storing a masked shifted input to each"
-        for x in range(0,len(self._outputs)):
+        for x in range(0, len(self._outputs)):
             mask = 2**self._range[x][1] - 2**self._range[x][0]
             val = (self._input.read() & mask) >> self._range[x][0]
             self._outputs[x].write(val)

@@ -5,10 +5,9 @@ subdirectory.
 
 import unittest
 import sys
-sys.path.insert(0,'../')
+sys.path.insert(0, '../')
 
 from tests.architecture import *
-
 
 
 if __name__ == '__main__':

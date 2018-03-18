@@ -6,7 +6,6 @@ from components.abstract.combinational import Combinational
 from components.abstract.ibus import iBusRead, iBusWrite
 
 
-
 class Extender(Combinational):
     """
     Extender object extends immediate field from instruction to word length for
@@ -38,17 +37,22 @@ class Extender(Combinational):
         self._exts = exts
         self._imm32 = imm32
 
-
-    def run(self, time = None):
+    def run(self, time=None):
         """
         exts = 0 for data processing instructions
         exts = 1 for load and store instructions
         exts = 2 or 3 for branch instructions
         """
 
-        # keep only the 8 most least significant bits
+        # keep only the 8 most least significant bits and rotate by field
         if self._exts.read() == 0:
-            self._imm32.write(self._imm.read() & 0x000000FF)
+            rotate = (self._imm.read() & 0x00000F00) >> 8
+            imm = self._imm.read() & 0x000000FF
+            for i in range(0,rotate):
+                t1 = imm & 0x1
+                t2 = (imm & 0x2) >> 1
+                imm = (imm >> 2) | (t1 << 30) | (t2 << 31)
+            self._imm32.write(imm & (2**32 - 1))
         # keep only the 12 most least significant bits
         elif self._exts.read() == 1:
             self._imm32.write(self._imm.read() & 0x00000FFF)

@@ -5,7 +5,6 @@ Define Read and Write behavior for bus types in the system architecture
 from abc import ABC, abstractmethod
 
 
-
 class iBus(ABC):
     """
     Interface to enforce size constraint on bus type objects
@@ -15,7 +14,6 @@ class iBus(ABC):
     def size(self):
         "Interface function for bus to note its size to the caller, expect return"
         return NotImplemented
-
 
 
 class iBusRead(iBus):
@@ -29,13 +27,12 @@ class iBusRead(iBus):
         return NotImplemented
 
 
-
 class iBusWrite(iBus):
     """
     Interface to enforce write behavior on a bus type object
     """
 
     @abstractmethod
-    def write(self,data):
+    def write(self, data):
         "Interface function for bus to receive data from caller, no return"
         return NotImplemented
