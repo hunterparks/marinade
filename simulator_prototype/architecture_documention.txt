@@ -1,3 +1,4 @@
+
 I plan on elaborating the message scheme in this document. In the future this
 should be cleaned up and turned into a presentable file.
 
@@ -6,6 +7,12 @@ frontend communication. Each of these will follow a JSON messaging scheme
   1) Hook messages into and from architecture
   2) Control messages (Run, Reset, Step)
   3) Configure messages (New architecture, new virtual IO)
+  
+Note that this is not yet implemented however the goal is for the backend to implement
+behavior so as to use these features of the architecture constructed.
+
+Note See hook_documentation.txt to get further details on how hooks are to interact
+with this concept interface
 
 General Message Scheme
 
@@ -18,8 +25,8 @@ Hook Message Scheme
 {
   "hook" : {
     "hook method*" : <message to hook>
-  }
 }
+
 
 [*] if applicable
 
@@ -37,8 +44,9 @@ Hook Message Scheme
     "hook" : {
       "modify" : {
         "name" : "h1",
-        "state" : [<some numbers],
-        "start_address" : <some number
+        "parameters" : {
+          "state" : <some number>
+        }
       }
     }
   }
@@ -47,12 +55,14 @@ Hook Message Scheme
   {
     "hook" : {
       "generate" : {
-        "name" : "<clk, reset, logic_input>",
-        "frequency" : <some reasonable number>
-        "state" : <some reasonable number>
+        "name" : "<hook name>",
+        "parameters" : {
+          "state" : <some number>
+        }
       }
     }
   }
+
 
 Control Message Scheme
 
@@ -73,7 +83,6 @@ Control Message Scheme
   {
     "architecture" : {
       "configuration" : {
-
       }
     }
   }
@@ -89,6 +98,3 @@ Control Message Scheme
       }
     }
   }
-
-
-//Notes for self

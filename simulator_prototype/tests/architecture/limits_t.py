@@ -7,6 +7,7 @@ import sys
 sys.path.insert(0, '../../')
 import limits
 
+# TODO add more value checks
 
 
 class Limits_t(unittest.TestCase):
@@ -17,9 +18,13 @@ class Limits_t(unittest.TestCase):
     def test_limits_exists(self):
         "Prove that all limits exist and are properly defined"
 
-        self.assertTrue(isinstance(limits.MAX_FREQUENCY,(int,float)))
-        self.assertTrue(isinstance(limits.MIN_FREQUENCY,(int,float)))
-
+        self.assertTrue(isinstance(limits.MAX_FREQUENCY, (int, float)))
+        self.assertTrue(isinstance(limits.MIN_FREQUENCY, (int, float)))
+        self.assertTrue(isinstance(limits.MAX_MEMORY_BLOCK, (int)))
+        self.assertTrue(isinstance(limits.MIN_MEMORY_BLOCK, (int)))
+        self.assertTrue(isinstance(limits.MAX_BYTES_IN_WORD, (int)))
+        self.assertTrue(isinstance(limits.MIN_ADDRESS, (int)))
+        self.assertTrue(isinstance(limits.MAX_ADDRESS, (int)))
 
 if __name__ == '__main__':
     unittest.main()

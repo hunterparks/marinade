@@ -9,15 +9,14 @@ from components.abstract.entity import Entity
 from enum import Enum
 
 
-
 class Latch_Type(Enum):
     """
     Defines clock sequential logic latch type
     """
 
-    RISING_EDGE = 0
-    FALLING_EDGE = 1
-    BOTH_EDGE = 2
+    RISING_EDGE = 0     # Low to High edge
+    FALLING_EDGE = 1    # High to Low edge
+    BOTH_EDGE = 2       # Rising and Falling edges
 
     @classmethod
     def valid(cls, x):
@@ -32,14 +31,13 @@ class Latch_Type(Enum):
         return retval
 
 
-
 class Logic_States(Enum):
     """
     Defines reset sequential logic on type
     """
 
-    ACTIVE_LOW = 0
-    ACTIVE_HIGH = 1
+    ACTIVE_LOW = 0     # Logic low value realized in system for seqential
+    ACTIVE_HIGH = 1    # Logic high value realized in system for seqential
 
     @classmethod
     def valid(cls, x):
@@ -50,7 +48,6 @@ class Logic_States(Enum):
         elif x == cls.ACTIVE_HIGH:
             retval = True
         return retval
-
 
 
 class Sequential(InternalHook, Entity):
@@ -66,12 +63,10 @@ class Sequential(InternalHook, Entity):
         "On clock rising edge in entity run, this function should be called"
         return NotImplemented
 
-
     @abstractmethod
     def on_falling_edge(self):
         "On clock falling edge in entity run, this function should be called"
         return NotImplemented
-
 
     @abstractmethod
     def on_reset(self):

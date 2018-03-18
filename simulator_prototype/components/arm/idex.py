@@ -1,10 +1,5 @@
-"""
-
-"""
-
 from components.abstract.ibus import iBusRead, iBusWrite
 from components.abstract.sequential import Sequential, Latch_Type, Logic_States
-
 
 
 class Idex(Sequential):
@@ -13,12 +8,11 @@ class Idex(Sequential):
     """
 
     def __init__(self, pcsrcd, regwrsd, regwrd, alusrcbd, alusd, aluflagwrd,
-                memwrd, regsrcd, wd3sd, rd1d, rd2d, imm32d, ra1d, ra2d, ra3d,
-                flush, clk, pcsrce, regwrse, regwre, alusrcbe, aluse, aluflagwre,
-                memwre, regsrce, wd3se, rd1e, rd2e, imm32e, ra1e, rd2e, imm32e,
-                ra1e, ra2e, ra3e, edge_type = Latch_Type.RISING_EDGE,
-                flush_type = Logic_States.ACTIVE_HIGH, enable = None,
-                enable_type = Logic_States.ACTIVE_HIGH):
+                 memwrd, regsrcd, wd3sd, rd1d, rd2d, imm32d, ra1d, ra2d, ra3d,
+                 flush, clk, pcsrce, regwrse, regwre, alusrcbe, aluse, aluflagwre,
+                 memwre, regsrce, wd3se, rd1e, rd2e, imm32e, ra1e, ra2e, ra3e,
+                 edge_type=Latch_Type.RISING_EDGE, flush_type=Logic_States.ACTIVE_HIGH,
+                 enable=None, enable_type=Logic_States.ACTIVE_HIGH):
         """
         inputs:
             pcsrcd: selects the next instruction given to the fetch stage
@@ -130,23 +124,23 @@ class Idex(Sequential):
         elif clk.size() != 1:
             raise ValueError('The clk must have a size of 1 bit')
         if not isinstance(pcsrce, iBusRead):
-            raise TypeError('The pcsrce bus must be writeable')
+            raise TypeError('The pcsrce bus must be writable')
         elif pcsrce.size() != 2:
             raise ValueError('The pcsrce bus must have a size of 2 bits')
         if not isinstance(regwrse, iBusWrite):
             raise TypeError('The regwrse bus must be writable')
-        elif regsrce.size() != 2:
-            raise ValueError('The regsrce bus must have a size of 2 bits')
+        elif regwrse.size() != 2:
+            raise ValueError('The regwrse bus must have a size of 2 bits')
         if not isinstance(regwre, iBusWrite):
-            raise TypeError('The regwre bus must be writeable')
+            raise TypeError('The regwre bus must be writable')
         elif regwre.size() != 1:
             raise ValueError('The regwre bust must have a size of 1 bit')
         if not isinstance(alusrcbe, iBusWrite):
-            raise TypeError('The alusrcbe bus must be writeable')
+            raise TypeError('The alusrcbe bus must be writable')
         elif alusrcbe.size() != 1:
             raise ValueError('The alusrcbe bus must have a size of 1 bit')
         if not isinstance(aluse, iBusWrite):
-            raise TypeError('The aluse bus must be writeable')
+            raise TypeError('The aluse bus must be writable')
         elif aluse.size() != 4:
             raise ValueError('The aluse bus must have a size of 4 bits')
         if not isinstance(aluflagwre, iBusWrite):
@@ -154,11 +148,11 @@ class Idex(Sequential):
         elif aluflagwre.size() != 1:
             raise ValueError('The alusflagwre bus must have a size of 1 bit')
         if not isinstance(memwre, iBusWrite):
-            raise TypeError('The memwre bus must be writeable')
+            raise TypeError('The memwre bus must be writable')
         elif memwre.size() != 1:
             raise ValueError('The memwre bus must have a size of 1 bit')
         if not isinstance(regsrce, iBusWrite):
-            raise TypeError('The regsrce bus must be writeable')
+            raise TypeError('The regsrce bus must be writable')
         elif regsrce.size() != 1:
             raise ValueError('The regsrce bus must have a size of 1 bit')
         if not isinstance(wd3se, iBusWrite):
@@ -170,7 +164,7 @@ class Idex(Sequential):
         elif rd1e.size() != 32:
             raise ValueError('The rd1e bus must have a size of 32 bits')
         if not isinstance(rd2e, iBusWrite):
-            raise TypeError('The rd2e bus must be writeable')
+            raise TypeError('The rd2e bus must be writable')
         elif rd2e.size() != 32:
             raise ValueError('The rd2e bus must have a size of 32 bits')
         if not isinstance(imm32e, iBusWrite):
@@ -178,11 +172,11 @@ class Idex(Sequential):
         elif imm32e.size() != 32:
             raise ValueError('The imm32e bus must have a size of 32 bits')
         if not isinstance(ra1e, iBusWrite):
-            raise TypeError('The ra1e bus must be writeable')
+            raise TypeError('The ra1e bus must be writable')
         elif ra1e.size() != 4:
             raise ValueError('The ra1e bus must have a size of 4 bits')
         if not isinstance(ra2e, iBusWrite):
-            raise TypeError('The ra2e bus must be writeable')
+            raise TypeError('The ra2e bus must be writable')
         elif ra2e.size() != 4:
             raise ValueError('The ra2e bus must have a size of 4 bits')
         if not isinstance(ra3e, iBusWrite):
@@ -193,8 +187,10 @@ class Idex(Sequential):
             raise ValueError('Invalid latch edge type')
         if not Logic_States.valid(flush_type):
             raise ValueError('Invalid flush state')
-        if not isinstance(enable, iBusRead) or (enable is not None and enable.size() != 1):
-            raise ValueError('The enable input must have a size of 1 bit')
+        if enable is not None and not isinstance(enable, iBusRead):
+            raise ValueError('The enable bus must be readable')
+        elif enable is not None and enable.size() != 1:
+            raise ValueError('The enable bus must have a size of 1 bit')
         if not Logic_States.valid(enable_type):
             raise ValueError('Invalid enable state')
 
@@ -202,7 +198,7 @@ class Idex(Sequential):
         self._regwrsd = regwrsd
         self._regwrd = regwrd
         self._alusrcbd = alusrcbd
-        self._alusd = alusrcbd
+        self._alusd = alusd
         self._aluflagwrd = aluflagwrd
         self._memwrd = memwrd
         self._regsrcd = regsrcd
@@ -218,6 +214,7 @@ class Idex(Sequential):
         self._prev_clk_state = self._clk.read()
         self._pcsrce = pcsrce
         self._regwre = regwre
+        self._regwrse = regwrse
         self._alusrcbe = alusrcbe
         self._aluse = aluse
         self._aluflagwre = aluflagwre
@@ -235,6 +232,11 @@ class Idex(Sequential):
         self._enable = enable
         self._enable_type = enable_type
 
+        self._state = IdexState(self._pcsrce, self._regwrse, self._regwre, self._alusrcbe, 
+                                self._aluse, self._aluflagwre, self._memwre, self._regsrce, 
+                                self._wd3se, self._rd1e, self._rd2e, self._imm32e, self._ra1e,
+                                self._ra2e, self._ra3e)
+
 
     def on_rising_edge(self):
         """
@@ -244,7 +246,7 @@ class Idex(Sequential):
             if ((self._flush_type == Logic_States.ACTIVE_LOW and self._flush.read() == 0)
                     or (self._flush_type == Logic_States.ACTIVE_HIGH and self._flush.read() == 1)):
                 self._pcsrce.write(0)
-                self._regsrce.write(0)
+                self._regwrse.write(0)
                 self._regwre.write(0)
                 self._alusrcbe.write(0)
                 self._aluse.write(0)
@@ -260,7 +262,7 @@ class Idex(Sequential):
                 self._ra3e.write(0)
             else:
                 self._pcsrce.write(self._pcsrcd.read())
-                self._regsrce.write(self._regsrcd.read())
+                self._regwrse.write(self._regwrsd.read())
                 self._regwre.write(self._regwrd.read())
                 self._alusrcbe.write(self._alusrcbd.read())
                 self._aluse.write(self._alusd.read())
@@ -274,7 +276,6 @@ class Idex(Sequential):
                 self._ra1e.write(self._ra1d.read())
                 self._ra2e.write(self._ra2d.read())
                 self._ra3e.write(self._ra3d.read())
-
 
     def on_falling_edge(self):
         """
@@ -284,7 +285,7 @@ class Idex(Sequential):
             if ((self._flush_type == Logic_States.ACTIVE_LOW and self._flush.read() == 0)
                     or (self._flush_type == Logic_States.ACTIVE_HIGH and self._flush.read() == 1)):
                 self._pcsrce.write(0)
-                self._regsrce.write(0)
+                self._regwrse.write(0)
                 self._regwre.write(0)
                 self._alusrcbe.write(0)
                 self._aluse.write(0)
@@ -300,7 +301,7 @@ class Idex(Sequential):
                 self._ra3e.write(0)
             else:
                 self._pcsrce.write(self._pcsrcd.read())
-                self._regsrce.write(self._regsrcd.read())
+                self._regwrse.write(self._regwrsd.read())
                 self._regwre.write(self._regwrd.read())
                 self._alusrcbe.write(self._alusrcbd.read())
                 self._aluse.write(self._alusd.read())
@@ -315,7 +316,6 @@ class Idex(Sequential):
                 self._ra2e.write(self._ra2d.read())
                 self._ra3e.write(self._ra3d.read())
 
-
     def on_reset(self):
         """
         Not used for this register
@@ -323,26 +323,36 @@ class Idex(Sequential):
         pass
 
 
-    def insepct(self):
+    def inspect(self):
         """
         Returns a dictionary message to the user
         """
-        pass
+        return {'type': 'idex register', 'state': self._state}
 
 
-    def run(self, time = None):
+    def modify(self, data = None):
+        """
+        Return message noting that is register cannot be modified
+        """
+        return {'error' : 'idex register cannot be modified'}
+
+
+    def clear(self):
+        "Return a message noting that the idex register cannot be cleared"
+        return {'error': 'idex register cannot be cleared'}
+
+
+    def run(self, time=None):
         """
         Timestep handler function - sequentially asserts output
         """
-
         # process enable line
         e = True
         if self._enable is not None:
             if self._enable_type == Logic_States.ACTIVE_LOW:
                 e = self._enable_type.read() == 0
             else:
-                e = self._enable.read() == 1
-                
+                e = self._enable.read() == 1          
         # check for clock change
         if e:
             if self._clk.read() == 1 and self._prev_clk_state == 0:
@@ -350,3 +360,39 @@ class Idex(Sequential):
             elif self._clk.read() == 0 and self._prev_clk_state == 1:
                 self.on_falling_edge()
         self._prev_clk_state = self._clk.read()
+
+
+class IdexState():
+    """
+    Stores the idex registers state
+    Used in the Idex class's inspect method
+    Note: Do not make new instances of this class outside of the Idex class
+    """
+
+    def __init__(self, pcsrce, regwrse, regwre, alusrcbe, aluse, aluflagwre, memwre, regsrce,
+                wd3se, rd1e, rd2e, imm32e, ra1e, ra2e, ra3e):
+        self._pcsrce = pcsrce
+        self._regwrse = regwrse
+        self._regwre = regwre
+        self._alusrcbe = alusrcbe
+        self._aluse = aluse
+        self._aluflagwre = aluflagwre
+        self._memwre = memwre
+        self._regsrce = regsrce
+        self._wd3se = wd3se
+        self._rd1e = rd1e
+        self._rd2e = rd2e
+        self._imm32e = imm32e
+        self._ra1e = ra1e
+        self._ra2e = ra2e
+        self._ra3e = ra3e
+
+    def get_state(self):
+        return {'pcsrce': self._pcsrce.read(), 'regwrse': self._regwrse.read(),
+                'regwre': self._regwre.read(), 'alusrcbe': self._alusrcbe.read(),
+                'aluse': self._aluse.read(), 'aluflagwre': self._aluflagwre.read(),
+                'memwre': self._memwre.read(), 'regsrce': self._regsrce.read(),
+                'wd3se': self._wd3se.read(), 'rd1e': self._rd1e.read(),
+                'rd2e': self._rd2e.read(), 'imm32e': self._imm32e.read(),
+                'ra1e': self._ra1e.read(), 'ra2e': self._ra2e.read(),
+                'ra3e': self._ra3e.read()}

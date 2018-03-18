@@ -1,10 +1,5 @@
-"""
-
-"""
-
 from components.abstract.sequential import Sequential, Latch_Type, Logic_States
 from components.core.bus import iBusRead, iBusWrite
-
 
 
 class Exmem(Sequential):
@@ -12,11 +7,10 @@ class Exmem(Sequential):
     This specialized register sits between the decode and execute stages of the
     processor
     """
-
     def __init__(self, pcsrce, regwrse, regwre, memwre, regsrce, wd3se, rd2e, fe, ra3e, clk,
-                pcsrcm, regwrsm, regwrm, memwrm, regsrcm, wd3sm, fm, rd2m, ra3m,
-                edge_type = Latch_Type.RISING_EDGE, enable = None,
-                enable_type = Logic_States.ACTIVE_HIGH):
+                 pcsrcm, regwrsm, regwrm, memwrm, regsrcm, wd3sm, fm, rd2m, ra3m,
+                 edge_type=Latch_Type.RISING_EDGE, enable=None,
+                 enable_type=Logic_States.ACTIVE_HIGH):
         """
         inputs:
             pcsrce: selects the instruction given to the fetch stage
@@ -27,7 +21,7 @@ class Exmem(Sequential):
             wd3se: selects what data to write to the regfile
             rd2e: register value
             fe: output of execute stage
-            ra3e: register number or constant 14
+            ra3e: register number
             clk: clock
             enable: enables component (not typically used)
         outputs:
@@ -94,15 +88,15 @@ class Exmem(Sequential):
         elif regwrsm.size() != 2:
             raise ValueError('The regwrsm bus must have a size of 2 bits')
         if not isinstance(regwrm, iBusWrite):
-            raise TypeError('The regwrm bus must be writeable')
+            raise TypeError('The regwrm bus must be writable')
         elif regwrm.size() != 1:
             raise ValueError('The regwrm bus must have a size of 1 bit')
         if not isinstance(memwrm, iBusWrite):
-            raise TypeError('The memwrm bus must be writeable')
+            raise TypeError('The memwrm bus must be writable')
         elif memwrm.size() != 1:
             raise ValueError('The memwrm bus must have a size of 1 bit')
         if not isinstance(regsrcm, iBusWrite):
-            raise TypeError('The regsrcm bus must be writeable')
+            raise TypeError('The regsrcm bus must be writable')
         elif regsrcm.size() != 1:
             raise ValueError('The regsrcm bus must have a size of 1 bit')
         if not isinstance(wd3sm, iBusWrite):
@@ -123,8 +117,10 @@ class Exmem(Sequential):
             raise ValueError('The ra3m bus must have a size of 4 bits')
         if not Latch_Type.valid(edge_type):
             raise ValueError('Invalid latch edge type')
-        if not isinstance(enable, iBusRead) or (enable is not None and enable.size() != 1):
-            raise ValueError('The enable input must have a size of 1 bit')
+        if enable is not None and not isinstance(enable, iBusRead):
+            raise ValueError('The enable bus must be readable')
+        elif enable is not None and enable.size() != 1:
+            raise ValueError('The enable bus must have a size of 1 bit')
         if not Logic_States.valid(enable_type):
             raise ValueError('Invalid enable state')
 
@@ -152,12 +148,14 @@ class Exmem(Sequential):
         self._enable = enable
         self._enable_type = enable_type
 
+        self._state = ExmemState(self._pcsrcm, self._regwrsm, self._regwrm, self._memwrm, 
+                                self._regsrcm, self._wd3sm, self._fm, self._rd2m, self._ra3m)
+
 
     def on_rising_edge(self):
         """
         Implements clock rising behavior: captures data if latch type matches
         """
-
         if self._edge_type == Latch_Type.RISING_EDGE or self._edge_type == Latch_Type.BOTH_EDGE:
             self._pcsrcm.write(self._pcsrce.read())
             self._regwrsm.write(self._regwrse.read())
@@ -165,10 +163,9 @@ class Exmem(Sequential):
             self._memwrm.write(self._memwre.read())
             self._regsrcm.write(self._regsrce.read())
             self._wd3sm.write(self._wd3se.read())
-            self._fm.write(self._fm.read())
-            self._rd2m.write(self._rd2m.read())
-            self._ra3m.write(self._ra3m.read())
-
+            self._fm.write(self._fe.read())
+            self._rd2m.write(self._rd2e.read())
+            self._ra3m.write(self._ra3e.read())
 
     def on_falling_edge(self):
         """
@@ -182,10 +179,9 @@ class Exmem(Sequential):
             self._memwrm.write(self._memwre.read())
             self._regsrcm.write(self._regsrce.read())
             self._wd3sm.write(self._wd3se.read())
-            self._fm.write(self._fm.read())
-            self._rd2m.write(self._rd2m.read())
-            self._ra3m.write(self._ra3m.read())
-
+            self._fm.write(self._fe.read())
+            self._rd2m.write(self._rd2e.read())
+            self._ra3m.write(self._ra3e.read())
 
     def on_reset(self):
         "Not used for this register"
@@ -194,9 +190,61 @@ class Exmem(Sequential):
 
     def inspect(self):
         "Returns a dictionary message to the user"
-        pass
+        return {'type': 'exmem register', 'state': self._state}
+
+
+    def modify(self, data = None):
+        """
+        Return message noting that is register cannot be modified
+        """
+        return {'error' : 'exmem register cannot be modified'}
+
+
+    def clear(self):
+        "Return a message noting that the exmem register cannot be cleared"
+        return {'error': 'exmem register cannot be cleared'}
 
 
     def run(self, time = None):
-        "Timestep handler function -sequentially asserts output"
-        pass
+        "Timestep handler function - sequentially asserts output"
+        # process enable line
+        e = True
+        if self._enable is not None:
+            if self._enable_type == Logic_States.ACTIVE_LOW:
+                e = self._enable_type.read() == 0
+            else:
+                e = self._enable.read() == 1          
+        # check for clock change
+        if e:
+            if self._clk.read() == 1 and self._prev_clk_state == 0:
+                self.on_rising_edge()
+            elif self._clk.read() == 0 and self._prev_clk_state == 1:
+                self.on_falling_edge()
+        self._prev_clk_state = self._clk.read()
+
+
+class ExmemState():
+    """
+    Stores the exmem registers state
+    Used in the Exmem class's inspect method
+    Note: Do not make new instances of this class outside of the Exmem class
+    """
+
+    def __init__(self, pcsrcm, regwrsm, regwrm, memwrm, regsrcm, wd3sm, fm, rd2m, ra3m):
+        self._pcsrcm = pcsrcm
+        self._regwrsm = regwrsm
+        self._regwrm = regwrm
+        self._memwrm = memwrm
+        self._regsrcm = regsrcm
+        self._wd3sm = wd3sm
+        self._fm = fm
+        self._rd2m = rd2m
+        self._ra3m = ra3m
+
+
+    def get_state(self):
+        return {'pcsrcm': self._pcsrcm.read(), 'regwrsm': self._regwrsm.read(),
+                'regwrem': self._regwrm.read(), 'memwrm': self._memwrm.read(),
+                'regsrcm': self._regsrcm.read(), 'wd3sm': self._wd3sm.read(),
+                'fm': self._fm.read(), 'rd2m': self._rd2m.read(),
+                'ra3m': self._ra3m.read()}

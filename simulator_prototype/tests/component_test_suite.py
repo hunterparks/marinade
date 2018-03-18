@@ -5,12 +5,11 @@ arm. Note that simulation and architecture are not incorporated in this test.
 
 import unittest
 import sys
-sys.path.insert(0,'../')
+sys.path.insert(0, '../')
 
 from tests.abstract import *
 from tests.core import *
 from tests.arm import *
-
 
 
 if __name__ == '__main__':

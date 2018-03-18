@@ -1,10 +1,5 @@
-"""
-
-"""
-
 from components.abstract.ibus import iBusRead, iBusWrite
 from components.abstract.sequential import Sequential, Latch_Type, Logic_States
-
 
 
 class Ifid(Sequential):
@@ -12,9 +7,9 @@ class Ifid(Sequential):
     This specialized register sits between the fetch and decode stages of the processor
     """
 
-    def __init__(self, instrf, stall, flush, clk, instrd, default_state = 0,
-                edge_type = Latch_Type.RISING_EDGE, flush_type = Logic_States.ACTIVE_HIGH,
-                enable = None, enable_type = Logic_States.ACTIVE_HIGH):
+    def __init__(self, instrf, stall, flush, clk, instrd, default_state=0,
+                 edge_type=Latch_Type.RISING_EDGE, flush_type=Logic_States.ACTIVE_HIGH,
+                 enable=None, enable_type=Logic_States.ACTIVE_HIGH):
         """
         inputs:
             instrf: the fetched instruction
@@ -48,7 +43,7 @@ class Ifid(Sequential):
         elif clk.size() != 1:
             raise ValueError('The clock bus must have a size of 1 bit')
         if not isinstance(instrd, iBusWrite):
-            raise TypeError('The instrd bus must be writeable')
+            raise TypeError('The instrd bus must be writable')
         elif instrd.size() != 32:
             raise ValueError('The instrd bus must have a size of 32 bits')
         if not isinstance(default_state, int) or default_state < 0 or default_state >= 2**32:
@@ -57,8 +52,10 @@ class Ifid(Sequential):
             raise ValueError('Invalid latch edge type')
         if not Logic_States.valid(flush_type):
             raise ValueError('Invalid flush state')
-        if not isinstance(enable, iBusRead) or (enable is not None and enable.size() != 1):
-            raise ValueError('The enable input must have a size of 1 bit')
+        if enable is not None and not isinstance(enable, iBusRead):
+            raise ValueError('The enable bus must be readable')
+        elif enable is not None and enable.size() != 1:
+            raise ValueError('The enable bus must have a size of 1 bit')
         if not Logic_States.valid(enable_type):
             raise ValueError('Invalid enable state')
 
@@ -75,7 +72,6 @@ class Ifid(Sequential):
         self._enable = enable
         self._enable_type = enable_type
 
-
     def on_rising_edge(self):
         """
         Implements clock rising behavior: captures data if latching type matches
@@ -86,7 +82,6 @@ class Ifid(Sequential):
                 self._instrd.write(0)
             else:
                 self._instrd.write(self._instrf.read())
-
 
     def on_falling_edge(self):
         """
@@ -99,22 +94,32 @@ class Ifid(Sequential):
             else:
                 self._instrd.write(self._instrf.read())
 
-
     def on_reset(self):
         """
         Not used for this register
         """
         pass
 
-
     def inspect(self):
         """
         Returns a dictionary message to the user
         """
-        return {'type': 'ifid', 'instrf': self._instrf.read(), 'instrd': self._instrd.read()}
+        return {'type': 'ifid register', 'state': self._instrd.read()}
 
 
-    def run(self, time = None):
+    def modify(self, data = None):
+        """
+        Return message noting that is register cannot be modified
+        """
+        return {'error': 'ifid register cannot be modified'}
+
+
+    def clear(self):
+        "Return a message noting that the ifid register cannot be cleared"
+        return {'error': 'ifid register cannot be cleared'}
+
+
+    def run(self, time=None):
         """
         Timestep handler function - sequentially asserts output
         """
