@@ -5,10 +5,8 @@ processor and should be produced by the configuration parser
 """
 
 from collections import OrderedDict, Iterable
-
 from components.core.clock import Clock
 from components.core.reset import Reset
-
 from components.abstract.hooks import Hook, InputHook, InternalHook
 
 class Architecture:
