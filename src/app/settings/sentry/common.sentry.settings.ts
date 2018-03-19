@@ -14,9 +14,9 @@ export abstract class SentrySettingsInterface {
 
 /**
 
-  _______________________
+  -----------------------
   USING SENTRY SETTINGS:
-  _______________________
+  -----------------------
 
     Create a class implementation in a file in this directory called local.sentry.settings.ts.
     An example configuration is below.
