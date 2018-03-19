@@ -1,10 +1,8 @@
 import { Component, HostListener } from '@angular/core';
+import { ARCHITECTURE } from '../../../models/simulator/simulator.model';
 import { TransmitService } from '../../../services/simulator/transmit/transmit.service';
 import { WebsocketService } from '../../../services/simulator/websocket/websocket.service';
 import { TooltipService } from '../../../services/tooltip/tooltip.service';
-import { BUSES } from '../../simulator/bus/buses.model';
-import { MUXES } from '../../simulator/mux/muxes.model';
-import { REGISTERS } from '../../simulator/register/registers.model';
 
 @Component({
   selector: 'marinade-simulator',
@@ -30,12 +28,14 @@ export class SimulatorComponent {
   private viewBoxUpperLeftY: number = 0;
   private viewBoxWidth: number = 1600;
 
-  public buses: any[] = BUSES;
-  public muxes: any[] = MUXES;
-  public registers: any[] = REGISTERS;
+  public busComponents: any[] = ARCHITECTURE['bus'];
+  public controllerComponents: any[] = ARCHITECTURE['controller'];
+  public muxComponents: any[] = ARCHITECTURE['mux'];
+  public stageComponents: any[] = ARCHITECTURE['stage'];
+  public stageRegisterComponents: any[] = ARCHITECTURE['stage-register'];
 
-  public scale: number = 1;
   public viewBox: string = '0 0 1600 900';
+  public viewScale: number = 1;
 
   constructor(private tooltipService: TooltipService, private transmit: TransmitService, private websocket: WebsocketService) {
     this.websocket.connect();
@@ -50,16 +50,16 @@ export class SimulatorComponent {
       this.viewBoxUpperLeftX = -this.viewBoxWidth * 0.5;
     }
     // Bound the architecture on the right
-    if (this.viewBoxUpperLeftX / this.scale > this.viewBoxWidth) {
-      this.viewBoxUpperLeftX = this.viewBoxWidth * (this.scale - SimulatorComponent.MAX_SCALE);
+    if (this.viewBoxUpperLeftX / this.viewScale > this.viewBoxWidth) {
+      this.viewBoxUpperLeftX = this.viewBoxWidth * (this.viewScale - SimulatorComponent.MAX_SCALE);
     }
     // Bound the architecture on the top
     if (this.viewBoxUpperLeftY < -this.viewBoxHeight * 0.5) {
       this.viewBoxUpperLeftY = -this.viewBoxHeight * 0.5;
     }
     // Bound the architecture on the bottom
-    if (this.viewBoxUpperLeftY / this.scale > this.viewBoxHeight) {
-      this.viewBoxUpperLeftY = this.viewBoxHeight * (this.scale - SimulatorComponent.MAX_SCALE);
+    if (this.viewBoxUpperLeftY / this.viewScale > this.viewBoxHeight) {
+      this.viewBoxUpperLeftY = this.viewBoxHeight * (this.viewScale - SimulatorComponent.MAX_SCALE);
     }
     this.viewBox = this.viewBoxUpperLeftX + ' ' + this.viewBoxUpperLeftY + ' ' +
                    this.viewBoxWidth + ' ' + this.viewBoxHeight;
@@ -87,12 +87,12 @@ export class SimulatorComponent {
     // If a click is being held
     if (this.tracking) {
       this.tooltipService.tooltips.forEach((tooltip: any) => {
-        tooltip.x.next(tooltip.x.getValue() + (event.x - this.mouseStartX) / this.scale);
-        tooltip.y.next(tooltip.y.getValue() + (event.y - this.mouseStartY) / this.scale);
+        tooltip.x.next(tooltip.x.getValue() + (event.x - this.mouseStartX) / this.viewScale);
+        tooltip.y.next(tooltip.y.getValue() + (event.y - this.mouseStartY) / this.viewScale);
       });
-      // Adjust the top left corner (origin point) based on the location deltas and the scale
-      this.viewBoxUpperLeftX = this.viewBoxUpperLeftX - (event.x - this.mouseStartX) / this.scale;
-      this.viewBoxUpperLeftY = this.viewBoxUpperLeftY - (event.y - this.mouseStartY) / this.scale;
+      // Adjust the top left corner (origin point) based on the location deltas and the viewScale
+      this.viewBoxUpperLeftX = this.viewBoxUpperLeftX - (event.x - this.mouseStartX) / this.viewScale;
+      this.viewBoxUpperLeftY = this.viewBoxUpperLeftY - (event.y - this.mouseStartY) / this.viewScale;
       // Refresh the viewbox with the new properties
       this.updateViewBox();
       // Create a new reference point for tracking
@@ -120,20 +120,20 @@ export class SimulatorComponent {
   @HostListener('wheel', ['$event'])
   public onWheel(event: WheelEvent): void {
     // TODO scaling for tooltips
-    // Adjust the scale
-    this.scale += event.deltaY / 400;
-    if (this.scale < SimulatorComponent.MIN_SCALE) {
-      this.scale = SimulatorComponent.MIN_SCALE;
+    // Adjust the viewScale
+    this.viewScale += event.deltaY / 400;
+    if (this.viewScale < SimulatorComponent.MIN_SCALE) {
+      this.viewScale = SimulatorComponent.MIN_SCALE;
     }
-    if (this.scale > SimulatorComponent.MAX_SCALE) {
-      this.scale = SimulatorComponent.MAX_SCALE;
+    if (this.viewScale > SimulatorComponent.MAX_SCALE) {
+      this.viewScale = SimulatorComponent.MAX_SCALE;
     }
     // Find the old center
     let oldCenterX: number = this.viewBoxWidth / 2;
     let oldCenterY: number = this.viewBoxHeight / 2;
     // Adjust the current height
-    this.viewBoxHeight = SimulatorComponent.DEFAULT_VIEWBOX_HEIGHT / this.scale;
-    this.viewBoxWidth = SimulatorComponent.DEFAULT_VIEWBOX_WIDTH / this.scale;
+    this.viewBoxHeight = SimulatorComponent.DEFAULT_VIEWBOX_HEIGHT / this.viewScale;
+    this.viewBoxWidth = SimulatorComponent.DEFAULT_VIEWBOX_WIDTH / this.viewScale;
     // Find the new center
     let centerX: number = this.viewBoxWidth / 2;
     let centerY: number = this.viewBoxHeight / 2;
@@ -144,7 +144,7 @@ export class SimulatorComponent {
   }
 
   /**
-   * Reset the viewBox to the default view (scale 1.0; top-left corner at 0, 0)
+   * Reset the viewBox to the default view (viewScale 1.0; top-left corner at 0, 0)
    */
   public reset(): void {
     // Reset the height and width properties to remove any zooming
@@ -153,8 +153,8 @@ export class SimulatorComponent {
     // Reset the upper left corner to remove any panning
     this.viewBoxUpperLeftX = SimulatorComponent.DEFAULT_VIEWBOX_UPPER_LEFT_X;
     this.viewBoxUpperLeftY = SimulatorComponent.DEFAULT_VIEWBOX_UPPER_LEFT_Y;
-    // Reset the scale used for calculations
-    this.scale = SimulatorComponent.DEFAULT_VIEWBOX_SCALE;
+    // Reset the viewScale used for calculations
+    this.viewScale = SimulatorComponent.DEFAULT_VIEWBOX_SCALE;
     // Refresh the viewBox with the new properties
     this.updateViewBox();
   }

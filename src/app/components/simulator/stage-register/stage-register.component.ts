@@ -1,21 +1,19 @@
 import { Component, Input, OnInit } from '@angular/core';
 
 @Component({
-  selector: '[svg-register]',
-  styleUrls: ['./register.component.sass'],
-  templateUrl: './register.component.html',
+  selector: '[svg-stage-register]',
+  styleUrls: ['./stage-register.component.sass'],
+  templateUrl: './stage-register.component.html',
 })
-export class RegisterComponent implements OnInit {
+export class StageRegisterComponent implements OnInit {
 
-  public color: string;
   public height: number;
-  @Input('svg-register') public register: any[];
+  @Input('svg-stage-register') public register: any[];
   public width: number;
   public x: number;
   public y: number;
 
   public ngOnInit(): void {
-    this.color = this.register['color'];
     this.height = this.register['height'];
     this.width = this.register['width'];
     this.x = this.register['x'];

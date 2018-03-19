@@ -6,18 +6,17 @@ import os
 import re
 
 current_directory = os.path.dirname(__file__)
-base_output_file = os.path.join(current_directory, '../../src/app/components/common/simulator')
+input_file = open('/Users/alex/Downloads/pipeline_architecture (7).svg', 'r')
+output_file = os.path.join(current_directory, '../../src/app/models/simulator/simulator.model.ts')
 
-input_file = open('/Users/alex/Downloads/pipeline_architecture (6).svg', 'r')
+# Clear the contents of the file
+open(output_file, 'w').write('export const ARCHITECTURE: any = {\n')
 
 # Read the input file and set up beautifulsoup
 input_text = ''
 for line in input_file:
     input_text += line
 soup = BeautifulSoup(input_text, "xml")
-
-# TODO: handle multiple junctions on a single bus
-# TODO: make approximations for points that are close together? rounding?
 
 
 class Element(ABC):
@@ -37,48 +36,45 @@ class Element(ABC):
 
 class Collection:
     component_type = None
-    typescript_file = None
-    typescript_name = None
     typescript_type = None
 
     def __init__(self, component_type):
         self.elements = []
-        if component_type == 'label':
-            self.typescript_file = base_output_file + '/label/labels.model.ts'
-            self.typescript_name = 'LABELS'
+        if component_type == 'bus':
+            self.typescript_type = 'any[]'
+            self.component_type = 'bus'
+        elif component_type == 'controller':
+            self.typescript_type = 'any[]'
+            self.component_type = 'controller'
+        elif component_type == 'label':
             self.typescript_type = 'any[]'
             self.component_type = 'label'
         elif component_type == 'mux':
-            self.typescript_file = base_output_file + '/mux/muxes.model.ts'
-            self.typescript_name = 'MUXES'
             self.typescript_type = 'any[]'
             self.component_type = 'mux'
-        elif component_type == 'register':
-            self.typescript_file = base_output_file + '/register/registers.model.ts'
-            self.typescript_name = 'REGISTERS'
+        elif component_type == 'stage':
             self.typescript_type = 'any[]'
-            self.component_type = 'register'
-        elif component_type == 'bus':
-            self.typescript_file = base_output_file + '/bus/buses.model.ts'
-            self.typescript_name = 'BUSES'
+            self.component_type = 'stage'
+        elif component_type == 'stage-register':
             self.typescript_type = 'any[]'
-            self.component_type = 'bus'
+            self.component_type = 'stage-register'
 
     def to_typescript(self):
         return json.dumps([element.to_dict() for element in self.elements], indent=2).replace('"', '\'')
 
     def commit(self):
-        if self.typescript_name and self.typescript_type and self.typescript_file:
+        if self.typescript_type:
             print(self.component_type + ': ' + str(len(self.elements)) + ' parsed.')
-            file = open(self.typescript_file, 'w')
-            file.write('export const ' + self.typescript_name + ': ' + self.typescript_type + ' = ')
+            file = open(output_file, 'a')
+            file.write('\'' + self.component_type + '\': ')
             file.write(self.to_typescript())
-            file.write(';\n')
+            file.write(',\n')
+            file.close()
             return True
         return False
 
     def add(self, element):
-        if element.__class__.__name__.lower() == self.component_type:
+        if element.__class__.__name__.lower() == self.component_type or (element.__class__.__name__.lower() == 'register' and self.component_type in ['stage', 'stage-register', 'controller']):
             if element.valid:
                 self.elements.append(element)
 
@@ -92,6 +88,7 @@ class Collection:
 class Bus(Element):
 
     name = ''
+    width = 1
 
     def __init__(self, junction=None, path=None):
         self.valid = True
@@ -108,7 +105,8 @@ class Bus(Element):
         return {
           'junctions': [junction.to_dict() for junction in self.junctions],
           'name': self.name,
-          'paths': [path.to_dict() for path in self.paths]
+          'paths': [path.to_dict() for path in self.paths],
+          'width': self.width
         }
 
     def parse_svg(self, svg):
@@ -231,17 +229,15 @@ class Label(Element):
 class Mux(Element):
 
     def __init__(self, svg):
-        self.color, self.path = self.parse_svg(svg)
+        self.path = self.parse_svg(svg)
 
     def parse_svg(self, svg):
-        color = svg.attrs['fill']
         path = str(str(svg.attrs['d']).replace('M ', '').replace(' L ', ', ').replace('Z', '').strip())
         self.validate(svg)
-        return color, path
+        return path
 
     def to_dict(self):
         return {
-            'color': self.color,
             'path': self.path
         }
 
@@ -249,24 +245,28 @@ class Mux(Element):
         self.valid = True
 
 
-# TODO: classify into more components, currently is just any rectangle
 class Register(Element):
 
     def __init__(self, svg):
-        self.color, self.height, self.width, self.x, self.y = self.parse_svg(svg)
+        self.type, self.height, self.width, self.x, self.y = self.parse_svg(svg)
 
     def parse_svg(self, svg):
-        color = svg.attrs['fill']
+        color = svg.attrs['fill'].lower()
+        if color == '#ff3333':
+          self.type = 'stage'
+        elif color == '#97d077':
+          self.type = 'stage-register'
+        elif color == '#ffff33':
+          self.type = 'controller'
         height = svg.attrs['height']
         width = svg.attrs['width']
         x = svg.attrs['x']
         y = svg.attrs['y']
         self.validate(svg)
-        return color, height, width, x, y
+        return self.type, height, width, x, y
 
     def to_dict(self):
         return {
-            'color': self.color,
             'height': self.height,
             'width': self.width,
             'x': self.x,
@@ -283,24 +283,6 @@ class Register(Element):
 labels = Collection('label')
 for label in soup.find_all('text'):
     labels.add(Label(label))
-
-# ====================================
-# Find the registers (rectangles)
-# ====================================
-registers = Collection('register')
-for rect in soup.find_all('rect'):
-    # Get the needed register attributes
-    registers.add(Register(rect))
-registers.commit()
-
-# ====================================
-# Find the muxes (paths with fill)
-# ====================================
-muxes = Collection('mux')
-for line in soup.find_all('path'):
-    if line.attrs['fill'] != 'none' and line.attrs['fill'] != '#000000':
-        muxes.add(Mux(line))
-muxes.commit()
 
 junctions = []
 for junction in soup.find_all('ellipse'):
@@ -350,12 +332,42 @@ for label in labels.elements:
             if abs(path.points[0].y - path.points[1].y) < 15: # path is horizontal, most likely comes from a component
                 if label.x > path.points[0].x-15 and label.x < path.points[1].x+15 and path.points[0].y > (label.y-10) and path.points[0].y - label.y < 25:
                     # associate label to bus, remove association from path
-                    bus.name = label.text
+                    bus_parts = label.text.replace(']', '').split('[')
+                    if len(bus_parts) > 1:
+                      bus_width_parts = bus_parts[1].split('..')
+                      bus.width = int(bus_width_parts[0]) - int(bus_width_parts[1]) + 1
+                    bus.name = label.text.replace(']', '').split('[')[0]
                     bus_named = True
             if bus_named:
-                break;
+                break
                     # break loop
             # else do nothing
-labels.elements.clear()
+
+# ====================================
+# Find the muxes (paths with fill)
+# ====================================
+muxes = Collection('mux')
+for line in soup.find_all('path'):
+    if line.attrs['fill'] != 'none' and line.attrs['fill'] != '#000000':
+        muxes.add(Mux(line))
+
+# ====================================
+# Find the registers (rectangles)
+# ====================================
+registers = {
+  'stage': Collection('stage'),
+  'stage-register': Collection('stage-register'),
+  'controller': Collection('controller')
+}
+for rect in soup.find_all('rect'):
+    typed_rect = Register(rect)
+    registers[typed_rect.type].add(typed_rect)
+
 buses.commit()
-print(len(buses))
+registers['controller'].commit()
+muxes.commit()
+registers['stage'].commit()
+registers['stage-register'].commit()
+
+file = open(output_file, 'a')
+file.write('};\n')
