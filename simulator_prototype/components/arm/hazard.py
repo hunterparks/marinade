@@ -148,16 +148,19 @@ class HazardController():
 
 
     @staticmethod
-    def _generate_stallf(ra1d, ra2d, ra3e, regsrce):
-        "Stall not needed for this pipeline processor implementation"
-        return 0
+    def _generate_stallf(pcsrcd):
+        if pcsrcd.read() == 2:
+            return 1
+        else:
+            return 0
 
 
     @staticmethod
-    def _generate_flushf(pcsrcd):
-        # If pipeline processor does not work - check the code below
-        if pcsrcd.read() == 0:
+    def _generate_flushf(pcsrcd, ra3e):
+        if pcsrcd.read() == 0 or (pcsrcd.read() == 2 and ra3e.read() == 0xF):
             return 1        # Branch hazard occured
+        elif pcsrcd.read() == 2 and ra3e.read() == 0xF:
+            return 
         else:
             return 0        # No branch hazard occured
 
@@ -194,8 +197,8 @@ class HazardController():
         self._fwda.write(self._generate_fwda(ra1e, ra3m, ra3w, regwrm, regwrw, regsrcm, regsrcw))
         self._fwdb.write(self._generate_fwdb(ra2e, ra3m, ra3w, regwrm, regwrw, regsrcm, regsrcw))
         self._fwds.write(self._generate_fwds(ra3m, ra3w, memwrm))
-        self._stallf.write(self._generate_stallf(ra1d, ra2d, ra3e, regsrce))
-        self._flushf.write(self._generate_flushf(pcsrcd))
+        self._stallf.write(self._generate_stallf(pcsrcd, ra3e))
+        self._flushf.write(self._generate_flushf(pcsrcd, ra3e))
         self._flushd.write(self._generate_flushd())
 
 

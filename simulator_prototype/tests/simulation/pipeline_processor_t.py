@@ -101,37 +101,41 @@ class PipelineProcessor_t(unittest.TestCase):
                 'instrd',
                 'wd3',
                 'pc4d',
+                'braddr',
+                'fe',
+                'rdw',
+                'fm',
+                'fw',
+                'rd1e',
+                'fwda',
+                'rd1',
+                'rd2e',
+                'fwdb',
+                'rd2',
+                'rd2m',
+                'alub',
+                'aluse',
                 'ra1e',
                 'ra2e',
                 'ra3e',
                 'ra3m',
                 'ra3w',
-                'fe',
-                'fm',
-                'fw',
-                'fwda',
-                'fwdb',
-                'rd1d',
-                'rd1',
-                'rd2d',
-                'rd2e',
-                'rd2',
-                'rd2m',
-                'imm32d',
-                'imm32e',
-                'alub',
-                'aluse',
+                'regwrd',
+                'regwre',
                 'regwrm',
                 'regwrw',
                 'regsrcm',
-                'regsrcw'
+                'regsrcw',
+                'memwrm',
+                'pcsrcd',
+                'imm32e'
             ]
         }
 
         # generate JSON through simulation
         resultPath = os.path.dirname(os.path.realpath(__file__)) + '\\results\\'
         resultPath = resultPath + filename + '_result'
-        self._run_simulation(resultPath, program, 38, msg_inspect)
+        self._run_simulation(resultPath, program, 100, msg_inspect)
 
         # generate results in excel table for tracking
         self._process_json_to_excel(resultPath, msg_inspect['inspect'])

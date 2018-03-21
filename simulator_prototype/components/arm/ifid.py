@@ -109,6 +109,11 @@ class Ifid(Sequential):
                 self._pc4d.write(0)
                 self._pc8d.write(0)
                 self._instrd.write(0)
+            elif ((self._enable_type == Logic_States.ACTIVE_HIGH and self._stall.read() == 1)
+                    or (self._enable_type == Logic_States.ACTIVE_LOW and self._stall.read() == 0)):
+                self._pc4d.write(self._pc4d.read())
+                self._pc8d.write(self._pc8d.read())
+                self._instrd.write(self._instrd.read())
             else:
                 self._pc4d.write(self._pc4f.read())
                 self._pc8d.write(self._pc8f.read())
@@ -124,6 +129,11 @@ class Ifid(Sequential):
                 self._pc4d.write(0)
                 self._pc8d.write(0)
                 self._instrd.write(0)
+            elif ((self._enable_type == Logic_States.ACTIVE_HIGH and self._stall.read() == 1)
+                    or (self._enable_type == Logic_States.ACTIVE_LOW and self._stall.read() == 0)):
+                self._pc4d.write(self._pc4d.read())
+                self._pc8d.write(self._pc8d.read())
+                self._instrd.write(self._instrd.read())
             else:
                 self._pc4d.write(self._pc4f.read())
                 self._pc8d.write(self._pc8f.read())

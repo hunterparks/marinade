@@ -9,7 +9,7 @@ class ControllerPipeline(Controller):
     status flags. Output is the control paths for the architecture which
     will be enforced until the next instruction.
     """
-    def __init__(self, cond, op, funct, rd, bit4, c, v, n, z, stalld, pcsrcd, pcwrd, regsad, regdstd,
+    def __init__(self, cond, op, funct, rd, bit4, c, v, n, z, stallf, pcsrcd, pcwrd, regsad, regdstd,
                  regwrsd, regwrd, extsd, alusrcbd, alusd, aluflagwrd, memwrd, regsrcd, wd3sd):
         """
         inputs:
@@ -22,7 +22,7 @@ class ControllerPipeline(Controller):
             v: signed overflow bit
             n: negative bit
             z: zero bit
-            stalld: used to detect if the controller is stalled
+            stallf: used to detect if the pipeline is stalled
         outputs:
             pcsrcd: selects the instruction given to the fetch stage
             pcwrd: always a 1 for the single cycle processor
@@ -74,10 +74,10 @@ class ControllerPipeline(Controller):
             raise TypeError('The z bus must be readable')
         elif z.size() != 1:
             raise ValueError('The z bus must have a size of 1-bit')
-        if not isinstance(stalld, iBusRead):
-            raise TypeError('The stalld bus must be readable')
-        elif stalld.size() != 1:
-            raise ValueError('The stalld bus must have a size of 1 bit')
+        if not isinstance(stallf, iBusRead):
+            raise TypeError('The stallf bus must be readable')
+        elif stallf.size() != 1:
+            raise ValueError('The stallf bus must have a size of 1 bit')
 
         self._cond = cond
         self._op = op
@@ -88,7 +88,7 @@ class ControllerPipeline(Controller):
         self._v = v
         self._n = n
         self._z = z
-        self._stalld = stalld
+        self._stallf = stallf
 
         #Control output buses
         if not isinstance(pcsrcd, iBusRead):
@@ -179,11 +179,11 @@ class ControllerPipeline(Controller):
 
 
     @staticmethod
-    def _generate_pcwrd(stalld):
+    def _generate_pcwrd(stallf):
         """
         PCWRD <= '0' only if pipeline is stalled
         """
-        #if stalld == 1:
+        #if stallf == 1:
         #    return 0
         #else:
         #    return 1
@@ -316,7 +316,7 @@ class ControllerPipeline(Controller):
             return 0b0000
         elif op == 0b00 and (funct == 0b000100 or funct == 0b100100
                              or funct == 0b010101 or funct == 0b110101 or funct == 0b000101
-                             or funct == 100101):
+                             or funct == 0b100101):
             return 0b0001
         elif op == 0b00 and (funct == 0b000000 or funct == 0b100000
                              or funct == 0b000001 or funct == 0b100001):
@@ -381,8 +381,8 @@ class ControllerPipeline(Controller):
     @staticmethod
     def _generate_regsrcd(op, funct):
         """
-        REGSRC <= '1' when output of ALU is feedback (ldr instructions)
-        REGSRC <= '0' when output of data mem is feedback
+        REGSRC <= '1' when output of ALU is feedback 
+        REGSRC <= '0' when output of data mem is feedback (ldr instructions)
         """
         if op == 0b01 and funct == 0b011001:
             return 0b0
@@ -411,11 +411,11 @@ class ControllerPipeline(Controller):
         cond = self._cond.read()
         rd = self._rd.read()
         z = self._z.read()
-        stalld = self._stalld.read()
+        stallf = self._stallf.read()
 
         # Generate control outputs
         self._pcsrcd.write(self._generate_pcsrcd(op, cond, rd, z))
-        self._pcwrd.write(self._generate_pcwrd(stalld))
+        self._pcwrd.write(self._generate_pcwrd(stallf))
         self._regsad.write(self._generate_regsad(op, bit4, funct))
         self._regdstd.write(self._generate_regdstd(op, bit4, funct))
         self._regwrsd.write(self._generate_regwrsd(op, bit4, funct))
