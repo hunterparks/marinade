@@ -2,7 +2,7 @@ from abc import ABCMeta
 
 
 class SentrySettingsInterface:
-  __metaclass_ = ABCMeta
+  __metaclass__ = ABCMeta
 
   address = None
   port = None
@@ -18,9 +18,9 @@ class SentrySettingsInterface:
 
 '''
 
-  _______________________
+  -----------------------
   USING SENTRY SETTINGS:
-  _______________________
+  -----------------------
 
     Create a class implementation in a file in this directory called local_sentry_settings.py.
     An example configuration is below.
@@ -30,8 +30,8 @@ class SentrySettingsInterface:
   -----------------------
 
     from .common_sentry_settings import SentrySettingsInterface
-  
-  
+
+
     class SentrySettings(SentrySettingsInterface):
       address = 'localhost'
       port = '9000'

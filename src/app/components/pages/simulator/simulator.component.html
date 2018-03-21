@@ -1,0 +1,12 @@
+<div class="architecture">
+  <svg id="arch" xmlns="http://www.w3.org/2000/svg" [attr.viewBox]="viewBox" version="1.1">
+    <svg:defs/>
+    <svg:g *ngFor="let bus of busComponents" [svg-bus]="bus" [tooltip]="bus.name + ' (' + bus.width + ') - ' + bus.data" />
+    <svg:g *ngFor="let controller of controllerComponents" [svg-controller]="controller" />
+    <svg:g *ngFor="let mux of muxComponents" [svg-mux]="mux" />
+    <svg:g *ngFor="let stage of stageComponents" [svg-stage]="stage" />
+    <svg:g *ngFor="let stageRegister of stageRegisterComponents" [svg-stage-register]="stageRegister" />
+  </svg>
+  <button (click)="reset()">Reset</button>
+</div>
+<tooltip-container></tooltip-container>
