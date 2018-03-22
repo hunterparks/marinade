@@ -9,16 +9,16 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 export class TooltipComponent implements AfterContentInit, OnDestroy {
 
   @Input() public content: BehaviorSubject<string>;
-  public html: string;
   public offsetX: number;
   public offsetY: number;
+  public text: string;
   @Input() public x: BehaviorSubject<number>;
   @Input() public y: BehaviorSubject<number>;
 
   public ngAfterContentInit(): void {
     this.content.subscribe((content: string) => {
-      this.html = content;
-    };
+      this.text = content;
+    });
     this.x.subscribe((x: number) => {
       this.offsetX = x + 40;
     });

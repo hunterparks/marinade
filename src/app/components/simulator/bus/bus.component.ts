@@ -1,4 +1,6 @@
 import { Component, HostListener, Input, OnInit } from '@angular/core';
+import { Bus } from '../../../models/simulator/bus/bus.model';
+import { InspectService } from '../../../services/simulator/inspect/inspect.service';
 
 @Component({
   selector: '[svg-bus]',
@@ -17,7 +19,7 @@ export class BusComponent implements OnInit {
   // The svg paths for the arrow heads
   public arrows: string[] = [];
   // Input string with a list of coordinates
-  @Input('svg-bus') public bus: { 'data': string, 'junction'?: number, 'name': string, 'paths': string[] } = null;
+  @Input('svg-bus') public bus: Bus = null;
   // The active color of the bus
   public color: string = BusComponent.DEFAULT_COLOR;
   // The junction point for a complex bus
@@ -26,6 +28,8 @@ export class BusComponent implements OnInit {
   public name: string = '';
   // Generated svg paths for the bus
   public paths: string[] = [];
+
+  constructor(private inspect: InspectService) { }
 
   /**
    * Determines the direction of the arrows using the last two points of the path
@@ -157,6 +161,7 @@ export class BusComponent implements OnInit {
    */
   @HostListener('mouseenter')
   public onMouseEnter(): void {
+    this.inspect.inspect(this.bus);
     // Change the bus color to the highlight color
     this.color = BusComponent.HIGHLIGHT_COLOR;
     // Spawn hovering tooltip

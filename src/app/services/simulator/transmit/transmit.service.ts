@@ -19,7 +19,7 @@ export class TransmitService {
   }
 
   public inspect(components: string[]): void {
-    this.websocket.write('{ "inspect": [ "pc", "instrf" ] }');
+    this.websocket.write('{ "inspect": ' + JSON.stringify(components) + ' }');
   }
 
   public load(filepath: string): void {

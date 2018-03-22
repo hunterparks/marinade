@@ -14,6 +14,7 @@ import { StageRegisterComponent } from './components/simulator/stage-register/st
 import { StageComponent } from './components/simulator/stage/stage.component';
 import { TooltipDirective } from './directives/tooltip/tooltip.directive';
 import { SafeHtmlPipe } from './pipes/safe-html.pipe';
+import { InspectService } from './services/simulator/inspect/inspect.service';
 import { TransmitService } from './services/simulator/transmit/transmit.service';
 import { WebsocketService } from './services/simulator/websocket/websocket.service';
 import { TooltipService } from './services/tooltip/tooltip.service';
@@ -52,6 +53,7 @@ export class RavenErrorHandler implements ErrorHandler {
     HttpClientModule,
   ],
   providers: [
+    InspectService,
     TooltipService,
     TransmitService,
     WebsocketService,

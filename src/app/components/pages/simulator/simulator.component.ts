@@ -2,6 +2,7 @@ import { Component, HostListener } from '@angular/core';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Bus } from '../../../models/simulator/bus/bus.model';
 import { ARCHITECTURE, Simulator } from '../../../models/simulator/simulator.model';
+import { InspectService } from '../../../services/simulator/inspect/inspect.service';
 import { TransmitService } from '../../../services/simulator/transmit/transmit.service';
 import { WebsocketService } from '../../../services/simulator/websocket/websocket.service';
 import { TooltipService } from '../../../services/tooltip/tooltip.service';
@@ -41,29 +42,20 @@ export class SimulatorComponent {
     this.websocket.messageSubject.subscribe((message: any) => this.receiveMessage(message));
   }
 
-  private static formatTooltip(bus: Bus, data?: string): string {
-    let tooltipText: string = bus.name + ' (' + bus.width + ')';
-    if (data !== undefined) {
-      tooltipText += ' - ' + data;
-    }
-    return tooltipText;
-  }
-
   private initializeBuses(): void {
     for (let bus of this.simulator.bus) {
-      bus.data = new BehaviorSubject<string>(SimulatorComponent.formatTooltip(bus));
+      bus.data = new BehaviorSubject<string>(InspectService.formatTooltip(bus));
     }
   }
 
   private receiveMessage(message: string): void {
-    let message: any = JSON.parse(message);
-    console.log(message);
-    Object.keys(message).map((key: string) => {
+    let messageObject: any = JSON.parse(message);
+    Object.keys(messageObject).map((key: string) => {
       let selectedBus: Bus = this.simulator.bus.find((bus: Bus) => {
         return bus.name.toLowerCase() === key;
       });
       if (selectedBus) {
-        selectedBus.data.next(SimulatorComponent.formatTooltip(selectedBus, message[key].state));
+        selectedBus.data.next(InspectService.formatTooltip(selectedBus, messageObject[key].state));
       }
     });
   }

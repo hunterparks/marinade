@@ -1,2 +1,4 @@
-<div *ngIf="html" #tooltip id="tooltip" [innerHTML]="html" [style.left.px]="offsetX" [style.top.px]="offsetY"></div>
+<div *ngIf="text" #tooltip id="tooltip" [style.left.px]="offsetX" [style.top.px]="offsetY">
+  <p>{{ text }}</p>
+</div>
 <!--<div *ngIf="content" id="tooltip-arrow" [style.left.px]="offsetX" [style.top.px]="offsetY + arrowOffsetY"></div>-->
