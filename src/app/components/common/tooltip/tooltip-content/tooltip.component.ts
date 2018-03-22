@@ -1,4 +1,4 @@
-import { AfterContentInit, Component, ElementRef, Input, OnDestroy, ViewChild } from '@angular/core';
+import { AfterContentInit, Component, Input, OnDestroy } from '@angular/core';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
 @Component({
@@ -8,15 +8,17 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 })
 export class TooltipComponent implements AfterContentInit, OnDestroy {
 
-  @Input() public content: string;
-  @ViewChild('tooltip') public element: ElementRef;
+  @Input() public content: BehaviorSubject<string>;
+  public html: string;
   public offsetX: number;
   public offsetY: number;
-  @Input() public ref: ElementRef;
   @Input() public x: BehaviorSubject<number>;
   @Input() public y: BehaviorSubject<number>;
 
   public ngAfterContentInit(): void {
+    this.content.subscribe((content: string) => {
+      this.html = content;
+    };
     this.x.subscribe((x: number) => {
       this.offsetX = x + 40;
     });

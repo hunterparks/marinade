@@ -7,7 +7,7 @@ export class TooltipDirective implements OnDestroy {
 
   private id: number;
   private toggled: boolean = false;
-  @Input('tooltip') public content: string = '';
+  @Input('tooltip') public content: BehaviorSubject<string>;
 
   constructor(private tooltipService: TooltipService, private element: ElementRef) { }
 

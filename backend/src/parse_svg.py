@@ -6,11 +6,11 @@ import os
 import re
 
 current_directory = os.path.dirname(__file__)
-input_file = open('/Users/alex/Downloads/pipeline_architecture (7).svg', 'r')
+input_file = open('/Users/alex/Downloads/pipeline_architecture.svg', 'r')
 output_file = os.path.join(current_directory, '../../src/app/models/simulator/simulator.model.ts')
 
 # Clear the contents of the file
-open(output_file, 'w').write('export const ARCHITECTURE: any = {\n')
+open(output_file, 'w').write('export const ARCHITECTURE: Simulator = {\n')
 
 # Read the input file and set up beautifulsoup
 input_text = ''
@@ -55,9 +55,9 @@ class Collection:
         elif component_type == 'stage':
             self.typescript_type = 'any[]'
             self.component_type = 'stage'
-        elif component_type == 'stage-register':
+        elif component_type == 'stageRegister':
             self.typescript_type = 'any[]'
-            self.component_type = 'stage-register'
+            self.component_type = 'stageRegister'
 
     def to_typescript(self):
         return json.dumps([element.to_dict() for element in self.elements], indent=2).replace('"', '\'')
@@ -74,7 +74,7 @@ class Collection:
         return False
 
     def add(self, element):
-        if element.__class__.__name__.lower() == self.component_type or (element.__class__.__name__.lower() == 'register' and self.component_type in ['stage', 'stage-register', 'controller']):
+        if element.__class__.__name__.lower() == self.component_type or (element.__class__.__name__.lower() == 'register' and self.component_type in ['stage', 'stageRegister', 'controller']):
             if element.valid:
                 self.elements.append(element)
 
@@ -255,7 +255,7 @@ class Register(Element):
         if color == '#ff3333':
           self.type = 'stage'
         elif color == '#97d077':
-          self.type = 'stage-register'
+          self.type = 'stageRegister'
         elif color == '#ffff33':
           self.type = 'controller'
         height = svg.attrs['height']
@@ -267,10 +267,10 @@ class Register(Element):
 
     def to_dict(self):
         return {
-            'height': self.height,
-            'width': self.width,
-            'x': self.x,
-            'y': self.y
+            'height': int(self.height),
+            'width': int(self.width),
+            'x': int(self.x),
+            'y': int(self.y)
         }
 
     def validate(self, svg):
@@ -356,7 +356,7 @@ for line in soup.find_all('path'):
 # ====================================
 registers = {
   'stage': Collection('stage'),
-  'stage-register': Collection('stage-register'),
+  'stageRegister': Collection('stageRegister'),
   'controller': Collection('controller')
 }
 for rect in soup.find_all('rect'):
@@ -367,7 +367,7 @@ buses.commit()
 registers['controller'].commit()
 muxes.commit()
 registers['stage'].commit()
-registers['stage-register'].commit()
+registers['stageRegister'].commit()
 
 file = open(output_file, 'a')
 file.write('};\n')

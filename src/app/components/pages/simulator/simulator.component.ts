@@ -1,5 +1,7 @@
 import { Component, HostListener } from '@angular/core';
-import { ARCHITECTURE } from '../../../models/simulator/simulator.model';
+import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { Bus } from '../../../models/simulator/bus/bus.model';
+import { ARCHITECTURE, Simulator } from '../../../models/simulator/simulator.model';
 import { TransmitService } from '../../../services/simulator/transmit/transmit.service';
 import { WebsocketService } from '../../../services/simulator/websocket/websocket.service';
 import { TooltipService } from '../../../services/tooltip/tooltip.service';
@@ -28,19 +30,41 @@ export class SimulatorComponent {
   private viewBoxUpperLeftY: number = 0;
   private viewBoxWidth: number = 1600;
 
-  public busComponents: any[] = ARCHITECTURE['bus'];
-  public controllerComponents: any[] = ARCHITECTURE['controller'];
-  public muxComponents: any[] = ARCHITECTURE['mux'];
-  public stageComponents: any[] = ARCHITECTURE['stage'];
-  public stageRegisterComponents: any[] = ARCHITECTURE['stage-register'];
+  public simulator: Simulator = ARCHITECTURE;
 
   public viewBox: string = '0 0 1600 900';
   public viewScale: number = 1;
 
   constructor(private tooltipService: TooltipService, private transmit: TransmitService, private websocket: WebsocketService) {
+    this.initializeBuses();
     this.websocket.connect();
-    this.websocket.messageSubject.subscribe((value: any) => {
-      console.log(value);
+    this.websocket.messageSubject.subscribe((message: any) => this.receiveMessage(message));
+  }
+
+  private static formatTooltip(bus: Bus, data?: string): string {
+    let tooltipText: string = bus.name + ' (' + bus.width + ')';
+    if (data !== undefined) {
+      tooltipText += ' - ' + data;
+    }
+    return tooltipText;
+  }
+
+  private initializeBuses(): void {
+    for (let bus of this.simulator.bus) {
+      bus.data = new BehaviorSubject<string>(SimulatorComponent.formatTooltip(bus));
+    }
+  }
+
+  private receiveMessage(message: string): void {
+    let message: any = JSON.parse(message);
+    console.log(message);
+    Object.keys(message).map((key: string) => {
+      let selectedBus: Bus = this.simulator.bus.find((bus: Bus) => {
+        return bus.name.toLowerCase() === key;
+      });
+      if (selectedBus) {
+        selectedBus.data.next(SimulatorComponent.formatTooltip(selectedBus, message[key].state));
+      }
     });
   }
 
@@ -166,7 +190,7 @@ export class SimulatorComponent {
       case 'l': this.transmit.load(''); break;
       case 'p': this.transmit.program('', ''); break;
       case 'r': this.transmit.reset(); break;
-      case 's': this.transmit.step(); break;
+      case 's': this.transmit.step(); this.transmit.inspect(['']); break;
     }
   }
 
