@@ -92,25 +92,25 @@ class Interface:
 
         # Architecture Commands
         if 'step' in msg:
-            retMsg.update(interface.step(msg['step']))
+            retMsg.update(self.step(msg['step']))
         if 'reset' in msg:
-            retMsg.update(interface.reset())
+            retMsg.update(self.reset())
         if 'load' in msg:
-            retMsg.update(interface.load(msg['load']))
+            retMsg.update(self.load(msg['load']))
         if 'unload' in msg:
-            retMsg.update(interface.unload())
+            retMsg.update(self.unload())
         if 'program' in msg:
-            retMsg.update(interface.program(msg['program']))
+            retMsg.update(self.program(msg['program']))
 
         # Component Commands
         if 'inspect' in msg:
-            retMsg.update(interface.handle_component_msg(msg))
+            retMsg.update(self.handle_component_msg(msg))
         if 'generate' in msg:
-            retMsg.update(interface.handle_component_msg(msg))
+            retMsg.update(self.handle_component_msg(msg))
         if 'modify' in msg:
-            retMsg.update(interface.handle_component_msg(msg))
+            retMsg.update(self.handle_component_msg(msg))
         if 'clear' in msg:
-            retMsg.update(interface.handle_component_msg(msg))
+            retMsg.update(self.handle_component_msg(msg))
 
         return retMsg
 
@@ -130,7 +130,6 @@ class Interface:
                     self.time = self.arch.time_run(self.time, 1)
                 else:
                     return {'status': False, 'error': 'simulation type must be valid'}
-                print(self.time)
                 return {'status': True}
             else:
                 return {'status': False, 'error': 'architecture needs to be loaded'}

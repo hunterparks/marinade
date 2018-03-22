@@ -61,7 +61,7 @@ class HazardController():
             raise TypeError('The pcsrcd bus must be readable')
         elif pcsrcd.size() != 2:
             raise ValueError('The pcsrcd bus must have a size of 2 bits')
-        
+
         self._ra1d = ra1d
         self._ra2d = ra2d
         self._ra1e = ra1e
@@ -109,7 +109,7 @@ class HazardController():
         self._flushf = flushf
         self._flushd = flushd
 
-    
+
     @staticmethod
     def _generate_fwda(ra1e, ra3m, ra3w, regwrm, regwrw, regsrcm, regsrcw):
         if ra1e.read() == ra3m.read() and regwrm.read() == 1 and regsrcm.read() != 0:
@@ -160,7 +160,7 @@ class HazardController():
         if pcsrcd.read() == 0 or (pcsrcd.read() == 2 and ra3e.read() == 0xF):
             return 1        # Branch hazard occured
         elif pcsrcd.read() == 2 and ra3e.read() == 0xF:
-            return 
+            return
         else:
             return 0        # No branch hazard occured
 
@@ -197,7 +197,7 @@ class HazardController():
         self._fwda.write(self._generate_fwda(ra1e, ra3m, ra3w, regwrm, regwrw, regsrcm, regsrcw))
         self._fwdb.write(self._generate_fwdb(ra2e, ra3m, ra3w, regwrm, regwrw, regsrcm, regsrcw))
         self._fwds.write(self._generate_fwds(ra3m, ra3w, memwrm))
-        self._stallf.write(self._generate_stallf(pcsrcd, ra3e))
+        self._stallf.write(self._generate_stallf(pcsrcd)) # removed , ra3e as it was erroring out
         self._flushf.write(self._generate_flushf(pcsrcd, ra3e))
         self._flushd.write(self._generate_flushd())
 
