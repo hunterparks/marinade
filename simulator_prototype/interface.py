@@ -80,7 +80,7 @@ class Interface:
         self.hooks = None
         self.time = 0
 
-    def parse_command(msg):
+    def parse_command(self, msg):
         """
         Maps JSON command to simulator functionality.
 
