@@ -7,7 +7,7 @@ import re
 
 current_directory = os.path.dirname(__file__)
 input_file = open('/Users/alex/Downloads/pipeline_architecture.svg', 'r')
-output_file = os.path.join(current_directory, '../../src/app/models/simulator/simulator.model.ts')
+output_file = os.path.join(current_directory, '../../src/app/models/simulator/architecture.model.ts')
 
 # Clear the contents of the file
 open(output_file, 'w').write('export const ARCHITECTURE: Simulator = {\n')

@@ -1,7 +1,8 @@
 import { Component, HostListener } from '@angular/core';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
+import { ARCHITECTURE } from '../../../models/simulator/architecture.model';
 import { Bus } from '../../../models/simulator/bus/bus.model';
-import { ARCHITECTURE, Simulator } from '../../../models/simulator/simulator.model';
+import { Simulator } from '../../../models/simulator/simulator.model';
 import { InspectService } from '../../../services/simulator/inspect/inspect.service';
 import { TransmitService } from '../../../services/simulator/transmit/transmit.service';
 import { WebsocketService } from '../../../services/simulator/websocket/websocket.service';
