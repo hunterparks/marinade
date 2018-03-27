@@ -7,6 +7,7 @@ class Ifid(Sequential):
     This specialized register sits between the fetch and decode stages of the processor
     """
 
+
     def __init__(self, pc4f, pc8f, instrf, stall, flush, clk, pc4d, pc8d, instrd, 
                  default_state=0, edge_type=Latch_Type.RISING_EDGE, 
                  flush_type=Logic_States.ACTIVE_HIGH, enable=None, 
@@ -31,6 +32,7 @@ class Ifid(Sequential):
         enable_type : enable signal active state
         """
 
+        # Inputs
         if not isinstance(pc4f, iBusRead):
             raise TypeError('The pc4f bus must be readable')
         elif pc4f.size() != 32:

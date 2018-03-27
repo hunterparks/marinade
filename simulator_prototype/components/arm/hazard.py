@@ -1,10 +1,40 @@
 from components.abstract.ibus import iBusRead, iBusWrite
 
 class HazardController():
+    """
+    Hazard Controller - Handles hazards that occur in the top level
+    pipeline architecture
+    """
+
 
     def __init__(self, ra1d, ra2d, ra1e, ra2e, ra3e, ra3m, ra3w, regwrm,
                 regwrw, regsrce, regsrcm, regsrcw, memwrm, pcsrcd, fwda, fwdb,
                 fwds, stallf, flushf, flushd):
+        """
+        inputs:
+            ra1d: NOT USED
+            ra2d: NOT USED
+            ra1e: register number
+            ra2e: register number
+            ra3e: register number
+            ra3m: register number
+            ra3w: register number
+            regwrm: selects whether to write back to the regfile
+            regwrw: selects whether to write back to the regfile
+            regsrce: NOT USED
+            regsrcm: selects whether the alu output or data memory is feedback
+            regsrcw: selects whether the alu output or data memory is feedback
+            memwrm: selects whether to write to memory
+            pcsrcd: selects the instruction given to the fetch stage
+        outputs:
+            fwda: fowarding for the a input of the alu
+            fwdb: fowarding for the b input of the alu
+            fwds: fowarding for data memory
+            stallf: stalls the pipeline
+            flushf: clears the pipeline
+            flushd: NOT USED
+        """
+        # Inputs
         if not isinstance(ra1d, iBusRead):
             raise TypeError('The ra1d bus must be readable')
         elif ra1d.size() != 4:
@@ -77,6 +107,7 @@ class HazardController():
         self._memwrm = memwrm
         self._pcsrcd = pcsrcd
 
+        # Outputs
         if not isinstance(fwda, iBusWrite):
             raise TypeError('The fwda bus must be writable')
         elif fwda.size() != 3:
@@ -112,6 +143,7 @@ class HazardController():
 
     @staticmethod
     def _generate_fwda(ra1e, ra3m, ra3w, regwrm, regwrw, regsrcm, regsrcw):
+        "Forward hazard control for the a input of the alu in the case of a register-use hazard"
         if ra1e.read() == ra3m.read() and regwrm.read() == 1 and regsrcm.read() != 0:
             return 0b010    # Register-use hazard occured
         elif ra1e.read() == ra3w.read() and regwrw.read() == 1 and regsrcw.read() != 0:
@@ -126,6 +158,7 @@ class HazardController():
 
     @staticmethod
     def _generate_fwdb(ra2e, ra3m, ra3w, regwrm, regwrw, regsrcm, regsrcw):
+        "Forward hazard control for the b input of the alu in the case of a register-use hazard"
         if ra2e.read() == ra3m.read() and regwrm.read() == 1 and regsrcm.read() != 0:
             return 0b010    # Register-use hazard occured
         elif ra2e.read() == ra3w.read() and regwrw.read() == 1 and regsrcw.read() != 0:
@@ -140,7 +173,7 @@ class HazardController():
 
     @staticmethod
     def _generate_fwds(ra3m, ra3w, memwrm):
-        # If pipeline processor does not work - check the code below
+        "Forward hazard control in the case of a use-store hazard"
         if ra3m.read() == ra3w.read() and memwrm.read() == 1:
             return 1        # Use-store hazard
         else:
@@ -149,6 +182,7 @@ class HazardController():
 
     @staticmethod
     def _generate_stallf(pcsrcd):
+        "Prevents the outputs of the ifid register from changing value"
         if pcsrcd.read() == 2:
             return 1
         else:
@@ -157,6 +191,7 @@ class HazardController():
 
     @staticmethod
     def _generate_flushf(pcsrcd, ra3e):
+        "Sets the outputs of the ifid register to 0"
         if pcsrcd.read() == 0 or (pcsrcd.read() == 2 and ra3e.read() == 0xF):
             return 1        # Branch hazard occured
         elif pcsrcd.read() == 2 and ra3e.read() == 0xF:
@@ -197,7 +232,7 @@ class HazardController():
         self._fwda.write(self._generate_fwda(ra1e, ra3m, ra3w, regwrm, regwrw, regsrcm, regsrcw))
         self._fwdb.write(self._generate_fwdb(ra2e, ra3m, ra3w, regwrm, regwrw, regsrcm, regsrcw))
         self._fwds.write(self._generate_fwds(ra3m, ra3w, memwrm))
-        self._stallf.write(self._generate_stallf(pcsrcd)) # removed , ra3e as it was erroring out
+        self._stallf.write(self._generate_stallf(pcsrcd))
         self._flushf.write(self._generate_flushf(pcsrcd, ra3e))
         self._flushd.write(self._generate_flushd())
 

@@ -4,11 +4,10 @@ from components.abstract.ibus import iBusRead, iBusWrite
 
 class ControllerPipeline(Controller):
     """
-    Pipeline controller component implements architecture controller
-    which will take a current instruction (broken into subfields) and ALU
-    status flags. Output is the control paths for the architecture which
-    will be enforced until the next instruction.
+    Pipeline Controller - Implements pipeline architecture controller
     """
+
+
     def __init__(self, cond, op, funct, rd, bit4, c, v, n, z, stallf, pcsrcd, pcwrd, regsad, regdstd,
                  regwrsd, regwrd, extsd, alusrcbd, alusd, aluflagwrd, memwrd, regsrcd, wd3sd):
         """
@@ -38,6 +37,7 @@ class ControllerPipeline(Controller):
             regsrcd: selects whether the alu output or data memory is feedback
             wd3sd: selects what data to write to the regfile
         """
+        # Inputs
         if not isinstance(cond, iBusRead):
             raise TypeError('The cond bus must be readable')
         elif cond.size() != 4:
@@ -90,7 +90,7 @@ class ControllerPipeline(Controller):
         self._z = z
         self._stallf = stallf
 
-        #Control output buses
+        # Outputs
         if not isinstance(pcsrcd, iBusRead):
             raise TypeError('The pcsrcd bus must be writable')
         elif pcsrcd.size() != 2:
@@ -181,12 +181,8 @@ class ControllerPipeline(Controller):
     @staticmethod
     def _generate_pcwrd(stallf):
         """
-        PCWRD <= '0' only if pipeline is stalled
+        PCWRD <= '1' always
         """
-        #if stallf == 1:
-        #    return 0
-        #else:
-        #    return 1
         return 1
 
 
@@ -395,7 +391,7 @@ class ControllerPipeline(Controller):
         """
         WD3S <= '1' when a bl instruction is run else '0'
         """
-        if op == 0b10 and ((funct & 0b010000) >> 4) == 0b1:  # NOTE changed shift
+        if op == 0b10 and ((funct & 0b010000) >> 4) == 0b1:
             return 0b1
         else:
             return 0b0
@@ -445,15 +441,15 @@ class ControllerPipeline(Controller):
 
 
     def on_rising_edge(self):
-        "Not implemented for single cycle"
+        "Not implemented for pipeline"
         pass
 
 
     def on_falling_edge(self):
-        "Not implemented for single cycle"
+        "Not implemented for pipeline"
         pass
 
 
     def on_reset(self):
-        "Not implemented for single cycle"
+        "Not implemented for pipeline"
         pass

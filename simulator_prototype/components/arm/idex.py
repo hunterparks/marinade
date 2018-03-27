@@ -46,7 +46,7 @@ class Idex(Sequential):
             imm32e: 32-bit immediate value
             ra1e: register number
             ra2e: register number
-            ra3e: register number or constant
+            ra3e: register number
 
         edge_type: idex register data latch type
         flush_type: flush signal active state
