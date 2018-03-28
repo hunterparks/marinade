@@ -8,8 +8,10 @@ labled as the constructor
 from components.abstract.combinational import Combinational
 from components.abstract.sequential import Sequential
 
-#TODO write the methods for this component
-class Controller(Combinational,Sequential):
+# TODO write the methods for this component
+
+
+class Controller(Combinational, Sequential):
     """
     Controller is expected to be used as a singular component in the
     architecture with a specific purpose.

@@ -7,48 +7,43 @@ from components.abstract.hooks import InputHook
 from components.abstract.ibus import iBusRead
 
 
-
-class LogicInput(InputHook,iBusRead):
+class LogicInput(InputHook, iBusRead):
     """
     Input hook into architecture that functions as a logical bus
     """
 
-    def __init__(self, size, default_state = 0):
+    def __init__(self, size, default_state=0):
         "Constructor will cause exception on invalid parameters"
-        if not isinstance(size,int) or size <= 0:
+        if not isinstance(size, int) or size <= 0:
             raise TypeError('Size must be an integer greater than zero')
-        elif not isinstance(default_state,int) or default_state < 0 or default_state >= 2**size:
+        elif not isinstance(default_state, int) or default_state < 0 or default_state >= 2**size:
             raise TypeError('Default state must be an integer that fits in defined range')
 
         self._size = size
         self._state = default_state
 
-
     def inspect(self):
         "Returns a dictionary message to application defining current state"
-        return {'type' : 'logic', 'size' : self._size, 'state' : self._state}
-
+        return {'type': 'logic', 'size': self._size, 'state': self._state}
 
     def generate(self, message):
         "Sets a new state for read only bus from user space, returns confirmation"
 
         if message is None:
-            return {'error' : 'expecting message to be provided'}
+            return {'error': 'expecting message to be provided'}
         elif 'state' not in message:
-            return {'error' : 'invalid format for message'}
+            return {'error': 'invalid format for message'}
 
         state = message['state']
-        if isinstance(state,int) and state >= 0 and state < 2**self._size:
+        if isinstance(state, int) and state >= 0 and state < 2**self._size:
             self._state = state
-            return {'success' : True}
+            return {'success': True}
         else:
-            return {'error' : 'data in message does not match expected range'}
-
+            return {'error': 'data in message does not match expected range'}
 
     def read(self):
         "Returns last valid state set in user space"
         return self._state
-
 
     def size(self):
         "Returns size of bus"

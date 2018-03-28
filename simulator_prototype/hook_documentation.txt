@@ -1,0 +1,49 @@
+Hook interface using the Architecture component.
+
+
+----------------------------Hook messages---------------------------------------
+
+{
+	“inspect” : [ <hook names> ]
+}
+
+{
+	“modify” : {
+		“name” : <hook name (must be of type InternalHook)>,
+		“parameters” : {
+			“state” : <specific to Register not used in larger memories>
+			“start” : <starting address for Memory and RegisterFile >,
+			“data” : [ < contents for Memory and RegisterFile >],
+		}
+	}
+}
+
+{
+	“generate” : {
+		“name” : <hook name (must be of type InputHook)>,
+		“parameters” : {
+			“state” : <Input bus state as integer>
+			“frequency” : <specific to Clock object>,
+			“reset” : <specific to Reset object>,
+		}
+	}
+}
+
+-----------------------------Error Messages-------------------------------------
+{
+  “<name of component failed>” : {
+    “error” : “<error message>”
+  }
+}
+
+--------------------Return messages for hook messages---------------------------
+
+@inspect
+{
+	“<name of component>” : { <relevant data for component i.e. size, state, type, etc.> }
+}
+
+@modify / generate
+{
+	“<name of component>” : { “success” : true/false }
+}
