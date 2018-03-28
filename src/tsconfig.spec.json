@@ -2,11 +2,12 @@
   "extends": "../tsconfig.json",
   "compilerOptions": {
     "outDir": "../out-tsc/spec",
-    "baseUrl": "./",
+    "baseUrl": ".",
     "module": "commonjs",
-    "target": "es5",
+    "lib": [ "es6", "dom" ],
     "types": [
       "jasmine",
+      "hammerjs",
       "node"
     ]
   },
@@ -14,6 +15,7 @@
     "test.ts"
   ],
   "include": [
+    "test.ts",
     "**/*.spec.ts",
     "**/*.d.ts"
   ]
