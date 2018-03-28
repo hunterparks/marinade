@@ -1,0 +1,17 @@
+<div layout="row" layout-align="start center" class="bgc-black">
+    <button mat-icon-button [disabled]="!canShowPrevious()" (click)="previousPage()">
+        <mat-icon *ngIf="canShowPrevious()">arrow_back</mat-icon>
+    </button>
+    <span class="mat-subhead">Browse Files</span>
+</div>
+<mat-divider></mat-divider>
+<div flex class="md-content">
+    <mat-nav-list dense>
+        <ng-template let-file let-last="last" ngFor [ngForOf]="files">
+            <a mat-list-item class="directory text-truncate" (click)="loadFiles(file.name, true)">
+                <mat-icon mdListIcon>{{file.icon}}</mat-icon>&nbsp;{{file.name}}
+            </a>
+            <mat-divider *ngIf="!last"></mat-divider>
+        </ng-template>
+    </mat-nav-list>
+</div>

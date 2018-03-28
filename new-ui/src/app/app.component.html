@@ -1,0 +1,70 @@
+<div class="grid-wrapper">
+  <div class="sidebar">
+    <a [routerLink]="['editor']" routerLinkActive="active">
+      <i class="fa fa-code"></i>
+    </a>
+    <a [routerLink]="['simulator']" routerLinkActive="active">
+      <i class="fa fa-microchip"></i>
+    </a>
+    <a [routerLink]="['memory']" routerLinkActive="active">
+        <i class="fa fa-table"></i>
+    </a>
+    <a [routerLink]="['settings']" routerLinkActive="active">
+        <i class="fa fa-cog"></i>
+    </a>
+  </div>
+  <div class="content">
+    <router-outlet></router-outlet>
+  </div>
+</div>
+
+<!--<div layout="column" layout-fill>
+  <div flex class="content md-content">
+    <mat-sidenav-container fullscreen class="td-layout-manage-list md-content" flex layout="row">
+      <mat-sidenav style="width:150px;" opened="true" align="start" mode="side" class="mat-sidenav-left md-whiteframe-z1">
+        <div layout="column">
+          <div flex layout="column">
+            <div layout="row" layout-align="start center" class="draggable header">
+              <span flex></span>
+            </div>
+            <div flex layout="row">
+              <div flex="none"class="bgc-dark-grey-B15">
+                <mat-button-toggle-group style="width:150px;" vertical>
+                  <mat-button-toggle (change)="changeRoute('editor')">
+                    <mat-icon class="push-top push-bottom">code</mat-icon>
+                    <span>Editor</span>
+                  </mat-button-toggle>
+                  <mat-button-toggle (change)="changeRoute('simulator')">
+                    <mat-icon class="push-top push-bottom">bug_report</mat-icon>
+                    <span>Simulator</span>
+                  </mat-button-toggle>
+                  <mat-button-toggle (change)="changeRoute('memory')">
+                    <mat-icon class="push-top push-bottom">view_list</mat-icon>
+                    <span>Memory</span>
+                  </mat-button-toggle>
+                  <mat-button-toggle (change)="changeRoute('settings')">
+                    <mat-icon class="push-top push-bottom">settings</mat-icon>
+                    <span>Settings</span>
+                  </mat-button-toggle>
+                </mat-button-toggle-group>
+              </div>
+            </div>
+          </div>
+        </div>
+      </mat-sidenav>
+      <div layout="column" layout-fill>
+        <div flex layout="column">
+          <div flex layout="column">
+            <div layout="row" layout-align="start center" class="draggable header">
+              <span flex class="text-center">Marinade</span>
+            </div>
+            <div layout="row">
+              <router-outlet></router-outlet>
+            </div>
+          </div>
+        </div>
+      </div>
+    </mat-sidenav-container>
+  </div>
+</div>
+-->

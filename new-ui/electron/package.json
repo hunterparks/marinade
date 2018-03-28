@@ -1,0 +1,17 @@
+{
+  "name": "marinade",
+  "version": "0.0.0",
+  "description": "MSOE ARM Integrated Architecture Development Environment",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": "https://github.com/msoesd-teambeta/marinade",
+  "license": "MIT",
+  "author": "Team Beta",
+  "dependencies": {
+  },
+  "devDependencies": {
+    "electron": "^1.8.4"
+  }
+}

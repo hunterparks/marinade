@@ -1,0 +1,11 @@
+<div class="grid-wrapper">
+  <td-file-select layout="column"
+    flex #fileSelect
+    (openFile)="monaco.value = $event.contents">
+  </td-file-select>
+
+  <td-code-editor #monaco
+    theme="vs-dark" flex class="bgc-grey-900 overflow-hidden"
+    editorStyle="border:0;" editorLanguage="javascript">
+  </td-code-editor>
+</div>
