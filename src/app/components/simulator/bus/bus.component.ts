@@ -10,7 +10,7 @@ import { InspectService } from '../../../services/simulator/inspect/inspect.serv
 export class BusComponent implements OnInit {
 
   // The default bus color (without highlight)
-  private static DEFAULT_COLOR: string = '#000000';
+  private static DEFAULT_COLOR: string = 'deepskyblue';
   // The highlighted bus color (when moused over)
   private static HIGHLIGHT_COLOR: string = '#ff0000';
   // The clicked bus color
