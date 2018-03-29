@@ -99,7 +99,6 @@ class Clock(InputHook, iBusRead, Entity):
         "Implements conversion from configuration to component"
         return NotImplemented
 
-    @classmethod
-    def to_dict(cls):
+    def to_dict(self):
         "Implements conversion from component to configuration"
         return NotImplemented
