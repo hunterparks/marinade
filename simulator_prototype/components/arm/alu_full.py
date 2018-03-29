@@ -298,3 +298,13 @@ class Alu(Combinational):
         self._v.write(self._generate_v(alus, a, b, self._f.read()))
         self._n.write(self._generate_n(self._f.read()))
         self._z.write(self._generate_z(self._f.read()))
+
+    @classmethod
+    def from_dict(cls, config):
+        "Implements conversion from configuration to component"
+        return NotImplemented
+
+    @classmethod
+    def to_dict(cls):
+        "Implements conversion from component to configuration"
+        return NotImplemented

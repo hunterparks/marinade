@@ -68,3 +68,13 @@ class Adder(Combinational):
             self._y.write(y % 2**self._size)
         if not self._carry_out is None:
             self._carry_out.write(cout)
+
+    @classmethod
+    def from_dict(cls, config):
+        "Implements conversion from configuration to component"
+        return NotImplemented
+
+    @classmethod
+    def to_dict(cls):
+        "Implements conversion from component to configuration"
+        return NotImplemented

@@ -99,3 +99,13 @@ class RegisterFile(_RegisterFile):
             self._rd2.write(self._pc.read())
         if self._ra3.read() == 15:
             self._rd3.write(self._pc.read())
+
+    @classmethod
+    def from_dict(cls, config):
+        "Implements conversion from configuration to component"
+        return NotImplemented
+
+    @classmethod
+    def to_dict(cls):
+        "Implements conversion from component to configuration"
+        return NotImplemented

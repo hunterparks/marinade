@@ -32,3 +32,13 @@ class Constant(Hook, iBusRead):
     def size(self):
         "Returns size of bus"
         return self._size
+
+    @classmethod
+    def from_dict(cls, config):
+        "Implements conversion from configuration to component"
+        return NotImplemented
+
+    @classmethod
+    def to_dict(cls):
+        "Implements conversion from component to configuration"
+        return NotImplemented

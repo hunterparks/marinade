@@ -136,7 +136,7 @@ class Exmem(Sequential):
         self._enable = enable
         self._enable_type = enable_type
 
-        self._state = ExmemState(self._pc4m, self._regwrm, self._memwrm, 
+        self._state = ExmemState(self._pc4m, self._regwrm, self._memwrm,
                                 self._regsrcm, self._wd3sm, self._fm, self._rd2m, self._ra3m)
 
 
@@ -199,7 +199,7 @@ class Exmem(Sequential):
             if self._enable_type == Logic_States.ACTIVE_LOW:
                 e = self._enable_type.read() == 0
             else:
-                e = self._enable.read() == 1          
+                e = self._enable.read() == 1
         # check for clock change
         if e:
             if self._clk.read() == 1 and self._prev_clk_state == 0:
@@ -207,6 +207,16 @@ class Exmem(Sequential):
             elif self._clk.read() == 0 and self._prev_clk_state == 1:
                 self.on_falling_edge()
         self._prev_clk_state = self._clk.read()
+
+    @classmethod
+    def from_dict(cls, config):
+        "Implements conversion from configuration to component"
+        return NotImplemented
+
+    @classmethod
+    def to_dict(cls):
+        "Implements conversion from component to configuration"
+        return NotImplemented
 
 
 class ExmemState():

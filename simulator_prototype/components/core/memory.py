@@ -331,3 +331,13 @@ class Memory(MemoryBlock):
         elif self._mode.read() == Memory.MEM_MODE_BYTE:
             read = self._read_byte_from_memory(self._address.read())
         self._read.write(read)
+
+    @classmethod
+    def from_dict(cls, config):
+        "Implements conversion from configuration to component"
+        return NotImplemented
+
+    @classmethod
+    def to_dict(cls):
+        "Implements conversion from component to configuration"
+        return NotImplemented

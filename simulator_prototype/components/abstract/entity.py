@@ -8,10 +8,10 @@ Run function is to be called on whatever timestep the architecture is using,
 whether that be per fastest clock or faster. (Recall Nyquist 2f_comp = f_arch)
 """
 
-from abc import ABC, abstractmethod
+from abc import abstractmethod
+from components.abstract.configuration_parser import ConfigurationParser
 
-
-class Entity(ABC):
+class Entity(ConfigurationParser):
     """
     Entity is interface to define the architecture simulation functionality
     """

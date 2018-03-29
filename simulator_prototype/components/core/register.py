@@ -136,3 +136,13 @@ class Register(Sequential):
         # assert output for timestep
         if not self._out_bus is None:
             self._out_bus.write(self._q)
+
+    @classmethod
+    def from_dict(cls, config):
+        "Implements conversion from configuration to component"
+        return NotImplemented
+
+    @classmethod
+    def to_dict(cls):
+        "Implements conversion from component to configuration"
+        return NotImplemented

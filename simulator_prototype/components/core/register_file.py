@@ -213,3 +213,13 @@ class RegisterFile(Sequential):
             a = self._waddr.read()
             if a < self._num_reg:
                 self._ens[a].write(0)
+
+    @classmethod
+    def from_dict(cls, config):
+        "Implements conversion from configuration to component"
+        return NotImplemented
+
+    @classmethod
+    def to_dict(cls):
+        "Implements conversion from component to configuration"
+        return NotImplemented

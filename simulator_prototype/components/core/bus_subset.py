@@ -46,3 +46,13 @@ class BusSubset(Entity):
             mask = 2**self._range[x][1] - 2**self._range[x][0]
             val = (self._input.read() & mask) >> self._range[x][0]
             self._outputs[x].write(val)
+
+    @classmethod
+    def from_dict(cls, config):
+        "Implements conversion from configuration to component"
+        return NotImplemented
+
+    @classmethod
+    def to_dict(cls):
+        "Implements conversion from component to configuration"
+        return NotImplemented

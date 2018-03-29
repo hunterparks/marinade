@@ -63,3 +63,13 @@ class Extender(Combinational):
             if signed_bit == 1:
                 new_imm = 0x3F000000 | new_imm
             self._imm32.write(new_imm << 2)
+
+    @classmethod
+    def from_dict(cls, config):
+        "Implements conversion from configuration to component"
+        return NotImplemented
+
+    @classmethod
+    def to_dict(cls):
+        "Implements conversion from component to configuration"
+        return NotImplemented

@@ -245,3 +245,13 @@ class HazardController():
     def modify(self, data = None):
         "Return message noting that this controller does not contain state"
         return {'error': 'hazard controller cannot be modified'}
+
+    @classmethod
+    def from_dict(cls, config):
+        "Implements conversion from configuration to component"
+        return NotImplemented
+
+    @classmethod
+    def to_dict(cls):
+        "Implements conversion from component to configuration"
+        return NotImplemented

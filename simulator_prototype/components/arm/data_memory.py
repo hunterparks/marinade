@@ -74,3 +74,13 @@ class DataMemory(Memory):
         """
         self._address_subset.run(time)
         Memory.run(self, time)
+
+    @classmethod
+    def from_dict(cls, config):
+        "Implements conversion from configuration to component"
+        return NotImplemented
+
+    @classmethod
+    def to_dict(cls):
+        "Implements conversion from component to configuration"
+        return NotImplemented

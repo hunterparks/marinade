@@ -220,8 +220,8 @@ class Idex(Sequential):
         self._enable = enable
         self._enable_type = enable_type
 
-        self._state = IdexState(self._pc4e, self._regwre, self._alusrcbe, 
-                                self._aluse, self._aluflagwre, self._memwre, self._regsrce, 
+        self._state = IdexState(self._pc4e, self._regwre, self._alusrcbe,
+                                self._aluse, self._aluflagwre, self._memwre, self._regsrce,
                                 self._wd3se, self._rd1e, self._rd2e, self._imm32e, self._ra1e,
                                 self._ra2e, self._ra3e)
 
@@ -336,7 +336,7 @@ class Idex(Sequential):
             if self._enable_type == Logic_States.ACTIVE_LOW:
                 e = self._enable_type.read() == 0
             else:
-                e = self._enable.read() == 1          
+                e = self._enable.read() == 1
         # check for clock change
         if e:
             if self._clk.read() == 1 and self._prev_clk_state == 0:
@@ -344,6 +344,16 @@ class Idex(Sequential):
             elif self._clk.read() == 0 and self._prev_clk_state == 1:
                 self.on_falling_edge()
         self._prev_clk_state = self._clk.read()
+
+    @classmethod
+    def from_dict(cls, config):
+        "Implements conversion from configuration to component"
+        return NotImplemented
+
+    @classmethod
+    def to_dict(cls):
+        "Implements conversion from component to configuration"
+        return NotImplemented
 
 
 class IdexState():

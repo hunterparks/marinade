@@ -66,3 +66,13 @@ class MemoryReadSignExtender(Combinational):
                 if y & 0x80 == 0x80:
                     y |= (0xFFFFFF << 8)
                 self._y.write(y)
+
+    @classmethod
+    def from_dict(cls, config):
+        "Implements conversion from configuration to component"
+        return NotImplemented
+
+    @classmethod
+    def to_dict(cls):
+        "Implements conversion from component to configuration"
+        return NotImplemented
