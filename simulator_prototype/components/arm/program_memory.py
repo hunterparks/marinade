@@ -21,13 +21,12 @@ class ProgramMemory(Memory):
     size defined for the module.
     """
 
-    def __init__(self, address, rst, clk, read, default_size=4096,
+    def __init__(self, address, rst, read, default_size=4096,
                  default_value=0, rst_type=Logic_States.ACTIVE_HIGH):
         """
         Buses
             address : word sized address bus to access program memory
             rst : Reset bus to clear memory
-            clk : --ignored but must be valid
             read : word sized bus with addressed instruction
 
         Configuration
@@ -38,6 +37,7 @@ class ProgramMemory(Memory):
         # disable write behavior
         self._wd_const = Constant(32, 0)
         self._we_const = Constant(1, 0)
+        self._clk_const = Constant(1,0)
 
         # default mode to word access
         self._mode_const = Constant(2, 3)
@@ -55,7 +55,7 @@ class ProgramMemory(Memory):
 
         # Construct generalized memory passing parameters
         Memory.__init__(self, default_size, 4, 0, self._address_general, self._wd_const,
-                        self._we_const, rst, clk, self._mode_const, read, default_value,
+                        self._we_const, rst, self._clk_const, self._mode_const, read, default_value,
                         Latch_Type.FALLING_EDGE, rst_type, Logic_States.ACTIVE_HIGH)
 
     def run(self, time=None):

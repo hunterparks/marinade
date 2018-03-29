@@ -109,7 +109,7 @@ class Architecture(ConfigurationParser):
             ret_val.update({name: {'error': 'hook not in architecture'}})
         return ret_val
 
-    def clear(self,message):
+    def clear(self, message):
         "Returns object's messages from hook call"
         ret_val = {}
         if isinstance(message, Iterable) and not isinstance(message, str):

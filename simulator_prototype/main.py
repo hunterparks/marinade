@@ -24,7 +24,7 @@ from components.core.bus_join import BusJoin
 from components.core.constant import Constant
 from components.arm.data_memory import DataMemory
 from components.arm.extender import Extender
-from components.arm.controller_single_cycle import ControllerSingleCycle
+from components.arm.controller_single_cycle_demo import ControllerSingleCycle
 
 from collections import OrderedDict
 from architecture import Architecture

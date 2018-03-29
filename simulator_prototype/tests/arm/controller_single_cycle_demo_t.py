@@ -5,7 +5,7 @@ Test arm component ControllerSingleCycle
 import unittest
 import sys
 sys.path.insert(0, '../../')
-from components.arm.controller_single_cycle import ControllerSingleCycle
+from components.arm.controller_single_cycle_demo import ControllerSingleCycle
 from components.core.bus import Bus
 
 
