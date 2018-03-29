@@ -37,3 +37,12 @@ class RegisterFile(_RegisterFile):
         _RegisterFile.__init__(self, 16, 32, clock, reset, a3, write_data, [a1, a2],
                                [rd1, rd2], write_enable, 0, edge_type, reset_type,
                                enable_type)
+
+    @classmethod
+    def from_dict(cls, config):
+        "Implements conversion from configuration to component"
+        return NotImplemented
+
+    def to_dict(self):
+        "Implements conversion from component to configuration"
+        return NotImplemented

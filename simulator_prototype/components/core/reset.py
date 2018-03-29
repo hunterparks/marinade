@@ -66,3 +66,12 @@ class Reset(InputHook, iBusRead):
     def size(self):
         "Returns size of bus"
         return 1
+
+    @classmethod
+    def from_dict(cls, config):
+        "Implements conversion from configuration to component"
+        return NotImplemented
+
+    def to_dict(self):
+        "Implements conversion from component to configuration"
+        return NotImplemented

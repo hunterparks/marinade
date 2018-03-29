@@ -44,3 +44,12 @@ class Bus(OutputHook, iBusRead, iBusWrite):
     def size(self):
         "Returns size of bus"
         return self._size
+
+    @classmethod
+    def from_dict(cls, config):
+        "Implements conversion from configuration to component"
+        return NotImplemented
+
+    def to_dict(self):
+        "Implements conversion from component to configuration"
+        return NotImplemented

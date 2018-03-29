@@ -65,3 +65,12 @@ class Mux(Combinational):
                 self._output.write(0)  # selected empty entry (odd degree in)
             else:
                 self._output.write(self._inputs[s].read())
+
+    @classmethod
+    def from_dict(cls, config):
+        "Implements conversion from configuration to component"
+        return NotImplemented
+
+    def to_dict(self):
+        "Implements conversion from component to configuration"
+        return NotImplemented

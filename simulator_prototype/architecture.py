@@ -8,8 +8,9 @@ from collections import OrderedDict, Iterable
 from components.core.clock import Clock
 from components.core.reset import Reset
 from components.abstract.hooks import Hook, InputHook, InternalHook
+from components.abstract.configuration_parser import ConfigurationParser
 
-class Architecture:
+class Architecture(ConfigurationParser):
     """
     Architecture simplifies the structure of the processor during runtime
     to an ordered list of runnable entities (including clocks) and a list
@@ -108,7 +109,7 @@ class Architecture:
             ret_val.update({name: {'error': 'hook not in architecture'}})
         return ret_val
 
-    def clear(self,message):
+    def clear(self, message):
         "Returns object's messages from hook call"
         ret_val = {}
         if isinstance(message, Iterable) and not isinstance(message, str):
@@ -179,3 +180,12 @@ class Architecture:
         self._main_reset.generate({'reset': True})
         self.logic_run()
         self._main_reset.generate({'reset': False})
+
+    @classmethod
+    def from_dict(cls, config):
+        "Implements conversion from configuration to component"
+        return NotImplemented
+
+    def to_dict(self):
+        "Implements conversion from component to configuration"
+        return NotImplemented

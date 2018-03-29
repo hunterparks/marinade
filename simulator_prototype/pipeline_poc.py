@@ -210,8 +210,7 @@ def generate_pipeline_architecture():
                                         hooks['nextaddr'], hooks['pc'], 0, enable=hooks['pcwrd'])})
     entities.update({'add8': Adder(32, hooks['pc'], hooks['const8'], hooks['pc8f'])})
     entities.update({'add4': Adder(32, hooks['pc'], hooks['const4'], hooks['pc4f'])})
-    entities.update({'progmem': ProgramMemory(hooks['pc'], Bus(1,0), hooks['clk'], 
-                                              hooks['instrf'])})
+    entities.update({'progmem': ProgramMemory(hooks['pc'], hooks['rst'], hooks['instrf'])})
     # decode
     entities.update({'instr_subset': BusSubset(hooks['instrd'],
                                                [hooks['instrd_23_0'], hooks['instrd_31_28'],

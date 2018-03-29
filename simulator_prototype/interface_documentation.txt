@@ -1,0 +1,22 @@
+Messages supplied from front-end to backend
+
+Note that timing simulation is used when in simulation view and logic simulation
+used when in memory view mode. Distinction is made since step either moves a
+timestep or a clockstep.
+
+### Architecture Commands
+
+{'step':{'type':<'logic' or 'time'>}} Returns {'status':{}}
+{'reset':{}} Returns {'status':{}}
+{'load':{'filepath':<'file'>}}  Returns {'status':{}}
+
+### Component Commands
+>>ALL
+{'inspect':[<'component>']}  Returns [{'component':{<component data>}}]
+
+>>INPUT_HOOKS (Clock, Reset, InputBus, ...)
+{'generate':{'name':<'component'>,'parameters':{<component data>}}} Returns {'status':{}}
+
+>>INTERNAL_HOOKS (Memory)
+{'modify':{'name':<'component'>,'parameters':{<component data>}}} Returns {'status':{}}
+{'clear':[<'components>']} Returns {'status':{}}

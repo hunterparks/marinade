@@ -93,3 +93,12 @@ class Clock(InputHook, iBusRead, Entity):
             self._state = self._default_state if t < T / 2 else (self._default_state + 1) % 2
         else:
             self._state = self._default_state
+
+    @classmethod
+    def from_dict(cls, config):
+        "Implements conversion from configuration to component"
+        return NotImplemented
+
+    def to_dict(self):
+        "Implements conversion from component to configuration"
+        return NotImplemented

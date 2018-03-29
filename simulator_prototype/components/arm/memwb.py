@@ -6,7 +6,7 @@ class Memwb(Sequential):
     This specialized register sits between the memory and write back stages
     """
 
-    def __init__(self, pc4m, regwrm, regsrcm, wd3sm, fm, rdm, ra3m, clk, pc4w, 
+    def __init__(self, pc4m, regwrm, regsrcm, wd3sm, fm, rdm, ra3m, clk, pc4w,
                  regwrw, regsrcw, wd3sw, fw, rdw, ra3w, edge_type = Latch_Type.RISING_EDGE,
                  enable = None, enable_type = Logic_States.ACTIVE_HIGH):
         """
@@ -121,10 +121,10 @@ class Memwb(Sequential):
         self._enable = enable
         self._enable_type = enable_type
 
-        self._state = MemwbState(self._pc4w, self._regwrw, self._regsrcw, 
+        self._state = MemwbState(self._pc4w, self._regwrw, self._regsrcw,
                                 self._wd3sw, self._fw, self._rdw, self._ra3w)
 
-    
+
     def on_rising_edge(self):
         "Implements clock rising behavior: captures data if latch type matches"
         if self._edge_type == Latch_Type.RISING_EDGE or self._edge_type == Latch_Type.BOTH_EDGE:
@@ -135,7 +135,7 @@ class Memwb(Sequential):
             self._fw.write(self._fm.read())
             self._rdw.write(self._rdm.read())
             self._ra3w.write(self._ra3m.read())
-    
+
 
     def on_falling_edge(self):
         "Implements clock rising behavior: captures data if latch type matches"
@@ -148,7 +148,7 @@ class Memwb(Sequential):
             self._rdw.write(self._rdm.read())
             self._ra3w.write(self._ra3m.read())
 
-    
+
     def on_reset(self):
         "Not used for this register"
         pass
@@ -179,7 +179,7 @@ class Memwb(Sequential):
             if self._enable_type == Logic_States.ACTIVE_LOW:
                 e = self._enable_type.read() == 0
             else:
-                e = self._enable.read() == 1          
+                e = self._enable.read() == 1
         # check for clock change
         if e:
             if self._clk.read() == 1 and self._prev_clk_state == 0:
@@ -187,6 +187,15 @@ class Memwb(Sequential):
             elif self._clk.read() == 0 and self._prev_clk_state == 1:
                 self.on_falling_edge()
         self._prev_clk_state = self._clk.read()
+
+    @classmethod
+    def from_dict(cls, config):
+        "Implements conversion from configuration to component"
+        return NotImplemented
+
+    def to_dict(self):
+        "Implements conversion from component to configuration"
+        return NotImplemented
 
 
 class MemwbState():
@@ -209,5 +218,5 @@ class MemwbState():
     def get_state(self):
         return {'pcsrcw': self._pc4w.read(),
                 'regwrew': self._regwrw.read(), 'regsrcw': self._regsrcw.read(),
-                'wd3sw': self._wd3sw.read(), 'fw': self._fw.read(), 
+                'wd3sw': self._wd3sw.read(), 'fw': self._fw.read(),
                 'rdw': self._rdw.read(), 'ra3w': self._ra3w.read()}

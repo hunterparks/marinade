@@ -8,9 +8,9 @@ class Ifid(Sequential):
     """
 
 
-    def __init__(self, pc4f, pc8f, instrf, stall, flush, clk, pc4d, pc8d, instrd, 
-                 default_state=0, edge_type=Latch_Type.RISING_EDGE, 
-                 flush_type=Logic_States.ACTIVE_HIGH, enable=None, 
+    def __init__(self, pc4f, pc8f, instrf, stall, flush, clk, pc4d, pc8d, instrd,
+                 default_state=0, edge_type=Latch_Type.RISING_EDGE,
+                 flush_type=Logic_States.ACTIVE_HIGH, enable=None,
                  enable_type=Logic_States.ACTIVE_HIGH):
         """
         inputs:
@@ -187,6 +187,15 @@ class Ifid(Sequential):
                 self.on_falling_edge()
         self._prev_clk_state = self._clk.read()
 
+    @classmethod
+    def from_dict(cls, config):
+        "Implements conversion from configuration to component"
+        return NotImplemented
+
+    def to_dict(self):
+        "Implements conversion from component to configuration"
+        return NotImplemented
+
 
 class IfidState():
     """
@@ -201,5 +210,5 @@ class IfidState():
         self._instrd = instrd
 
     def get_state(self):
-        return {'pc4d': self._pc4d.read(), 'pc8d': self._pc8d.read(), 
+        return {'pc4d': self._pc4d.read(), 'pc8d': self._pc8d.read(),
                 'instrd': self._instrd.read()}

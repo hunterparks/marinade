@@ -289,7 +289,7 @@ class ControllerPipeline(Controller):
         else:
             return 0b0
 
-    
+
     @staticmethod
     def _generate_alusd(op, bit4, funct):
         """
@@ -329,7 +329,7 @@ class ControllerPipeline(Controller):
         else:
             return 0b1111
 
-    
+
     @staticmethod
     def _generate_aluflagwrd(op, funct):
         """
@@ -377,7 +377,7 @@ class ControllerPipeline(Controller):
     @staticmethod
     def _generate_regsrcd(op, funct):
         """
-        REGSRC <= '1' when output of ALU is feedback 
+        REGSRC <= '1' when output of ALU is feedback
         REGSRC <= '0' when output of data mem is feedback (ldr instructions)
         """
         if op == 0b01 and funct == 0b011001:
@@ -453,3 +453,12 @@ class ControllerPipeline(Controller):
     def on_reset(self):
         "Not implemented for pipeline"
         pass
+
+    @classmethod
+    def from_dict(cls, config):
+        "Implements conversion from configuration to component"
+        return NotImplemented
+
+    def to_dict(self):
+        "Implements conversion from component to configuration"
+        return NotImplemented

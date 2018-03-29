@@ -179,3 +179,12 @@ class Alu(Combinational):
         self._v.write(self._generate_v(alus, a, b, f))
         self._n.write(self._generate_n(f))
         self._z.write(self._generate_z(f))
+
+    @classmethod
+    def from_dict(cls, config):
+        "Implements conversion from configuration to component"
+        return NotImplemented
+
+    def to_dict(self):
+        "Implements conversion from component to configuration"
+        return NotImplemented

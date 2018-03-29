@@ -41,3 +41,12 @@ class BusJoin(Entity):
             val += i.read() << shift
             shift += i.size()
         self._output.write(val)
+
+    @classmethod
+    def from_dict(cls, config):
+        "Implements conversion from configuration to component"
+        return NotImplemented
+
+    def to_dict(self):
+        "Implements conversion from component to configuration"
+        return NotImplemented

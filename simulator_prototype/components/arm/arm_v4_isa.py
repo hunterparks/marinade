@@ -9,126 +9,226 @@ set of enumerations.
 from enum import Enum
 
 
-class InstructionMasks(Enum):
-    COND = 0xF0000000
+def get_condition(instr):
+    """
+    Returns condition sub-field from instruction
+    """
+    return (instr & 0xF0000000) >> 28
 
-    class DataProcessing(Enum):
-        FILL = 0x0C000000  # value = 0b00
-        I = 0x02000000
-        OPCODE = 0x01D00000
-        S = 0x00100000
-        OPERAND2 = 0x000003FF
-        RN = 0x000F0000
-        RD = 0x0000F000
 
-        class ImmediateOperand2(Enum):
-            ROTATE = 0x00000F00
-            IMM = 0x000000FF
+def get_opcode(instr):
+    """
+    Returns opcode sub-field from instruction
+    """
+    return (instr & 0x0C000000) >> 26
 
-        class RegisterOperand2(Enum):
-            ROC = 0x00000010
-            RM = 0x0000000F
-            SHIFT_TYPE = 0x00000060
 
-            class ShiftConstant(Enum):
-                SHIFT_AMOUNT = 0x00000F80
+def get_function(instr):
+    """
+    Returns function sub-field from instruction
+    """
+    return (instr & 0x03F00000) >> 20
 
-            class ShiftRegister(Enum):
-                RS = 0x00000F00
-                FILL = 0x00000080  # value  = 0b0
 
-    class Multiply(Enum):
-        FILL_1 = 0x0FC00000  # value = 0b000000
-        A = 0x00200000
-        S = 0x00100000
-        RN = 0x0000F000
-        RD = 0x000F0000
-        RS = 0x00000F00
-        FILL_2 = 0x000000F0  # value = 0b1001
-        RM = 0x0000000F
+def parse_function_get_i(funct):
+    """
+    Returns I bit from instructions, determines 2nd operand as immediate or register
+    """
+    return (funct & 0b100000) >> 5
 
-    class SingleDataSwap(Enum):
-        FILL_1 = 0x0F800000  # value = 0b00010
-        B = 0x00400000
-        FILL_2 = 0x00300000  # value = 0b00
-        RN = 0x000F0000
-        RD = 0x0000F000
-        FILL_3 = 0x00000F00  # value = 0b0000
-        FILL_4 = 0x000000F0  # value = 0b1001
-        RM = 0x0000000F
 
-    class SingleDataTransfer(Enum):
-        FILL_1 = 0x0C000000  # value = 0b01
-        I = 0x02000000
-        P = 0x01000000
-        U = 0x00800000
-        B = 0x00400000
-        W = 0x00200000
-        L = 0x00100000
-        RN = 0x000F0000
-        RD = 0x0000F000
-        OFFSET = 0x00000FFF
+def parse_function_get_cmd(funct, alt=False):
+    """
+    Returns cmd sub-field from function sub-field
+        alt is branch instruction and memory single instruction
+    """
+    if alt:
+        return (funct & 0b001110) >> 1
+    else:
+        return (funct & 0b011110) >> 1
 
-    class Undefined(Enum):
-        FILL_1 = 0x0E000000  # value = 0b011
-        DONT_CARE_1 = 0x00FFFFE0
-        FILL_2 = 0x00000010  # value = 0b1
-        DONT_CARE_2 = 0x0000000F
 
-    class BlockDataTransfer(Enum):
-        FILL = 0x0E000000
-        P = 0x01000000
-        U = 0x00800000
-        B = 0x00400000
-        W = 0x00200000
-        L = 0x00100000
-        RN = 0x000F0000
-        REGLIST = 0x0000FFFF
+def parse_function_get_s(funct):
+    """
+    Returns S bit from supported function sub-fields to save ALU flags
+    """
+    return (funct & 0b000001) >> 0  # aluflag save
 
-    class Branch(Enum):
-        FILL = 0x0E000000  # value = 0b101
-        L = 0x01000000
-        OFFSET = 0x00FFFFFF
 
-    class CoprocessorDataTransfer(Enum):
-        FILL = 0x0E000000
-        P = 0x01000000
-        U = 0x00800000
-        B = 0x00400000
-        W = 0x00200000
-        L = 0x00100000
-        RN = 0x000F0000
-        CRD = 0x0000F000
-        CPN = 0x00000F00
-        OFFSET = 0x000000FF
+def parse_function_get_p(funct):
+    """
+    Returns P bit from memory access sub-field
+    """
+    return (funct & 0b010000) >> 4  # pre/post indexing bit 1 = pre
 
-    class CoprocessorDataOperation(Enum):
-        FILL_1 = 0x0F000000  # value = 0b1110
-        CP_OPC = 0x00F00000
-        CRN = 0x000F0000
-        CRD = 0x0000F000
-        CPN = 0x00000F00
-        CP = 0x000000E0
-        FILL_2 = 0x00000010  # value  = 0b0
-        CRM = 0x0000000F
 
-    class CoprocessorRegisterTransfer(Enum):
-        FILL_1 = 0x0F000000  # value = 0b1110
-        CP_OPC = 0x00E00000
-        L = 0x00100000
-        CRN = 0x000F0000
-        RD = 0x0000F000
-        CPN = 0x00000F00
-        CP = 0x000000E0
-        FILL_2 = 0x00000010  # value  = 0b1
-        CRM = 0x0000000F
+def parse_function_get_u(funct):
+    """
+    Returns U bit from memory access sub-field
+    """
+    return (funct & 0b001000) >> 3  # up/down bit (offset modification) 1 = up
 
-    class SoftwareInterrupt(Enum):
-        FILL = 0x0F000000  # value = 0b1111
-        IGNORE_BY_PROC = 0x00FFFFFF
+
+def parse_function_get_b(funct):
+    """
+    Returns B bit from memory access sub-field
+    """
+    return (funct & 0b000100) >> 2  # unsigned byte is 1 else word
+
+
+def parse_function_get_w(funct):
+    """
+    Returns W bit from memory access sub-field
+    """
+    return (funct & 0b000010) >> 1  # write-back to base
+
+
+def parse_function_get_l(funct, alt=False):
+    """
+    Returns L bit from memory access or branch function sub-field
+        alt is branch instruction
+    """
+    if alt:
+        return (funct & 0b010000) >> 4  # link
+    else:
+        return (funct & 0b000001) >> 0  # load/store
+
+
+def parse_function_get_a(funct):
+    """
+    Returns A bit from memory access sub-field
+    """
+    return (funct & 0b000010) >> 1
+
+
+def get_rn(instr, alt=False):
+    """
+    Returns the RN register sub-field from instruction
+        alt means that instruction is multiply
+    """
+    if alt:
+        return (instr & 0x0000000F) >> 0
+    else:
+        return (instr & 0x000F0000) >> 16
+
+
+def get_rd(instr, alt=False):
+    """
+    Returns the RD register sub-field from instruction
+        alt means that instruction is multiply
+    """
+    if alt:
+        return (instr & 0x000F0000) >> 16
+    else:
+        return (instr & 0x0000F000) >> 12
+
+
+def get_rm(instr, alt=False):
+    """
+    Returns the RM register sub-field from instruction
+        alt means that instruction is multiply
+    """
+    if alt:
+        return (instr & 0x00000F00) >> 8
+    else:
+        return (instr & 0x0000000F) >> 0
+
+
+def get_ra(instr, alt=False):
+    """
+    Returns the RA register sub-field from instruction
+        alt means that instruction is multiply
+    """
+    if alt:
+        return (instr & 0x0000F000) >> 12
+    else:
+        return (instr & 0x00000F00) >> 8
+
+
+def get_shift_operand(instr):
+    """
+    Returns the shift operand sub-field for parsing
+    """
+    return (instr & 0x00000FF0) >> 4
+
+
+def parse_shift_operand_get_roi(shift):
+    """
+    Returns whether the shift operand is register or immediate
+    """
+    return (shift & 0x01) >> 0
+
+
+def parse_shift_operand_get_type(shift):
+    """
+    Returns shift operation to perform
+    """
+    return (shift & 0x06) >> 1
+
+
+def parse_shift_operand_get_reg_fill(shift):
+    """
+    Returns the fill value for using a register shift (determines validity)
+    """
+    return (shift & 0x08) >> 3
+
+
+def is_multiply(funct, shift):
+    """
+    Determines whether the funtion is a multiply instruction
+    Returns boolean
+    """
+    if parse_function_get_cmd(funct) & 0xE or parse_function_get_i(funct):
+        return False
+    elif parse_shift_operand_get_roi(shift) and parse_shift_operand_get_reg_fill(shift):
+        return True
+    else:
+        return False
+
+
+def condition_met(cond, c, v, n, z):
+    """
+    Determines whether the given condition was met according to ALU flag.
+    Returns boolean
+    """
+    if cond == ConditionField.EQ.value:
+        return z
+    elif cond == ConditionField.NE.value:
+        return not z
+    elif cond == ConditionField.CS.value:
+        return c
+    elif cond == ConditionField.CC.value:
+        return not c
+    elif cond == ConditionField.MI.value:
+        return n
+    elif cond == ConditionField.PL.value:
+        return not n
+    elif cond == ConditionField.VS.value:
+        return v
+    elif cond == ConditionField.VC.value:
+        return not v
+    elif cond == ConditionField.HI.value:
+        return c and not z
+    elif cond == ConditionField.LS.value:
+        return not c or z
+    elif cond == ConditionField.GE.value:
+        return n == v
+    elif cond == ConditionField.LT.value:
+        return n != v
+    elif cond == ConditionField.GT.value:
+        return not z and (n == v)
+    elif cond == ConditionField.LE.value:
+        return ((z or n) and not v) or (not n and v)
+    elif cond == ConditionField.AL.value:
+        return True
+    else:
+        return False
 
 
 class ConditionField(Enum):
+    """
+    Defines conditions on instruction
+    """
     EQ = 0b0000  # Z set (equal)
     NE = 0b0001  # Z clear (not equal)
     CS = 0b0010  # C set (unsigned higher or same)
@@ -147,7 +247,21 @@ class ConditionField(Enum):
     NV = 0b1111  # Never
 
 
-class DataOpCodes(Enum):
+class OpCodes(Enum):
+    """
+    Defines instruction classes
+    """
+    DATA_PROCESS = 0  # register, immediate, and multiply
+    MEMORY_SINGLE = 1  # Read and write
+    MEMORY_MULTIPLE = 2  # Access range not supported
+    BRANCH = 2  # PC manipulation
+    IGNORE = 3  # coprocessor, software interrupt not supported
+
+
+class DataCMDCodes(Enum):
+    """
+    Defines Data Processing Operations
+    """
     AND = 0b0000  # and
     EOR = 0b0001  # exculsive or
     SUB = 0b0010  # subtract
@@ -167,6 +281,9 @@ class DataOpCodes(Enum):
 
 
 class ShiftType(Enum):
+    """
+    Defines Shifting Operations
+    """
     LL = 0b00  # logical left shift
     LR = 0b01  # logical right shift
     AR = 0b10  # arithmetic right shift

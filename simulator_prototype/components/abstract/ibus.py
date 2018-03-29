@@ -2,10 +2,10 @@
 Define Read and Write behavior for bus types in the system architecture
 """
 
-from abc import ABC, abstractmethod
+from abc import abstractmethod
+from components.abstract.configuration_parser import ConfigurationParser
 
-
-class iBus(ABC):
+class iBus(ConfigurationParser):
     """
     Interface to enforce size constraint on bus type objects
     """
