@@ -1,15 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'marinade-settings-view',
+  styleUrls: ['./settings-view.component.scss'],
   templateUrl: './settings-view.component.html',
-  styleUrls: ['./settings-view.component.scss']
 })
-export class SettingsViewComponent implements OnInit {
-
-  constructor() { }
-
-  ngOnInit() {
-  }
-
-}
+export class SettingsViewComponent { }

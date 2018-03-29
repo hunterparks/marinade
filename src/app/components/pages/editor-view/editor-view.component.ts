@@ -1,15 +1,8 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'marinade-editor-view',
+  styleUrls: ['./editor-view.component.scss'],
   templateUrl: './editor-view.component.html',
-  styleUrls: ['./editor-view.component.scss']
 })
-export class EditorViewComponent implements OnInit {
-
-  constructor() { }
-
-  ngOnInit() {
-  }
-
-}
+export class EditorViewComponent { }

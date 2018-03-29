@@ -8,7 +8,7 @@ import { MatListModule } from '@angular/material/list';
 import { CovalentHighlightModule } from '@covalent/highlight';
 import { CovalentMarkdownModule } from '@covalent/markdown';
 
-import { TdContainerDirective } from '../../components/';
+import { TdContainerDirective } from '../container/container.directive';
 import { TdFileSelectComponent } from './file-select.component';
 
 @NgModule({

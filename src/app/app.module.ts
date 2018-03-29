@@ -15,16 +15,15 @@ import { CovalentHttpModule } from '@covalent/http';
 import { CovalentMarkdownModule } from '@covalent/markdown';
 import * as Raven from 'raven-js';
 
-import { CovalentFileSelectModule } from '../platform/file-select/file-select.module';
 import { AppComponent } from './app.component';
 import { marinadeRoutes } from './app.routes';
+import { CovalentFileSelectModule } from './components/common/file-select/file-select/file-select.module';
 import { TooltipContainerComponent } from './components/common/tooltip/tooltip-container/tooltip-container.component';
 import { TooltipComponent } from './components/common/tooltip/tooltip-content/tooltip.component';
 import { EditorViewComponent } from './components/pages/editor-view/editor-view.component';
 import { MemoryViewComponent } from './components/pages/memory-view/memory-view.component';
 import { SettingsViewComponent } from './components/pages/settings-view/settings-view.component';
 import { SimulatorViewComponent } from './components/pages/simulator-view/simulator-view.component';
-import { SimulatorComponent } from './components/pages/simulator/simulator.component';
 import { BusComponent } from './components/simulator/bus/bus.component';
 import { ControllerComponent } from './components/simulator/controller/controller.component';
 import { MuxComponent } from './components/simulator/mux/mux.component';
@@ -54,7 +53,7 @@ export class RavenErrorHandler implements ErrorHandler {
   bootstrap: [AppComponent],
   declarations: [
     AppComponent,
-    SimulatorComponent,
+    SimulatorViewComponent,
     SafeHtmlPipe,
     BusComponent,
     ControllerComponent,

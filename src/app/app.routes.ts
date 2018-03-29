@@ -3,7 +3,7 @@ import { RouterModule, Routes } from '@angular/router';
 import { EditorViewComponent } from './components/pages/editor-view/editor-view.component';
 import { MemoryViewComponent } from './components/pages/memory-view/memory-view.component';
 import { SettingsViewComponent } from './components/pages/settings-view/settings-view.component';
-import { SimulatorComponent } from './components/pages/simulator/simulator.component';
+import { SimulatorViewComponent } from './components/pages/simulator-view/simulator-view.component';
 
 const routes: Routes = [
   {
@@ -16,7 +16,7 @@ const routes: Routes = [
     path: 'editor'
   },
   {
-    component: SimulatorComponent, // TODO: Move to SimulatorViewComponent
+    component: SimulatorViewComponent, // TODO: Move to SimulatorViewComponent
     path: 'simulator'
   },
   {

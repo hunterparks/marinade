@@ -46,7 +46,7 @@ Thumbs.db
 
 # Local Settings Files
 /src/app/settings/**/local.*.settings.ts
-/backend/src/settings/**/local_*_settings.py
+/src/backend/settings/**/local_*_settings.py
 /simulator_prototype/settings/**/local_*_settings.py
 
 # Python
