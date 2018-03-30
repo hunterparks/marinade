@@ -5,8 +5,8 @@ logical bit means that the component should handle reset behavior
 Note that reset can be used as a logic read bus of size one
 """
 
-from components.abstract.hooks import InputHook
-from components.abstract.ibus import iBusRead
+from simulator.components.abstract.hooks import InputHook
+from simulator.components.abstract.ibus import iBusRead
 
 
 class Reset(InputHook, iBusRead):

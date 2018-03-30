@@ -2,8 +2,8 @@
 Single-cycle controller as derived by Larry Skuse's VHDL work.
 """
 
-from components.abstract.controller import Controller
-from components.abstract.ibus import iBusRead, iBusWrite
+from simulator.components.abstract.controller import Controller
+from simulator.components.abstract.ibus import iBusRead, iBusWrite
 import components.arm.arm_v4_isa as ISA
 
 

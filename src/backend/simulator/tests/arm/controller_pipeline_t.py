@@ -5,8 +5,8 @@ Test arm component ControllerPipeline
 import unittest
 import sys
 sys.path.insert(0, '../../')
-from components.arm.controller_pipeline import ControllerPipeline
-from components.core.bus import Bus
+from simulator.components.arm.controller_pipeline import ControllerPipeline
+from simulator.components.core.bus import Bus
 
 
 class ControllerSingleCycle_t(unittest.TestCase):
@@ -43,17 +43,17 @@ class ControllerSingleCycle_t(unittest.TestCase):
         # test case 1
         with self.assertRaises(ValueError):
             pp = ControllerPipeline(cond, funct, op, rd, bit4, c, v, n, z, stalld, pcsrcd, pcwrd,
-                                        regsad, regdstd, regwrsd, regwrd, extsd, alusrcbd, alusd, 
+                                        regsad, regdstd, regwrsd, regwrd, extsd, alusrcbd, alusd,
                                         aluflagwrd, memwrd, regsrcd, wd3sd)
         # test case 2
         with self.assertRaises(ValueError):
-            pp = ControllerPipeline(cond, op, bit4, rd, funct, c, v, n, z, stalld, pcsrcd, pcwrd, 
-                                        regsad, regdstd, regwrsd, regwrd, extsd, alusrcbd, alusd, 
+            pp = ControllerPipeline(cond, op, bit4, rd, funct, c, v, n, z, stalld, pcsrcd, pcwrd,
+                                        regsad, regdstd, regwrsd, regwrd, extsd, alusrcbd, alusd,
                                         aluflagwrd, memwrd, regsrcd, wd3sd)
         # test case 3
         with self.assertRaises(ValueError):
             pp = ControllerPipeline(cond, op, funct, rd, bit4, c, v, n, z, stalld, pcsrcd, pcwrd,
-                                        regsad, regdstd, regwrd, regwrsd, extsd, alusrcbd, 
+                                        regsad, regdstd, regwrd, regwrsd, extsd, alusrcbd,
                                         aluflagwrd, alusd, memwrd, regsrcd, wd3sd)
         # test case 4
         with self.assertRaises(ValueError):
@@ -89,7 +89,7 @@ class ControllerSingleCycle_t(unittest.TestCase):
         regsrcd = Bus(1)
         wd3sd = Bus(1)
         # initialize single cycle controller
-        pp = ControllerPipeline(cond, op, funct, rd, bit4, c, v, n, z, stalld, pcsrcd, pcwrd, 
+        pp = ControllerPipeline(cond, op, funct, rd, bit4, c, v, n, z, stalld, pcsrcd, pcwrd,
                                     regsad, regdstd, regwrsd, regwrd, extsd, alusrcbd, alusd,
                                     aluflagwrd, memwrd, regsrcd, wd3sd)
         # pcsrcd tests
@@ -334,7 +334,7 @@ class ControllerSingleCycle_t(unittest.TestCase):
         wd3sd = Bus(1)
         # initialize single cycle controller
         pp = ControllerPipeline(cond, op, funct, rd, bit4, c, v, n, z, stalld, pcsrcd, pcwrd,
-                                    regsad, regdstd, regwrsd, regwrd, extsd, alusrcbd, alusd, 
+                                    regsad, regdstd, regwrsd, regwrd, extsd, alusrcbd, alusd,
                                     aluflagwrd, memwrd, regsrcd, wd3sd)
         ins = pp.inspect()
         self.assertTrue(ins['type'] == 'pipeline-controller')

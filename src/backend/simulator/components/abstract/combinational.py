@@ -4,7 +4,7 @@ entities for the architecture construction process.
 """
 
 from abc import ABC, abstractmethod
-from components.abstract.entity import Entity
+from simulator.components.abstract.entity import Entity
 
 
 class Combinational(Entity):

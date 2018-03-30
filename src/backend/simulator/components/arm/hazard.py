@@ -1,4 +1,4 @@
-from components.abstract.ibus import iBusRead, iBusWrite
+from simulator.components.abstract.ibus import iBusRead, iBusWrite
 
 class HazardController():
     """

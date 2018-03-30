@@ -5,8 +5,8 @@ Tests arm component ProgramMemory
 import unittest
 import sys
 sys.path.insert(0, '../../')
-from components.arm.program_memory import ProgramMemory, Latch_Type, Logic_States
-from components.core.bus import Bus
+from simulator.components.arm.program_memory import ProgramMemory, Latch_Type, Logic_States
+from simulator.components.core.bus import Bus
 
 
 class ProgramMemory_t(unittest.TestCase):

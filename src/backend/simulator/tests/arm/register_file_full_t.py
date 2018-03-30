@@ -5,9 +5,9 @@ Test arm component RegisterFile_wo_PC
 import unittest
 import sys
 sys.path.insert(0, '../../')
-from components.arm.register_file_full import RegisterFile, Latch_Type, Logic_States
-from components.core.constant import Constant
-from components.core.bus import Bus
+from simulator.components.arm.register_file_full import RegisterFile, Latch_Type, Logic_States
+from simulator.components.core.constant import Constant
+from simulator.components.core.bus import Bus
 
 
 class RegisterFile_Full_t(unittest.TestCase):

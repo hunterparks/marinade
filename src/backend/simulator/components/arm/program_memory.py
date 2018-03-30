@@ -2,10 +2,10 @@
 ARM specific program memory module with 32-bit width.
 """
 
-from components.core.memory import Memory, Latch_Type, Logic_States
-from components.core.constant import Constant
-from components.core.bus_subset import BusSubset
-from components.core.bus import Bus
+from simulator.components.core.memory import Memory, Latch_Type, Logic_States
+from simulator.components.core.constant import Constant
+from simulator.components.core.bus_subset import BusSubset
+from simulator.components.core.bus import Bus
 import math
 
 

@@ -5,9 +5,9 @@ Tests arm state register memwb
 import unittest
 import sys
 sys.path.insert(0, '../../')
-from components.arm.memwb import Memwb
-from components.core.bus import Bus
-from components.abstract.sequential import Latch_Type, Logic_States
+from simulator.components.arm.memwb import Memwb
+from simulator.components.core.bus import Bus
+from simulator.components.abstract.sequential import Latch_Type, Logic_States
 
 class Memwb_t(unittest.TestCase):
     "Unit tests for Memwb class"
@@ -42,7 +42,7 @@ class Memwb_t(unittest.TestCase):
 
         with self.assertRaises(TypeError):
             memwb = Memwb(pcsrcm, regwrsm, regwrm, regsrcm, wd3sm, fm, rdm, ra3m,
-                            clk, pcsrcw, regwrsw, regwrw, regsrcw, invalidBusType, 
+                            clk, pcsrcw, regwrsw, regwrw, regsrcw, invalidBusType,
                             fw, rdw, ra3w)
 
         memwb = Memwb(pcsrcm, regwrsm, regwrm, regsrcm, wd3sm, fm, rdm, ra3m,
@@ -176,7 +176,7 @@ class Memwb_t(unittest.TestCase):
                         clk, pcsrcw, regwrsw, regwrw, regsrcw, wd3sw, fw, rdw,
                         ra3w)
         self.assertEqual(memwb.modify()['error'], 'memwb register cannot be modified')
-        
+
 
     def test_run(self):
         "Tests the run method"
@@ -215,7 +215,7 @@ class Memwb_t(unittest.TestCase):
         self.assertEqual(regwrsm.read(), regwrsw.read())
         self.assertEqual(rdm.read(), rdw.read())
 
-        
+
 
 if __name__ == '__main__':
     unittest.main()

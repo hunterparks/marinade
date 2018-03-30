@@ -5,8 +5,8 @@ Tests arm component MemoryReadSignExtender
 import unittest
 import sys
 sys.path.insert(0, '../../')
-from components.arm.memory_read_sign_extend import MemoryReadSignExtender
-from components.core.bus import Bus
+from simulator.components.arm.memory_read_sign_extend import MemoryReadSignExtender
+from simulator.components.core.bus import Bus
 
 class MemoryReadSignExtender_t(unittest.TestCase):
     """

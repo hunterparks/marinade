@@ -5,9 +5,9 @@ Tests ARM component ALUFlagRegister
 import unittest
 import sys
 sys.path.insert(0, '../../')
-from components.arm.alu_flag_register import ALUFlagRegister, Latch_Type, Logic_States
-from components.core.constant import Constant
-from components.core.bus import Bus
+from simulator.components.arm.alu_flag_register import ALUFlagRegister, Latch_Type, Logic_States
+from simulator.components.core.constant import Constant
+from simulator.components.core.bus import Bus
 
 
 class ALUFlagRegister_t(unittest.TestCase):

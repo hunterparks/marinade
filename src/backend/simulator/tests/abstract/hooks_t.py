@@ -5,7 +5,7 @@ Test abstract hooks: Hook, InputHook, InternalHook, OutputHook
 import unittest
 import sys
 sys.path.insert(0, '../../')
-from components.abstract.hooks import Hook, InputHook, OutputHook, InternalHook
+from simulator.components.abstract.hooks import Hook, InputHook, OutputHook, InternalHook
 
 
 class Hook_t(unittest.TestCase):

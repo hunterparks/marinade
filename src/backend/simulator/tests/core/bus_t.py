@@ -5,7 +5,7 @@ Tests core component Bus
 import unittest
 import sys
 sys.path.insert(0, '../../')
-from components.core.bus import Bus
+from simulator.components.core.bus import Bus
 
 
 class Bus_t(unittest.TestCase):

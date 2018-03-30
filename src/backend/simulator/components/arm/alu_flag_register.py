@@ -3,11 +3,11 @@ ALU Flag Regsiter stores calculated results from ALU for next state controller
 conditions.
 """
 
-from components.core.bus_join import BusJoin
-from components.core.bus_subset import BusSubset
-from components.core.bus import Bus
-from components.abstract.ibus import iBusRead, iBusWrite
-from components.core.register import Register, Latch_Type, Logic_States
+from simulator.components.core.bus_join import BusJoin
+from simulator.components.core.bus_subset import BusSubset
+from simulator.components.core.bus import Bus
+from simulator.components.abstract.ibus import iBusRead, iBusWrite
+from simulator.components.core.register import Register, Latch_Type, Logic_States
 
 
 class ALUFlagRegister(Register):

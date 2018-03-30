@@ -16,33 +16,33 @@ developed.
 import time
 from collections import OrderedDict
 
-from components.abstract.sequential import Latch_Type, Logic_States
+from simulator.components.abstract.sequential import Latch_Type, Logic_States
 
-from components.core.bus import Bus
-from components.core.mux import Mux
-from components.core.clock import Clock
-from components.core.reset import Reset
-from components.core.adder import Adder
-from components.core.bus_join import BusJoin
-from components.core.register import Register
-from components.core.constant import Constant
-from components.core.bus_subset import BusSubset
-from components.core.logic_input import LogicInput
+from simulator.components.core.bus import Bus
+from simulator.components.core.mux import Mux
+from simulator.components.core.clock import Clock
+from simulator.components.core.reset import Reset
+from simulator.components.core.adder import Adder
+from simulator.components.core.bus_join import BusJoin
+from simulator.components.core.register import Register
+from simulator.components.core.constant import Constant
+from simulator.components.core.bus_subset import BusSubset
+from simulator.components.core.logic_input import LogicInput
 
-from components.arm.alu_demo import Alu
-from components.arm.extender import Extender
-from components.arm.data_memory import DataMemory
-from components.arm.program_memory import ProgramMemory
-from components.arm.register_file_demo import RegisterFile
-from components.arm.controller_pipeline import ControllerPipeline
-from components.arm.ifid import Ifid
-from components.arm.idex import Idex
-from components.arm.exmem import Exmem
-from components.arm.memwb import Memwb
-from components.arm.controller_pipeline import ControllerPipeline
-from components.arm.hazard import HazardController
+from simulator.components.arm.alu_demo import Alu
+from simulator.components.arm.extender import Extender
+from simulator.components.arm.data_memory import DataMemory
+from simulator.components.arm.program_memory import ProgramMemory
+from simulator.components.arm.register_file_demo import RegisterFile
+from simulator.components.arm.controller_pipeline import ControllerPipeline
+from simulator.components.arm.ifid import Ifid
+from simulator.components.arm.idex import Idex
+from simulator.components.arm.exmem import Exmem
+from simulator.components.arm.memwb import Memwb
+from simulator.components.arm.controller_pipeline import ControllerPipeline
+from simulator.components.arm.hazard import HazardController
 
-from architecture import Architecture
+from simulator.architecture import Architecture
 
 
 def program_pipeline_architecture(arch, program):

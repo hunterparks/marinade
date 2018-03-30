@@ -1,7 +1,7 @@
 import unittest
 import sys
 sys.path.insert(0, '../../')
-from components.core.reset import Reset
+from simulator.components.core.reset import Reset
 
 
 class Reset_t(unittest.TestCase):

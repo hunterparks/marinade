@@ -3,8 +3,8 @@ Bus instances used as conduits of numerical data of fixed size. Expectation
 is that a bus will be written to by one component but can be read by many.
 """
 
-from components.abstract.hooks import OutputHook
-from components.abstract.ibus import iBusRead, iBusWrite
+from simulator.components.abstract.hooks import OutputHook
+from simulator.components.abstract.ibus import iBusRead, iBusWrite
 
 
 class Bus(OutputHook, iBusRead, iBusWrite):

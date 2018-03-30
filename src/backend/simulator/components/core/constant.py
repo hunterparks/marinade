@@ -2,8 +2,8 @@
 Constant is to be viewed as an immutable bus in architectures
 """
 
-from components.abstract.hooks import Hook
-from components.abstract.ibus import iBusRead
+from simulator.components.abstract.hooks import Hook
+from simulator.components.abstract.ibus import iBusRead
 
 
 class Constant(Hook, iBusRead):

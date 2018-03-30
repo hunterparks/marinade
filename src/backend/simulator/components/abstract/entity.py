@@ -9,7 +9,7 @@ whether that be per fastest clock or faster. (Recall Nyquist 2f_comp = f_arch)
 """
 
 from abc import abstractmethod
-from components.abstract.configuration_parser import ConfigurationParser
+from simulator.components.abstract.configuration_parser import ConfigurationParser
 
 class Entity(ConfigurationParser):
     """

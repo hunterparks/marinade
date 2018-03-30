@@ -5,9 +5,9 @@ Tests arm state register idex
 import unittest
 import sys
 sys.path.insert(0, '../../')
-from components.arm.idex import Idex
-from components.core.bus import Bus
-from components.abstract.sequential import Latch_Type, Logic_States
+from simulator.components.arm.idex import Idex
+from simulator.components.core.bus import Bus
+from simulator.components.abstract.sequential import Latch_Type, Logic_States
 
 class Idex_t(unittest.TestCase):
     "Unit tests for idex class"
@@ -53,20 +53,20 @@ class Idex_t(unittest.TestCase):
         with self.assertRaises(ValueError):
             idex = Idex(pcsrcd, regwrsd, regwrd, alusrcbd, alusd, aluflagwrd,
                         memwrd, regsrcd, wd3sd, rd1d, rd2d, imm32d, ra1d, ra2d,
-                        ra3d, flush, clk, invalidBusSize, regwrse, regwre, alusrcbe, 
+                        ra3d, flush, clk, invalidBusSize, regwrse, regwre, alusrcbe,
                         aluse, aluflagwre, memwre, regsrce, wd3se, rd1e, rd2e,
                         imm32e, ra1e, ra2e, ra3e)
 
         with self.assertRaises(TypeError):
             idex = Idex(pcsrcd, regwrsd, regwrd, alusrcbd, alusd, aluflagwrd,
                         memwrd, regsrcd, wd3sd, rd1d, rd2d, imm32d, ra1d, ra2d,
-                        ra3d, flush, clk, pcsrce, regwrse, regwre, alusrcbe, 
+                        ra3d, flush, clk, pcsrce, regwrse, regwre, alusrcbe,
                         aluse, aluflagwre, memwre, regsrce, wd3se, rd1e, rd2e,
                         imm32e, ra1e, invalidBusType, ra3e)
 
         idex = Idex(pcsrcd, regwrsd, regwrd, alusrcbd, alusd, aluflagwrd,
                     memwrd, regsrcd, wd3sd, rd1d, rd2d, imm32d, ra1d, ra2d,
-                    ra3d, flush, clk, pcsrce, regwrse, regwre, alusrcbe, 
+                    ra3d, flush, clk, pcsrce, regwrse, regwre, alusrcbe,
                     aluse, aluflagwre, memwre, regsrce, wd3se, rd1e, rd2e,
                     imm32e, ra1e, ra2e, ra3e)
 
@@ -108,7 +108,7 @@ class Idex_t(unittest.TestCase):
 
         idex = Idex(pcsrcd, regwrsd, regwrd, alusrcbd, alusd, aluflagwrd,
                     memwrd, regsrcd, wd3sd, rd1d, rd2d, imm32d, ra1d, ra2d,
-                    ra3d, flush, clk, pcsrce, regwrse, regwre, alusrcbe, 
+                    ra3d, flush, clk, pcsrce, regwrse, regwre, alusrcbe,
                     aluse, aluflagwre, memwre, regsrce, wd3se, rd1e, rd2e,
                     imm32e, ra1e, ra2e, ra3e)
         pcsrcd.write(3)
@@ -154,7 +154,7 @@ class Idex_t(unittest.TestCase):
 
         idex = Idex(pcsrcd, regwrsd, regwrd, alusrcbd, alusd, aluflagwrd,
                     memwrd, regsrcd, wd3sd, rd1d, rd2d, imm32d, ra1d, ra2d,
-                    ra3d, flush, clk, pcsrce, regwrse, regwre, alusrcbe, 
+                    ra3d, flush, clk, pcsrce, regwrse, regwre, alusrcbe,
                     aluse, aluflagwre, memwre, regsrce, wd3se, rd1e, rd2e,
                     imm32e, ra1e, ra2e, ra3e, Latch_Type.FALLING_EDGE,
                     Logic_States.ACTIVE_LOW)
@@ -202,7 +202,7 @@ class Idex_t(unittest.TestCase):
 
         idex = Idex(pcsrcd, regwrsd, regwrd, alusrcbd, alusd, aluflagwrd,
                     memwrd, regsrcd, wd3sd, rd1d, rd2d, imm32d, ra1d, ra2d,
-                    ra3d, flush, clk, pcsrce, regwrse, regwre, alusrcbe, 
+                    ra3d, flush, clk, pcsrce, regwrse, regwre, alusrcbe,
                     aluse, aluflagwre, memwre, regsrce, wd3se, rd1e, rd2e,
                     imm32e, ra1e, ra2e, ra3e)
         alusd.write(1)
@@ -248,7 +248,7 @@ class Idex_t(unittest.TestCase):
 
         idex = Idex(pcsrcd, regwrsd, regwrd, alusrcbd, alusd, aluflagwrd,
                     memwrd, regsrcd, wd3sd, rd1d, rd2d, imm32d, ra1d, ra2d,
-                    ra3d, flush, clk, pcsrce, regwrse, regwre, alusrcbe, 
+                    ra3d, flush, clk, pcsrce, regwrse, regwre, alusrcbe,
                     aluse, aluflagwre, memwre, regsrce, wd3se, rd1e, rd2e,
                     imm32e, ra1e, ra2e, ra3e)
         self.assertEqual(idex.modify()['error'], 'idex register cannot be modified')
@@ -291,7 +291,7 @@ class Idex_t(unittest.TestCase):
 
         idex = Idex(pcsrcd, regwrsd, regwrd, alusrcbd, alusd, aluflagwrd,
                     memwrd, regsrcd, wd3sd, rd1d, rd2d, imm32d, ra1d, ra2d,
-                    ra3d, flush, clk, pcsrce, regwrse, regwre, alusrcbe, 
+                    ra3d, flush, clk, pcsrce, regwrse, regwre, alusrcbe,
                     aluse, aluflagwre, memwre, regsrce, wd3se, rd1e, rd2e,
                     imm32e, ra1e, ra2e, ra3e)
         regwrsd.write(1)

@@ -5,8 +5,8 @@ Tests arm component Alu
 import unittest
 import sys
 sys.path.insert(0, '../../')
-from components.arm.alu_full import Alu
-from components.core.bus import Bus
+from simulator.components.arm.alu_full import Alu
+from simulator.components.core.bus import Bus
 
 
 class Alu_t(unittest.TestCase):

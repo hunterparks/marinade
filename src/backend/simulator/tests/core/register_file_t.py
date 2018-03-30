@@ -5,9 +5,9 @@ Test core component RegisterFile
 import unittest
 import sys
 sys.path.insert(0, '../../')
-from components.core.register_file import RegisterFile, Latch_Type, Logic_States
-from components.core.constant import Constant
-from components.core.bus import Bus
+from simulator.components.core.register_file import RegisterFile, Latch_Type, Logic_States
+from simulator.components.core.constant import Constant
+from simulator.components.core.bus import Bus
 
 
 class RegisterFile_t(unittest.TestCase):

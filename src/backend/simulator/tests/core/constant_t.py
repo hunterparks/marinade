@@ -5,7 +5,7 @@ Tests core component Constant
 import unittest
 import sys
 sys.path.insert(0, '../../')
-from components.core.constant import Constant
+from simulator.components.core.constant import Constant
 
 
 class Constant_t(unittest.TestCase):
