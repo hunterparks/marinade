@@ -2,8 +2,8 @@
 ARM ALU object for use in ARMv4 architecture
 """
 
-from components.abstract.combinational import Combinational
-from components.abstract.ibus import iBusRead, iBusWrite
+from simulator.components.abstract.combinational import Combinational
+from simulator.components.abstract.ibus import iBusRead, iBusWrite
 
 
 class Alu(Combinational):

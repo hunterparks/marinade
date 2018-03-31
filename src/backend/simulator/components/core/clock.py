@@ -6,10 +6,11 @@ determines the resolution of the application.
 Note that clock can be used as a logic read bus of size one
 """
 
-from components.abstract.hooks import InputHook
-from components.abstract.ibus import iBusRead
-from components.abstract.entity import Entity
-import limits
+import simulator.limits as limits
+
+from simulator.components.abstract.hooks import InputHook
+from simulator.components.abstract.ibus import iBusRead
+from simulator.components.abstract.entity import Entity
 
 
 class Clock(InputHook, iBusRead, Entity):

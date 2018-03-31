@@ -2,8 +2,8 @@
 ARM specific register file of length 16 with bit-width of 32.
 """
 
-from components.core.register_file import RegisterFile as _RegisterFile
-from components.core.register_file import Latch_Type, Logic_States
+from simulator.components.core.register_file import RegisterFile as _RegisterFile
+from simulator.components.core.register_file import Latch_Type, Logic_States
 
 
 class RegisterFile(_RegisterFile):

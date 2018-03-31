@@ -183,7 +183,7 @@ export class SimulatorViewComponent {
       case 'l': this.transmit.load(''); break;
       case 'p': this.transmit.program('', ''); break;
       case 'r': this.transmit.reset(); break;
-      case 's': this.transmit.step(); this.transmit.inspect(['']); break;
+      case 's': this.transmit.step('logic'); this.transmit.inspect(['']); break;
     }
   }
 

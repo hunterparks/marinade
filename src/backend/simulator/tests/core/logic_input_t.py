@@ -5,7 +5,7 @@ Tests core component LogicInput
 import unittest
 import sys
 sys.path.insert(0, '../../')
-from components.core.logic_input import LogicInput
+from simulator.components.core.logic_input import LogicInput
 
 
 class LogicInput_t(unittest.TestCase):

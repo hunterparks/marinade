@@ -3,8 +3,8 @@ Logic input is to be viewed as user changable signal
 into the architecture. Thus the device acts as a read only bus.
 """
 
-from components.abstract.hooks import InputHook
-from components.abstract.ibus import iBusRead
+from simulator.components.abstract.hooks import InputHook
+from simulator.components.abstract.ibus import iBusRead
 
 
 class LogicInput(InputHook, iBusRead):

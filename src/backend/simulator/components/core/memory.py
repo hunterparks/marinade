@@ -2,10 +2,12 @@
 Core memory object for generalized data memory usage.
 """
 
-from components.abstract.ibus import iBusRead, iBusWrite
-from components.abstract.memory_block import MemoryBlock, Latch_Type, Logic_States
-import limits
 import math
+
+import simulator.limits as limits
+
+from simulator.components.abstract.ibus import iBusRead, iBusWrite
+from simulator.components.abstract.memory_block import MemoryBlock, Latch_Type, Logic_States
 
 
 class Memory(MemoryBlock):

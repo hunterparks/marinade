@@ -5,7 +5,7 @@ Test abstract component MemoryBlock
 import unittest
 import sys
 sys.path.insert(0, '../../')
-from components.abstract.memory_block import MemoryBlock
+from simulator.components.abstract.memory_block import MemoryBlock
 
 
 class MemoryBlock_t(unittest.TestCase):

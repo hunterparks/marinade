@@ -5,9 +5,9 @@ Tests core component BusSubset
 import unittest
 import sys
 sys.path.insert(0, '../../')
-from components.core.bus_subset import BusSubset
-from components.core.constant import Constant
-from components.core.bus import Bus
+from simulator.components.core.bus_subset import BusSubset
+from simulator.components.core.constant import Constant
+from simulator.components.core.bus import Bus
 
 
 class BusSubset_t(unittest.TestCase):

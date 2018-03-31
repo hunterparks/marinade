@@ -5,8 +5,8 @@ Tests arm component Extender
 import unittest
 import sys
 sys.path.insert(0, '../../')
-from components.arm.extender import Extender
-from components.core.bus import Bus
+from simulator.components.arm.extender import Extender
+from simulator.components.core.bus import Bus
 
 
 class Extender_t(unittest.TestCase):

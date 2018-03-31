@@ -5,9 +5,9 @@ Tests arm state register exmem
 import unittest
 import sys
 sys.path.insert(0, '../../')
-from components.arm.exmem import Exmem
-from components.core.bus import Bus
-from components.abstract.sequential import Latch_Type, Logic_States
+from simulator.components.arm.exmem import Exmem
+from simulator.components.core.bus import Bus
+from simulator.components.abstract.sequential import Latch_Type, Logic_States
 
 class Exmem_t(unittest.TestCase):
     "Unit tests for exmem class"
@@ -39,16 +39,16 @@ class Exmem_t(unittest.TestCase):
 
         with self.assertRaises(ValueError):
             exmem = Exmem(pcsrce, regwrse, regwre, memwre, invalidBusSize, wd3se, rd2e,
-                            fe, ra3e, clk, pcsrcm, regwrsm, regwrm, memwrm, 
+                            fe, ra3e, clk, pcsrcm, regwrsm, regwrm, memwrm,
                             regsrcm, wd3sm, fm, rd2m, ra3m)
 
         with self.assertRaises(TypeError):
             exmem = Exmem(pcsrce, regwrse, regwre, memwre, regsrce, wd3se, rd2e,
-                            fe, ra3e, clk, pcsrcm, regwrsm, regwrm, memwrm, 
+                            fe, ra3e, clk, pcsrcm, regwrsm, regwrm, memwrm,
                             regsrcm, wd3sm, invalidBusType, rd2m, ra3m)
 
         exmem = Exmem(pcsrce, regwrse, regwre, memwre, regsrce, wd3se, rd2e,
-                        fe, ra3e, clk, pcsrcm, regwrsm, regwrm, memwrm, 
+                        fe, ra3e, clk, pcsrcm, regwrsm, regwrm, memwrm,
                         regsrcm, wd3sm, fm, rd2m, ra3m)
 
 
@@ -75,7 +75,7 @@ class Exmem_t(unittest.TestCase):
         ra3m = Bus(4)
 
         exmem = Exmem(pcsrce, regwrse, regwre, memwre, regsrce, wd3se, rd2e,
-                        fe, ra3e, clk, pcsrcm, regwrsm, regwrm, memwrm, 
+                        fe, ra3e, clk, pcsrcm, regwrsm, regwrm, memwrm,
                         regsrcm, wd3sm, fm, rd2m, ra3m)
         memwre.write(1)
         self.assertNotEqual(memwre.read(), memwrm.read())
@@ -106,8 +106,8 @@ class Exmem_t(unittest.TestCase):
         ra3m = Bus(4)
 
         exmem = Exmem(pcsrce, regwrse, regwre, memwre, regsrce, wd3se, rd2e,
-                        fe, ra3e, clk, pcsrcm, regwrsm, regwrm, memwrm, 
-                        regsrcm, wd3sm, fm, rd2m, ra3m, 
+                        fe, ra3e, clk, pcsrcm, regwrsm, regwrm, memwrm,
+                        regsrcm, wd3sm, fm, rd2m, ra3m,
                         Latch_Type.FALLING_EDGE)
         memwre.write(1)
         self.assertNotEqual(memwre.read(), memwrm.read())
@@ -138,7 +138,7 @@ class Exmem_t(unittest.TestCase):
         ra3m = Bus(4)
 
         exmem = Exmem(pcsrce, regwrse, regwre, memwre, regsrce, wd3se, rd2e,
-                        fe, ra3e, clk, pcsrcm, regwrsm, regwrm, memwrm, 
+                        fe, ra3e, clk, pcsrcm, regwrsm, regwrm, memwrm,
                         regsrcm, wd3sm, fm, rd2m, ra3m)
         pcsrce.write(1)
         regwrse.write(1)
@@ -175,7 +175,7 @@ class Exmem_t(unittest.TestCase):
         ra3m = Bus(4)
 
         exmem = Exmem(pcsrce, regwrse, regwre, memwre, regsrce, wd3se, rd2e,
-                        fe, ra3e, clk, pcsrcm, regwrsm, regwrm, memwrm, 
+                        fe, ra3e, clk, pcsrcm, regwrsm, regwrm, memwrm,
                         regsrcm, wd3sm, fm, rd2m, ra3m)
         self.assertEqual(exmem.modify()['error'], 'exmem register cannot be modified')
 
@@ -203,7 +203,7 @@ class Exmem_t(unittest.TestCase):
         ra3m = Bus(4)
 
         exmem = Exmem(pcsrce, regwrse, regwre, memwre, regsrce, wd3se, rd2e,
-                        fe, ra3e, clk, pcsrcm, regwrsm, regwrm, memwrm, 
+                        fe, ra3e, clk, pcsrcm, regwrsm, regwrm, memwrm,
                         regsrcm, wd3sm, fm, rd2m, ra3m)
         rd2e.write(0xE24AA020)
         ra3e.write(4)
@@ -215,7 +215,7 @@ class Exmem_t(unittest.TestCase):
         self.assertEqual(rd2e.read(), rd2m.read())
         self.assertEqual(ra3e.read(), ra3m.read())
 
-        
+
 
 if __name__ == '__main__':
     unittest.main()

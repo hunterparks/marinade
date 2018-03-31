@@ -5,9 +5,9 @@ Tests core component Adder
 import unittest
 import sys
 sys.path.insert(0, '../../')
-from components.core.adder import Adder
-from components.core.constant import Constant
-from components.core.bus import Bus
+from simulator.components.core.adder import Adder
+from simulator.components.core.constant import Constant
+from simulator.components.core.bus import Bus
 
 
 class Adder_t(unittest.TestCase):

@@ -5,9 +5,9 @@ Tests core component BusJoin
 import unittest
 import sys
 sys.path.insert(0, '../../')
-from components.core.bus_join import BusJoin
-from components.core.constant import Constant
-from components.core.bus import Bus
+from simulator.components.core.bus_join import BusJoin
+from simulator.components.core.constant import Constant
+from simulator.components.core.bus import Bus
 
 
 class BusJoin_t(unittest.TestCase):

@@ -1,4 +1,4 @@
 asyncio==3.4.3
 raven==6.4.0
-websockets==4.0.1
 tablib==0.12.1
+websockets==4.0.1

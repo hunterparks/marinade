@@ -5,7 +5,7 @@ Test abstract component Combinational
 import unittest
 import sys
 sys.path.insert(0, '../../')
-from components.abstract.combinational import Combinational
+from simulator.components.abstract.combinational import Combinational
 
 
 class Combinational_t(unittest.TestCase):

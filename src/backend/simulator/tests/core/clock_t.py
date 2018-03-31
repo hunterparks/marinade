@@ -5,7 +5,7 @@ Tests core component Clock
 import unittest
 import sys
 sys.path.insert(0, '../../')
-from components.core.clock import Clock
+from simulator.components.core.clock import Clock
 import limits
 
 

@@ -4,8 +4,8 @@ children to develop reset and clock based functionality
 """
 
 from abc import ABC, abstractmethod
-from components.abstract.hooks import InternalHook
-from components.abstract.entity import Entity
+from simulator.components.abstract.hooks import InternalHook
+from simulator.components.abstract.entity import Entity
 from enum import Enum
 
 

@@ -3,8 +3,8 @@ Adder component is a standalone core component for general architecture
 development.
 """
 
-from components.abstract.ibus import iBusRead, iBusWrite
-from components.abstract.combinational import Combinational
+from simulator.components.abstract.ibus import iBusRead, iBusWrite
+from simulator.components.abstract.combinational import Combinational
 
 
 class Adder(Combinational):

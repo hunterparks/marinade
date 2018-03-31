@@ -2,8 +2,8 @@
 BusJoin component used to concatenate multiple buses into a single bus
 """
 
-from components.abstract.entity import Entity
-from components.abstract.ibus import iBusRead, iBusWrite
+from simulator.components.abstract.entity import Entity
+from simulator.components.abstract.ibus import iBusRead, iBusWrite
 
 
 class BusJoin(Entity):

@@ -2,8 +2,8 @@
 BusSubset component used to break apart a single bus into composite signals
 """
 
-from components.abstract.entity import Entity
-from components.abstract.ibus import iBusRead, iBusWrite
+from simulator.components.abstract.entity import Entity
+from simulator.components.abstract.ibus import iBusRead, iBusWrite
 
 
 class BusSubset(Entity):

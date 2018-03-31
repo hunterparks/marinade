@@ -31,7 +31,7 @@ if (process.argv.find(function(args) {
 }
 
 // kicks off all the tasks to run and watch for changes on src and electron files
-gulp.task('watch', ['start-watch-src','watch-electron'], function (cb) {
+gulp.task('watch', ['start-watch-src','watch-electron', 'watch-python'], function (cb) {
     setTimeout(cb, 200);
 });
 
@@ -100,7 +100,7 @@ var deleteFolderRecursive = function(path) {
 };
 
 // watches the src files for changes
-gulp.task('watch-src', 'Watch for changed files', function (cb) {  
+gulp.task('watch-src', 'Watch for changed files', function (cb) {
 
   if (/^win/.test(process.platform)) { // windows
     deleteFolderRecursive('dist-ng');
@@ -168,7 +168,13 @@ gulp.task('restart-electron', function () {
 });
 
 // watches the electron files for changes
-gulp.task('watch-electron', 'Watch for changed files', function (cb) {  
+gulp.task('watch-electron', 'Watch for changed files', function (cb) {
   // Reload main process after files change
   gulp.watch(['electron/**/*'], ['restart']);
+});
+
+// watches the python files for changes
+gulp.task('watch-python', 'Watch for changed files', function (cb) {
+  // Reload main process after files change
+  gulp.watch(['src/backend/**/*'], ['restart']);
 });

@@ -5,8 +5,8 @@ necessary. Thus this class provides a means of defining a special component
 labled as the constructor
 """
 
-from components.abstract.combinational import Combinational
-from components.abstract.sequential import Sequential
+from simulator.components.abstract.combinational import Combinational
+from simulator.components.abstract.sequential import Sequential
 
 # TODO write the methods for this component
 

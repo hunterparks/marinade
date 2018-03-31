@@ -5,8 +5,8 @@ Tests the hazard controller
 import unittest
 import sys
 sys.path.insert(0, '../../')
-from components.arm.hazard import HazardController
-from components.core.bus import Bus
+from simulator.components.arm.hazard import HazardController
+from simulator.components.core.bus import Bus
 
 class HazardController_t(unittest.TestCase):
     "Unit tests for hazard controller"
@@ -77,7 +77,7 @@ class HazardController_t(unittest.TestCase):
         regwrw.write(1)
         self.assertEqual(HazardController._generate_fwda(ra1e, ra3m, ra3w, regwrm, regwrw, regsrcw), 1)
 
-    
+
     def test_generate_fwdb(self):
         "Tests _generate_fwdb method"
         ra2e = Bus(4)
@@ -137,7 +137,7 @@ class HazardController_t(unittest.TestCase):
         pcsrcd.write(2)
         self.assertEqual(HazardController._generate_flushd(pcsrcd), 0)
 
-    
+
     def test_run(self):
         "Tests the run method"
         ra1d = Bus(4)
@@ -213,7 +213,7 @@ class HazardController_t(unittest.TestCase):
                                             ra3w, regwrm, regwrw, regsrce,
                                             regsrcw, memwrm, pcsrcd, fwda,
                                             fwdb, fwds, stalld, flushd, flushe)
-        
+
         self.assertEqual(hazard_controller.inspect()['type'], 'hazard-controller')
         self.assertEqual(hazard_controller.inspect()['state'], None)
 
@@ -244,7 +244,7 @@ class HazardController_t(unittest.TestCase):
                                             ra3w, regwrm, regwrw, regsrce,
                                             regsrcw, memwrm, pcsrcd, fwda,
                                             fwdb, fwds, stalld, flushd, flushe)
-        
+
         self.assertEqual(hazard_controller.modify()['error'], 'hazard controller cannot be modified')
 
 

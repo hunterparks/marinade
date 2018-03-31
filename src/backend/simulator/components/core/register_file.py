@@ -2,8 +2,8 @@
 Generalized register file defines addressable set of registers
 """
 
-from components.core.bus import Bus, iBusRead, iBusWrite
-from components.core.register import Sequential, Register, Latch_Type, Logic_States
+from simulator.components.core.bus import Bus, iBusRead, iBusWrite
+from simulator.components.core.register import Sequential, Register, Latch_Type, Logic_States
 import math
 
 

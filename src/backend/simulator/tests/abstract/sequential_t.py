@@ -6,7 +6,7 @@ Test abstract component Sequential
 import unittest
 import sys
 sys.path.insert(0, '../../')
-from components.abstract.sequential import Latch_Type, Logic_States, Sequential
+from simulator.components.abstract.sequential import Latch_Type, Logic_States, Sequential
 
 
 class Latch_Type_t(unittest.TestCase):

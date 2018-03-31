@@ -9,13 +9,13 @@ sys.path.insert(0, '../../')
 from collections import OrderedDict
 
 from architecture import Architecture
-from components.core.bus import Bus
-from components.core.clock import Clock
-from components.core.reset import Reset
-from components.core.constant import Constant
+from simulator.components.core.bus import Bus
+from simulator.components.core.clock import Clock
+from simulator.components.core.reset import Reset
+from simulator.components.core.constant import Constant
 
-from components.core.adder import Adder
-from components.core.register import Register
+from simulator.components.core.adder import Adder
+from simulator.components.core.register import Register
 
 
 class Architecture_t(unittest.TestCase):

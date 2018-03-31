@@ -5,9 +5,9 @@ Test core component Memory
 import unittest
 import sys
 sys.path.insert(0, '../../')
-from components.core.memory import Memory, Latch_Type, Logic_States
-from components.core.constant import Constant
-from components.core.bus import Bus
+from simulator.components.core.memory import Memory, Latch_Type, Logic_States
+from simulator.components.core.constant import Constant
+from simulator.components.core.bus import Bus
 import limits
 
 

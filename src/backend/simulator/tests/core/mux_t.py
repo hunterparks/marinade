@@ -5,9 +5,9 @@ Tests core component Mux
 import unittest
 import sys
 sys.path.insert(0, '../../')
-from components.core.mux import Mux
-from components.core.constant import Constant
-from components.core.bus import Bus
+from simulator.components.core.mux import Mux
+from simulator.components.core.constant import Constant
+from simulator.components.core.bus import Bus
 
 
 class Mux_t(unittest.TestCase):

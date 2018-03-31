@@ -5,7 +5,7 @@ Test abstract component ConfigurationParser
 import unittest
 import sys
 sys.path.insert(0, '../../')
-from components.abstract.configuration_parser import ConfigurationParser
+from simulator.components.abstract.configuration_parser import ConfigurationParser
 
 
 class ConfigurationParser_t(unittest.TestCase):

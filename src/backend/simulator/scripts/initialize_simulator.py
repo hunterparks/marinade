@@ -8,23 +8,23 @@ necessary.
 
 import time
 
-from components.core.bus import Bus
-from components.core.clock import Clock
-from components.core.reset import Reset
-from components.core.logic_input import LogicInput
-from components.abstract.sequential import Latch_Type, Logic_States
+from simulator.components.core.bus import Bus
+from simulator.components.core.clock import Clock
+from simulator.components.core.reset import Reset
+from simulator.components.core.logic_input import LogicInput
+from simulator.components.abstract.sequential import Latch_Type, Logic_States
 
-from components.core.register import Register
-from components.core.adder import Adder
-from components.arm.register_file_demo import RegisterFile
-from components.core.mux import Mux
-from components.arm.alu_demo import Alu
-from components.core.bus_subset import BusSubset
-from components.core.bus_join import BusJoin
-from components.core.constant import Constant
-from components.arm.data_memory import DataMemory
-from components.arm.extender import Extender
-from components.arm.controller_single_cycle_demo import ControllerSingleCycle
+from simulator.components.core.register import Register
+from simulator.components.core.adder import Adder
+from simulator.components.arm.register_file_demo import RegisterFile
+from simulator.components.core.mux import Mux
+from simulator.components.arm.alu_demo import Alu
+from simulator.components.core.bus_subset import BusSubset
+from simulator.components.core.bus_join import BusJoin
+from simulator.components.core.constant import Constant
+from simulator.components.arm.data_memory import DataMemory
+from simulator.components.arm.extender import Extender
+from simulator.components.arm.controller_single_cycle_demo import ControllerSingleCycle
 
 from collections import OrderedDict
 from architecture import Architecture

@@ -1,5 +1,5 @@
-from components.abstract.sequential import Sequential, Latch_Type, Logic_States
-from components.core.bus import iBusRead, iBusWrite
+from simulator.components.abstract.sequential import Sequential, Latch_Type, Logic_States
+from simulator.components.core.bus import iBusRead, iBusWrite
 
 
 class Exmem(Sequential):

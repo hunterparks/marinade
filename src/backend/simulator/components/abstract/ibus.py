@@ -3,7 +3,7 @@ Define Read and Write behavior for bus types in the system architecture
 """
 
 from abc import abstractmethod
-from components.abstract.configuration_parser import ConfigurationParser
+from simulator.components.abstract.configuration_parser import ConfigurationParser
 
 class iBus(ConfigurationParser):
     """

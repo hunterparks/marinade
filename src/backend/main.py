@@ -58,10 +58,11 @@ timestep or a clockstep.
 import json
 import asyncio
 import websockets
-from architecture import Architecture
 
-import pipeline_poc
-import single_cycle_poc
+import simulator.single_cycle_poc as single_cycle_poc
+import simulator.pipeline_poc as pipeline_poc
+
+from sentry.sentry import initialize_sentry
 
 HOST_NAME = 'localhost'
 HOST_PORT = 4242
@@ -222,15 +223,22 @@ class Interface:
 
 if __name__ == "__main__":
 
-    interface = Interface()
+    client = initialize_sentry()
 
-    async def api_call(websocket, path):
-        async for message in websocket:
-            msg = json.loads(message)
-            retMsg = interface.parse_command(msg)
-            rxStr = json.dumps(retMsg)
-            await websocket.send(rxStr)
+    try:
 
-    asyncio.get_event_loop().run_until_complete(
-        websockets.serve(api_call, HOST_NAME, HOST_PORT))
-    asyncio.get_event_loop().run_forever()
+        interface = Interface()
+
+        async def api_call(websocket, path):
+            async for message in websocket:
+                msg = json.loads(message)
+                retMsg = interface.parse_command(msg)
+                rxStr = json.dumps(retMsg)
+                await websocket.send(rxStr)
+
+        asyncio.get_event_loop().run_until_complete(
+            websockets.serve(api_call, HOST_NAME, HOST_PORT))
+        asyncio.get_event_loop().run_forever()
+
+    except Exception:
+        client.captureException()

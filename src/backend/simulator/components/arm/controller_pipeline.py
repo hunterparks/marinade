@@ -1,5 +1,5 @@
-from components.abstract.controller import Controller
-from components.abstract.ibus import iBusRead, iBusWrite
+from simulator.components.abstract.controller import Controller
+from simulator.components.abstract.ibus import iBusRead, iBusWrite
 
 
 class ControllerPipeline(Controller):

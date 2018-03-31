@@ -5,8 +5,8 @@ Tests arm component DataMemory
 import unittest
 import sys
 sys.path.insert(0, '../../')
-from components.arm.data_memory import DataMemory, Latch_Type, Logic_States
-from components.core.bus import Bus
+from simulator.components.arm.data_memory import DataMemory, Latch_Type, Logic_States
+from simulator.components.core.bus import Bus
 
 
 class DataMemory_t(unittest.TestCase):

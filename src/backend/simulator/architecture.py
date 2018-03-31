@@ -5,10 +5,10 @@ processor and should be produced by the configuration parser
 """
 
 from collections import OrderedDict, Iterable
-from components.core.clock import Clock
-from components.core.reset import Reset
-from components.abstract.hooks import Hook, InputHook, InternalHook
-from components.abstract.configuration_parser import ConfigurationParser
+from simulator.components.core.clock import Clock
+from simulator.components.core.reset import Reset
+from simulator.components.abstract.hooks import Hook, InputHook, InternalHook
+from simulator.components.abstract.configuration_parser import ConfigurationParser
 
 class Architecture(ConfigurationParser):
     """

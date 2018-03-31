@@ -3,8 +3,8 @@ Register component is a standalone core component for general architecture
 development.
 """
 
-from components.abstract.ibus import iBusRead, iBusWrite
-from components.abstract.sequential import Sequential, Latch_Type, Logic_States
+from simulator.components.abstract.ibus import iBusRead, iBusWrite
+from simulator.components.abstract.sequential import Sequential, Latch_Type, Logic_States
 
 
 class Register(Sequential):

@@ -87,5 +87,36 @@ app.on('activate', function () {
   }
 });
 
+let pyProc = null;
+let pyPort = null;
+
+const selectPort = () => {
+  pyPort = 4242;
+  return pyPort
+};
+
+const createPyProc = () => {
+  let port = '' + selectPort();
+  let script = path.join(__dirname, 'backend', 'main.py');
+  console.log(script);
+  pyProc = require('child_process').spawn('python', [script, port],{
+    // send console output to the javascript console
+    detached: true,
+    stdio: [ 'ignore', 1, 2 ]
+  });
+  if (pyProc !== null) {
+    console.log('child process success');
+  }
+};
+
+const exitPyProc = () => {
+  pyProc.kill();
+  pyProc = null;
+  pyPort = null;
+};
+
+app.on('ready', createPyProc);
+app.on('will-quit', exitPyProc);
+
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.

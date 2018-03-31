@@ -3,8 +3,8 @@ ARM Memory Read extender for use in ARMv4 after reading from memory using
 byte or half word modes
 """
 
-from components.abstract.combinational import Combinational
-from components.abstract.ibus import iBusRead, iBusWrite
+from simulator.components.abstract.combinational import Combinational
+from simulator.components.abstract.ibus import iBusRead, iBusWrite
 
 
 class MemoryReadSignExtender(Combinational):

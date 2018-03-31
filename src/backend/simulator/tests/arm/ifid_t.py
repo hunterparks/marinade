@@ -5,9 +5,9 @@ Tests arm state register ifid
 import unittest
 import sys
 sys.path.insert(0, '../../')
-from components.arm.ifid import Ifid
-from components.core.bus import Bus
-from components.abstract.sequential import Latch_Type, Logic_States
+from simulator.components.arm.ifid import Ifid
+from simulator.components.core.bus import Bus
+from simulator.components.abstract.sequential import Latch_Type, Logic_States
 
 class Ifid_t(unittest.TestCase):
     "Unit test for Ifid class"
@@ -113,7 +113,7 @@ class Ifid_t(unittest.TestCase):
         flush.write(1)
         ifid.run()
         self.assertNotEqual(instrf.read(), instrd.read())
-        
+
 
 
 if __name__ == '__main__':
