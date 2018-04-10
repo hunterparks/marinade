@@ -9,14 +9,14 @@ const routes: Routes = [
   {
     path: '',
     pathMatch: 'full',
-    redirectTo: 'editor'
+    redirectTo: 'simulator'
   },
   {
     component: EditorViewComponent,
     path: 'editor'
   },
   {
-    component: SimulatorViewComponent, // TODO: Move to SimulatorViewComponent
+    component: SimulatorViewComponent,
     path: 'simulator'
   },
   {

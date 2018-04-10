@@ -1,0 +1,24 @@
+// TODO reorganize variables - make mixin?
+@import '../../../../../styles'
+
+div.list-item
+  padding: 15px
+  text-align: left
+  &:hover
+    @include overlay-hover
+  p
+    padding: 0 15px
+    margin: 0
+    height: 100%
+    display: inline-block
+  i
+    display: inline-block
+    float: right
+    margin-top: -5px
+    padding: 5px
+    border: 1px solid white
+    border-radius: 5px
+    &:hover
+      color: red
+  &.active
+    @include overlay-hover

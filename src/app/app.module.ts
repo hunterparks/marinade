@@ -24,7 +24,9 @@ import { EditorViewComponent } from './components/pages/editor-view/editor-view.
 import { MemoryViewComponent } from './components/pages/memory-view/memory-view.component';
 import { SettingsViewComponent } from './components/pages/settings-view/settings-view.component';
 import { SimulatorViewComponent } from './components/pages/simulator-view/simulator-view.component';
-import { BusComponent } from './components/simulator/bus/bus.component';
+import { BusListItemComponent } from './components/simulator/bus/bus-list-item/bus-list-item.component';
+import { BusTableComponent } from './components/simulator/bus/bus-table/bus-table.component';
+import { BusComponent } from './components/simulator/bus/bus/bus.component';
 import { ControllerComponent } from './components/simulator/controller/controller.component';
 import { MuxComponent } from './components/simulator/mux/mux.component';
 import { StageRegisterComponent } from './components/simulator/stage-register/stage-register.component';
@@ -32,6 +34,8 @@ import { StageComponent } from './components/simulator/stage/stage.component';
 import { TooltipDirective } from './directives/tooltip/tooltip.directive';
 import { SafeHtmlPipe } from './pipes/safe-html.pipe';
 import { InspectService } from './services/simulator/inspect/inspect.service';
+import { MonitorService } from './services/simulator/monitor/monitor.service';
+import { ReceiveService } from './services/simulator/receive/receive.service';
 import { TransmitService } from './services/simulator/transmit/transmit.service';
 import { WebsocketService } from './services/simulator/websocket/websocket.service';
 import { TooltipService } from './services/tooltip/tooltip.service';
@@ -66,7 +70,9 @@ export class RavenErrorHandler implements ErrorHandler {
     EditorViewComponent,
     SimulatorViewComponent,
     MemoryViewComponent,
-    SettingsViewComponent
+    SettingsViewComponent,
+    BusTableComponent,
+    BusListItemComponent
   ],
   imports: [
     BrowserModule,
@@ -88,6 +94,8 @@ export class RavenErrorHandler implements ErrorHandler {
   ],
   providers: [
     InspectService,
+    MonitorService,
+    ReceiveService,
     TooltipService,
     TransmitService,
     WebsocketService,

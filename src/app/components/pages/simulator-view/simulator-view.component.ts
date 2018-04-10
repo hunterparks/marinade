@@ -1,16 +1,15 @@
 import { Component, HostListener } from '@angular/core';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { ARCHITECTURE } from '../../../models/simulator/architecture.model';
-import { Bus } from '../../../models/simulator/bus/bus.model';
 import { Simulator } from '../../../models/simulator/simulator.model';
 import { InspectService } from '../../../services/simulator/inspect/inspect.service';
+import { MonitorService } from '../../../services/simulator/monitor/monitor.service';
+import { ReceiveService } from '../../../services/simulator/receive/receive.service';
 import { TransmitService } from '../../../services/simulator/transmit/transmit.service';
 import { WebsocketService } from '../../../services/simulator/websocket/websocket.service';
 import { TooltipService } from '../../../services/tooltip/tooltip.service';
 
 @Component({
   selector: 'marinade-simulator',
-  styleUrls: ['./simulator-views.component.sass'],
+  styleUrls: ['./simulator-view.component.sass'],
   templateUrl: './simulator-view.component.html',
 })
 export class SimulatorViewComponent {
@@ -22,7 +21,7 @@ export class SimulatorViewComponent {
   private static readonly DEFAULT_VIEWBOX_WIDTH: number = 1600;
 
   private static readonly MAX_SCALE: number = 2.5;
-  private static readonly MIN_SCALE: number = 1.0;
+  private static readonly MIN_SCALE: number = 0.75;
 
   private mouseStartX: number = -1;
   private mouseStartY: number = -1;
@@ -32,33 +31,24 @@ export class SimulatorViewComponent {
   private viewBoxUpperLeftY: number = 0;
   private viewBoxWidth: number = 1600;
 
-  public simulator: Simulator = ARCHITECTURE;
+  public architecture: Simulator;
 
   public viewBox: string = '0 0 1600 900';
   public viewScale: number = 1;
 
-  constructor(private tooltipService: TooltipService, private transmit: TransmitService, private websocket: WebsocketService) {
-    this.initializeBuses();
-    this.websocket.connect();
-    this.websocket.messageSubject.subscribe((message: any) => this.receiveMessage(message));
-  }
-
-  private initializeBuses(): void {
-    for (let bus of this.simulator.bus) {
-      bus.data = new BehaviorSubject<string>(InspectService.formatTooltip(bus));
-    }
-  }
-
-  private receiveMessage(message: string): void {
-    let messageObject: any = JSON.parse(message);
-    Object.keys(messageObject).map((key: string) => {
-      let selectedBus: Bus = this.simulator.bus.find((bus: Bus) => {
-        return bus.name.toLowerCase() === key;
-      });
-      if (selectedBus) {
-        selectedBus.data.next(InspectService.formatTooltip(selectedBus, messageObject[key].state));
-      }
+  constructor(
+    private inspect: InspectService,
+    private monitor: MonitorService,
+    private receive: ReceiveService,
+    private tooltip: TooltipService,
+    private transmit: TransmitService,
+    private websocket: WebsocketService
+  ) {
+    this.monitor.loadArchitecture().subscribe((architecture: Simulator) => {
+      this.architecture = architecture;
     });
+    this.websocket.connect();
+    this.websocket.messageSubject.subscribe((message: any) => this.receive.receiveMessage(message));
   }
 
   private updateViewBox(): void {
@@ -103,7 +93,7 @@ export class SimulatorViewComponent {
   public onMove(event: MouseEvent): void {
     // If a click is being held
     if (this.tracking) {
-      this.tooltipService.tooltips.forEach((tooltip: any) => {
+      this.tooltip.tooltips.forEach((tooltip: any) => {
         tooltip.x.next(tooltip.x.getValue() + (event.x - this.mouseStartX) / this.viewScale);
         tooltip.y.next(tooltip.y.getValue() + (event.y - this.mouseStartY) / this.viewScale);
       });
@@ -179,11 +169,23 @@ export class SimulatorViewComponent {
   @HostListener('window:keyup', ['$event'])
   public step(event: KeyboardEvent): void {
     switch (event.key) {
-      case 'i': this.transmit.inspect(['']); break;
-      case 'l': this.transmit.load(''); break;
-      case 'p': this.transmit.program('', ''); break;
-      case 'r': this.transmit.reset(); break;
-      case 's': this.transmit.step('logic'); this.transmit.inspect(['']); break;
+      case 'i':
+        this.transmit.inspect(['']);
+        break;
+      case 'l':
+        this.transmit.load('');
+        break;
+      case 'p':
+        this.transmit.program('', '');
+        break;
+      case 'r':
+        this.transmit.reset();
+        break;
+      case 's': {
+        this.transmit.step('logic');
+        this.inspect.inspect(this.inspect.buses.getValue());
+        break;
+    }
     }
   }
 

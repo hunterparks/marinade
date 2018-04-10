@@ -10,5 +10,6 @@ export interface Bus {
   junctions: Junction[];
   name: string;
   paths: string[];
+  state?: BehaviorSubject<string>;
   width: number;
 }

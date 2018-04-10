@@ -1,6 +1,6 @@
 import { Component, HostListener, Input, OnInit } from '@angular/core';
-import { Bus } from '../../../models/simulator/bus/bus.model';
-import { InspectService } from '../../../services/simulator/inspect/inspect.service';
+import { Bus } from '../../../../models/simulator/bus/bus.model';
+import { InspectService } from '../../../../services/simulator/inspect/inspect.service';
 
 @Component({
   selector: '[svg-bus]',
@@ -20,7 +20,7 @@ export class BusComponent implements OnInit {
   public arrows: string[] = [];
   // Input string with a list of coordinates
   @Input('svg-bus') public bus: Bus = null;
-  // The active color of the bus
+  // The state color of the bus
   public color: string = BusComponent.DEFAULT_COLOR;
   // The junction point for a complex bus
   public junctions: any[] = [];
@@ -144,6 +144,13 @@ export class BusComponent implements OnInit {
     if (this.bus['name']) {
       this.name = this.bus['name'];
     }
+    this.bus.state.subscribe((state: string) => {
+      switch (state) {
+        case 'active': this.color = BusComponent.HIGHLIGHT_COLOR; break;
+        case 'inactive': this.color = BusComponent.DEFAULT_COLOR; break;
+        default: this.color = BusComponent.DEFAULT_COLOR;
+      }
+    });
   }
 
   /**
@@ -156,15 +163,20 @@ export class BusComponent implements OnInit {
     // Expand hovering tooltip
   }
 
+  @HostListener('dblclick')
+  public onDoubleClick(): void {
+    if (!this.inspect.deleteBus(this.bus)) {
+      this.inspect.addBus(this.bus);
+    }
+  }
+
   /**
    * Handles the mouseEnter event
    */
   @HostListener('mouseenter')
   public onMouseEnter(): void {
     this.inspect.inspect(this.bus);
-    // Change the bus color to the highlight color
-    this.color = BusComponent.HIGHLIGHT_COLOR;
-    // Spawn hovering tooltip
+    this.bus.state.next('active');
   }
 
   /**
@@ -172,8 +184,7 @@ export class BusComponent implements OnInit {
    */
   @HostListener('mouseleave')
   public onMouseLeave(): void {
-    // Change the bus color to the default color
-    this.color = BusComponent.DEFAULT_COLOR;
+    this.bus.state.next('inactive');
   }
 
 }
