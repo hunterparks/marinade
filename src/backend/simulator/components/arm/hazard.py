@@ -186,8 +186,6 @@ class HazardController():
         "Sets the outputs of the ifid register to 0"
         if pcsrcd.read() == 0 or (pcsrcd.read() == 2 and ra3e.read() == 0xF):
             return 1        # Branch hazard occured
-        elif pcsrcd.read() == 2 and ra3e.read() == 0xF:
-            return
         else:
             return 0        # No branch hazard occured
 

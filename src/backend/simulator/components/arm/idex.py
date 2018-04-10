@@ -85,7 +85,7 @@ class Idex(Sequential):
         elif regsrcd.size() != 1:
             raise ValueError('The regsrcd bus must have a size of 1 bit')
         if not isinstance(wd3sd, iBusRead):
-            raise TypeError('The wd3sd bust must be readable')
+            raise TypeError('The wd3sd bus must be readable')
         elif wd3sd.size() != 1:
             raise ValueError('The wd3sd bus must have a size of 1 bit')
         if not isinstance(rd1d, iBusRead):
@@ -120,8 +120,6 @@ class Idex(Sequential):
             raise TypeError('The clk bus must be readable')
         elif clk.size() != 1:
             raise ValueError('The clk must have a size of 1 bit')
-        if not isinstance(pc4e, iBusRead):
-            raise TypeError('The pc4e bus must be readable')
 
         self._pc4d = pc4d
         self._regwrd = regwrd
@@ -142,12 +140,14 @@ class Idex(Sequential):
         self._prev_clk_state = self._clk.read()
 
         # Outputs
+        if not isinstance(pc4e, iBusRead):
+            raise TypeError('The pc4e bus must be readable')
         elif pc4e.size() != 32:
             raise ValueError('The pc4e bus must have a size of 32 bits')
         if not isinstance(regwre, iBusWrite):
             raise TypeError('The regwre bus must be writable')
         elif regwre.size() != 1:
-            raise ValueError('The regwre bust must have a size of 1 bit')
+            raise ValueError('The regwre bus must have a size of 1 bit')
         if not isinstance(alusrcbe, iBusWrite):
             raise TypeError('The alusrcbe bus must be writable')
         elif alusrcbe.size() != 1:
@@ -171,7 +171,7 @@ class Idex(Sequential):
         if not isinstance(wd3se, iBusWrite):
             raise TypeError('The wd3se bus must be writable')
         elif wd3se.size() != 1:
-            raise ValueError('The wd3se bust must have a size of 1 bit')
+            raise ValueError('The wd3se bus must have a size of 1 bit')
         if not isinstance(rd1e, iBusWrite):
             raise TypeError('The rd1e bus must be writable')
         elif rd1e.size() != 32:
@@ -313,7 +313,7 @@ class Idex(Sequential):
                 self._ra3e.write(self._ra3d.read())
 
     def on_reset(self):
-        "Not used for this register
+        "Not used for this register"
         pass
 
 

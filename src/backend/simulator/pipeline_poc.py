@@ -283,16 +283,13 @@ def generate_pipeline_architecture():
                                              hooks['rd2d'], 
                                              edge_type=Latch_Type.FALLING_EDGE)})
     # execute
-    entities.update({'hazard_controller': HazardController(hooks['ra1d'], 
-                                                           hooks['ra2d'],
-                                                           hooks['ra1e'], 
+    entities.update({'hazard_controller': HazardController(hooks['ra1e'], 
                                                            hooks['ra2e'],
                                                            hooks['ra3e'], 
                                                            hooks['ra3m'],
                                                            hooks['ra3w'], 
                                                            hooks['regwrm'],
-                                                           hooks['regwrw'], 
-                                                           hooks['regsrce'],
+                                                           hooks['regwrw'],
                                                            hooks['regsrcm'], 
                                                            hooks['regsrcw'],
                                                            hooks['memwrm'], 

@@ -6,11 +6,11 @@ written to JSON files and Excel files.
 import unittest
 import sys
 import os
-sys.path.insert(0, '../../')
+sys.path.insert(0, '../../../')
 
 import json
 import tablib
-import pipeline_poc
+import simulator.pipeline_poc as pipeline_poc
 
 
 class PipelineProcessor_t(unittest.TestCase):
@@ -51,6 +51,7 @@ class PipelineProcessor_t(unittest.TestCase):
         tf.write(']}')
         tf.close()
 
+
     @staticmethod
     def _process_json_to_excel(filepath, headers):
         """
@@ -71,6 +72,7 @@ class PipelineProcessor_t(unittest.TestCase):
         with open(filepath + '.xls', 'wb') as f:
             f.write(data.xls)
 
+
     @staticmethod
     def _compare_against_template(templatePath, testPath):
         """
@@ -84,6 +86,7 @@ class PipelineProcessor_t(unittest.TestCase):
         testf.close()
         templatef.close()
         return template.dict == test.dict
+
 
     def _generic_test_procedure(self, filename, program):
         """
@@ -146,6 +149,7 @@ class PipelineProcessor_t(unittest.TestCase):
 
         return self._compare_against_template(templatePath, resultPath)
 
+
     def test_demo_program(self):
         """
         Test against a simple demo program to prove general operation
@@ -191,6 +195,7 @@ class PipelineProcessor_t(unittest.TestCase):
         ]
         self.assertTrue(self._generic_test_procedure('pipeline_demo', demo_program))
 
+
     def test_branch_hazards_program(self):
         """
         Tests against a branch hazards program to assure branch hazards work
@@ -218,6 +223,7 @@ class PipelineProcessor_t(unittest.TestCase):
             0xE1, 0xA0, 0xF0, 0x0E      # mov pc, lr        (sumexit)
         ]
         self.assertTrue(self._generic_test_procedure('pipeline_branch_hazards', branch_hazards_program))
+
 
     def test_all_instruction_program(self):
         """

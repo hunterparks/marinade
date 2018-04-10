@@ -242,8 +242,8 @@ class ExmemState():
 
 
     def get_state(self):
-        return {'pcsrcm': self._pc4m.read(),
-                'regwrem': self._regwrm.read(), 'memwrm': self._memwrm.read(),
+        return {'pc4m': self._pc4m.read(),
+                'regwrm': self._regwrm.read(), 'memwrm': self._memwrm.read(),
                 'regsrcm': self._regsrcm.read(), 'wd3sm': self._wd3sm.read(),
                 'fm': self._fm.read(), 'rd2m': self._rd2m.read(),
                 'ra3m': self._ra3m.read()}
