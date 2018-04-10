@@ -2,13 +2,12 @@ from simulator.components.abstract.ibus import iBusRead, iBusWrite
 from simulator.components.abstract.sequential import Sequential, Latch_Type, Logic_States
 
 class Memwb(Sequential):
-    """
-    This specialized register sits between the memory and write back stages
-    """
+    "This specialized register sits between the memory and write back stages"
 
     def __init__(self, pc4m, regwrm, regsrcm, wd3sm, fm, rdm, ra3m, clk, pc4w,
-                 regwrw, regsrcw, wd3sw, fw, rdw, ra3w, edge_type = Latch_Type.RISING_EDGE,
-                 enable = None, enable_type = Logic_States.ACTIVE_HIGH):
+                 regwrw, regsrcw, wd3sw, fw, rdw, ra3w, 
+                 edge_type = Latch_Type.RISING_EDGE, enable = None, 
+                 enable_type = Logic_States.ACTIVE_HIGH):
         """
         inputs:
             pc4m: pc+4
@@ -32,6 +31,8 @@ class Memwb(Sequential):
         edge_type: memwb register data latch type
         enable_type: enable signal active state
         """
+
+        # Inputs
         if not isinstance(pc4m, iBusRead):
             raise TypeError('The pc4m bus must be readable')
         elif pc4m.size() != 32:
@@ -64,6 +65,18 @@ class Memwb(Sequential):
             raise TypeError('The clk bus must be readable')
         elif clk.size() != 1:
             raise ValueError('The clk bus must have a size of 1 bit')
+
+        self._pc4m = pc4m
+        self._regwrm = regwrm
+        self._regsrcm = regsrcm
+        self._wd3sm = wd3sm
+        self._fm = fm
+        self._rdm = rdm
+        self._ra3m = ra3m
+        self._clk = clk
+        self._prev_clk_state = self._clk.read()
+
+        # Outputs
         if not isinstance(pc4w, iBusWrite):
             raise TypeError('The pc4w bus must be writable')
         elif pc4w.size() != 32:
@@ -92,6 +105,16 @@ class Memwb(Sequential):
             raise TypeError('The ra3w bus must be writable')
         elif ra3w.size() != 4:
             raise ValueError('The ra3w bus must have a size of 4 bits')
+
+        self._pc4w = pc4w
+        self._regwrw = regwrw
+        self._regsrcw = regsrcw
+        self._wd3sw = wd3sw
+        self._fw = fw
+        self._rdw = rdw
+        self._ra3w = ra3w
+
+        # Attributes
         if not Latch_Type.valid(edge_type):
             raise ValueError('Invalid latch edge type')
         if enable is not None and not isinstance(enable, iBusRead):
@@ -101,33 +124,18 @@ class Memwb(Sequential):
         if not Logic_States.valid(enable_type):
             raise ValueError('Invalid enable state')
 
-        self._pc4m = pc4m
-        self._regwrm = regwrm
-        self._regsrcm = regsrcm
-        self._wd3sm = wd3sm
-        self._fm = fm
-        self._rdm = rdm
-        self._ra3m = ra3m
-        self._clk = clk
-        self._prev_clk_state = self._clk.read()
-        self._pc4w = pc4w
-        self._regwrw = regwrw
-        self._regsrcw = regsrcw
-        self._wd3sw = wd3sw
-        self._fw = fw
-        self._rdw = rdw
-        self._ra3w = ra3w
         self._edge_type = edge_type
         self._enable = enable
         self._enable_type = enable_type
 
-        self._state = MemwbState(self._pc4w, self._regwrw, self._regsrcw,
+        self._memwb = MemwbState(self._pc4w, self._regwrw, self._regsrcw,
                                 self._wd3sw, self._fw, self._rdw, self._ra3w)
 
 
     def on_rising_edge(self):
         "Implements clock rising behavior: captures data if latch type matches"
-        if self._edge_type == Latch_Type.RISING_EDGE or self._edge_type == Latch_Type.BOTH_EDGE:
+        if (self._edge_type == Latch_Type.RISING_EDGE 
+                or self._edge_type == Latch_Type.BOTH_EDGE):
             self._pc4w.write(self._pc4m.read())
             self._regwrw.write(self._regwrm.read())
             self._regsrcw.write(self._regsrcm.read())
@@ -139,7 +147,8 @@ class Memwb(Sequential):
 
     def on_falling_edge(self):
         "Implements clock rising behavior: captures data if latch type matches"
-        if self._edge_type == Latch_Type.FALLING_EDGE or self._edge_type == Latch_Type.BOTH_EDGE:
+        if (self._edge_type == Latch_Type.FALLING_EDGE 
+                or self._edge_type == Latch_Type.BOTH_EDGE):
             self._pc4w.write(self._pc4m.read())
             self._regwrw.write(self._regwrm.read())
             self._regsrcw.write(self._regsrcm.read())
@@ -156,13 +165,11 @@ class Memwb(Sequential):
 
     def inspect(self):
         "Returns a dictionary message to the user"
-        return {'type': 'memwb register', 'state': self._state}
+        return {'type': 'memwb register', 'state': self._memwb.get_state()}
 
 
     def modify(self, data = None):
-        """
-        Return message noting that is register cannot be modified
-        """
+        "Return a message noting that is register cannot be modified"
         return {'error' : 'memwb register cannot be modified'}
 
 
@@ -172,7 +179,8 @@ class Memwb(Sequential):
 
 
     def run(self, time = None):
-        "Timestep handler function - seeqeuntially asserts output"
+        "Timestep handler function - seqeuntially asserts output"
+
         # process enable line
         e = True
         if self._enable is not None:
@@ -180,6 +188,7 @@ class Memwb(Sequential):
                 e = self._enable_type.read() == 0
             else:
                 e = self._enable.read() == 1
+        
         # check for clock change
         if e:
             if self._clk.read() == 1 and self._prev_clk_state == 0:

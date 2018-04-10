@@ -4,12 +4,12 @@ from simulator.components.abstract.sequential import Sequential, Latch_Type, Log
 
 class Ifid(Sequential):
     """
-    This specialized register sits between the fetch and decode stages of the processor
+    This specialized register sits between the fetch and decode stages of the
+    processor
     """
 
-
-    def __init__(self, pc4f, pc8f, instrf, stall, flush, clk, pc4d, pc8d, instrd,
-                 default_state=0, edge_type=Latch_Type.RISING_EDGE,
+    def __init__(self, pc4f, pc8f, instrf, stall, flush, clk, pc4d, pc8d, 
+                 instrd, default_state=0, edge_type=Latch_Type.RISING_EDGE,
                  flush_type=Logic_States.ACTIVE_HIGH, enable=None,
                  enable_type=Logic_States.ACTIVE_HIGH):
         """
@@ -57,6 +57,16 @@ class Ifid(Sequential):
             raise TypeError('The clk bust must be readable')
         elif clk.size() != 1:
             raise ValueError('The clock bus must have a size of 1 bit')
+
+        self._pc4f = pc4f
+        self._pc8f = pc8f
+        self._instrf = instrf
+        self._stall = stall
+        self._flush = flush
+        self._clk = clk
+        self._prev_clk_state = self._clk.read()
+
+        # Outputs
         if not isinstance(pc4d, iBusWrite):
             raise TypeError('The pc4d bus must be writable')
         elif pc4d.size() != 32:
@@ -69,6 +79,12 @@ class Ifid(Sequential):
             raise TypeError('The instrd bus must be writable')
         elif instrd.size() != 32:
             raise ValueError('The instrd bus must have a size of 32 bits')
+
+        self._pc4d = pc4d
+        self._pc8d = pc8d
+        self._instrd = instrd
+
+        # Attributes
         if not isinstance(default_state, int) or default_state < 0 or default_state >= 2**32:
             raise ValueError('The default state must be an integer between -1 and 4294967296')
         if not Latch_Type.valid(edge_type):
@@ -82,16 +98,6 @@ class Ifid(Sequential):
         if not Logic_States.valid(enable_type):
             raise ValueError('Invalid enable state')
 
-        self._pc4f = pc4f
-        self._pc8f = pc8f
-        self._instrf = instrf
-        self._stall = stall
-        self._flush = flush
-        self._clk = clk
-        self._prev_clk_state = self._clk.read()
-        self._pc4d = pc4d
-        self._pc8d = pc8d
-        self._instrd = instrd
         self._default_state = default_state
         self._instrd.write(default_state)
         self._edge_type = edge_type
@@ -99,20 +105,23 @@ class Ifid(Sequential):
         self._enable = enable
         self._enable_type = enable_type
 
-        self._state = IfidState(self._pc4d, self._pc8d, self._instrd)
+        self._ifid = IfidState(self._pc4d, self._pc8d, self._instrd)
 
     def on_rising_edge(self):
-        """
-        Implements clock rising behavior: captures data if latching type matches
-        """
-        if self._edge_type == Latch_Type.RISING_EDGE or self._edge_type == Latch_Type.BOTH_EDGE:
-            if ((self._flush_type == Logic_States.ACTIVE_LOW and self._flush.read() == 0)
-                    or (self._flush_type == Logic_States.ACTIVE_HIGH and self._flush.read() == 1)):
+        "Implements clock rising behavior: captures data if latching type matches"
+        if (self._edge_type == Latch_Type.RISING_EDGE 
+                or self._edge_type == Latch_Type.BOTH_EDGE):
+            if ((self._flush_type == Logic_States.ACTIVE_LOW 
+                    and self._flush.read() == 0)
+                    or (self._flush_type == Logic_States.ACTIVE_HIGH 
+                    and self._flush.read() == 1)):
                 self._pc4d.write(0)
                 self._pc8d.write(0)
                 self._instrd.write(0)
-            elif ((self._enable_type == Logic_States.ACTIVE_HIGH and self._stall.read() == 1)
-                    or (self._enable_type == Logic_States.ACTIVE_LOW and self._stall.read() == 0)):
+            elif ((self._enable_type == Logic_States.ACTIVE_HIGH 
+                    and self._stall.read() == 1)
+                    or (self._enable_type == Logic_States.ACTIVE_LOW 
+                    and self._stall.read() == 0)):
                 self._pc4d.write(self._pc4d.read())
                 self._pc8d.write(self._pc8d.read())
                 self._instrd.write(self._instrd.read())
@@ -122,17 +131,20 @@ class Ifid(Sequential):
                 self._instrd.write(self._instrf.read())
 
     def on_falling_edge(self):
-        """
-        Implements clock falling behavior: captures data if latching type matches
-        """
-        if self._edge_type == Latch_Type.FALLING_EDGE or self._edge_type == Latch_Type.BOTH_EDGE:
-            if ((self._flush_type == Logic_States.ACTIVE_LOW and self._flush.read() == 0)
-                    or (self._flush_type == Logic_States.ACTIVE_HIGH and self._flush.read() == 1)):
+        "Implements clock falling behavior: captures data if latching type matches"
+        if (self._edge_type == Latch_Type.FALLING_EDGE 
+                or self._edge_type == Latch_Type.BOTH_EDGE):
+            if ((self._flush_type == Logic_States.ACTIVE_LOW 
+                    and self._flush.read() == 0)
+                    or (self._flush_type == Logic_States.ACTIVE_HIGH 
+                    and self._flush.read() == 1)):
                 self._pc4d.write(0)
                 self._pc8d.write(0)
                 self._instrd.write(0)
-            elif ((self._enable_type == Logic_States.ACTIVE_HIGH and self._stall.read() == 1)
-                    or (self._enable_type == Logic_States.ACTIVE_LOW and self._stall.read() == 0)):
+            elif ((self._enable_type == Logic_States.ACTIVE_HIGH 
+                    and self._stall.read() == 1)
+                    or (self._enable_type == Logic_States.ACTIVE_LOW 
+                    and self._stall.read() == 0)):
                 self._pc4d.write(self._pc4d.read())
                 self._pc8d.write(self._pc8d.read())
                 self._instrd.write(self._instrd.read())
@@ -142,22 +154,16 @@ class Ifid(Sequential):
                 self._instrd.write(self._instrf.read())
 
     def on_reset(self):
-        """
-        Not used for this register
-        """
+        "Not used for this register"
         pass
 
     def inspect(self):
-        """
-        Returns a dictionary message to the user
-        """
-        return {'type': 'ifid register', 'state': self._state}
+        "Returns a dictionary message to the user"
+        return {'type': 'ifid register', 'state': self._ifid.get_state()}
 
 
     def modify(self, data = None):
-        """
-        Return message noting that is register cannot be modified
-        """
+        "Return message noting that is register cannot be modified"
         return {'error': 'ifid register cannot be modified'}
 
 
@@ -167,9 +173,7 @@ class Ifid(Sequential):
 
 
     def run(self, time=None):
-        """
-        Timestep handler function - sequentially asserts output
-        """
+        "Timestep handler function - sequentially asserts output"
 
         # process enable line
         e = True
@@ -201,7 +205,7 @@ class IfidState():
     """
     Stores the idex registers state
     Used in the Idex class's inspect method
-    Note: Do not make new instances of this class outside of the Idex class
+    Do not make new instances of this class outside of the Idex class
     """
 
     def __init__(self, pc4d, pc8d, instrd):

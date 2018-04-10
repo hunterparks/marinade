@@ -4,15 +4,17 @@ from simulator.components.abstract.sequential import Sequential, Latch_Type, Log
 
 class Idex(Sequential):
     """
-    This specialized register sits between the decode and execute stages of the processor
+    This specialized register sits between the decode and execute stages of the 
+    processor
     """
 
     def __init__(self, pc4d, regwrd, alusrcbd, alusd, aluflagwrd,
                  memwrd, regsrcd, wd3sd, rd1d, rd2d, imm32d, ra1d, ra2d, ra3d,
                  flush, clk, pc4e, regwre, alusrcbe, aluse, aluflagwre,
                  memwre, regsrce, wd3se, rd1e, rd2e, imm32e, ra1e, ra2e, ra3e,
-                 edge_type=Latch_Type.RISING_EDGE, flush_type=Logic_States.ACTIVE_HIGH,
-                 enable=None, enable_type=Logic_States.ACTIVE_HIGH):
+                 edge_type=Latch_Type.RISING_EDGE, 
+                 flush_type=Logic_States.ACTIVE_HIGH, enable=None, 
+                 enable_type=Logic_States.ACTIVE_HIGH):
         """
         inputs:
             pc4d: pc+4
@@ -53,6 +55,7 @@ class Idex(Sequential):
         enable_type: enable signal active state
         """
 
+        # Inputs
         if not isinstance(pc4d, iBusRead):
             raise TypeError('The pc4d bus must be readable')
         elif pc4d.size() != 32:
@@ -119,6 +122,26 @@ class Idex(Sequential):
             raise ValueError('The clk must have a size of 1 bit')
         if not isinstance(pc4e, iBusRead):
             raise TypeError('The pc4e bus must be readable')
+
+        self._pc4d = pc4d
+        self._regwrd = regwrd
+        self._alusrcbd = alusrcbd
+        self._alusd = alusd
+        self._aluflagwrd = aluflagwrd
+        self._memwrd = memwrd
+        self._regsrcd = regsrcd
+        self._wd3sd = wd3sd
+        self._rd1d = rd1d
+        self._rd2d = rd2d
+        self._imm32d = imm32d
+        self._ra1d = ra1d
+        self._ra2d = ra2d
+        self._ra3d = ra3d
+        self._flush = flush
+        self._clk = clk
+        self._prev_clk_state = self._clk.read()
+
+        # Outputs
         elif pc4e.size() != 32:
             raise ValueError('The pc4e bus must have a size of 32 bits')
         if not isinstance(regwre, iBusWrite):
@@ -173,34 +196,7 @@ class Idex(Sequential):
             raise TypeError('The ra3e bus must be writable')
         elif ra3e.size() != 4:
             raise TypeError('The ra3e bus must have a size of 4 bits')
-        if not Latch_Type.valid(edge_type):
-            raise ValueError('Invalid latch edge type')
-        if not Logic_States.valid(flush_type):
-            raise ValueError('Invalid flush state')
-        if enable is not None and not isinstance(enable, iBusRead):
-            raise ValueError('The enable bus must be readable')
-        elif enable is not None and enable.size() != 1:
-            raise ValueError('The enable bus must have a size of 1 bit')
-        if not Logic_States.valid(enable_type):
-            raise ValueError('Invalid enable state')
 
-        self._pc4d = pc4d
-        self._regwrd = regwrd
-        self._alusrcbd = alusrcbd
-        self._alusd = alusd
-        self._aluflagwrd = aluflagwrd
-        self._memwrd = memwrd
-        self._regsrcd = regsrcd
-        self._wd3sd = wd3sd
-        self._rd1d = rd1d
-        self._rd2d = rd2d
-        self._imm32d = imm32d
-        self._ra1d = ra1d
-        self._ra2d = ra2d
-        self._ra3d = ra3d
-        self._flush = flush
-        self._clk = clk
-        self._prev_clk_state = self._clk.read()
         self._pc4e = pc4e
         self._regwre = regwre
         self._alusrcbe = alusrcbe
@@ -215,24 +211,39 @@ class Idex(Sequential):
         self._ra1e = ra1e
         self._ra2e = ra2e
         self._ra3e = ra3e
+        
+        # Attributes
+        if not Latch_Type.valid(edge_type):
+            raise ValueError('Invalid latch edge type')
+        if not Logic_States.valid(flush_type):
+            raise ValueError('Invalid flush state')
+        if enable is not None and not isinstance(enable, iBusRead):
+            raise ValueError('The enable bus must be readable')
+        elif enable is not None and enable.size() != 1:
+            raise ValueError('The enable bus must have a size of 1 bit')
+        if not Logic_States.valid(enable_type):
+            raise ValueError('Invalid enable state')
+
         self._edge_type = edge_type
         self._flush_type = flush_type
         self._enable = enable
         self._enable_type = enable_type
 
-        self._state = IdexState(self._pc4e, self._regwre, self._alusrcbe,
-                                self._aluse, self._aluflagwre, self._memwre, self._regsrce,
-                                self._wd3se, self._rd1e, self._rd2e, self._imm32e, self._ra1e,
+        self._idex = IdexState(self._pc4e, self._regwre, self._alusrcbe,
+                                self._aluse, self._aluflagwre, self._memwre, 
+                                self._regsrce, self._wd3se, self._rd1e, 
+                                self._rd2e, self._imm32e, self._ra1e, 
                                 self._ra2e, self._ra3e)
 
 
     def on_rising_edge(self):
-        """
-        Implements clock rising behavior: captures data if latch type matches
-        """
-        if self._edge_type == Latch_Type.RISING_EDGE or self._edge_type == Latch_Type.BOTH_EDGE:
-            if ((self._flush_type == Logic_States.ACTIVE_LOW and self._flush.read() == 0)
-                    or (self._flush_type == Logic_States.ACTIVE_HIGH and self._flush.read() == 1)):
+        "Implements clock rising behavior: captures data if latch type matches"
+        if (self._edge_type == Latch_Type.RISING_EDGE 
+                or self._edge_type == Latch_Type.BOTH_EDGE):
+            if ((self._flush_type == Logic_States.ACTIVE_LOW 
+                    and self._flush.read() == 0) 
+                    or (self._flush_type == Logic_States.ACTIVE_HIGH 
+                    and self._flush.read() == 1)):
                 self._pc4e.write(0)
                 self._regwre.write(0)
                 self._alusrcbe.write(0)
@@ -264,12 +275,13 @@ class Idex(Sequential):
                 self._ra3e.write(self._ra3d.read())
 
     def on_falling_edge(self):
-        """
-        Implements clock falling behavior: captures data if latch type matches
-        """
-        if self._edge_type == Latch_Type.FALLING_EDGE or self._edge_type == Latch_Type.BOTH_EDGE:
-            if ((self._flush_type == Logic_States.ACTIVE_LOW and self._flush.read() == 0)
-                    or (self._flush_type == Logic_States.ACTIVE_HIGH and self._flush.read() == 1)):
+        "Implements clock falling behavior: captures data if latch type matches"
+        if (self._edge_type == Latch_Type.FALLING_EDGE 
+                or self._edge_type == Latch_Type.BOTH_EDGE):
+            if ((self._flush_type == Logic_States.ACTIVE_LOW 
+                    and self._flush.read() == 0)
+                    or (self._flush_type == Logic_States.ACTIVE_HIGH 
+                    and self._flush.read() == 1)):
                 self._pc4e.write(0)
                 self._regwre.write(0)
                 self._alusrcbe.write(0)
@@ -301,23 +313,17 @@ class Idex(Sequential):
                 self._ra3e.write(self._ra3d.read())
 
     def on_reset(self):
-        """
-        Not used for this register
-        """
+        "Not used for this register
         pass
 
 
     def inspect(self):
-        """
-        Returns a dictionary message to the user
-        """
-        return {'type': 'idex register', 'state': self._state}
+        "Returns a dictionary message to the user"
+        return {'type': 'idex register', 'state': self._idex.get_state()}
 
 
     def modify(self, data = None):
-        """
-        Return message noting that is register cannot be modified
-        """
+        "Return message noting that is register cannot be modified"
         return {'error' : 'idex register cannot be modified'}
 
 
@@ -327,9 +333,8 @@ class Idex(Sequential):
 
 
     def run(self, time=None):
-        """
-        Timestep handler function - sequentially asserts output
-        """
+        "Timestep handler function - sequentially asserts output"
+
         # process enable line
         e = True
         if self._enable is not None:
@@ -337,6 +342,7 @@ class Idex(Sequential):
                 e = self._enable_type.read() == 0
             else:
                 e = self._enable.read() == 1
+        
         # check for clock change
         if e:
             if self._clk.read() == 1 and self._prev_clk_state == 0:
@@ -359,7 +365,7 @@ class IdexState():
     """
     Stores the idex registers state
     Used in the Idex class's inspect method
-    Note: Do not make new instances of this class outside of the Idex class
+    Do not make new instances of this class outside of the Idex class
     """
 
     def __init__(self, pc4e, regwre, alusrcbe, aluse, aluflagwre, memwre, regsrce,
