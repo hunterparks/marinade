@@ -1,17 +1,18 @@
 """
-Test arm component ControllerPipeline
+Tests the controller_pipeline.py module
+Must be run in the marinade/src/backend/simulator/tests/arm
 """
 
 import unittest
 import sys
-sys.path.insert(0, '../../')
+sys.path.insert(0, '../../../')
 from simulator.components.arm.controller_pipeline import ControllerPipeline
 from simulator.components.core.bus import Bus
 
 
 class ControllerSingleCycle_t(unittest.TestCase):
     """
-    Test ControllerPipeline's constructor, run and hook functionality
+    Unit test for controller_pipeline.py module
     """
 
     def test_constructor(self):
@@ -40,26 +41,31 @@ class ControllerSingleCycle_t(unittest.TestCase):
         memwrd = Bus(1)
         regsrcd = Bus(1)
         wd3sd = Bus(1)
+
         # test case 1
         with self.assertRaises(ValueError):
-            pp = ControllerPipeline(cond, funct, op, rd, bit4, c, v, n, z, stalld, pcsrcd, pcwrd,
-                                        regsad, regdstd, regwrsd, regwrd, extsd, alusrcbd, alusd,
-                                        aluflagwrd, memwrd, regsrcd, wd3sd)
+            ControllerPipeline(cond, funct, op, rd, bit4, c, v, n, z, stalld, 
+                               pcsrcd, pcwrd, regsad, regdstd, regwrsd, regwrd, 
+                               extsd, alusrcbd, alusd, aluflagwrd, memwrd, 
+                               regsrcd, wd3sd)
         # test case 2
         with self.assertRaises(ValueError):
-            pp = ControllerPipeline(cond, op, bit4, rd, funct, c, v, n, z, stalld, pcsrcd, pcwrd,
-                                        regsad, regdstd, regwrsd, regwrd, extsd, alusrcbd, alusd,
-                                        aluflagwrd, memwrd, regsrcd, wd3sd)
+            ControllerPipeline(cond, op, bit4, rd, funct, c, v, n, z, stalld, 
+                               pcsrcd, pcwrd, regsad, regdstd, regwrsd, regwrd, 
+                               extsd, alusrcbd, alusd, aluflagwrd, memwrd, 
+                               regsrcd, wd3sd)
         # test case 3
         with self.assertRaises(ValueError):
-            pp = ControllerPipeline(cond, op, funct, rd, bit4, c, v, n, z, stalld, pcsrcd, pcwrd,
-                                        regsad, regdstd, regwrd, regwrsd, extsd, alusrcbd,
-                                        aluflagwrd, alusd, memwrd, regsrcd, wd3sd)
+            ControllerPipeline(cond, op, funct, rd, bit4, c, v, n, z, stalld, 
+                               pcsrcd, pcwrd, regsad, regdstd, regwrd, regwrsd, 
+                               extsd, alusrcbd, aluflagwrd, alusd, memwrd, 
+                               regsrcd, wd3sd)
         # test case 4
         with self.assertRaises(ValueError):
-            pp = ControllerPipeline(cond, op, funct, rd, bit4, c, v, n, z, stalld, pcsrcd,
-                                        pcwrd, regsad, regdstd, regwrd, regwrsd, alusrcbd, extsd,
-                                        alusd, aluflagwrd, memwrd, regsrcd, wd3sd)
+            ControllerPipeline(cond, op, funct, rd, bit4, c, v, n, z, stalld, 
+                               pcsrcd, pcwrd, regsad, regdstd, regwrd, regwrsd, 
+                               alusrcbd, extsd, alusd, aluflagwrd, memwrd, 
+                               regsrcd, wd3sd)
 
 
     def test_run(self):
@@ -89,9 +95,10 @@ class ControllerSingleCycle_t(unittest.TestCase):
         regsrcd = Bus(1)
         wd3sd = Bus(1)
         # initialize single cycle controller
-        pp = ControllerPipeline(cond, op, funct, rd, bit4, c, v, n, z, stalld, pcsrcd, pcwrd,
-                                    regsad, regdstd, regwrsd, regwrd, extsd, alusrcbd, alusd,
-                                    aluflagwrd, memwrd, regsrcd, wd3sd)
+        pp = ControllerPipeline(cond, op, funct, rd, bit4, c, v, n, z, stalld, 
+                                pcsrcd, pcwrd, regsad, regdstd, regwrsd, 
+                                regwrd, extsd, alusrcbd, alusd, aluflagwrd, 
+                                memwrd, regsrcd, wd3sd)
         # pcsrcd tests
         # test case 4 - occurs for banch instructions where condition is met
         op.write(2)
@@ -108,199 +115,195 @@ class ControllerSingleCycle_t(unittest.TestCase):
         pp.run()
         self.assertEqual(pcsrcd.read(), 1)
         # pcwrd
-        # test case 7 - always write unless pipeline is stalled
+        # test case 7 - always write
         self.assertEqual(pcwrd.read(), 1)
-        # test case 8 - stops writing if pipeline is stalled
-        stalld.write(1)
-        pp.run()
-        self.assertEqual(pcwrd.read(), 0)
         # regsad
-        # test case 9 - used to select Rn register (mul instruction)
+        # test case 8 - used to select Rn register (mul instruction)
         op.write(0)
         bit4.write(1)
         funct.write(1)
         pp.run()
         self.assertEqual(regsad.read(), 0)
-        # test case 10 - used to select Rn register (data processing instuction)
+        # test case 9 - used to select Rn register (data processing instuction)
         op.write(1)
         pp.run()
         self.assertEqual(regsad.read(), 1)
         # regdstd
-        # test case 11 - used to select Rd register (str instruction)
+        # test case 10 - used to select Rd register (str instruction)
         op.write(1)
         funct.write(24)
         pp.run()
         self.assertEqual(regdstd.read(), 2)
-        # test case 12 - used to select Rm register (data processing instruction)
+        # test case 11 - used to select Rm register (data processing instruction)
         op.write(0)
         bit4.write(1)
         funct.write(0)
         pp.run()
         self.assertEqual(regdstd.read(), 0)
-        # test case 13 - used to select Rm register (mul instruction)
+        # test case 12 - used to select Rm register (mul instruction)
         op.write(2)
         pp.run()
         self.assertEqual(regdstd.read(), 1)
         # regwrsd
-        # test cast 14 - used to select lr instruction (bl instruction)
+        # test cast 13 - used to select lr instruction (bl instruction)
         op.write(2)
         funct.write(16)
         pp.run()
         self.assertEqual(regwrsd.read(), 2)
-        # test case 15 - used to select Rd register (data processing instruction)
+        # test case 14 - used to select Rd register (data processing instruction)
         op.write(0)
         bit4.write(1)
         funct.write(0)
         pp.run()
         self.assertEqual(regwrsd.read(), 0)
-        # test case 16 - used to selcet Rd resister (mul instruction)
+        # test case 15 - used to selcet Rd resister (mul instruction)
         op.write(1)
         pp.run()
         self.assertEqual(regwrsd.read(), 1)
         # regwrd
-        # test case 17 - occurs when an instruction writes back to the regfile
+        # test case 16 - occurs when an instruction writes back to the regfile
         op.write(0)
         funct.write(53)
         pp.run()
         self.assertEqual(regwrd.read(), 0)
-        # test case 18 - occurs when an instruction writes back to the regfile
+        # test case 17 - occurs when an instruction writes back to the regfile
         op.write(1)
         funct.write(24)
         pp.run()
         self.assertEqual(regwrd.read(), 0)
-        # test case 19 - occurs when an instruction writes back to the regfile
+        # test case 18 - occurs when an instruction writes back to the regfile
         op.write(2)
         funct.write(0b101100)
         pp.run()
         self.assertEqual(regwrd.read(), 0)
-        # test case 20 - occurs when an instruction writes back to the regfile
+        # test case 19 - occurs when an instruction writes back to the regfile
         funct.write(0b010000)
         pp.run()
         self.assertEqual(regwrd.read(), 1)
         # extsd
-        # test case 21 - used for branch instruction
+        # test case 20 - used for branch instruction
         op.write(2)
         pp.run()
         self.assertEqual(extsd.read(), 2)
-        # test case 22 - used for 12-bit immediate (ldr and str instructions)
+        # test case 21 - used for 12-bit immediate (ldr and str instructions)
         op.write(1)
         funct.write(25)
         pp.run()
         self.assertEqual(extsd.read(), 1)
-        # test case 23 - used for 8-bit immediate (data processing immediate)
+        # test case 22 - used for 8-bit immediate (data processing immediate)
         op.write(0)
         pp.run()
         self.assertEqual(extsd.read(), 0)
         # alusrcbd
-        # test case 24 - occurs when source b requires the output to the rd2 register
+        # test case 23 - occurs when source b requires the output to the rd2 register
         # (data processing instruction)
         op.write(0)
         funct.write(28)
         pp.run()
         self.assertEqual(alusrcbd.read(), 1)
-        # test case 25 - occurs when source b requires the output to the rd2 register
+        # test case 24 - occurs when source b requires the output to the rd2 register
         # (data processing instruction)
         op.write(0)
         bit4.write(1)
         funct.write(1)
         pp.run()
         self.assertEqual(alusrcbd.read(), 1)
-        # test case 26 - occurs when source b requires an exdended immediate
+        # test case 25 - occurs when source b requires an exdended immediate
         op.write(0)
         funct.write(63)
         pp.run()
         self.assertEqual(alusrcbd.read(), 0)
-        # test case 27 - occurs when source b requires an exdended immediate
+        # test case 26 - occurs when source b requires an exdended immediate
         op.write(1)
         pp.run()
         self.assertEqual(alusrcbd.read(), 0)
         # alusd
-        # test case 28 - + operation
+        # test case 27 - + operation
         op.write(0)
         funct.write(8)
         pp.run()
         self.assertEqual(alusd.read(), 0)
-        # test case 29 - + operation
+        # test case 28 - + operation
         op.write(1)
         funct.write(25)
         pp.run()
         self.assertEqual(alusd.read(), 0)
-        # test case 30 - - operation
+        # test case 29 - - operation
         op.write(0)
         funct.write(21)
         pp.run()
         self.assertEqual(alusd.read(), 1)
-        # test case 31 - and operation
+        # test case 30 - and operation
         op.write(0)
         funct.write(32)
         pp.run()
         self.assertEqual(alusd.read(), 2)
-        # test case 32 - or operation
+        # test case 31 - or operation
         op.write(0)
         funct.write(25)
         pp.run()
         self.assertEqual(alusd.read(), 3)
-        # test case 33 - xor operation
+        # test case 32 - xor operation
         op.write(0)
         funct.write(35)
         pp.run()
         self.assertEqual(alusd.read(), 4)
-        # test case 34 - return B
+        # test case 33 - return B
         op.write(0)
         funct.write(26)
         pp.run()
         self.assertEqual(alusd.read(), 6)
-        # test case 35 - * operation
+        # test case 34 - * operation
         op.write(0)
         funct.write(1)
         pp.run()
         self.assertEqual(alusd.read(), 7)
-        # test case 36 - return 1
+        # test case 35 - return 1
         op.write(2)
         pp.run()
         self.assertEqual(alusd.read(), 15)
         # aluflagwrd
-        # test case 37 - set c, v, n, z flags (cmp instructions or s bit set)
+        # test case 36 - set c, v, n, z flags (cmp instructions or s bit set)
         op.write(0)
         funct.write(15)
         pp.run()
         self.assertEqual(aluflagwrd.read(), 1)
-        # test case 39 - flags will not be set
+        # test case 37 - flags will not be set
         op.write(0)
         funct.write(0)
         pp.run()
         self.assertEqual(aluflagwrd.read(), 0)
-        # test case 40 - flags will not be set
+        # test case 38 - flags will not be set
         op.write(1)
         pp.run()
         self.assertEqual(aluflagwrd.read(), 0)
         # memwrd
-        # test case 41 - allows data to be written to data memory (str instructions)
+        # test case 39 - allows data to be written to data memory (str instructions)
         op.write(1)
         funct.write(24)
         pp.run()
         self.assertEqual(memwrd.read(), 1)
-        # test case 42 - cannot write to data memory
+        # test case 40 - cannot write to data memory
         op.write(0)
         pp.run()
         self.assertEqual(memwrd.read(), 0)
         # regsrcd
-        # test case 43 - occurs when output of alu is feedback (ldr instructions)
+        # test case 41 - occurs when output of alu is feedback (ldr instructions)
         op.write(1)
         funct.write(25)
         pp.run()
         self.assertEqual(regsrcd.read(), 0)
-        # test case 44 - occurs when output of data memory is feedback
+        # test case 42 - occurs when output of data memory is feedback
         op.write(0)
         pp.run()
         self.assertEqual(regsrcd.read(), 1)
         # wd3sd
-        # test case 45 - occurs when a bl is run
+        # test case 43 - occurs when a bl is run
         op.write(2)
         funct.write(24)
         pp.run()
         self.assertEqual(wd3sd.read(), 1)
-        # test case 46 - occurs for all non bl instructions
+        # test case 44 - occurs for all non bl instructions
         op.write(0)
         pp.run()
         self.assertEqual(wd3sd.read(), 0)
@@ -332,6 +335,7 @@ class ControllerSingleCycle_t(unittest.TestCase):
         memwrd = Bus(1)
         regsrcd = Bus(1)
         wd3sd = Bus(1)
+
         # initialize single cycle controller
         pp = ControllerPipeline(cond, op, funct, rd, bit4, c, v, n, z, stalld, pcsrcd, pcwrd,
                                     regsad, regdstd, regwrsd, regwrd, extsd, alusrcbd, alusd,
@@ -367,15 +371,19 @@ class ControllerSingleCycle_t(unittest.TestCase):
         memwrd = Bus(1)
         regsrcd = Bus(1)
         wd3sd = Bus(1)
+
         # initialize single cycle controller
         pp = ControllerPipeline(cond, op, funct, rd, bit4, c, v, n, z, stalld, pcsrcd, pcwrd,
                                     regsad, regdstd, regwrsd, regwrd, extsd, alusrcbd, alusd,
                                     aluflagwrd, memwrd, regsrcd, wd3sd)
+        
         mod = pp.modify(None)
-        self.assertTrue('error' in mod)  # modify is not implemented for controller
+        # modify is not implemented for controller
+        self.assertTrue('error' in mod)
 
         mod = pp.modify({'state': 0})
-        self.assertTrue('error' in mod)  # modify is not implemented for controller
+        # modify is not implemented for controller
+        self.assertTrue('error' in mod)
 
 
 
