@@ -1,9 +1,9 @@
 {
   "packages" : ["core"],
-  "system-clock" : "clk",
-  "system-reset" : "rst",
-  "system-memory" : null,
-  "time-step" : 0.001,
+  "system_clock" : "clk",
+  "system_reset" : "rst",
+  "system_memory" : null,
+  "time_step" : 0.00001,
   "signals" : [
     {"name" : "clk","type": "Clock", "frequency" : 1000, "value" : 0},
     {"name" : "rst","type": "Reset", "value" : 0},
@@ -20,6 +20,7 @@
     {
       "name" : "add",
       "type" : "Adder",
+      "size" : 8,
       "input_1" : "c_bus",
       "input_2" : "q_bus",
       "output" : "d_bus"
@@ -27,9 +28,10 @@
     {
       "name" : "reg",
       "type" : "Register",
+      "size" : 8,
       "input" : "d_bus",
       "clock" : "clk",
-      "reset" : "reset",
+      "reset" : "rst",
       "output" : "q_bus"
     }
   ]

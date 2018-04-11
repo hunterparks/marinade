@@ -194,5 +194,5 @@ def generate_single_cycle_architecture():
     hooks.update({'controller': entities['controller']})
 
     # generate simulatable architecture
-    arch = Architecture(0.0001, clk, rst, hooks, entities)
+    arch = Architecture(0.0001, clk, rst, None, hooks, entities)
     return arch, hooks

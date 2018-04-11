@@ -12,7 +12,9 @@ class LogicInput(InputHook, iBusRead):
     Input hook into architecture that functions as a logical bus
     """
 
-    def __init__(self, size, default_state=0):
+    DEFAULT_STATE = 0
+
+    def __init__(self, size, default_state=DEFAULT_STATE):
         "Constructor will cause exception on invalid parameters"
         if not isinstance(size, int) or size <= 0:
             raise TypeError('Size must be an integer greater than zero')
@@ -52,4 +54,9 @@ class LogicInput(InputHook, iBusRead):
     @classmethod
     def from_dict(cls, config, hooks):
         "Implements conversion from configuration to component"
-        return NotImplemented
+        if "value" in config:
+            default_state = config["value"]
+        else:
+            default_state = LogicInput.DEFAULT_STATE
+            
+        return LogicInput(config["size"],default_state)

@@ -72,4 +72,20 @@ class Adder(Combinational):
     @classmethod
     def from_dict(cls, config, hooks):
         "Implements conversion from configuration to component"
-        return NotImplemented
+        if "output" in config:
+            output = hooks[config["output"]]
+        else:
+            output = None
+
+        if "carry_in" in config:
+            carry_in = hooks[config["carry_in"]]
+        else:
+            carry_in = None
+
+        if "carry_out" in config:
+            carry_out = hooks[config["carry_out"]]
+        else:
+            carry_out = None
+
+        return Adder(config["size"], hooks[config["input_1"]],
+                     hooks[config["input_2"]], output, carry_in, carry_out)

@@ -188,7 +188,7 @@ class Ifid(Sequential):
         self._prev_clk_state = self._clk.read()
 
     @classmethod
-    def from_dict(cls, config,, hooks):
+    def from_dict(cls, config, hooks):
         "Implements conversion from configuration to component"
         return NotImplemented
 

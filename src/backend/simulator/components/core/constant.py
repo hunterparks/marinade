@@ -36,4 +36,4 @@ class Constant(Hook, iBusRead):
     @classmethod
     def from_dict(cls, config, hooks):
         "Implements conversion from configuration to component"
-        return NotImplemented
+        return Constant(config["size"],config["value"])

@@ -16,9 +16,14 @@ class Register(Sequential):
     Default state is state of device at startup and on reset
     """
 
-    def __init__(self, size, clock, reset, in_bus, out_bus=None, default_state=0,
-                 edge_type=Latch_Type.RISING_EDGE, reset_type=Logic_States.ACTIVE_HIGH,
-                 enable=None, enable_type=Logic_States.ACTIVE_HIGH):
+    DEFAULT_STATE = 0
+    DEFAULT_LATCH_TYPE = Latch_Type.RISING_EDGE
+    DEFAULT_RESET_TYPE = Logic_States.ACTIVE_HIGH
+    DEFAULT_ENABLE_TYPE = Logic_States.ACTIVE_HIGH
+
+    def __init__(self, size, clock, reset, in_bus, out_bus=None, default_state=DEFAULT_STATE,
+                 edge_type=Latch_Type.RISING_EDGE, reset_type=DEFAULT_RESET_TYPE,
+                 enable=None, enable_type=DEFAULT_ENABLE_TYPE):
         "Constructor will check for valid parameters, exception thrown on invalid"
 
         if not isinstance(size, int) or size <= 0:
@@ -140,4 +145,36 @@ class Register(Sequential):
     @classmethod
     def from_dict(cls, config, hooks):
         "Implements conversion from configuration to component"
-        return NotImplemented
+        if "output" in config:
+            output = hooks[config["output"]]
+        else:
+            output = None
+
+        if "value" in config:
+            default_state = config["value"]
+        else:
+            default_state = Register.DEFAULT_STATE
+
+        if "edge_type" in config:
+            edge_type = Latch_Type.fromString(config["edge_type"])
+        else:
+            edge_type = Register.DEFAULT_LATCH_TYPE
+
+        if "reset_type" in config:
+            reset_type = Logic_States.fromString(config["reset_type"])
+        else:
+            reset_type = Register.DEFAULT_RESET_TYPE
+
+        if "enable" in config:
+            enable = hooks[config["enable"]]
+        else:
+            enable = None
+
+        if "enable_type" in config:
+            enable_type = Logic_States.fromString(config["enable_type"])
+        else:
+            enable_type = Register.DEFAULT_ENABLE_TYPE
+
+        return Register(config["size"], hooks[config["clock"]], hooks[config["reset"]],
+                        hooks[config["input"]], output, default_state, edge_type,
+                        reset_type, enable, enable_type)

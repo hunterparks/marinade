@@ -13,7 +13,7 @@ class BusSubset(Entity):
     bus. Additionally, the range of bits pulled from the bus must be
     sequential.
     """
-
+    
     def __init__(self, in_b, outs_b, outs_range):
         "Constructor will check for valid parameters, exception thrown on invalid"
 

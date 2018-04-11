@@ -59,10 +59,13 @@ import json
 import asyncio
 import websockets
 
+from sentry.sentry import initialize_sentry
+
+from simulator.architecture import Architecture
+
 import simulator.single_cycle_poc as single_cycle_poc
 import simulator.pipeline_poc as pipeline_poc
 
-from sentry.sentry import initialize_sentry
 
 HOST_NAME = 'localhost'
 HOST_PORT = 4242
@@ -157,16 +160,16 @@ class Interface:
         Param: msg is dictionary with a filepath specified to config file
         Return: dictionary noting resulting state of operation.
         """
-        retVal = False
-        # TODO replace this with a configuration file being loaded in the future
-        if msg['filepath'] == 'single_cycle_poc.json':
-            self.arch, self.hooks = single_cycle_poc.generate_single_cycle_architecture()
-            return {'status': True}
-        elif msg['filepath'] == 'pipeline_poc.json':
-            self.arch, self.hooks = pipeline_poc.generate_pipeline_architecture()
-            return {'status': True}
-        else:
-            return {'status': False, 'error': 'failed to load file'}
+        try:
+            f = open(msg['filepath'])
+            config = json.loads(f.read())
+            self.arch = Architecture.from_dict(config)
+            self.hooks = self.arch.get_hooks()
+        except ValueError as e:
+            return {'status': False, 'error': 'invalid key : {}'.format(str(e))}
+        except Exception as e:
+            return {'status': False, 'error': 'exception : {}'.format(str(e))}
+        return {'status': True}
 
     def unload(self):
         """
