@@ -45,4 +45,6 @@ class BusJoin(Entity):
     @classmethod
     def from_dict(cls, config, hooks):
         "Implements conversion from configuration to component"
-        return NotImplemented
+        inputs = [hooks[i] for i in config["inputs"]]
+
+        return BusJoin(inputs,hooks[config["output"]])

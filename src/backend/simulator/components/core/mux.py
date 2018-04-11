@@ -69,4 +69,11 @@ class Mux(Combinational):
     @classmethod
     def from_dict(cls, config, hooks):
         "Implements conversion from configuration to component"
-        return NotImplemented
+        inputs = [hooks[i] for i in config["inputs"]]
+
+        if "output" in config:
+            output = hooks[config["output"]]
+        else:
+            output = None
+
+        return Mux(config["size"],inputs,hooks[config["select"]],output)

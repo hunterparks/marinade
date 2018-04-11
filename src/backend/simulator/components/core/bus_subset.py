@@ -13,7 +13,7 @@ class BusSubset(Entity):
     bus. Additionally, the range of bits pulled from the bus must be
     sequential.
     """
-    
+
     def __init__(self, in_b, outs_b, outs_range):
         "Constructor will check for valid parameters, exception thrown on invalid"
 
@@ -50,4 +50,7 @@ class BusSubset(Entity):
     @classmethod
     def from_dict(cls, config, hooks):
         "Implements conversion from configuration to component"
-        return NotImplemented
+        outputs = [hooks[o] for o in config["outputs"]]
+        output_range = [r for r in config["bounds"]]
+
+        return BusSubset(hooks[config["input"]],outputs,output_range)

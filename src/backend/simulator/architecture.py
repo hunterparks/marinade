@@ -226,6 +226,8 @@ class Architecture(ConfigurationParser):
 
             if "signal" in entity:
                 entities.update({entity["name"]: hooks[entity["signal"]]})
+            elif "symbolic" in entity:
+                pass #skip as purely front-end
             else:
                 entities.update({entity["name"]: package_manager.construct(
                     entity["type"], entity, package, hooks)})

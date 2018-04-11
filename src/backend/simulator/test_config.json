@@ -14,7 +14,6 @@
   "entities" : [
     {
       "name" : "clk",
-      "type" : "Clock",
       "signal" : "clk"
     },
     {
@@ -33,6 +32,10 @@
       "clock" : "clk",
       "reset" : "rst",
       "output" : "q_bus"
+    },
+    {
+      "name" : "stage_1",
+      "symbolic" : true
     }
   ]
 }
