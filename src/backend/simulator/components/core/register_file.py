@@ -215,10 +215,6 @@ class RegisterFile(Sequential):
                 self._ens[a].write(0)
 
     @classmethod
-    def from_dict(cls, config):
+    def from_dict(cls, config, hooks):
         "Implements conversion from configuration to component"
-        return NotImplemented
-
-    def to_dict(self):
-        "Implements conversion from component to configuration"
         return NotImplemented

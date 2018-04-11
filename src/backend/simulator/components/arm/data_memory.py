@@ -76,10 +76,6 @@ class DataMemory(Memory):
         Memory.run(self, time)
 
     @classmethod
-    def from_dict(cls, config):
+    def from_dict(cls, config, hooks):
         "Implements conversion from configuration to component"
-        return NotImplemented
-
-    def to_dict(self):
-        "Implements conversion from component to configuration"
         return NotImplemented

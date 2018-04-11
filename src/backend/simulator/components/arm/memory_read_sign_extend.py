@@ -68,10 +68,6 @@ class MemoryReadSignExtender(Combinational):
                 self._y.write(y)
 
     @classmethod
-    def from_dict(cls, config):
+    def from_dict(cls, config, hooks):
         "Implements conversion from configuration to component"
-        return NotImplemented
-
-    def to_dict(self):
-        "Implements conversion from component to configuration"
         return NotImplemented

@@ -101,10 +101,6 @@ class RegisterFile(_RegisterFile):
             self._rd3.write(self._pc.read())
 
     @classmethod
-    def from_dict(cls, config):
+    def from_dict(cls, config, hooks):
         "Implements conversion from configuration to component"
-        return NotImplemented
-
-    def to_dict(self):
-        "Implements conversion from component to configuration"
         return NotImplemented
