@@ -12,14 +12,14 @@ export class BusTableComponent {
   public buses: Bus[] = [];
   public open: boolean = false;
 
-  constructor(private inspect: InspectService) {
-    inspect.buses.subscribe((buses: Bus[]) => {
+  constructor(private inspectService: InspectService) {
+    inspectService.buses.subscribe((buses: Bus[]) => {
       this.buses = buses;
     });
   }
 
   public getBuses(): void {
-    this.buses = this.inspect.getBuses();
+    this.buses = this.inspectService.getBuses();
   }
 
   // Stop mouse events from being passed to the simulator view

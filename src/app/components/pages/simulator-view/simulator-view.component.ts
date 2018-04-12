@@ -1,9 +1,9 @@
 import { Component, HostListener } from '@angular/core';
 import { Simulator } from '../../../models/simulator/simulator.model';
+import { ArchitectureService } from '../../../services/simulator/architecture/architecture.service';
 import { InspectService } from '../../../services/simulator/inspect/inspect.service';
-import { MonitorService } from '../../../services/simulator/monitor/monitor.service';
-import { ReceiveService } from '../../../services/simulator/receive/receive.service';
-import { TransmitService } from '../../../services/simulator/transmit/transmit.service';
+import { RequestService } from '../../../services/simulator/request/request.service';
+import { ResponseService } from '../../../services/simulator/response/response.service';
 import { WebsocketService } from '../../../services/simulator/websocket/websocket.service';
 import { TooltipService } from '../../../services/tooltip/tooltip.service';
 
@@ -31,24 +31,23 @@ export class SimulatorViewComponent {
   private viewBoxUpperLeftY: number = 0;
   private viewBoxWidth: number = 1600;
 
-  public architecture: Simulator;
+  public architecture: Simulator = null;
 
   public viewBox: string = '0 0 1600 900';
   public viewScale: number = 1;
 
-  constructor(
-    private inspect: InspectService,
-    private monitor: MonitorService,
-    private receive: ReceiveService,
-    private tooltip: TooltipService,
-    private transmit: TransmitService,
-    private websocket: WebsocketService
+  constructor (
+    private architectureService: ArchitectureService,
+    private inspectService: InspectService,
+    private requestService: RequestService,
+    private responseService: ResponseService,
+    private tooltipService: TooltipService,
+    private websocketService: WebsocketService
   ) {
-    this.monitor.loadArchitecture().subscribe((architecture: Simulator) => {
-      this.architecture = architecture;
-    });
-    this.websocket.connect();
-    this.websocket.messageSubject.subscribe((message: any) => this.receive.receiveMessage(message));
+    this.architectureService.load();
+    this.architectureService.architecture.subscribe((architecture: Simulator) => this.architecture = architecture);
+    this.websocketService.connect();
+    this.websocketService.messageSubject.subscribe((message: any) => this.responseService.receiveMessage(message));
   }
 
   private updateViewBox(): void {
@@ -93,7 +92,7 @@ export class SimulatorViewComponent {
   public onMove(event: MouseEvent): void {
     // If a click is being held
     if (this.tracking) {
-      this.tooltip.tooltips.forEach((tooltip: any) => {
+      this.tooltipService.tooltips.forEach((tooltip: any) => {
         tooltip.x.next(tooltip.x.getValue() + (event.x - this.mouseStartX) / this.viewScale);
         tooltip.y.next(tooltip.y.getValue() + (event.y - this.mouseStartY) / this.viewScale);
       });
@@ -170,20 +169,20 @@ export class SimulatorViewComponent {
   public step(event: KeyboardEvent): void {
     switch (event.key) {
       case 'i':
-        this.transmit.inspect(['']);
+        this.requestService.inspect(['']);
         break;
       case 'l':
-        this.transmit.load('');
+        this.requestService.load('');
         break;
       case 'p':
-        this.transmit.program('', '');
+        this.requestService.program('', '');
         break;
       case 'r':
-        this.transmit.reset();
+        this.requestService.reset();
         break;
       case 's': {
-        this.transmit.step('logic');
-        this.inspect.inspect(this.inspect.buses.getValue());
+        this.requestService.step('logic');
+        this.inspectService.inspect(this.inspectService.buses.getValue());
         break;
     }
     }

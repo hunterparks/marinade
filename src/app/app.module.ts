@@ -34,9 +34,9 @@ import { StageComponent } from './components/simulator/stage/stage.component';
 import { TooltipDirective } from './directives/tooltip/tooltip.directive';
 import { SafeHtmlPipe } from './pipes/safe-html.pipe';
 import { InspectService } from './services/simulator/inspect/inspect.service';
-import { MonitorService } from './services/simulator/monitor/monitor.service';
-import { ReceiveService } from './services/simulator/receive/receive.service';
-import { TransmitService } from './services/simulator/transmit/transmit.service';
+import { ArchitectureService } from './services/simulator/architecture/architecture.service';
+import { ResponseService } from './services/simulator/response/response.service';
+import { RequestService } from './services/simulator/request/request.service';
 import { WebsocketService } from './services/simulator/websocket/websocket.service';
 import { TooltipService } from './services/tooltip/tooltip.service';
 import { SentrySettings } from './settings/sentry/local.sentry.settings';
@@ -94,10 +94,10 @@ export class RavenErrorHandler implements ErrorHandler {
   ],
   providers: [
     InspectService,
-    MonitorService,
-    ReceiveService,
+    ArchitectureService,
+    ResponseService,
     TooltipService,
-    TransmitService,
+    RequestService,
     WebsocketService,
     { provide: ErrorHandler, useClass: RavenErrorHandler }
   ]

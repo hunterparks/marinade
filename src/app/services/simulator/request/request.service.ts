@@ -2,13 +2,13 @@ import { Injectable } from '@angular/core';
 import { WebsocketService } from '../websocket/websocket.service';
 
 @Injectable()
-export class TransmitService {
+export class RequestService {
 
   // register - state
   // register file - start, data
   // memory - start, data
 
-  constructor(private websocket: WebsocketService) { }
+  constructor (private websocketService: WebsocketService) { }
 
   public clear(components: string[]): void {
     // not all components have clear - only memory-type objects (reg, reg files, memory)
@@ -19,12 +19,12 @@ export class TransmitService {
   }
 
   public inspect(components: string[]): void {
-    this.websocket.write('{ "inspect": ' + JSON.stringify(components) + ' }');
+    this.websocketService.write('{ "inspect": ' + JSON.stringify(components) + ' }');
   }
 
   public load(filepath: string): void {
     // TODO - add file chooser
-    this.websocket.write('{ "load": { "filepath": "pipeline_poc.json" } }');
+    this.websocketService.write('{ "load": { "filepath": "pipeline_poc.json" } }');
   }
 
   public modify(component: string, parameters: string[]): void {
@@ -33,22 +33,22 @@ export class TransmitService {
 
   public program(filepath: string, memory: string): void {
     // TODO - add file chooser
-    this.websocket.write('{ "program": { "filepath": "", "memory": "progmem" } }');
+    this.websocketService.write('{ "program": { "filepath": "", "memory": "progmem" } }');
   }
 
   public reset(): void {
-    this.websocket.write('{ "reset": {} }');
+    this.websocketService.write('{ "reset": {} }');
   }
 
   public step(type: string = 'edge'): void {
     // if (type === 'edge') {
       // step twice
     // }
-    this.websocket.write('{ "step": { "type": "' + type + '" } }');
+    this.websocketService.write('{ "step": { "type": "' + type + '" } }');
   }
 
   public unload(): void {
-    this.websocket.write('{ "unload": {} }');
+    this.websocketService.write('{ "unload": {} }');
   }
 
 }

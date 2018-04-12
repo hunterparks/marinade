@@ -11,7 +11,7 @@ export class BusListItemComponent {
 
   @Input('bus') public bus: Bus;
 
-  constructor(private inspect: InspectService) { }
+  constructor(private inspectService: InspectService) { }
 
   @HostListener('mouseenter')
   public onMouseEnter(): void {
@@ -27,7 +27,7 @@ export class BusListItemComponent {
     // todo make variables for active/inactive
     // todo move this into delete bus?
     this.bus.state.next('inactive');
-    this.inspect.deleteBus(this.bus);
+    this.inspectService.deleteBus(this.bus);
   }
 
 }

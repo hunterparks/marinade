@@ -29,7 +29,7 @@ export class BusComponent implements OnInit {
   // Generated svg paths for the bus
   public paths: string[] = [];
 
-  constructor(private inspect: InspectService) { }
+  constructor(private inspectService: InspectService) { }
 
   /**
    * Determines the direction of the arrows using the last two points of the path
@@ -165,8 +165,8 @@ export class BusComponent implements OnInit {
 
   @HostListener('dblclick')
   public onDoubleClick(): void {
-    if (!this.inspect.deleteBus(this.bus)) {
-      this.inspect.addBus(this.bus);
+    if (!this.inspectService.deleteBus(this.bus)) {
+      this.inspectService.addBus(this.bus);
     }
   }
 
@@ -175,7 +175,7 @@ export class BusComponent implements OnInit {
    */
   @HostListener('mouseenter')
   public onMouseEnter(): void {
-    this.inspect.inspect(this.bus);
+    this.inspectService.inspect(this.bus);
     this.bus.state.next('active');
   }
 

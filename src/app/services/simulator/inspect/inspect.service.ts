@@ -1,14 +1,14 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Bus } from '../../../models/simulator/bus/bus.model';
-import { TransmitService } from '../transmit/transmit.service';
+import { RequestService } from '../request/request.service';
 
 @Injectable()
 export class InspectService {
 
   public buses: BehaviorSubject<Bus[]> = new BehaviorSubject<Bus[]>([]);
 
-  constructor(private transmit: TransmitService) { }
+  constructor (private requestService: RequestService) { }
 
   private static compareBuses(busA: Bus, busB: Bus): number {
     if (busA.name < busB.name) {
@@ -59,10 +59,10 @@ export class InspectService {
   public inspect(buses: Bus | Bus[]): void {
     if (Array.isArray(buses)) {
       for (let bus of buses) {
-        this.transmit.inspect([bus.name.toLowerCase()]);
+        this.requestService.inspect([bus.name.toLowerCase()]);
       }
     } else {
-      this.transmit.inspect([buses.name.toLowerCase()]);
+      this.requestService.inspect([buses.name.toLowerCase()]);
     }
   }
 

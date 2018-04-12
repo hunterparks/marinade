@@ -1,17 +1,17 @@
 import { Injectable } from '@angular/core';
 import { Bus } from '../../../models/simulator/bus/bus.model';
 import { InspectService } from '../inspect/inspect.service';
-import { MonitorService } from '../monitor/monitor.service';
+import { ArchitectureService } from '../architecture/architecture.service';
 
 @Injectable()
-export class ReceiveService {
+export class ResponseService {
 
-  constructor(private monitor: MonitorService) { }
+  constructor (private architectureService: ArchitectureService) { }
 
   public receiveMessage(message: string): void {
     let messageObject: any = JSON.parse(message);
     Object.keys(messageObject).map((key: string) => {
-      let selectedBus: Bus = this.monitor.architecture.bus.find((bus: Bus) => {
+      let selectedBus: Bus = this.architectureService.architecture.getValue().bus.find((bus: Bus) => {
         return bus.name.toLowerCase() === key;
       });
       if (selectedBus) {
