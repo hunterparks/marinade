@@ -24,8 +24,8 @@ import { EditorViewComponent } from './components/pages/editor-view/editor-view.
 import { MemoryViewComponent } from './components/pages/memory-view/memory-view.component';
 import { SettingsViewComponent } from './components/pages/settings-view/settings-view.component';
 import { SimulatorViewComponent } from './components/pages/simulator-view/simulator-view.component';
-import { BusListItemComponent } from './components/simulator/bus/bus-list-item/bus-list-item.component';
-import { BusTableComponent } from './components/simulator/bus/bus-table/bus-table.component';
+import { BusMonitorItemComponent } from './components/simulator/bus/bus-monitor/bus-monitor-item/bus-monitor-item.component';
+import { BusMonitorComponent } from './components/simulator/bus/bus-monitor/bus-monitor.component';
 import { BusComponent } from './components/simulator/bus/bus/bus.component';
 import { ControllerComponent } from './components/simulator/controller/controller.component';
 import { MuxComponent } from './components/simulator/mux/mux.component';
@@ -33,7 +33,7 @@ import { StageRegisterComponent } from './components/simulator/stage-register/st
 import { StageComponent } from './components/simulator/stage/stage.component';
 import { TooltipDirective } from './directives/tooltip/tooltip.directive';
 import { SafeHtmlPipe } from './pipes/safe-html.pipe';
-import { InspectService } from './services/simulator/inspect/inspect.service';
+import { BusMonitorService } from './services/simulator/bus-monitor/bus-monitor.service';
 import { ArchitectureService } from './services/simulator/architecture/architecture.service';
 import { ResponseService } from './services/simulator/response/response.service';
 import { RequestService } from './services/simulator/request/request.service';
@@ -71,8 +71,8 @@ export class RavenErrorHandler implements ErrorHandler {
     SimulatorViewComponent,
     MemoryViewComponent,
     SettingsViewComponent,
-    BusTableComponent,
-    BusListItemComponent
+    BusMonitorComponent,
+    BusMonitorItemComponent
   ],
   imports: [
     BrowserModule,
@@ -93,7 +93,7 @@ export class RavenErrorHandler implements ErrorHandler {
     CovalentMarkdownModule,
   ],
   providers: [
-    InspectService,
+    BusMonitorService,
     ArchitectureService,
     ResponseService,
     TooltipService,

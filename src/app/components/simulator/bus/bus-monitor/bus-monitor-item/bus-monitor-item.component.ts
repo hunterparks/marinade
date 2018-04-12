@@ -1,17 +1,17 @@
 import { Component, HostListener, Input } from '@angular/core';
-import { Bus } from '../../../../models/simulator/bus/bus.model';
-import { InspectService } from '../../../../services/simulator/inspect/inspect.service';
+import { Bus } from '../../../../../models/simulator/bus/bus.class';
+import { BusMonitorService } from '../../../../../services/simulator/bus-monitor/bus-monitor.service';
 
 @Component({
-  selector: 'marinade-bus-list-item',
-  styleUrls: ['./bus-list-item.component.sass'],
-  templateUrl: './bus-list-item.component.html',
+  selector: 'marinade-bus-monitor-item',
+  styleUrls: ['./bus-monitor-item.component.sass'],
+  templateUrl: './bus-monitor-item.component.html',
 })
-export class BusListItemComponent {
+export class BusMonitorItemComponent {
 
   @Input('bus') public bus: Bus;
 
-  constructor(private inspectService: InspectService) { }
+  constructor(private busMonitorService: BusMonitorService) { }
 
   @HostListener('mouseenter')
   public onMouseEnter(): void {
@@ -27,7 +27,7 @@ export class BusListItemComponent {
     // todo make variables for active/inactive
     // todo move this into delete bus?
     this.bus.state.next('inactive');
-    this.inspectService.deleteBus(this.bus);
+    this.busMonitorService.deleteBus(this.bus);
   }
 
 }

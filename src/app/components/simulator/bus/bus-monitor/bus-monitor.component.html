@@ -1,8 +1,8 @@
 <div class="tab" [class.open]="open" (click)="toggleTab()">
-  <p>Watched Buses ({{ buses.length }})</p>
+  <p>Bus Monitor ({{ buses.length }})</p>
 </div>
 <div class="list" *ngIf="open">
   <div *ngFor="let bus of buses">
-    <marinade-bus-list-item [bus]="bus"></marinade-bus-list-item>
+    <marinade-bus-monitor-item [bus]="bus"></marinade-bus-monitor-item>
   </div>
 </div>

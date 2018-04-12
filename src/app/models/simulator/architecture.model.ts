@@ -1,6 +1,4 @@
-import { Simulator } from './simulator.model';
-
-export const ARCHITECTURE: Simulator = {
+export const ARCHITECTURE: any = {
 'bus': [
   {
     'junctions': [],

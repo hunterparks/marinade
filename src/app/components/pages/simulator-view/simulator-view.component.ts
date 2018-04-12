@@ -1,7 +1,8 @@
 import { Component, HostListener } from '@angular/core';
-import { Simulator } from '../../../models/simulator/simulator.model';
+import { Bus } from '../../../models/simulator/bus/bus.class';
+import { Architecture } from '../../../models/simulator/architecture.class';
 import { ArchitectureService } from '../../../services/simulator/architecture/architecture.service';
-import { InspectService } from '../../../services/simulator/inspect/inspect.service';
+import { BusMonitorService } from '../../../services/simulator/bus-monitor/bus-monitor.service';
 import { RequestService } from '../../../services/simulator/request/request.service';
 import { ResponseService } from '../../../services/simulator/response/response.service';
 import { WebsocketService } from '../../../services/simulator/websocket/websocket.service';
@@ -31,21 +32,21 @@ export class SimulatorViewComponent {
   private viewBoxUpperLeftY: number = 0;
   private viewBoxWidth: number = 1600;
 
-  public architecture: Simulator = null;
+  public architecture: Architecture = null;
 
   public viewBox: string = '0 0 1600 900';
   public viewScale: number = 1;
 
   constructor (
     private architectureService: ArchitectureService,
-    private inspectService: InspectService,
+    private busMonitorService: BusMonitorService,
     private requestService: RequestService,
     private responseService: ResponseService,
     private tooltipService: TooltipService,
     private websocketService: WebsocketService
   ) {
     this.architectureService.load();
-    this.architectureService.architecture.subscribe((architecture: Simulator) => this.architecture = architecture);
+    this.architectureService.architecture.subscribe((architecture: Architecture) => this.architecture = architecture);
     this.websocketService.connect();
     this.websocketService.messageSubject.subscribe((message: any) => this.responseService.receiveMessage(message));
   }
@@ -182,7 +183,9 @@ export class SimulatorViewComponent {
         break;
       case 's': {
         this.requestService.step('logic');
-        this.inspectService.inspect(this.inspectService.buses.getValue());
+        this.architectureService.architecture.getValue().bus.forEach((bus: Bus) => {
+          bus.inspect();
+        });
         break;
     }
     }

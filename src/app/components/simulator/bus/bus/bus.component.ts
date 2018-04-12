@@ -1,6 +1,6 @@
 import { Component, HostListener, Input, OnInit } from '@angular/core';
-import { Bus } from '../../../../models/simulator/bus/bus.model';
-import { InspectService } from '../../../../services/simulator/inspect/inspect.service';
+import { Bus } from '../../../../models/simulator/bus/bus.class';
+import { BusMonitorService } from '../../../../services/simulator/bus-monitor/bus-monitor.service';
 
 @Component({
   selector: '[svg-bus]',
@@ -29,7 +29,7 @@ export class BusComponent implements OnInit {
   // Generated svg paths for the bus
   public paths: string[] = [];
 
-  constructor(private inspectService: InspectService) { }
+  constructor(private busMonitorService: BusMonitorService) { }
 
   /**
    * Determines the direction of the arrows using the last two points of the path
@@ -165,8 +165,8 @@ export class BusComponent implements OnInit {
 
   @HostListener('dblclick')
   public onDoubleClick(): void {
-    if (!this.inspectService.deleteBus(this.bus)) {
-      this.inspectService.addBus(this.bus);
+    if (!this.busMonitorService.deleteBus(this.bus)) {
+      this.busMonitorService.addBus(this.bus);
     }
   }
 
@@ -175,7 +175,7 @@ export class BusComponent implements OnInit {
    */
   @HostListener('mouseenter')
   public onMouseEnter(): void {
-    this.inspectService.inspect(this.bus);
+    this.bus.inspect();
     this.bus.state.next('active');
   }
 

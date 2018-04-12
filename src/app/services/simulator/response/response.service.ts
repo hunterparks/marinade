@@ -1,6 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Bus } from '../../../models/simulator/bus/bus.model';
-import { InspectService } from '../inspect/inspect.service';
+import { Bus } from '../../../models/simulator/bus/bus.class';
 import { ArchitectureService } from '../architecture/architecture.service';
 
 @Injectable()
@@ -15,7 +14,7 @@ export class ResponseService {
         return bus.name.toLowerCase() === key;
       });
       if (selectedBus) {
-        selectedBus.data.next(InspectService.formatTooltip(selectedBus, messageObject[key].state));
+        selectedBus.data.next(messageObject[key].state);
       }
     });
   }

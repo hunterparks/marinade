@@ -1,25 +1,25 @@
 import { Component, HostListener } from '@angular/core';
-import { Bus } from '../../../../models/simulator/bus/bus.model';
-import { InspectService } from '../../../../services/simulator/inspect/inspect.service';
+import { Bus } from '../../../../models/simulator/bus/bus.class';
+import { BusMonitorService } from '../../../../services/simulator/bus-monitor/bus-monitor.service';
 
 @Component({
-  selector: 'marinade-bus-table',
-  styleUrls: ['./bus-table.component.sass'],
-  templateUrl: './bus-table.component.html',
+  selector: 'marinade-bus-monitor',
+  styleUrls: ['./bus-monitor.component.sass'],
+  templateUrl: './bus-monitor.component.html',
 })
-export class BusTableComponent {
+export class BusMonitorComponent {
 
   public buses: Bus[] = [];
   public open: boolean = false;
 
-  constructor(private inspectService: InspectService) {
-    inspectService.buses.subscribe((buses: Bus[]) => {
+  constructor(private busMonitorService: BusMonitorService) {
+    busMonitorService.buses.subscribe((buses: Bus[]) => {
       this.buses = buses;
     });
   }
 
   public getBuses(): void {
-    this.buses = this.inspectService.getBuses();
+    this.buses = this.busMonitorService.getBuses();
   }
 
   // Stop mouse events from being passed to the simulator view
