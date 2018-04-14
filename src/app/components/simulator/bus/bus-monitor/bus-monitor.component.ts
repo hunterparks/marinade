@@ -18,10 +18,6 @@ export class BusMonitorComponent {
     });
   }
 
-  public getBuses(): void {
-    this.buses = this.busMonitorService.getBuses();
-  }
-
   // Stop mouse events from being passed to the simulator view
   @HostListener('mousedown', ['$event'])
   @HostListener('mousemove', ['$event'])

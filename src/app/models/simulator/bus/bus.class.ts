@@ -31,7 +31,7 @@ export class Bus extends SimulatorComponent {
 
   private formatTooltip(): string {
     let tooltipText: string = this.name + ' (' + this.width + ')';
-    if (this.data !== undefined) {
+    if (this.data.getValue() !== undefined && this.data.getValue() !== '') {
       tooltipText += ' - ' + this.data.getValue();
     }
     return tooltipText;

@@ -12,33 +12,38 @@ import { RequestService } from '../request/request.service';
 @Injectable()
 export class ArchitectureService {
 
-  private _architecture: Architecture = null;
+  private _architecture: Architecture;
+  private readonly componentClasses: { class: any, name: string, services: any[] }[] = [
+    { class: Bus,        name: 'bus',           services: [ this.requestService ] },
+    { class: Controller, name: 'controller',    services: [ ]                     },
+    { class: Mux,        name: 'mux',           services: [ ]                     },
+    { class: Stage,      name: 'stage',         services: [ ]                     },
+    { class: Register,   name: 'stageRegister', services: [ ]                     },
+  ];
+
   public architecture: BehaviorSubject<Architecture> = new BehaviorSubject<Architecture>(null);
 
   constructor (private requestService: RequestService) { }
 
   public load(): void {
-    this._architecture = { bus: [], controller: [], mux: [], stage: [], stageRegister: [] };
-    for (let bus of ARCHITECTURE.bus) {
-      this._architecture.bus.push(new Bus(this.requestService, bus));
+    this._architecture = { };
+    for (let componentClass of this.componentClasses) {
+      // For each object from the architecture configuration
+      for (let instance of ARCHITECTURE[componentClass.name]) {
+        // If this is the first one, make a place for it in the architecture
+        if (!this._architecture[componentClass.name]) {
+          this._architecture[componentClass.name] = [ ];
+        }
+        // Create the class instance using the services and JSON instance
+        this._architecture[componentClass.name].push(new componentClass.class(...componentClass.services, instance));
+      }
     }
-    for (let controller of ARCHITECTURE.controller) {
-      this._architecture.controller.push(new Controller(controller));
-    }
-    for (let mux of ARCHITECTURE.mux) {
-      this._architecture.mux.push(new Mux(mux));
-    }
-    for (let stage of ARCHITECTURE.stage) {
-      this._architecture.stage.push(new Stage(stage));
-    }
-    for (let stageRegister of ARCHITECTURE.stageRegister) {
-      this._architecture.stageRegister.push(new Register(stageRegister));
-    }
+    // Emit the new architecture
     this.architecture.next(this._architecture);
   }
 
   public unload(): void {
-    this._architecture = null;
+    this._architecture = { };
     this.architecture.next(this._architecture);
   }
 

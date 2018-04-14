@@ -30,8 +30,4 @@ export class BusMonitorService {
     return false;
   }
 
-  public getBuses(): Bus[] {
-    return this.buses.getValue();
-  }
-
 }
