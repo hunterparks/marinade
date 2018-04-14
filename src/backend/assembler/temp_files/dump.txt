@@ -1,0 +1,30 @@
+
+temp_files/object.o:     file format elf32-bigarm
+
+
+Disassembly of section .text:
+
+00000000 <.start>:
+   0:	e3a0800a 	mov	r8, #10
+   4:	e2889001 	add	r9, r8, #1
+   8:	e0090998 	mul	r9, r8, r9
+   c:	e3a0a000 	mov	sl, #0
+  10:	e24aa020 	sub	sl, sl, #32
+  14:	e019a00a 	ands	sl, r9, sl
+  18:	0afffffe 	beq	28 <.start+0x28>
+  1c:	e3a0b001 	mov	fp, #1
+  20:	e3a0c004 	mov	ip, #4
+  24:	e58cb000 	str	fp, [ip]
+  28:	e59c6000 	ldr	r6, [ip]
+  2c:	eafffffe 	b	28 <.start+0x28>
+
+Disassembly of section .ARM.attributes:
+
+00000000 <.ARM.attributes>:
+   0:	41000000 	mrsmi	r0, (UNDEF: 0)
+   4:	16616561 	strbtne	r6, [r1], -r1, ror #10
+   8:	62690001 	rsbvs	r0, r9, #1
+   c:	0000000c 	andeq	r0, r0, ip
+  10:	05340006 	ldreq	r0, [r4, #-6]!
+  14:	Address 0x0000000000000014 is out of bounds.
+
