@@ -25,7 +25,6 @@ export class BusMonitorItemComponent {
 
   public removeBus(): void {
     // todo make variables for active/inactive
-    // todo move this into delete bus?
     this.bus.state.next('inactive');
     this.busMonitorService.deleteBus(this.bus);
   }
