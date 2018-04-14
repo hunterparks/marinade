@@ -85,6 +85,31 @@ export class SimulatorViewComponent {
     this.tracking = true;
   }
 
+  @HostListener('window:keyup', ['$event'])
+  public onKeyUp(event: KeyboardEvent): void {
+    switch (event.key) {
+      case 'i':
+        this.requestService.inspect(['']);
+        break;
+      case 'l':
+        this.requestService.load('');
+        break;
+      case 'p':
+        this.requestService.program('', '');
+        break;
+      case 'r':
+        this.requestService.reset();
+        break;
+      case 's': {
+        this.requestService.step('logic');
+        this.architectureService.architecture.getValue().bus.forEach((bus: Bus) => {
+          bus.inspect();
+        });
+        break;
+      }
+    }
+  }
+
   /**
    * Pan the canvas based on the direction of the cursor movements
    * @param {MouseEvent} event The MouseEvent that caused the move function to fire
@@ -164,31 +189,6 @@ export class SimulatorViewComponent {
     this.viewScale = SimulatorViewComponent.DEFAULT_VIEWBOX_SCALE;
     // Refresh the viewBox with the new properties
     this.updateViewBox();
-  }
-
-  @HostListener('window:keyup', ['$event'])
-  public step(event: KeyboardEvent): void {
-    switch (event.key) {
-      case 'i':
-        this.requestService.inspect(['']);
-        break;
-      case 'l':
-        this.requestService.load('');
-        break;
-      case 'p':
-        this.requestService.program('', '');
-        break;
-      case 'r':
-        this.requestService.reset();
-        break;
-      case 's': {
-        this.requestService.step('logic');
-        this.architectureService.architecture.getValue().bus.forEach((bus: Bus) => {
-          bus.inspect();
-        });
-        break;
-    }
-    }
   }
 
 }

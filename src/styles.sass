@@ -4,6 +4,8 @@ $marinade-primary-dark: #356C72
 $marinade-primary-light: #4B8E8B
 $marinade-secondary-dark: #D7263D
 $marinade-secondary-light: #F46036
+$marinade-transparent: rgba(0, 0, 0, 0.85)
+$marinade-transparent-hover: rgba(50, 50, 50, 0.85)
 
 body, html
   margin: 0
@@ -30,8 +32,14 @@ body, html
   cursor: pointer
 
 @mixin overlay
-  background-color: rgba(0, 0, 0, 0.85)
+  background-color: $marinade-transparent
 
 @mixin overlay-hover
   @include hover
-  background-color: rgba(50, 50, 50, 0.85)
+  background-color: $marinade-transparent-hover
+
+@mixin center
+  position: absolute
+  top: 50%
+  left: 50%
+  transform: translate(-50%, -50%)

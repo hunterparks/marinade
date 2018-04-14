@@ -18,6 +18,13 @@ export class BusMonitorComponent {
     });
   }
 
+  @HostListener('window:keyup', ['$event'])
+  public onKeyUp(event: KeyboardEvent): void {
+    switch (event.key) {
+      case 'b': this.toggleTab();
+    }
+  }
+
   // Stop mouse events from being passed to the simulator view
   @HostListener('mousedown', ['$event'])
   @HostListener('mousemove', ['$event'])

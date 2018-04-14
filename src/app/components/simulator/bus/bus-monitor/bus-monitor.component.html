@@ -2,7 +2,11 @@
   <p>Bus Monitor ({{ buses.length }})</p>
 </div>
 <div class="list" *ngIf="open">
+  <ng-container *ngIf="buses.length !== 0; else empty"></ng-container>
   <div *ngFor="let bus of buses">
     <marinade-bus-monitor-item [bus]="bus"></marinade-bus-monitor-item>
   </div>
+  <ng-template #empty>
+    <p class="empty">Double-click a bus to add or remove it from the bus monitor.</p>
+  </ng-template>
 </div>

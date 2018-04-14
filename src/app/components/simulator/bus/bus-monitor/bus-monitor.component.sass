@@ -5,6 +5,7 @@ div.tab
   writing-mode: vertical-lr
   padding: 5px 3px
   border: 1px solid white
+  border-left: 1px solid $marinade-transparent
   transform: translateY(-50%) rotate(180deg)
   z-index: 1
   &:hover
@@ -12,7 +13,7 @@ div.tab
   &:hover:not(.open)
     @include overlay-hover
   p
-    margin: 0
+    margin: 7px
   &.open
     position: relative
     right: -5px
@@ -24,6 +25,9 @@ div.list
   border-left: 1px solid white
   min-width: 400px
   height: 100vh
+  p.empty
+    @include center
+    width: 75%
 
 div.tab, div.list
   @include overlay
