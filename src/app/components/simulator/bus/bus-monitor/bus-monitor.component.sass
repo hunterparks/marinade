@@ -2,6 +2,7 @@
 
 div.tab
   @include overlay
+  text-align: center
   writing-mode: vertical-lr
   padding: 5px 3px
   border: 1px solid white
@@ -13,7 +14,7 @@ div.tab
   &:hover:not(.open)
     @include overlay-hover
   p
-    margin: 7px
+    margin: 7px 0 7px 7px
   &.open
     position: relative
     right: -5px

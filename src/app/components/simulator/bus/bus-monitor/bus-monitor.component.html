@@ -1,5 +1,7 @@
 <div class="tab" [class.open]="open" (click)="toggleTab()">
   <p>Bus Monitor ({{ buses.length }})</p>
+  <i *ngIf="!open" class="fa fa-caret-right"></i>
+  <i *ngIf="open" class="fa fa-caret-left"></i>
 </div>
 <div class="list" *ngIf="open">
   <ng-container *ngIf="buses.length !== 0; else empty"></ng-container>
