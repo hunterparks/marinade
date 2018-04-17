@@ -20,7 +20,7 @@ export class BusComponent implements OnInit {
   public arrows: string[] = [];
   // Input string with a list of coordinates
   @Input('svg-bus') public bus: Bus = null;
-  // The state color of the bus
+  // The active color of the bus
   public color: string = BusComponent.DEFAULT_COLOR;
   // The junction point for a complex bus
   public junctions: any[] = [];

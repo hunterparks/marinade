@@ -11,7 +11,7 @@ export class WebsocketService {
   /**
    * Simple constructor for the service, ensures all instance variables are initialized and connects the socket
    */
-  constructor () {
+  constructor() {
     this.socket = null;
     this.messageSubject = new Subject<string>();
   }

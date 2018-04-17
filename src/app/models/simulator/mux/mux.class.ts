@@ -3,7 +3,7 @@ import { SimulatorComponent } from '../simulator-component.class';
 export class Mux extends SimulatorComponent {
   public path: string;
 
-  constructor (mux: Mux) {
+  constructor(mux: Mux) {
     super();
     this.path = mux.path;
   }

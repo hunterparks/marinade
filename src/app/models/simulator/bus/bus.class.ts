@@ -22,7 +22,7 @@ export class Bus extends SimulatorComponent {
   public tooltip: BehaviorSubject<string>;
   public width: number;
 
-  constructor (@Inject(RequestService) private requestService: RequestService, bus: Bus) {
+  constructor(@Inject(RequestService) private requestService: RequestService, bus: Bus) {
     super();
     this.junctions = bus.junctions;
     this.name = bus.name;

@@ -6,7 +6,7 @@ export class Controller extends SimulatorComponent {
   public x: number;
   public y: number;
 
-  constructor (controller: Controller) {
+  constructor(controller: Controller) {
     super();
     this.height = controller.height;
     this.width = controller.width;

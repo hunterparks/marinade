@@ -5,7 +5,7 @@ import { ArchitectureService } from '../architecture/architecture.service';
 @Injectable()
 export class ResponseService {
 
-  constructor (private architectureService: ArchitectureService) { }
+  constructor(private architectureService: ArchitectureService) { }
 
   public receiveMessage(message: string): void {
     let messageObject: any = JSON.parse(message);

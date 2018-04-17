@@ -6,7 +6,7 @@ export class Register extends SimulatorComponent {
   public x: number;
   public y: number;
 
-  constructor (register: Register) {
+  constructor(register: Register) {
     super();
     this.height = register.height;
     this.width = register.width;

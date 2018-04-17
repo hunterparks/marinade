@@ -8,7 +8,7 @@ export class RequestService {
   // register file - start, data
   // memory - start, data
 
-  constructor (private websocketService: WebsocketService) { }
+  constructor(private websocketService: WebsocketService) { }
 
   public clear(components: string[]): void {
     // not all components have clear - only memory-type objects (reg, reg files, memory)

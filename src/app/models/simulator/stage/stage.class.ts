@@ -6,7 +6,7 @@ export class Stage extends SimulatorComponent {
   public x: number;
   public y: number;
 
-  constructor (stage: Stage) {
+  constructor(stage: Stage) {
     super();
     this.height = stage.height;
     this.width = stage.width;
