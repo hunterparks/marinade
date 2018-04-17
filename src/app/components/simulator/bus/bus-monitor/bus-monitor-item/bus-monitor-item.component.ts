@@ -10,7 +10,7 @@ import { BusMonitorService } from '../../../../../services/simulator/bus-monitor
 export class BusMonitorItemComponent {
 
   @Input('bus') public bus: Bus;
-  public BusState: BusState = BusState;
+  public State: any = BusState;
 
   constructor(private busMonitorService: BusMonitorService) { }
 
