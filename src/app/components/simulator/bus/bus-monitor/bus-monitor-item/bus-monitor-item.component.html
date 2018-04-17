@@ -1,4 +1,4 @@
-<div class="list-item" [class.active]="bus.state.getValue() === 'active'">
+<div class="list-item" [class.active]="bus.state.getValue() === BusState.Active">
   <p>{{ bus.tooltip.getValue() }}</p>
   <i class="fa fa-close" (click)="removeBus()"></i>
 </div>

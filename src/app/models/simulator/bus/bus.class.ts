@@ -3,6 +3,11 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { RequestService } from '../../../services/simulator/request/request.service';
 import { SimulatorComponent } from '../simulator-component.class';
 
+export enum BusState {
+  Active,
+  Inactive
+}
+
 interface Junction {
   x: number;
   y: number;
@@ -13,7 +18,7 @@ export class Bus extends SimulatorComponent {
   public junctions: Junction[];
   public name: string;
   public paths: string[];
-  public state?: BehaviorSubject<string>;
+  public state?: BehaviorSubject<BusState>;
   public tooltip: BehaviorSubject<string>;
   public width: number;
 
@@ -43,7 +48,7 @@ export class Bus extends SimulatorComponent {
 
   public initialize(): void {
     this.data = new BehaviorSubject<string>('');
-    this.state = new BehaviorSubject<string>('inactive');
+    this.state = new BehaviorSubject<BusState>(BusState.Inactive);
     this.tooltip = new BehaviorSubject<string>(this.formatTooltip());
   }
 

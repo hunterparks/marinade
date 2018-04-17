@@ -1,5 +1,5 @@
 import { Component, HostListener, Input, OnInit } from '@angular/core';
-import { Bus } from '../../../../models/simulator/bus/bus.class';
+import { Bus, BusState } from '../../../../models/simulator/bus/bus.class';
 import { BusMonitorService } from '../../../../services/simulator/bus-monitor/bus-monitor.service';
 
 @Component({
@@ -144,10 +144,10 @@ export class BusComponent implements OnInit {
     if (this.bus['name']) {
       this.name = this.bus['name'];
     }
-    this.bus.state.subscribe((state: string) => {
+    this.bus.state.subscribe((state: BusState) => {
       switch (state) {
-        case 'active': this.color = BusComponent.HIGHLIGHT_COLOR; break;
-        case 'inactive': this.color = BusComponent.DEFAULT_COLOR; break;
+        case BusState.Active: this.color = BusComponent.HIGHLIGHT_COLOR; break;
+        case BusState.Inactive: this.color = BusComponent.DEFAULT_COLOR; break;
         default: this.color = BusComponent.DEFAULT_COLOR;
       }
     });
@@ -176,7 +176,7 @@ export class BusComponent implements OnInit {
   @HostListener('mouseenter')
   public onMouseEnter(): void {
     this.bus.inspect();
-    this.bus.state.next('active');
+    this.bus.state.next(BusState.Active);
   }
 
   /**
@@ -184,7 +184,7 @@ export class BusComponent implements OnInit {
    */
   @HostListener('mouseleave')
   public onMouseLeave(): void {
-    this.bus.state.next('inactive');
+    this.bus.state.next(BusState.Inactive);
   }
 
 }
