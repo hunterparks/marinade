@@ -67,4 +67,5 @@ class Extender(Combinational):
     @classmethod
     def from_dict(cls, config, hooks):
         "Implements conversion from configuration to component"
-        return NotImplemented
+        return Extender(hooks[config["imm"]],hooks[config["exts"]],
+                        hooks[config["imm32"]])

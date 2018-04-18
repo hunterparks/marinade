@@ -183,4 +183,6 @@ class Alu(Combinational):
     @classmethod
     def from_dict(cls, config, hooks):
         "Implements conversion from configuration to component"
-        return NotImplemented
+        return Alu(hooks[config["input_a"]], hooks[config["input_b"]], hooks[config["alus"]],
+                   hooks[config["output_f"]], hooks[config["output_c"]], hooks[config["output_v"]],
+                   hooks[config["output_n"]], hooks[config["output_z"]])

@@ -1,0 +1,208 @@
+{
+  "packages" : ["arm", "core"],
+  "system_clock" : "clk",
+  "system_reset" : "rst",
+  "system_memory" : null,
+  "time_step" : 0.00001,
+
+  "signals" : [
+    {
+      "name" : "clk",
+      "type" : "Clock",
+      "frequency" : 1000,
+      "value" : 0
+    },
+    {
+      "name" : "rst",
+      "type" : "Reset",
+      "value" : 0
+    },
+    {
+      "name" : "pc",
+      "type" : "Bus",
+      "value" : 0
+    },
+    {
+      "name" : "pc8",
+      "type" : "Bus",
+      "value" : 0
+    },
+    {
+      "name" : "pc4",
+      "type" : "Bus",
+      "value" : 0
+    },
+    {
+      "name" : "instr",
+      "type" : "Bus",
+      "value" : 0
+    },
+    {
+      "name" : "instr_23_0",
+      "type" : "Bus",
+      "value" : 0
+    },
+    {
+      "name" : "instr_19_16",
+      "type" : "Bus",
+      "value"
+    },
+    {
+      "name" : "instr_3_0",
+      "type" : "Bus",
+      "value" : 0
+    },
+    {
+      "name" : "instr_15_12",
+      "type" : "Bus",
+      "value" : 0
+    },
+    {
+      "name" : "instr_11_8",
+      "type" : "Bus",
+      "value" : 0
+    },
+    {
+      "name" : "instr_31_28",
+      "type" : "Bus",
+      "value" : 0
+    },
+    {
+      "name" : "instr_27_26",
+      "type" : "Bus",
+      "value" : 0
+    },
+    {
+      "name" : "instr_25_20",
+      "type" : "Bus",
+      "value" : 0
+    },
+    {
+      "name" : "instr_4_4",
+      "type" : "Bus",
+      "value" : 0
+    },
+    {
+      "name" : "imm32",
+      "type" : "Bus",
+      "value" : 0
+    },
+    {
+      "name" : "ra1",
+      "type" : "Bus",
+      "value" : 0
+    },
+    {
+      "name" : "ra2",
+      "type" : "Bus",
+      "value" : 0
+    },
+    {
+      "name" : "ra3",
+      "type" : "Bus",
+      "value" : 0
+    },
+    {
+      "name" : "rwd",
+      "type" : "Bus",
+      "value" : 0
+    },
+    {
+      "name" : "rd1",
+      "type" : "Bus",
+      "value" : 0
+    },
+    {
+      "name" : "rd2",
+      "type" : "Bus",
+      "value" : 0
+    },
+    {
+      "name" : "alub",
+      "type" : "Bus",
+      "value" : 0
+    },
+    {
+      "name" : "branch",
+      "type" : "Bus",
+      "value" : 0
+    },
+    {
+      "name" : "aluf",
+      "type" : "Bus",
+      "value" : 0
+    },
+    {
+      "name" : "aluc",
+      "type" : "Bus",
+      "value" : 0
+    },
+    {
+      "name" : "aluv",
+      "type" : "Bus",
+      "value" : 0
+    },
+    {
+      "name" : "alun",
+      "type" : "Bus",
+      "value" : 0
+    },
+    {
+      "name" : "aluz",
+      "type" : "Bus",
+      "value" : 0
+    },
+    {
+      "name" : "aluflag",
+      "type" : "Bus",
+      "value" : 0
+    },
+    {
+      "name" : "flag",
+      "type" : "Bus",
+      "value" : 0
+    },
+    {
+      "name" : "c",
+      "type" : "Bus",
+      "value" : 0
+    },
+    {
+      "name" : "v",
+      "type" : "Bus",
+      "value" : 0
+    },
+    {
+      "name" : "n",
+      "type" : "Bus",
+      "value" : 0
+    },
+    {
+      "name" : "z",
+      "type" : "Bus",
+      "value" : 0
+    },
+    {
+      "name" : "memrd",
+      "type" : "Bus",
+      "value" : 0
+    },
+    {
+      "name" : "wdb",
+      "type" : "Bus",
+      "value" : 0
+    },
+    {
+      "name" : "pcwb",
+      "type" : "Bus",
+      "value" : 0
+    },
+  ],
+
+  "entities" : [
+    {
+      "name" : "clk",
+      "signal" : "clk"
+    }
+  ]
+}

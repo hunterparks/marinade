@@ -248,7 +248,7 @@ class ControllerSingleCycle(Controller):
             if (cmd == ISA.DataCMDCodes.TST.value or
                 cmd == ISA.DataCMDCodes.TEQ.value or
                 cmd == ISA.DataCMDCodes.CMP.value or
-                cmd == ISA.DataCMDCodes.CMN.value):
+                    cmd == ISA.DataCMDCodes.CMN.value):
                 return 0b0
             else:
                 return 0b1
@@ -512,4 +512,14 @@ class ControllerSingleCycle(Controller):
     @classmethod
     def from_dict(cls, config, hooks):
         "Implements conversion from configuration to component"
-        return NotImplemented
+        return ControllerSingleCycle(hooks[config["instruction"]], hooks[config["c"]],
+                                     hooks[config["v"]], hooks[config["n"]], hooks[config["z"]],
+                                     hooks[config["pcsrc"]], hooks[config["pcwr"]],
+                                     hooks[config["regsa"]], hooks[config["regdst"]],
+                                     hooks[config["regsb"]], hooks[config["regwrs"]],
+                                     hooks[config["regwr"]], hooks[config["exts"]],
+                                     hooks[config["alusrcb"]], hooks[config["alus"]],
+                                     hooks[config["shop"]], hooks[config["shctrl"]],
+                                     hooks[config["accen"]], hooks[config["aluflagwr"]],
+                                     hooks[config["memty"]], hooks[config["memwr"]],
+                                     hooks[config["regsrc"]], hooks[config["wd3s"]])

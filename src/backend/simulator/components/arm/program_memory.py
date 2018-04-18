@@ -21,8 +21,12 @@ class ProgramMemory(Memory):
     size defined for the module.
     """
 
-    def __init__(self, address, rst, read, default_size=4096,
-                 default_value=0, rst_type=Logic_States.ACTIVE_HIGH):
+    DEFAULT_SIZE = 4096
+    DEFAULT_STATE = 0
+    DEFAULT_RESET_TYPE = Logic_States.ACTIVE_HIGH
+
+    def __init__(self, address, rst, read, default_size=DEFAULT_SIZE,
+                 default_value=DEFAULT_STATE, rst_type=DEFAULT_RESET_TYPE):
         """
         Buses
             address : word sized address bus to access program memory
@@ -68,4 +72,21 @@ class ProgramMemory(Memory):
     @classmethod
     def from_dict(cls, config, hooks):
         "Implements conversion from configuration to component"
-        return NotImplemented
+
+        if "size" in config:
+            size = config["size"]
+        else:
+            size = ProgramMemory.DEFAULT_SIZE
+
+        if "value" in config:
+            value = config["value"]
+        else:
+            value = ProgramMemory.DEFAULT_STATE
+
+        if "reset_type" in config:
+            reset_type = Logic_States.fromString(config["reset_type"])
+        else:
+            reset_type = ProgramMemory.DEFAULT_RESET_TYPE
+
+        return ProgramMemory(hooks[config["address"]],hooks[config["reset"]],
+                             hooks[config["read"]],size,value,reset_type)

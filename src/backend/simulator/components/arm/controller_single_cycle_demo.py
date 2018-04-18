@@ -437,14 +437,15 @@ class ControllerSingleCycle(Controller):
     @classmethod
     def from_dict(cls, config):
         "Implements conversion from configuration to component"
-        return NotImplemented
-
-    @classmethod
-    def to_dict(cls):
-        "Implements conversion from component to configuration"
-        return NotImplemented
-
-    @classmethod
-    def from_dict(cls, config, hooks):
-        "Implements conversion from configuration to component"
-        return NotImplemented
+        return ControllerSingleCycle(hooks[config["cond"]], hooks[config["op"]],
+                                     hooks[config["funct"]], hooks[config["rd"]],
+                                     hooks[config["bit4"]], hooks[config["c"]],
+                                     hooks[config["v"]], hooks[config["n"]],
+                                     hooks[config["z"]], hooks[config["pcsrc"]],
+                                     hooks[config["pcwr"]], hooks[config["regsa"]],
+                                     hooks[config["regdst"]], hooks[config["regwrs"]],
+                                     hooks[config["regwr"]], hooks[config["regwrs"]],
+                                     hooks[config["exts"]], hooks[config["alusrcb"]],
+                                     hooks[config["alus"]], hooks[config["aluflagwr"]],
+                                     hooks[config["memwr"]], hooks[config["regsrc"]],
+                                     hooks["wd3s"])
