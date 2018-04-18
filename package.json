@@ -12,6 +12,7 @@
   "license": "MIT",
   "main": "electron.js",
   "scripts": {
+    "start": "npm run live-reload",
     "lint": "tslint -c ./tslint.json \"./src/**/*.ts\" -e \"./src/**/typings.d.ts\" -e \"./src/environments/**\"",
     "ngbuild": "rimraf ./dist && ng build",
     "npm-install": "npm --prefix ./dist install ./dist --production",

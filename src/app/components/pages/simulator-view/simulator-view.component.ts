@@ -1,16 +1,16 @@
 import { Component, HostListener } from '@angular/core';
-import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { ARCHITECTURE } from '../../../models/simulator/architecture.model';
-import { Bus } from '../../../models/simulator/bus/bus.model';
-import { Simulator } from '../../../models/simulator/simulator.model';
-import { InspectService } from '../../../services/simulator/inspect/inspect.service';
-import { TransmitService } from '../../../services/simulator/transmit/transmit.service';
+import { Bus } from '../../../models/simulator/bus/bus.class';
+import { Architecture } from '../../../models/simulator/architecture.class';
+import { ArchitectureService } from '../../../services/simulator/architecture/architecture.service';
+import { BusMonitorService } from '../../../services/simulator/bus-monitor/bus-monitor.service';
+import { RequestService } from '../../../services/simulator/request/request.service';
+import { ResponseService } from '../../../services/simulator/response/response.service';
 import { WebsocketService } from '../../../services/simulator/websocket/websocket.service';
 import { TooltipService } from '../../../services/tooltip/tooltip.service';
 
 @Component({
   selector: 'marinade-simulator',
-  styleUrls: ['./simulator-views.component.sass'],
+  styleUrls: ['./simulator-view.component.sass'],
   templateUrl: './simulator-view.component.html',
 })
 export class SimulatorViewComponent {
@@ -22,7 +22,7 @@ export class SimulatorViewComponent {
   private static readonly DEFAULT_VIEWBOX_WIDTH: number = 1600;
 
   private static readonly MAX_SCALE: number = 2.5;
-  private static readonly MIN_SCALE: number = 1.0;
+  private static readonly MIN_SCALE: number = 0.75;
 
   private mouseStartX: number = -1;
   private mouseStartY: number = -1;
@@ -32,33 +32,23 @@ export class SimulatorViewComponent {
   private viewBoxUpperLeftY: number = 0;
   private viewBoxWidth: number = 1600;
 
-  public simulator: Simulator = ARCHITECTURE;
+  public architecture: Architecture = null;
 
   public viewBox: string = '0 0 1600 900';
   public viewScale: number = 1;
 
-  constructor(private tooltipService: TooltipService, private transmit: TransmitService, private websocket: WebsocketService) {
-    this.initializeBuses();
-    this.websocket.connect();
-    this.websocket.messageSubject.subscribe((message: any) => this.receiveMessage(message));
-  }
-
-  private initializeBuses(): void {
-    for (let bus of this.simulator.bus) {
-      bus.data = new BehaviorSubject<string>(InspectService.formatTooltip(bus));
-    }
-  }
-
-  private receiveMessage(message: string): void {
-    let messageObject: any = JSON.parse(message);
-    Object.keys(messageObject).map((key: string) => {
-      let selectedBus: Bus = this.simulator.bus.find((bus: Bus) => {
-        return bus.name.toLowerCase() === key;
-      });
-      if (selectedBus) {
-        selectedBus.data.next(InspectService.formatTooltip(selectedBus, messageObject[key].state));
-      }
-    });
+  constructor(
+    private architectureService: ArchitectureService,
+    private busMonitorService: BusMonitorService,
+    private requestService: RequestService,
+    private responseService: ResponseService,
+    private tooltipService: TooltipService,
+    private websocketService: WebsocketService
+  ) {
+    this.architectureService.load();
+    this.architectureService.architecture.subscribe((architecture: Architecture) => this.architecture = architecture);
+    this.websocketService.connect();
+    this.websocketService.messageSubject.subscribe((message: any) => this.responseService.receiveMessage(message));
   }
 
   private updateViewBox(): void {
@@ -93,6 +83,31 @@ export class SimulatorViewComponent {
     this.mouseStartY = event.y;
     // Allow movements to move the canvas
     this.tracking = true;
+  }
+
+  @HostListener('window:keyup', ['$event'])
+  public onKeyUp(event: KeyboardEvent): void {
+    switch (event.key) {
+      case 'i':
+        this.requestService.inspect(['']);
+        break;
+      case 'l':
+        this.requestService.load('');
+        break;
+      case 'p':
+        this.requestService.program('', '');
+        break;
+      case 'r':
+        this.requestService.reset();
+        break;
+      case 's': {
+        this.requestService.step('logic');
+        this.architectureService.architecture.getValue().bus.forEach((bus: Bus) => {
+          bus.inspect();
+        });
+        break;
+      }
+    }
   }
 
   /**
@@ -174,17 +189,6 @@ export class SimulatorViewComponent {
     this.viewScale = SimulatorViewComponent.DEFAULT_VIEWBOX_SCALE;
     // Refresh the viewBox with the new properties
     this.updateViewBox();
-  }
-
-  @HostListener('window:keyup', ['$event'])
-  public step(event: KeyboardEvent): void {
-    switch (event.key) {
-      case 'i': this.transmit.inspect(['']); break;
-      case 'l': this.transmit.load(''); break;
-      case 'p': this.transmit.program('', ''); break;
-      case 'r': this.transmit.reset(); break;
-      case 's': this.transmit.step('logic'); this.transmit.inspect(['']); break;
-    }
   }
 
 }

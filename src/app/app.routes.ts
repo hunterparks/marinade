@@ -16,7 +16,7 @@ const routes: Routes = [
     path: 'editor'
   },
   {
-    component: SimulatorViewComponent, // TODO: Move to SimulatorViewComponent
+    component: SimulatorViewComponent,
     path: 'simulator'
   },
   {
