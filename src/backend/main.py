@@ -58,6 +58,7 @@ timestep or a clockstep.
 import json
 import asyncio
 import websockets
+import traceback
 
 from sentry.sentry import initialize_sentry
 
@@ -166,8 +167,10 @@ class Interface:
             self.arch = Architecture.from_dict(config)
             self.hooks = self.arch.get_hooks()
         except ValueError as e:
+            traceback.print_exc()
             return {'status': False, 'error': 'invalid key : {}'.format(str(e))}
         except Exception as e:
+            traceback.print_exc()
             return {'status': False, 'error': 'exception : {}'.format(str(e))}
         return {'status': True}
 
@@ -234,10 +237,13 @@ if __name__ == "__main__":
 
         async def api_call(websocket, path):
             async for message in websocket:
-                msg = json.loads(message)
-                retMsg = interface.parse_command(msg)
-                rxStr = json.dumps(retMsg)
-                await websocket.send(rxStr)
+                try:
+                    msg = json.loads(message)
+                    retMsg = interface.parse_command(msg)
+                    rxStr = json.dumps(retMsg)
+                    await websocket.send(rxStr)
+                except:
+                    await websocket.send(json.dumps({'status' : False, 'error' : 'cannot parse JSON message'}))
 
         asyncio.get_event_loop().run_until_complete(
             websockets.serve(api_call, HOST_NAME, HOST_PORT))
