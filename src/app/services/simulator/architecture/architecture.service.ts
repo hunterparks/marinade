@@ -18,7 +18,7 @@ export class ArchitectureService {
     { class: Controller, name: 'controller',    services: [ ]                     },
     { class: Mux,        name: 'mux',           services: [ ]                     },
     { class: Stage,      name: 'stage',         services: [ ]                     },
-    { class: Register,   name: 'stageRegister', services: [ ]                     },
+    { class: Register,   name: 'register',      services: [ ]                     },
   ];
 
   public architecture: BehaviorSubject<Architecture> = new BehaviorSubject<Architecture>(null);

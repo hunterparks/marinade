@@ -8,6 +8,6 @@ export class Architecture {
   public bus?: Bus[];
   public controller?: Controller[];
   public mux?: Mux[];
+  public register?: Register[];
   public stage?: Stage[];
-  public stageRegister?: Register[];
 }
