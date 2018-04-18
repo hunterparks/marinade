@@ -37,7 +37,7 @@ export class SimulatorViewComponent {
   public viewBox: string = '0 0 1600 900';
   public viewScale: number = 1;
 
-  constructor (
+  constructor(
     private architectureService: ArchitectureService,
     private busMonitorService: BusMonitorService,
     private requestService: RequestService,

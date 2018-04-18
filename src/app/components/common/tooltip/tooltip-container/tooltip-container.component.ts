@@ -10,7 +10,7 @@ export class TooltipContainerComponent {
 
   public tooltips: any[];
 
-  constructor (tooltipService: TooltipService) {
+  constructor(tooltipService: TooltipService) {
     this.tooltips = tooltipService.tooltips;
   }
 

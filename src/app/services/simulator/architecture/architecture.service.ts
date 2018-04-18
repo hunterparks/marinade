@@ -23,7 +23,7 @@ export class ArchitectureService {
 
   public architecture: BehaviorSubject<Architecture> = new BehaviorSubject<Architecture>(null);
 
-  constructor (private requestService: RequestService) { }
+  constructor(private requestService: RequestService) { }
 
   public load(): void {
     this._architecture = { };
