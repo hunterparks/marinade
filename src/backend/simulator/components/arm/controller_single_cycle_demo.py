@@ -444,8 +444,8 @@ class ControllerSingleCycle(Controller):
                                      hooks[config["z"]], hooks[config["pcsrc"]],
                                      hooks[config["pcwr"]], hooks[config["regsa"]],
                                      hooks[config["regdst"]], hooks[config["regwrs"]],
-                                     hooks[config["regwr"]], hooks[config["regwrs"]],
-                                     hooks[config["exts"]], hooks[config["alusrcb"]],
+                                     hooks[config["regwr"]], hooks[config["exts"]],
+                                     hooks[config["alusrcb"]],
                                      hooks[config["alus"]], hooks[config["aluflagwr"]],
                                      hooks[config["memwr"]], hooks[config["regsrc"]],
-                                     hooks["wd3s"])
+                                     hooks["wdbs"])

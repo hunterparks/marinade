@@ -231,6 +231,8 @@ class Architecture(ConfigurationParser):
             else:
                 entities.update({entity["name"]: package_manager.construct(
                     entity["type"], entity, package, hooks)})
+                if "append_to_signals" in entity and entity["append_to_signals"]:
+                    hooks.update({entity["name"]: entities[entity["name"]]})
 
         # gather system wide defintions
         system_clock = config["system_clock"]

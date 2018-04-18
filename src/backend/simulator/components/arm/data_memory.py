@@ -117,6 +117,6 @@ class DataMemory(Memory):
         else:
             enable_type = DataMemory.DEFAULT_ENABLE_TYPE
 
-        return DataMemory(hooks[config["address"]], hooks[config["write"]], hooks[config["writeEnable"]],
+        return DataMemory(hooks[config["address"]], hooks[config["write"]], hooks[config["write_enable"]],
                           hooks[config["reset"]], hooks[config["clock"]], hooks[config["read"]],
                           mode, size, value, edge_type, reset_type, enable_type)

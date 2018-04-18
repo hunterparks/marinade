@@ -19,7 +19,7 @@ from simulator.components.arm.register_file_full import RegisterFile as Register
 
 ArmPackage = {
     "AluDemo": AluDemo,
-    "ALUFlagRegister": ALUFlagRegister,
+    "AluFlagRegister": ALUFlagRegister,
     "AluFull": AluFull,
     "ControllerPipeline": ControllerPipeline,
     "ControllerSingleCycleDemo": ControllerSingleCycleDemo,
