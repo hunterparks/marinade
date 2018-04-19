@@ -19,11 +19,13 @@ __default_packages = ["core"]
 
 
 def set_default_packages(packages):
+    global __default_packages
     __default_packages = packages
 
 
 def construct(type, config, package=None, hooks=None):
     # Handle parameter options
+    global __default_packages
     if package != None:
         valid_packages = package
     else:

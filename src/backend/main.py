@@ -166,7 +166,8 @@ class Interface:
             config = json.loads(f.read())
             self.arch = Architecture.from_dict(config)
             self.hooks = self.arch.get_hooks()
-        except ValueError as e:
+            f.close()
+        except KeyError as e:
             traceback.print_exc()
             return {'status': False, 'error': 'invalid key : {}'.format(str(e))}
         except Exception as e:

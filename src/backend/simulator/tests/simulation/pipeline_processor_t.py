@@ -6,11 +6,11 @@ written to JSON files and Excel files.
 import unittest
 import sys
 import os
-sys.path.insert(0, '../../')
+sys.path.insert(0, '../../../')
 
 import json
 import tablib
-import pipeline_poc
+import simulator.pipeline_poc
 
 
 class PipelineProcessor_t(unittest.TestCase):

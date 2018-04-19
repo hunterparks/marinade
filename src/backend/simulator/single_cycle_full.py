@@ -41,7 +41,7 @@ from simulator.components.arm.program_memory import ProgramMemory
 from simulator.components.arm.register_file_full import RegisterFile
 from simulator.components.arm.controller_single_cycle_full import ControllerSingleCycle
 
-from architecture import Architecture
+from simulator.architecture import Architecture
 
 
 def program_single_cycle_architecture(arch, program):

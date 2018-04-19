@@ -30,8 +30,8 @@ class BusSubset(Entity):
         if not isinstance(outs_range, list) or not len(outs_b) == len(outs_range):
             raise TypeError('Output ranges must be a list corresponding to outputs')
         for i in range(0, len(outs_range)):
-            if not isinstance(outs_range[i], tuple) or not len(outs_range[i]) == 2:
-                raise TypeError('Range must be a tuple with two elements')
+            if not isinstance(outs_range[i], (tuple,list)) or not len(outs_range[i]) == 2:
+                raise TypeError('Range must be a tuple or list with two elements')
             elif not outs_range[i][0] < outs_range[i][1]:
                 raise ValueError('Range must start position first')
             elif not outs_range[i][1] <= in_b.size():

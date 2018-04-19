@@ -5,10 +5,10 @@ written to JSON files and Excel files.
 
 import unittest
 import sys
-sys.path.insert(0, '../../')
+sys.path.insert(0, '../../../')
 
-import single_cycle_full
-from tests.simulation.test_framework import TestFramework
+import simulator.single_cycle_full
+from simulator.tests.simulation.test_framework import TestFramework
 
 
 class SingleCycleProcessor_t(TestFramework, unittest.TestCase):

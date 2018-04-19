@@ -5,7 +5,7 @@ Generic test framework class that can be extended to test various architectures
 import unittest
 import sys
 import os
-sys.path.insert(0, '../../')
+sys.path.insert(0, '../../../')
 
 import json
 import tablib  # external library

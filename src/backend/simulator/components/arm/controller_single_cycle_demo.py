@@ -435,7 +435,7 @@ class ControllerSingleCycle(Controller):
         pass
 
     @classmethod
-    def from_dict(cls, config):
+    def from_dict(cls, config, hooks):
         "Implements conversion from configuration to component"
         return ControllerSingleCycle(hooks[config["cond"]], hooks[config["op"]],
                                      hooks[config["funct"]], hooks[config["rd"]],

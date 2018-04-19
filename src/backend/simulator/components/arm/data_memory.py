@@ -21,14 +21,14 @@ class DataMemory(Memory):
     """
 
     DEFAULT_MODE = None
-    DEFUALT_SIZE = 4096
+    DEFAULT_SIZE = 4096
     DEFAULT_STATE = 0x81
     DEFAULT_LATCH_TYPE = Latch_Type.RISING_EDGE
     DEFAULT_RESET_TYPE = Logic_States.ACTIVE_HIGH
     DEFAULT_ENABLE_TYPE = Logic_States.ACTIVE_HIGH
 
     def __init__(self, address, write, writeEnable, reset, clock, read,
-                 mode=DEFAULT_MODE, default_size=DEFUALT_SIZE,
+                 mode=DEFAULT_MODE, default_size=DEFAULT_SIZE,
                  default_value=DEFAULT_STATE,
                  edge_type=DEFAULT_LATCH_TYPE,
                  rst_type=DEFAULT_RESET_TYPE,
