@@ -1,21 +1,21 @@
 """
-Tests arm state register exmem
+Tests the exmem.py module
+Must be run in the marinade/src/backend/simulator/tests/arm
 """
 
 import unittest
 import sys
-sys.path.insert(0, '../../')
+sys.path.insert(0, '../../../')
 from simulator.components.arm.exmem import Exmem
 from simulator.components.core.bus import Bus
 from simulator.components.abstract.sequential import Latch_Type, Logic_States
 
 class Exmem_t(unittest.TestCase):
-    "Unit tests for exmem class"
+    "Unit tests for exmem.py module"
 
     def test_constructor(self):
         "Tests constructor with valid and invalid configuration"
-        pcsrce = Bus(2)
-        regwrse = Bus(2)
+        pc4e = Bus(32)
         regwre = Bus(1)
         memwre = Bus(1)
         regsrce = Bus(1)
@@ -24,8 +24,7 @@ class Exmem_t(unittest.TestCase):
         fe = Bus(32)
         ra3e = Bus(4)
         clk = Bus(1)
-        pcsrcm = Bus(2)
-        regwrsm = Bus(2)
+        pc4m = Bus(32)
         regwrm = Bus(1)
         memwrm = Bus(1)
         regsrcm = Bus(1)
@@ -38,24 +37,21 @@ class Exmem_t(unittest.TestCase):
         invalidBusType = 'w'
 
         with self.assertRaises(ValueError):
-            exmem = Exmem(pcsrce, regwrse, regwre, memwre, invalidBusSize, wd3se, rd2e,
-                            fe, ra3e, clk, pcsrcm, regwrsm, regwrm, memwrm,
-                            regsrcm, wd3sm, fm, rd2m, ra3m)
+            Exmem(pc4e, regwre, memwre, invalidBusSize, wd3se, rd2e, fe, ra3e, 
+                  clk, pc4m, regwrm, memwrm, regsrcm, wd3sm, fm, rd2m, ra3m)
 
         with self.assertRaises(TypeError):
-            exmem = Exmem(pcsrce, regwrse, regwre, memwre, regsrce, wd3se, rd2e,
-                            fe, ra3e, clk, pcsrcm, regwrsm, regwrm, memwrm,
-                            regsrcm, wd3sm, invalidBusType, rd2m, ra3m)
+            Exmem(pc4e, regwre, memwre, regsrce, wd3se, rd2e, fe, ra3e, clk, 
+                  pc4m, regwrm, memwrm, regsrcm, wd3sm, invalidBusType, rd2m, 
+                  ra3m)
 
-        exmem = Exmem(pcsrce, regwrse, regwre, memwre, regsrce, wd3se, rd2e,
-                        fe, ra3e, clk, pcsrcm, regwrsm, regwrm, memwrm,
-                        regsrcm, wd3sm, fm, rd2m, ra3m)
+        Exmem(pc4e, regwre, memwre, regsrce, wd3se, rd2e, fe, ra3e, clk, 
+              pc4m, regwrm, memwrm, regsrcm, wd3sm, fm, rd2m, ra3m)
 
 
     def test_on_rising_edge(self):
         "Tests on_rising_edge method"
-        pcsrce = Bus(2)
-        regwrse = Bus(2)
+        pc4e = Bus(32)
         regwre = Bus(1)
         memwre = Bus(1)
         regsrce = Bus(1)
@@ -64,8 +60,7 @@ class Exmem_t(unittest.TestCase):
         fe = Bus(32)
         ra3e = Bus(4)
         clk = Bus(1)
-        pcsrcm = Bus(2)
-        regwrsm = Bus(2)
+        pc4m = Bus(32)
         regwrm = Bus(1)
         memwrm = Bus(1)
         regsrcm = Bus(1)
@@ -74,9 +69,8 @@ class Exmem_t(unittest.TestCase):
         rd2m = Bus(32)
         ra3m = Bus(4)
 
-        exmem = Exmem(pcsrce, regwrse, regwre, memwre, regsrce, wd3se, rd2e,
-                        fe, ra3e, clk, pcsrcm, regwrsm, regwrm, memwrm,
-                        regsrcm, wd3sm, fm, rd2m, ra3m)
+        exmem = Exmem(pc4e, regwre, memwre, regsrce, wd3se, rd2e, fe, ra3e, clk, 
+                      pc4m, regwrm, memwrm, regsrcm, wd3sm, fm, rd2m, ra3m)
         memwre.write(1)
         self.assertNotEqual(memwre.read(), memwrm.read())
         exmem.on_rising_edge()
@@ -85,8 +79,7 @@ class Exmem_t(unittest.TestCase):
 
     def test_on_falling_edge(self):
         "Tests on_falling_edge method"
-        pcsrce = Bus(2)
-        regwrse = Bus(2)
+        pc4e = Bus(32)
         regwre = Bus(1)
         memwre = Bus(1)
         regsrce = Bus(1)
@@ -95,8 +88,7 @@ class Exmem_t(unittest.TestCase):
         fe = Bus(32)
         ra3e = Bus(4)
         clk = Bus(1)
-        pcsrcm = Bus(2)
-        regwrsm = Bus(2)
+        pc4m = Bus(32)
         regwrm = Bus(1)
         memwrm = Bus(1)
         regsrcm = Bus(1)
@@ -105,10 +97,9 @@ class Exmem_t(unittest.TestCase):
         rd2m = Bus(32)
         ra3m = Bus(4)
 
-        exmem = Exmem(pcsrce, regwrse, regwre, memwre, regsrce, wd3se, rd2e,
-                        fe, ra3e, clk, pcsrcm, regwrsm, regwrm, memwrm,
-                        regsrcm, wd3sm, fm, rd2m, ra3m,
-                        Latch_Type.FALLING_EDGE)
+        exmem = Exmem(pc4e, regwre, memwre, regsrce, wd3se, rd2e, fe, ra3e, clk, 
+                      pc4m, regwrm, memwrm, regsrcm, wd3sm, fm, rd2m, ra3m,
+                      Latch_Type.FALLING_EDGE)
         memwre.write(1)
         self.assertNotEqual(memwre.read(), memwrm.read())
         exmem.on_falling_edge()
@@ -117,8 +108,7 @@ class Exmem_t(unittest.TestCase):
 
     def test_inspect(self):
         "Tests inspect method"
-        pcsrce = Bus(2)
-        regwrse = Bus(2)
+        pc4e = Bus(32)
         regwre = Bus(1)
         memwre = Bus(1)
         regsrce = Bus(1)
@@ -127,8 +117,7 @@ class Exmem_t(unittest.TestCase):
         fe = Bus(32)
         ra3e = Bus(4)
         clk = Bus(1)
-        pcsrcm = Bus(2)
-        regwrsm = Bus(2)
+        pc4m = Bus(32)
         regwrm = Bus(1)
         memwrm = Bus(1)
         regsrcm = Bus(1)
@@ -137,25 +126,23 @@ class Exmem_t(unittest.TestCase):
         rd2m = Bus(32)
         ra3m = Bus(4)
 
-        exmem = Exmem(pcsrce, regwrse, regwre, memwre, regsrce, wd3se, rd2e,
-                        fe, ra3e, clk, pcsrcm, regwrsm, regwrm, memwrm,
-                        regsrcm, wd3sm, fm, rd2m, ra3m)
-        pcsrce.write(1)
-        regwrse.write(1)
+        exmem = Exmem(pc4e, regwre, memwre, regsrce, wd3se, rd2e, fe, ra3e, clk, 
+                      pc4m, regwrm, memwrm, regsrcm, wd3sm, fm, rd2m, ra3m)
+        pc4e.write(24)
+        regwre.write(1)
         fe.write(0xEAFFFFFD)
-        self.assertEqual(exmem.inspect()['state'].get_state()['pcsrcm'], 0)
-        self.assertEqual(exmem.inspect()['state'].get_state()['regwrsm'], 0)
-        self.assertEqual(exmem.inspect()['state'].get_state()['fm'], 0)
+        self.assertEqual(exmem.inspect()['state']['pc4m'], 0)
+        self.assertEqual(exmem.inspect()['state']['regwrm'], 0)
+        self.assertEqual(exmem.inspect()['state']['fm'], 0)
         exmem.on_rising_edge()
-        self.assertEqual(exmem.inspect()['state'].get_state()['pcsrcm'], 1)
-        self.assertEqual(exmem.inspect()['state'].get_state()['regwrsm'], 1)
-        self.assertEqual(exmem.inspect()['state'].get_state()['fm'], 0xEAFFFFFD)
+        self.assertEqual(exmem.inspect()['state']['pc4m'], 24)
+        self.assertEqual(exmem.inspect()['state']['regwrm'], 1)
+        self.assertEqual(exmem.inspect()['state']['fm'], 0xEAFFFFFD)
 
 
     def test_modify(self):
         "Tests modify method"
-        pcsrce = Bus(2)
-        regwrse = Bus(2)
+        pc4e = Bus(32)
         regwre = Bus(1)
         memwre = Bus(1)
         regsrce = Bus(1)
@@ -164,8 +151,7 @@ class Exmem_t(unittest.TestCase):
         fe = Bus(32)
         ra3e = Bus(4)
         clk = Bus(1)
-        pcsrcm = Bus(2)
-        regwrsm = Bus(2)
+        pc4m = Bus(32)
         regwrm = Bus(1)
         memwrm = Bus(1)
         regsrcm = Bus(1)
@@ -174,16 +160,14 @@ class Exmem_t(unittest.TestCase):
         rd2m = Bus(32)
         ra3m = Bus(4)
 
-        exmem = Exmem(pcsrce, regwrse, regwre, memwre, regsrce, wd3se, rd2e,
-                        fe, ra3e, clk, pcsrcm, regwrsm, regwrm, memwrm,
-                        regsrcm, wd3sm, fm, rd2m, ra3m)
+        exmem = Exmem(pc4e, regwre, memwre, regsrce, wd3se, rd2e, fe, ra3e, clk, 
+                      pc4m, regwrm, memwrm, regsrcm, wd3sm, fm, rd2m, ra3m)
         self.assertEqual(exmem.modify()['error'], 'exmem register cannot be modified')
 
 
     def test_run(self):
         "Tests the run method"
-        pcsrce = Bus(2)
-        regwrse = Bus(2)
+        pc4e = Bus(32)
         regwre = Bus(1)
         memwre = Bus(1)
         regsrce = Bus(1)
@@ -192,8 +176,7 @@ class Exmem_t(unittest.TestCase):
         fe = Bus(32)
         ra3e = Bus(4)
         clk = Bus(1)
-        pcsrcm = Bus(2)
-        regwrsm = Bus(2)
+        pc4m = Bus(32)
         regwrm = Bus(1)
         memwrm = Bus(1)
         regsrcm = Bus(1)
@@ -202,9 +185,8 @@ class Exmem_t(unittest.TestCase):
         rd2m = Bus(32)
         ra3m = Bus(4)
 
-        exmem = Exmem(pcsrce, regwrse, regwre, memwre, regsrce, wd3se, rd2e,
-                        fe, ra3e, clk, pcsrcm, regwrsm, regwrm, memwrm,
-                        regsrcm, wd3sm, fm, rd2m, ra3m)
+        exmem = Exmem(pc4e, regwre, memwre, regsrce, wd3se, rd2e, fe, ra3e, clk, 
+                      pc4m, regwrm, memwrm, regsrcm, wd3sm, fm, rd2m, ra3m)
         rd2e.write(0xE24AA020)
         ra3e.write(4)
         exmem.run()

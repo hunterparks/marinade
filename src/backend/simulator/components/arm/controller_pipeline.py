@@ -3,12 +3,12 @@ from simulator.components.abstract.ibus import iBusRead, iBusWrite
 
 
 class ControllerPipeline(Controller):
-    """
-    Pipeline Controller - Implements pipeline architecture controller
-    """
+    "Pipeline Controller - Implements pipeline architecture controller"
 
-    def __init__(self, cond, op, funct, rd, bit4, c, v, n, z, stallf, pcsrcd, pcwrd, regsad, regdstd,
-                 regwrsd, regwrd, extsd, alusrcbd, alusd, aluflagwrd, memwrd, regsrcd, wd3sd):
+
+    def __init__(self, cond, op, funct, rd, bit4, c, v, n, z, stallf, pcsrcd,
+                 pcwrd, regsad, regdstd, regwrsd, regwrd, extsd, alusrcbd,
+                 alusd, aluflagwrd, memwrd, regsrcd, wd3sd):
         """
         inputs:
             cond: 4-bits that represent bits 31..28 of the instruction
@@ -24,9 +24,9 @@ class ControllerPipeline(Controller):
         outputs:
             pcsrcd: selects the instruction given to the fetch stage
             pcwrd: always a 1 for the single cycle processor
-            regsad: selects what register is passed into input a1 of the regfile
-            regdstd: selects what register is passed into input a2 of the regfile
-            regwrsd: selects which register is passed into input a3 of the regfile
+            regsad: selects what reg is passed into input a1 of the regfile
+            regdstd: selects what reg is passed into input a2 of the regfile
+            regwrsd: selects which reg is passed into input a3 of the regfile
             regwrd: selects whether to write back to the regfile
             extsd: selects the appropriate extension for an immediate
             alusrcbd: selects what value input b of the alu recieves
@@ -202,7 +202,8 @@ class ControllerPipeline(Controller):
         """
         if op == 0b01 and funct == 0b011000:
             return 0b10
-        elif op == 0b00 and bit4 == 0b1 and (funct == 0b000000 or funct == 0b000001):
+        elif (op == 0b00 and bit4 == 0b1
+                and (funct == 0b000000 or funct == 0b000001)):
             return 0b00
         else:
             return 0b01
@@ -216,7 +217,8 @@ class ControllerPipeline(Controller):
         """
         if op == 0b10 and ((funct & 0b010000) >> 4) == 0b1:
             return 0b10
-        elif op == 0b00 and bit4 == 0b1 and (funct == 0b000000 or funct == 0b000001):
+        elif (op == 0b00 and bit4 == 0b1
+                and (funct == 0b000000 or funct == 0b000001)):
             return 0b00
         else:
             return 0b01
@@ -293,7 +295,8 @@ class ControllerPipeline(Controller):
         ALUSD <= "0111" for A*B
         ALUSD <= "1111" for 1
         """
-        if op == 0b00 and (funct == 0b000000 or funct == 0b000001) and bit4 == 0b1:
+        if (op == 0b00 and (funct == 0b000000 or funct == 0b000001)
+                and bit4 == 0b1):
             return 0b0111
         elif op == 0b00 and (funct == 0b001000 or funct == 0b101000
                              or funct == 0b001001 or funct == 0b101001):
@@ -301,8 +304,8 @@ class ControllerPipeline(Controller):
         elif op == 0b01 and (funct == 0b011000 or funct == 0b011001):
             return 0b0000
         elif op == 0b00 and (funct == 0b000100 or funct == 0b100100
-                             or funct == 0b010101 or funct == 0b110101 or funct == 0b000101
-                             or funct == 0b100101):
+                             or funct == 0b010101 or funct == 0b110101
+                             or funct == 0b000101 or funct == 0b100101):
             return 0b0001
         elif op == 0b00 and (funct == 0b000000 or funct == 0b100000
                              or funct == 0b000001 or funct == 0b100001):
@@ -436,6 +439,7 @@ class ControllerPipeline(Controller):
     @classmethod
     def from_dict(cls, config, hooks):
         "Implements conversion from configuration to component"
+        #TODO update
         return ControllerPipeline(hooks[config["cond"]],hooks[config["op"]],
                                   hooks[config["funct"]],hooks[config["rd"]],
                                   hooks[config["bit4"]],hooks[config["c"]],
