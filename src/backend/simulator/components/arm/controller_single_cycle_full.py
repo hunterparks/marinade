@@ -522,4 +522,4 @@ class ControllerSingleCycle(Controller):
                                      hooks[config["shop"]], hooks[config["shctrl"]],
                                      hooks[config["accen"]], hooks[config["aluflagwr"]],
                                      hooks[config["memty"]], hooks[config["memwr"]],
-                                     hooks[config["regsrc"]], hooks[config["wd3s"]])
+                                     hooks[config["regsrc"]], hooks[config["wdbs"]])
