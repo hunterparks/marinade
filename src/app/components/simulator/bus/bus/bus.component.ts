@@ -1,6 +1,6 @@
 import { Component, HostListener, Input, OnInit } from '@angular/core';
-import { Bus } from '../../../models/simulator/bus/bus.model';
-import { InspectService } from '../../../services/simulator/inspect/inspect.service';
+import { Bus, BusState } from '../../../../models/simulator/bus/bus.class';
+import { BusMonitorService } from '../../../../services/simulator/bus-monitor/bus-monitor.service';
 
 @Component({
   selector: '[svg-bus]',
@@ -29,7 +29,7 @@ export class BusComponent implements OnInit {
   // Generated svg paths for the bus
   public paths: string[] = [];
 
-  constructor(private inspect: InspectService) { }
+  constructor(private busMonitorService: BusMonitorService) { }
 
   /**
    * Determines the direction of the arrows using the last two points of the path
@@ -144,6 +144,13 @@ export class BusComponent implements OnInit {
     if (this.bus['name']) {
       this.name = this.bus['name'];
     }
+    this.bus.state.subscribe((state: BusState) => {
+      switch (state) {
+        case BusState.Active: this.color = BusComponent.HIGHLIGHT_COLOR; break;
+        case BusState.Inactive: this.color = BusComponent.DEFAULT_COLOR; break;
+        default: this.color = BusComponent.DEFAULT_COLOR;
+      }
+    });
   }
 
   /**
@@ -156,15 +163,20 @@ export class BusComponent implements OnInit {
     // Expand hovering tooltip
   }
 
+  @HostListener('dblclick')
+  public onDoubleClick(): void {
+    if (!this.busMonitorService.deleteBus(this.bus)) {
+      this.busMonitorService.addBus(this.bus);
+    }
+  }
+
   /**
    * Handles the mouseEnter event
    */
   @HostListener('mouseenter')
   public onMouseEnter(): void {
-    this.inspect.inspect(this.bus);
-    // Change the bus color to the highlight color
-    this.color = BusComponent.HIGHLIGHT_COLOR;
-    // Spawn hovering tooltip
+    this.bus.inspect();
+    this.bus.state.next(BusState.Active);
   }
 
   /**
@@ -172,8 +184,7 @@ export class BusComponent implements OnInit {
    */
   @HostListener('mouseleave')
   public onMouseLeave(): void {
-    // Change the bus color to the default color
-    this.color = BusComponent.DEFAULT_COLOR;
+    this.bus.state.next(BusState.Inactive);
   }
 
 }

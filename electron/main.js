@@ -63,6 +63,8 @@ function createWindow () {
   if (client) {
     client.create(mainWindow, {"sendBounds":false});
   }
+
+  mainWindow.maximize();
 }
 
 // This method will be called when Electron has finished
