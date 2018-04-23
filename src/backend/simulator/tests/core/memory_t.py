@@ -8,7 +8,7 @@ sys.path.insert(0, '../../')
 from simulator.components.core.memory import Memory, Latch_Type, Logic_States
 from simulator.components.core.constant import Constant
 from simulator.components.core.bus import Bus
-import limits
+import simulator.limits as limits
 
 
 class Memory_t(unittest.TestCase):

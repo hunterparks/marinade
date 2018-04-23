@@ -8,7 +8,7 @@ sys.path.insert(0, '../../')
 
 from collections import OrderedDict
 
-from architecture import Architecture
+from simulator.architecture import Architecture
 from simulator.components.core.bus import Bus
 from simulator.components.core.clock import Clock
 from simulator.components.core.reset import Reset

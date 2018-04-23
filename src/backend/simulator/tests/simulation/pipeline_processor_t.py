@@ -10,7 +10,7 @@ sys.path.insert(0, '../../../')
 
 import json
 import tablib
-import simulator.pipeline_poc
+import simulator.pipeline_poc as pipeline_poc
 
 
 class PipelineProcessor_t(unittest.TestCase):

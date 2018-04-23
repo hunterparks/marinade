@@ -4,6 +4,7 @@ written to JSON files and Excel files.
 """
 
 import unittest
+import os
 import sys
 import json
 sys.path.insert(0, '../../../')
@@ -12,6 +13,7 @@ import simulator.single_cycle_poc as single_cycle_poc
 from simulator.architecture import Architecture
 from simulator.tests.simulation.test_framework import TestFramework
 
+SINGLE_CYCLE_DEMO_CONFIG_FILEPATH = os.path.join(os.path.dirname(__file__),"../../architectures/single_cycle_demo.json")
 
 class SingleCycleProcessor_t(TestFramework, unittest.TestCase):
     """
@@ -20,7 +22,7 @@ class SingleCycleProcessor_t(TestFramework, unittest.TestCase):
     a complete match will simulation be considered valid.
     """
 
-    SINGLE_CYCLE_DEMO_CONFIG_FILEPATH = "./../../architectures/single_cycle_demo.json"
+
 
     demo_program = [
         0xE3, 0xA0, 0x80, 0x0A,
@@ -140,7 +142,7 @@ class SingleCycleProcessor_t(TestFramework, unittest.TestCase):
         """
 
         def _gen():
-            f = open(SingleCycleProcessor_t.SINGLE_CYCLE_DEMO_CONFIG_FILEPATH)
+            f = open(SINGLE_CYCLE_DEMO_CONFIG_FILEPATH)
             config = json.loads(f.read())
             arch = Architecture.from_dict(config)
             hooks = arch.get_hooks()
@@ -170,7 +172,7 @@ class SingleCycleProcessor_t(TestFramework, unittest.TestCase):
         """
 
         def _gen():
-            f = open(SingleCycleProcessor_t.SINGLE_CYCLE_DEMO_CONFIG_FILEPATH)
+            f = open(SINGLE_CYCLE_DEMO_CONFIG_FILEPATH)
             config = json.loads(f.read())
             arch = Architecture.from_dict(config)
             hooks = arch.get_hooks()

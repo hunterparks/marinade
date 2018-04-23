@@ -6,7 +6,7 @@ import unittest
 import sys
 sys.path.insert(0, '../../')
 from simulator.components.core.clock import Clock
-import limits
+import simulator.limits as limits
 
 
 class Clock_t(unittest.TestCase):
