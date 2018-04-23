@@ -439,7 +439,6 @@ class ControllerPipeline(Controller):
     @classmethod
     def from_dict(cls, config, hooks):
         "Implements conversion from configuration to component"
-        #TODO update
         return ControllerPipeline(hooks[config["cond"]],hooks[config["op"]],
                                   hooks[config["funct"]],hooks[config["rd"]],
                                   hooks[config["bit4"]],hooks[config["c"]],
