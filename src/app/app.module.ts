@@ -24,15 +24,19 @@ import { EditorViewComponent } from './components/pages/editor-view/editor-view.
 import { MemoryViewComponent } from './components/pages/memory-view/memory-view.component';
 import { SettingsViewComponent } from './components/pages/settings-view/settings-view.component';
 import { SimulatorViewComponent } from './components/pages/simulator-view/simulator-view.component';
-import { BusComponent } from './components/simulator/bus/bus.component';
+import { BusMonitorItemComponent } from './components/simulator/bus/bus-monitor/bus-monitor-item/bus-monitor-item.component';
+import { BusMonitorComponent } from './components/simulator/bus/bus-monitor/bus-monitor.component';
+import { BusComponent } from './components/simulator/bus/bus/bus.component';
 import { ControllerComponent } from './components/simulator/controller/controller.component';
 import { MuxComponent } from './components/simulator/mux/mux.component';
 import { StageRegisterComponent } from './components/simulator/stage-register/stage-register.component';
 import { StageComponent } from './components/simulator/stage/stage.component';
 import { TooltipDirective } from './directives/tooltip/tooltip.directive';
 import { SafeHtmlPipe } from './pipes/safe-html.pipe';
-import { InspectService } from './services/simulator/inspect/inspect.service';
-import { TransmitService } from './services/simulator/transmit/transmit.service';
+import { BusMonitorService } from './services/simulator/bus-monitor/bus-monitor.service';
+import { ArchitectureService } from './services/simulator/architecture/architecture.service';
+import { ResponseService } from './services/simulator/response/response.service';
+import { RequestService } from './services/simulator/request/request.service';
 import { WebsocketService } from './services/simulator/websocket/websocket.service';
 import { TooltipService } from './services/tooltip/tooltip.service';
 // import { SentrySettings } from './settings/sentry/local.sentry.settings';
@@ -66,7 +70,9 @@ import { TooltipService } from './services/tooltip/tooltip.service';
     EditorViewComponent,
     SimulatorViewComponent,
     MemoryViewComponent,
-    SettingsViewComponent
+    SettingsViewComponent,
+    BusMonitorComponent,
+    BusMonitorItemComponent
   ],
   imports: [
     BrowserModule,
@@ -87,9 +93,11 @@ import { TooltipService } from './services/tooltip/tooltip.service';
     CovalentMarkdownModule,
   ],
   providers: [
-    InspectService,
+    BusMonitorService,
+    ArchitectureService,
+    ResponseService,
     TooltipService,
-    TransmitService,
+    RequestService,
     WebsocketService,
     // { provide: ErrorHandler, useClass: RavenErrorHandler }
   ]

@@ -1,0 +1,530 @@
+{
+  "packages" : ["arm", "core"],
+  "system_clock" : "clk",
+  "system_reset" : "rst",
+  "system_memory" : null,
+  "time_step" : 0.00001,
+
+  "signals" : [
+    {
+      "name" : "clk",
+      "type" : "Clock",
+      "frequency" : 10,
+      "value" : 0
+    },
+    {
+      "name" : "rst",
+      "type" : "Reset",
+      "value" : 0
+    },
+    {
+      "name" : "const8",
+      "type" : "Constant",
+      "size" : 32,
+      "value" : 8
+    },
+    {
+      "name" : "const4",
+      "type" : "Constant",
+      "size" : 32,
+      "value" : 4
+    },
+    {
+      "name" : "const14",
+      "type" : "Constant",
+      "size" : 4,
+      "value" : 14
+    },
+    {
+      "name" : "pc",
+      "type" : "Bus",
+      "size" : 32
+    },
+    {
+      "name" : "pc8",
+      "type" : "Bus",
+      "size" : 32
+    },
+    {
+      "name" : "pc4",
+      "type" : "Bus",
+      "size" : 32
+    },
+    {
+      "name" : "instr",
+      "type" : "Bus",
+      "size" : 32
+    },
+    {
+      "name" : "instr_23_0",
+      "type" : "Bus",
+      "size" : 24
+    },
+    {
+      "name" : "instr_19_16",
+      "type" : "Bus",
+      "size" : 4
+    },
+    {
+      "name" : "instr_3_0",
+      "type" : "Bus",
+      "size" : 4
+    },
+    {
+      "name" : "instr_15_12",
+      "type" : "Bus",
+      "size" : 4
+    },
+    {
+      "name" : "instr_11_8",
+      "type" : "Bus",
+      "size" : 4
+    },
+    {
+      "name" : "instr_11_7",
+      "type" : "Bus",
+      "size" : 5
+    },
+    {
+      "name" : "imm32",
+      "type" : "Bus",
+      "size" : 32
+    },
+    {
+      "name" : "ra1",
+      "type" : "Bus",
+      "size" : 4
+    },
+    {
+      "name" : "ra2",
+      "type" : "Bus",
+      "size" : 4
+    },
+    {
+      "name" : "ra3",
+      "type" : "Bus",
+      "size" : 4
+    },
+    {
+      "name" : "wa",
+      "type" : "Bus",
+      "size" : 4
+    },
+    {
+      "name" : "rwd",
+      "type" : "Bus",
+      "size" : 32
+    },
+    {
+      "name" : "rd1",
+      "type" : "Bus",
+      "size" : 32
+    },
+    {
+      "name" : "rd2",
+      "type" : "Bus",
+      "size" : 32
+    },
+    {
+      "name" : "rd3",
+      "type" : "Bus",
+      "size" : 32
+    },
+    {
+      "name" : "alub",
+      "type" : "Bus",
+      "size" : 32
+    },
+    {
+      "name" : "branch",
+      "type" : "Bus",
+      "size" : 32
+    },
+    {
+      "name" : "aluf",
+      "type" : "Bus",
+      "size" : 32
+    },
+    {
+      "name" : "aluc",
+      "type" : "Bus",
+      "size" : 1
+    },
+    {
+      "name" : "aluv",
+      "type" : "Bus",
+      "size" : 1
+    },
+    {
+      "name" : "alun",
+      "type" : "Bus",
+      "size" : 1
+    },
+    {
+      "name" : "aluz",
+      "type" : "Bus",
+      "size" : 1
+    },
+    {
+      "name" : "aluflag",
+      "type" : "Bus",
+      "size" : 4
+    },
+    {
+      "name" : "flag",
+      "type" : "Bus",
+      "size" : 4
+    },
+    {
+      "name" : "c",
+      "type" : "Bus",
+      "size" : 1
+    },
+    {
+      "name" : "v",
+      "type" : "Bus",
+      "size" : 1
+    },
+    {
+      "name" : "n",
+      "type" : "Bus",
+      "size" : 1
+    },
+    {
+      "name" : "z",
+      "type" : "Bus",
+      "size" : 1
+    },
+    {
+      "name" : "memrd",
+      "type" : "Bus",
+      "size" : 32
+    },
+    {
+      "name" : "memrd_ext",
+      "type" : "Bus",
+      "size" : 32
+    },
+    {
+      "name" : "wdb",
+      "type" : "Bus",
+      "size" : 32
+    },
+    {
+      "name" : "pcwb",
+      "type" : "Bus",
+      "size" : 32
+    },
+    {
+      "name" : "pcwr",
+      "type" : "Bus",
+      "size" : 1
+    },
+    {
+      "name" : "regsa",
+      "type" : "Bus",
+      "size" : 1
+    },
+    {
+      "name" : "regsb",
+      "type" : "Bus",
+      "size" : 1
+    },
+    {
+      "name" : "regdst",
+      "type" : "Bus",
+      "size" : 2
+    },
+    {
+      "name" : "regwrs",
+      "type" : "Bus",
+      "size" : 2
+    },
+    {
+      "name" : "wdbs",
+      "type" : "Bus",
+      "size" : 1
+    },
+    {
+      "name" : "regwr",
+      "type" : "Bus",
+      "size" : 1
+    },
+    {
+      "name" : "exts",
+      "type" : "Bus",
+      "size" : 2
+    },
+    {
+      "name" : "alusrcb",
+      "type" : "Bus",
+      "size" : 1
+    },
+    {
+      "name" : "alus",
+      "type" : "Bus",
+      "size" : 4
+    },
+    {
+      "name" : "aluflagwr",
+      "type" : "Bus",
+      "size" : 1
+    },
+    {
+      "name" : "shop",
+      "type" : "Bus",
+      "size" : 2
+    },
+    {
+      "name" : "shctrl",
+      "type" : "Bus",
+      "size" : 2
+    },
+    {
+      "name" : "accen",
+      "type" : "Bus",
+      "size" : 1
+    },
+    {
+      "name" : "memwr",
+      "type" : "Bus",
+      "size" : 1
+    },
+    {
+      "name" : "memty",
+      "type" : "Bus",
+      "size" : 2
+    },
+    {
+      "name" : "regsrc",
+      "type" : "Bus",
+      "size" : 1
+    },
+    {
+      "name" : "pcsrc",
+      "type" : "Bus",
+      "size" : 2
+    }
+  ],
+
+  "entities" : [
+    {
+      "name" : "clk",
+      "signal" : "clk"
+    },
+    {
+      "name" : "pc_reg",
+      "type" : "Register",
+      "append_to_signals" : true,
+      "size" : 32,
+      "clock" : "clk",
+      "reset" : "rst",
+      "input" : "pcwb",
+      "output" : "pc",
+      "enable" : "pcwr",
+      "edge_type" : "falling_edge"
+    },
+    {
+      "name" : "add8",
+      "type" : "Adder",
+      "size" : 32,
+      "input_1" : "pc",
+      "input_2" : "const8",
+      "output" : "pc8"
+    },
+    {
+      "name" : "add4",
+      "type" : "Adder",
+      "size" : 32,
+      "input_1" : "pc",
+      "input_2" : "const4",
+      "output" : "pc4"
+    },
+    {
+      "name" : "progmem",
+      "type" : "ProgramMemory",
+      "append_to_signals" : true,
+      "address" : "pc",
+      "reset" : "rst",
+      "read" : "instr"
+    },
+    {
+      "name" : "instr_subset",
+      "type" : "BusSubset",
+      "input" : "instr",
+      "outputs" : ["instr_23_0","instr_19_16","instr_3_0","instr_15_12",
+                   "instr_11_8","instr_11_7"],
+      "bounds" : [[0,24],[16,20],[0,4],[12,16],[8,12],[7,12]]
+    },
+    {
+      "name" : "controller",
+      "type" : "ControllerSingleCycleFull",
+      "append_to_signals" : true,
+      "instruction" : "instr",
+      "c" : "c",
+      "v" : "v",
+      "n" : "n",
+      "z" : "z",
+      "pcsrc" : "pcsrc",
+      "pcwr" : "pcwr",
+      "regsa" : "regsa",
+      "regdst" : "regdst",
+      "regsb" : "regsb",
+      "regwrs" : "regwrs",
+      "regwr" : "regwr",
+      "exts" : "exts",
+      "alusrcb" : "alusrcb",
+      "alus" : "alus",
+      "shop" : "shop",
+      "shctrl" : "shctrl",
+      "accen" : "accen",
+      "aluflagwr" : "aluflagwr",
+      "memty" : "memty",
+      "memwr" : "memwr",
+      "regsrc" : "regsrc",
+      "wdbs" : "wdbs"
+    },
+    {
+      "name" : "ra1_mux",
+      "type" : "Mux",
+      "size" : 4,
+      "inputs" : ["instr_3_0","instr_19_16"],
+      "select" : "regsa",
+      "output" : "ra1"
+    },
+    {
+      "name" : "ra2_mux",
+      "type" : "Mux",
+      "size" : 4,
+      "inputs" : ["instr_11_8","instr_3_0","instr_15_12"],
+      "select" : "regdst",
+      "output" : "ra2"
+    },
+    {
+      "name" : "ra3_mux",
+      "type" : "Mux",
+      "size" : 4,
+      "inputs" : ["instr_11_8","instr_15_12"],
+      "select" : "regsb",
+      "output" : "ra3"
+    },
+    {
+      "name" : "wa_mux",
+      "type" : "Mux",
+      "size" : 4,
+      "inputs" : ["instr_19_16","instr_15_12","const14"],
+      "select" : "regwrs",
+      "output" : "wa"
+    },
+    {
+      "name" : "rwd_mux",
+      "type" : "Mux",
+      "size" : 32,
+      "inputs" : ["wdb","pc4"],
+      "select" : "wdbs",
+      "output" : "rwd"
+    },
+    {
+      "name" : "extimm",
+      "type" : "Extender",
+      "imm" : "instr_23_0",
+      "exts" : "exts",
+      "imm32" : "imm32"
+    },
+    {
+      "name" : "regfile",
+      "type" : "RegisterFileFull",
+      "append_to_signals" : true,
+      "clock" : "clk",
+      "reset" : "rst",
+      "write_enable" : "regwr",
+      "write_data" : "rwd",
+      "ra1" : "ra1",
+      "ra2" : "ra2",
+      "ra3" : "ra3",
+      "rd1" : "rd1",
+      "rd2" : "rd2",
+      "rd3" : "rd3",
+      "wa1" : "wa",
+      "pc" : "pc"
+    },
+    {
+      "name" : "alu_mux",
+      "type" : "Mux",
+      "size" : 32,
+      "inputs" : ["imm32","rd2"],
+      "select" : "alusrcb",
+      "output" : "alub"
+    },
+    {
+      "name" : "add_br",
+      "type" : "Adder",
+      "size" : 32,
+      "input_1" : "pc8",
+      "input_2" : "imm32",
+      "output" : "branch"
+    },
+    {
+      "name" : "alu",
+      "type" : "AluFull",
+      "input_a" : "rd1",
+      "input_b" : "alub",
+      "input_ar" : "rd3",
+      "alus" : "alus",
+      "shift" : "instr_11_7",
+      "input_c" : "c",
+      "shift_op" : "shop",
+      "shift_ctrl" : "shctrl",
+      "acc_enable" : "accen",
+      "output_f" : "aluf",
+      "output_c" : "aluc",
+      "output_v" : "aluv",
+      "output_n" : "alun",
+      "output_z" : "aluz"
+    },
+    {
+      "name" : "aluflag_reg",
+      "type" : "AluFlagRegister",
+      "append_to_signals" : true,
+      "c_in" : "aluc",
+      "v_in" : "aluv",
+      "n_in" : "alun",
+      "z_in" : "aluz",
+      "reset" : "rst",
+      "clock" : "clk",
+      "enable" : "aluflagwr",
+      "c_out" : "c",
+      "v_out" : "v",
+      "n_out" : "n",
+      "z_out" : "z"
+    },
+    {
+      "name" : "datamem",
+      "type" : "DataMemory",
+      "append_to_signals" : true,
+      "address" : "aluf",
+      "write" : "rd2",
+      "write_enable" : "memwr",
+      "reset" : "rst",
+      "clock" : "clk",
+      "read" : "memrd",
+      "mode" : "memty"
+    },
+    {
+      "name" : "wdb_mux",
+      "type" : "Mux",
+      "size" : 32,
+      "inputs" : ["memrd","aluf"],
+      "select" : "regsrc",
+      "output" : "wdb"
+    },
+    {
+      "name" : "pcwb_mux",
+      "type" : "Mux",
+      "size" : 32,
+      "inputs" : ["branch","pc4","wdb"],
+      "select" : "pcsrc",
+      "output" : "pcwb"
+    }
+  ]
+}

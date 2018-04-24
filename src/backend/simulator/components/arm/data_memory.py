@@ -20,11 +20,19 @@ class DataMemory(Memory):
     size defined for the module.
     """
 
+    DEFAULT_MODE = None
+    DEFAULT_SIZE = 4096
+    DEFAULT_STATE = 0x81
+    DEFAULT_LATCH_TYPE = Latch_Type.RISING_EDGE
+    DEFAULT_RESET_TYPE = Logic_States.ACTIVE_HIGH
+    DEFAULT_ENABLE_TYPE = Logic_States.ACTIVE_HIGH
+
     def __init__(self, address, write, writeEnable, reset, clock, read,
-                 mode=None, default_size=4096, default_value=0x81,
-                 edge_type=Latch_Type.FALLING_EDGE,
-                 rst_type=Logic_States.ACTIVE_HIGH,
-                 memwr_type=Logic_States.ACTIVE_HIGH):
+                 mode=DEFAULT_MODE, default_size=DEFAULT_SIZE,
+                 default_value=DEFAULT_STATE,
+                 edge_type=DEFAULT_LATCH_TYPE,
+                 rst_type=DEFAULT_RESET_TYPE,
+                 memwr_type=DEFAULT_ENABLE_TYPE):
         """
         Buses
             address : bus of size at least as large as size to map to cells
@@ -46,7 +54,7 @@ class DataMemory(Memory):
             rst_type : Activation state for reset line
             memwr_type : Activation state for storing on write clock edge
         """
-        #handle optional accessMode bus
+        # handle optional accessMode bus
         if mode is None:
             mode = Constant(2, 3)
 
@@ -76,10 +84,39 @@ class DataMemory(Memory):
         Memory.run(self, time)
 
     @classmethod
-    def from_dict(cls, config):
+    def from_dict(cls, config, hooks):
         "Implements conversion from configuration to component"
-        return NotImplemented
 
-    def to_dict(self):
-        "Implements conversion from component to configuration"
-        return NotImplemented
+        if "mode" in config:
+            mode = hooks[config["mode"]]
+        else:
+            mode = DataMemory.DEFAULT_MODE
+
+        if "size" in config:
+            size = config["size"]
+        else:
+            size = DataMemory.DEFAULT_SIZE
+
+        if "value" in config:
+            value = config["value"]
+        else:
+            value = DataMemory.DEFAULT_STATE
+
+        if "edge_type" in config:
+            edge_type = Latch_Type.fromString(config["edge_type"])
+        else:
+            edge_type = DataMemory.DEFAULT_LATCH_TYPE
+
+        if "reset_type" in config:
+            reset_type = Logic_States.fromString(config["reset_type"])
+        else:
+            reset_type = DataMemory.DEFAULT_RESET_TYPE
+
+        if "enable_type" in config:
+            enable_type = Logic_States.fromString(config["enable_type"])
+        else:
+            enable_type = DataMemory.DEFAULT_ENABLE_TYPE
+
+        return DataMemory(hooks[config["address"]], hooks[config["write"]], hooks[config["write_enable"]],
+                          hooks[config["reset"]], hooks[config["clock"]], hooks[config["read"]],
+                          mode, size, value, edge_type, reset_type, enable_type)

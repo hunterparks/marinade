@@ -300,10 +300,10 @@ class Alu(Combinational):
         self._z.write(self._generate_z(self._f.read()))
 
     @classmethod
-    def from_dict(cls, config):
+    def from_dict(cls, config, hooks):
         "Implements conversion from configuration to component"
-        return NotImplemented
-
-    def to_dict(self):
-        "Implements conversion from component to configuration"
-        return NotImplemented
+        return Alu(hooks[config["input_a"]], hooks[config["input_b"]], hooks[config["input_ar"]],
+                   hooks[config["alus"]], hooks[config["shift"]], hooks[config["input_c"]],
+                   hooks[config["shift_op"]], hooks[config["shift_ctrl"]], hooks[config["acc_enable"]],
+                   hooks[config["output_f"]], hooks[config["output_c"]], hooks[config["output_v"]],
+                   hooks[config["output_n"]], hooks[config["output_z"]])

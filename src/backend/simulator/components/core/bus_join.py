@@ -43,10 +43,8 @@ class BusJoin(Entity):
         self._output.write(val)
 
     @classmethod
-    def from_dict(cls, config):
+    def from_dict(cls, config, hooks):
         "Implements conversion from configuration to component"
-        return NotImplemented
+        inputs = [hooks[i] for i in config["inputs"]]
 
-    def to_dict(self):
-        "Implements conversion from component to configuration"
-        return NotImplemented
+        return BusJoin(inputs,hooks[config["output"]])

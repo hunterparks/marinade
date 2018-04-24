@@ -8,7 +8,7 @@ sys.path.insert(0, '../../')
 
 from collections import OrderedDict
 
-from architecture import Architecture
+from simulator.architecture import Architecture
 from simulator.components.core.bus import Bus
 from simulator.components.core.clock import Clock
 from simulator.components.core.reset import Reset
@@ -37,7 +37,7 @@ class Architecture_t(unittest.TestCase):
         hooks.update({'reg': entities['reg']})
         entities.update({'adder': Adder(8, hooks['q_bus'], hooks['const_1'], hooks['d_bus'])})
 
-        arch = Architecture(0.25, hooks['clk'], hooks['rst'], hooks, entities)
+        arch = Architecture(0.25, hooks['clk'], hooks['rst'], None, hooks, entities)
         return arch, hooks, entities
 
     def test_constructor(self):
@@ -57,37 +57,37 @@ class Architecture_t(unittest.TestCase):
 
         # time step must be positive
         with self.assertRaises(ValueError):
-            arch = Architecture(0, hooks['clk'], hooks['rst'], hooks, entities)
+            arch = Architecture(0, hooks['clk'], hooks['rst'],  None, hooks, entities)
 
         # time step must not be greater than logic step
         with self.assertRaises(ValueError):
-            arch = Architecture(0.501, hooks['clk'], hooks['rst'], hooks, entities)
+            arch = Architecture(0.6, hooks['clk'], hooks['rst'],  None, hooks, entities)
 
         # provide a not Clock type clock
         with self.assertRaises(TypeError):
-            arch = Architecture(0.25, Bus(1), hooks['rst'], hooks, entities)
+            arch = Architecture(0.25, Bus(1), hooks['rst'],  None, hooks, entities)
 
         # provide a not Reset type reset
         with self.assertRaises(TypeError):
-            arch = Architecture(0.25, hooks['clk'], Bus(1), hooks, entities)
+            arch = Architecture(0.25, hooks['clk'], Bus(1),  None, hooks, entities)
 
         # provide wrong data structure for hooks
         with self.assertRaises(TypeError):
-            arch = Architecture(0.25, Clock(1), Reset(), [], OrderedDict())
+            arch = Architecture(0.25, Clock(1), Reset(),  None, [], OrderedDict())
 
         # provide wrong data structure for entities
         with self.assertRaises(TypeError):
-            arch = Architecture(0.25, Clock(1), Reset(), OrderedDict(), {})
+            arch = Architecture(0.25, Clock(1), Reset(),  None, OrderedDict(), {})
 
         # provide wrong data structure for entities
         with self.assertRaises(TypeError):
-            arch = Architecture(0.25, Clock(1), Reset(), OrderedDict(), [])
+            arch = Architecture(0.25, Clock(1), Reset(),  None, OrderedDict(), [])
 
         # construct valid empty architecture
-        arch = Architecture(0.25, Clock(1), Reset(), OrderedDict(), OrderedDict())
+        arch = Architecture(0.25, Clock(1), Reset(),  None, OrderedDict(), OrderedDict())
 
         # construct valid architecture with contents
-        arch = Architecture(0.25, hooks['clk'], hooks['rst'], hooks, entities)
+        arch = Architecture(0.25, hooks['clk'], hooks['rst'],  None, hooks, entities)
 
     def test_inspect(self):
         """
@@ -127,7 +127,7 @@ class Architecture_t(unittest.TestCase):
         self.assertTrue('error' in rmsg['architecture-hooks-inspect'])
 
         # test with empty
-        arch = Architecture(0.25, Clock(1), Reset(), OrderedDict(), OrderedDict())
+        arch = Architecture(0.25, Clock(1), Reset(), None, OrderedDict(), OrderedDict())
         arch.inspect([])
 
     def test_modify(self):
@@ -162,7 +162,7 @@ class Architecture_t(unittest.TestCase):
         self.assertEqual(rmsg['rst']['state'], 0)
 
         # test with empty
-        arch = Architecture(0.25, Clock(1), Reset(), OrderedDict(), OrderedDict())
+        arch = Architecture(0.25, Clock(1), Reset(), None, OrderedDict(), OrderedDict())
         rmsg = arch.modify({'name': 'test', 'parameters': {'state': 99}})
         self.assertTrue('error' in rmsg['test'])
 
@@ -198,7 +198,7 @@ class Architecture_t(unittest.TestCase):
         self.assertEqual(rmsg['reg']['state'], 255)
 
         # test with empty
-        arch = Architecture(0.25, Clock(1), Reset(), OrderedDict(), OrderedDict())
+        arch = Architecture(0.25, Clock(1), Reset(), None, OrderedDict(), OrderedDict())
         rmsg = arch.generate({'name': 'test', 'parameters': {'state': 99}})
         self.assertTrue('error' in rmsg['test'])
 
@@ -254,7 +254,7 @@ class Architecture_t(unittest.TestCase):
         self.assertTrue('error' in rmsg['architecture-hooks-inspect'])
 
         # test with empty
-        arch = Architecture(0.25, Clock(1), Reset(), OrderedDict(), OrderedDict())
+        arch = Architecture(0.25, Clock(1), Reset(), None, OrderedDict(), OrderedDict())
         arch.hook({'inspect': []})
 
     def test_hook_modify(self):
@@ -289,7 +289,7 @@ class Architecture_t(unittest.TestCase):
         self.assertEqual(rmsg['rst']['state'], 0)
 
         # test with empty
-        arch = Architecture(0.25, Clock(1), Reset(), OrderedDict(), OrderedDict())
+        arch = Architecture(0.25, Clock(1), Reset(), None, OrderedDict(), OrderedDict())
         rmsg = arch.hook({'modify': {'name': 'test', 'parameters': {'state': 99}}})
         self.assertTrue('error' in rmsg['test'])
 
@@ -325,7 +325,7 @@ class Architecture_t(unittest.TestCase):
         self.assertEqual(rmsg['reg']['state'], 255)
 
         # test with empty
-        arch = Architecture(0.25, Clock(1), Reset(), OrderedDict(), OrderedDict())
+        arch = Architecture(0.25, Clock(1), Reset(), None, OrderedDict(), OrderedDict())
         rmsg = arch.hook({'generate': {'name': 'test', 'parameters': {'state': 99}}})
         self.assertTrue('error' in rmsg['test'])
 
@@ -355,7 +355,7 @@ class Architecture_t(unittest.TestCase):
         self.assertEqual(rmsg['const_1']['state'], 1)
 
         # test with empty
-        arch = Architecture(0.25, Clock(1), Reset(), OrderedDict(), OrderedDict())
+        arch = Architecture(0.25, Clock(1), Reset(), None, OrderedDict(), OrderedDict())
         arch.time_step(0.5)
 
     def test_time_run(self):
@@ -386,7 +386,7 @@ class Architecture_t(unittest.TestCase):
         self.assertEqual(rmsg['const_1']['state'], 1)
 
         # test with empty
-        arch = Architecture(0.25, Clock(1), Reset(), OrderedDict(), OrderedDict())
+        arch = Architecture(0.25, Clock(1), Reset(), None, OrderedDict(), OrderedDict())
         t = arch.time_run(0, 2)
         t = arch.time_run(t, 3)
 
@@ -424,7 +424,7 @@ class Architecture_t(unittest.TestCase):
         self.assertEqual(rmsg['const_1']['state'], 1)
 
         # test with empty
-        arch = Architecture(0.25, Clock(1), Reset(), OrderedDict(), OrderedDict())
+        arch = Architecture(0.25, Clock(1), Reset(), None, OrderedDict(), OrderedDict())
         t = arch.logic_run(0, 2)
         t = arch.logic_run(t, 3)
 
@@ -452,7 +452,7 @@ class Architecture_t(unittest.TestCase):
         self.assertEqual(rmsg['reg']['state'], 0)
 
         # test with empty
-        arch = Architecture(0.25, Clock(1), Reset(), OrderedDict(), OrderedDict())
+        arch = Architecture(0.25, Clock(1), Reset(), None, OrderedDict(), OrderedDict())
         arch.reset()
 
     def test_clear(self):

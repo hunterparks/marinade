@@ -7,8 +7,12 @@ processor and should be produced by the configuration parser
 from collections import OrderedDict, Iterable
 from simulator.components.core.clock import Clock
 from simulator.components.core.reset import Reset
+from simulator.components.abstract.memory_block import MemoryBlock
 from simulator.components.abstract.hooks import Hook, InputHook, InternalHook
 from simulator.components.abstract.configuration_parser import ConfigurationParser
+
+import simulator.package_manager as package_manager
+
 
 class Architecture(ConfigurationParser):
     """
@@ -17,17 +21,20 @@ class Architecture(ConfigurationParser):
     of hooks to pass frontend messages to.
     """
 
-    def __init__(self, time_step, clock, reset, hooks, entities):
+    def __init__(self, time_step, clock, reset, memory, hooks, entities):
         "Constructor will check for valid parameters, exception thrown on invalid"
 
         # set system necessary components
         if not isinstance(clock, Clock):
-            raise TypeError('Clock component is enforced as a clock')
+            raise TypeError('Clock component is enforced as a Clock')
         elif not isinstance(reset, Reset):
-            raise TypeError('Reset component is enforced as a reset')
+            raise TypeError('Reset component is enforced as a Reset')
+        elif not isinstance(memory, MemoryBlock) and memory != None:
+            raise TypeError('Memory component is enfored as a MemoryBlock')
 
         self._main_clock = clock
         self._main_reset = reset
+        self._main_memory = memory
 
         # set dictionary references
         if not isinstance(hooks, OrderedDict):
@@ -181,11 +188,66 @@ class Architecture(ConfigurationParser):
         self.logic_run()
         self._main_reset.generate({'reset': False})
 
-    @classmethod
-    def from_dict(cls, config):
-        "Implements conversion from configuration to component"
-        return NotImplemented
+    def get_hooks(self):
+        "Gets the list of hooks in architecture"
+        return self._hook_dict
 
-    def to_dict(self):
-        "Implements conversion from component to configuration"
-        return NotImplemented
+    def get_entities(self):
+        "Get the list of entities in architecture"
+        return self._entity_dict
+
+    @classmethod
+    def from_dict(cls, config, hooks=None):
+        "Implements conversion from configuration to component"
+
+        # TODO clean this code up
+
+        # import packages from file
+        package_manager.set_default_packages(config["packages"])
+
+        # iterate through signals to produce hooks
+        if hooks == None:
+            hooks = OrderedDict()
+        for signal in config["signals"]:
+            if "package" in signal:
+                package = signal["package"]
+            else:
+                package = None
+            hooks.update({signal["name"]: package_manager.construct(
+                signal["type"], signal, package, hooks)})
+
+        # iterate through entities to produce entities
+        entities = OrderedDict()
+        for entity in config["entities"]:
+            if "package" in signal:
+                package = signal["package"]
+            else:
+                package = None
+
+            if "signal" in entity:
+                entities.update({entity["name"]: hooks[entity["signal"]]})
+            elif "symbolic" in entity:
+                pass #skip as purely front-end
+            else:
+                entities.update({entity["name"]: package_manager.construct(
+                    entity["type"], entity, package, hooks)})
+                if "append_to_signals" in entity and entity["append_to_signals"]:
+                    hooks.update({entity["name"]: entities[entity["name"]]})
+
+        # gather system wide defintions
+        system_clock = config["system_clock"]
+        if system_clock != None:
+            system_clock = hooks[system_clock]
+
+        system_reset = config["system_reset"]
+        if system_reset != None:
+            system_reset = hooks[system_reset]
+
+        system_memory = config["system_memory"]
+        if system_memory != None:
+            system_memory = hooks[system_memory]
+
+        time_step = config["time_step"]
+
+        return Architecture(time_step, system_clock, system_reset, system_memory,
+                            hooks, entities)

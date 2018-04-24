@@ -12,7 +12,9 @@ class Bus(OutputHook, iBusRead, iBusWrite):
     Bus is a read/write object used to connect architecture entities
     """
 
-    def __init__(self, size, default_value=0):
+    DEFAULT_STATE = 0
+
+    def __init__(self, size, default_value=DEFAULT_STATE):
         "Constructor will cause exception on invalid parameters"
         if not isinstance(size, int) or size <= 0:
             raise TypeError('Size must be an integer greater than zero')
@@ -46,10 +48,11 @@ class Bus(OutputHook, iBusRead, iBusWrite):
         return self._size
 
     @classmethod
-    def from_dict(cls, config):
+    def from_dict(cls, config, hooks):
         "Implements conversion from configuration to component"
-        return NotImplemented
+        if "value" in config:
+            default_state = config["value"]
+        else:
+            default_state = Bus.DEFAULT_STATE
 
-    def to_dict(self):
-        "Implements conversion from component to configuration"
-        return NotImplemented
+        return Bus(config["size"],default_state)

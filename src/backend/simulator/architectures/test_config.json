@@ -1,0 +1,41 @@
+{
+  "packages" : ["core"],
+  "system_clock" : "clk",
+  "system_reset" : "rst",
+  "system_memory" : null,
+  "time_step" : 0.00001,
+  "signals" : [
+    {"name" : "clk","type": "Clock", "frequency" : 1000, "value" : 0},
+    {"name" : "rst","type": "Reset", "value" : 0},
+    {"name" : "d_bus", "type" : "Bus", "size" : 8, "value" : 0},
+    {"name" : "q_bus", "type" : "Bus", "size" : 8, "value" : 0},
+    {"name" : "c_bus", "type" : "Constant", "size" : 8, "value" : 5}
+  ],
+  "entities" : [
+    {
+      "name" : "clk",
+      "signal" : "clk"
+    },
+    {
+      "name" : "add",
+      "type" : "Adder",
+      "size" : 8,
+      "input_1" : "c_bus",
+      "input_2" : "q_bus",
+      "output" : "d_bus"
+    },
+    {
+      "name" : "reg",
+      "type" : "Register",
+      "size" : 8,
+      "input" : "d_bus",
+      "clock" : "clk",
+      "reset" : "rst",
+      "output" : "q_bus"
+    },
+    {
+      "name" : "stage_1",
+      "symbolic" : true
+    }
+  ]
+}

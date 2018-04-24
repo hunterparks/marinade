@@ -351,5 +351,5 @@ def generate_pipeline_architecture():
     hooks.update({'memwb': entities['memwb']})
 
     # generate simulatable architecture
-    arch = Architecture(0.0001, clk, rst, hooks, entities)
+    arch = Architecture(0.0001, clk, rst, None, hooks, entities)
     return arch, hooks

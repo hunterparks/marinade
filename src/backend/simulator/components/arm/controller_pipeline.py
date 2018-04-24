@@ -7,7 +7,7 @@ class ControllerPipeline(Controller):
 
 
     def __init__(self, cond, op, funct, rd, bit4, c, v, n, z, stallf, pcsrcd,
-                 pcwrd, regsad, regdstd, regwrsd, regwrd, extsd, alusrcbd, 
+                 pcwrd, regsad, regdstd, regwrsd, regwrd, extsd, alusrcbd,
                  alusd, aluflagwrd, memwrd, regsrcd, wd3sd):
         """
         inputs:
@@ -157,9 +157,8 @@ class ControllerPipeline(Controller):
         self._regsrcd = regsrcd
         self._wd3sd = wd3sd
 
-
     @staticmethod
-    def _generate_pcsrcd(op,cond,rd,z):
+    def _generate_pcsrcd(op, cond, rd, z):
         """
         PCSRCD <= B"10" when a data processing instruction modifies pc
         PCSRCD <= B"01" for pc+4
@@ -176,7 +175,6 @@ class ControllerPipeline(Controller):
         else:
             return 0b01
 
-
     @staticmethod
     def _generate_pcwrd(stallf):
         """
@@ -184,9 +182,8 @@ class ControllerPipeline(Controller):
         """
         return 1
 
-
     @staticmethod
-    def _generate_regsad(op,bit4,funct):
+    def _generate_regsad(op, bit4, funct):
         """
         REGSAD <= '1' to select Rn (data processing instructions)
         REGSAD <= '0' to select Rn (mul instruction)
@@ -195,7 +192,6 @@ class ControllerPipeline(Controller):
             return 0b0
         else:
             return 0b1
-
 
     @staticmethod
     def _generate_regdstd(op, bit4, funct):
@@ -206,12 +202,11 @@ class ControllerPipeline(Controller):
         """
         if op == 0b01 and funct == 0b011000:
             return 0b10
-        elif (op == 0b00 and bit4 == 0b1 
+        elif (op == 0b00 and bit4 == 0b1
                 and (funct == 0b000000 or funct == 0b000001)):
             return 0b00
         else:
             return 0b01
-
 
     @staticmethod
     def _generate_regwrsd(op, bit4, funct):
@@ -222,12 +217,11 @@ class ControllerPipeline(Controller):
         """
         if op == 0b10 and ((funct & 0b010000) >> 4) == 0b1:
             return 0b10
-        elif (op == 0b00 and bit4 == 0b1 
+        elif (op == 0b00 and bit4 == 0b1
                 and (funct == 0b000000 or funct == 0b000001)):
             return 0b00
         else:
             return 0b01
-
 
     @staticmethod
     def _generate_regwrd(op, funct):
@@ -245,7 +239,6 @@ class ControllerPipeline(Controller):
         else:
             return 0b1
 
-
     @staticmethod
     def _generate_extsd(op, funct):
         """
@@ -259,7 +252,6 @@ class ControllerPipeline(Controller):
             return 0b01
         else:
             return 0b00
-
 
     @staticmethod
     def _generate_alusrcbd(op, funct, bit4):
@@ -290,7 +282,6 @@ class ControllerPipeline(Controller):
         else:
             return 0b0
 
-
     @staticmethod
     def _generate_alusd(op, bit4, funct):
         """
@@ -304,7 +295,7 @@ class ControllerPipeline(Controller):
         ALUSD <= "0111" for A*B
         ALUSD <= "1111" for 1
         """
-        if (op == 0b00 and (funct == 0b000000 or funct == 0b000001) 
+        if (op == 0b00 and (funct == 0b000000 or funct == 0b000001)
                 and bit4 == 0b1):
             return 0b0111
         elif op == 0b00 and (funct == 0b001000 or funct == 0b101000
@@ -330,7 +321,6 @@ class ControllerPipeline(Controller):
             return 0b0110
         else:
             return 0b1111
-
 
     @staticmethod
     def _generate_aluflagwrd(op, funct):
@@ -362,7 +352,6 @@ class ControllerPipeline(Controller):
         else:
             return 0b0
 
-
     @staticmethod
     def _generate_memwrd(op, funct):
         """
@@ -375,7 +364,6 @@ class ControllerPipeline(Controller):
         else:
             return 0b0
 
-
     @staticmethod
     def _generate_regsrcd(op, funct):
         """
@@ -387,7 +375,6 @@ class ControllerPipeline(Controller):
         else:
             return 0b1
 
-
     @staticmethod
     def _generate_wd3sd(op, funct):
         """
@@ -397,7 +384,6 @@ class ControllerPipeline(Controller):
             return 0b1
         else:
             return 0b0
-
 
     def run(self, time=None):
         "Timestep handler function computes control output given instruction"
@@ -426,41 +412,41 @@ class ControllerPipeline(Controller):
         self._regsrcd.write(self._generate_regsrcd(op, funct))
         self._wd3sd.write(self._generate_wd3sd(op, funct))
 
-
     def inspect(self):
         "Return message noting that this controller does not contain state"
         return {'type': 'pipeline-controller', 'state': None}
-
 
     def modify(self, data=None):
         "Return message noting that this controller does not contain state"
         return {'error': 'pipeline-controller does not contain state'}
 
-
     def clear(self):
         "Return a message noting that the controller cannot be cleared"
         return {'error': 'pipeline-controller cannot be cleared'}
-
 
     def on_rising_edge(self):
         "Not implemented for pipeline"
         pass
 
-
     def on_falling_edge(self):
         "Not implemented for pipeline"
         pass
-
 
     def on_reset(self):
         "Not implemented for pipeline"
         pass
 
     @classmethod
-    def from_dict(cls, config):
+    def from_dict(cls, config, hooks):
         "Implements conversion from configuration to component"
-        return NotImplemented
-
-    def to_dict(self):
-        "Implements conversion from component to configuration"
-        return NotImplemented
+        return ControllerPipeline(hooks[config["cond"]],hooks[config["op"]],
+                                  hooks[config["funct"]],hooks[config["rd"]],
+                                  hooks[config["bit4"]],hooks[config["c"]],
+                                  hooks[config["v"]],hooks[config["n"]],hooks[config["z"]],
+                                  hooks[config["stallf"]],hooks[config["pcsrcd"]],
+                                  hooks[config["pcwrd"]],hooks[config["regsad"]],
+                                  hooks[config["regdstd"]],hooks[config["regwrsd"]],
+                                  hooks[config["regwrd"]],hooks[config["extsd"]],
+                                  hooks[config["alusrcbd"]],hooks[config["alusd"]],
+                                  hooks[config["aluflagwrd"]],hooks[config["memwrd"]],
+                                  hooks[config["regsrcd"]],hooks[config["wd3sd"]])

@@ -16,11 +16,16 @@ class RegisterFile(Sequential):
     Component is sequential and thus requires a clock and reset to operate
     """
 
+    DEFAULT_STATE = 0
+    DEFAULT_LATCH_TYPE = Latch_Type.RISING_EDGE
+    DEFAULT_RESET_TYPE = Logic_States.ACTIVE_HIGH
+    DEFAULT_ENABLE_TYPE = Logic_States.ACTIVE_HIGH
+
     def __init__(self, num_reg, reg_size, clock, reset, write_addr, write_data,
-                 read_addrs, read_datas, enable=None, default_state=0,
-                 edge_type=Latch_Type.RISING_EDGE,
-                 reset_type=Logic_States.ACTIVE_HIGH,
-                 enable_type=Logic_States.ACTIVE_HIGH):
+                 read_addrs, read_datas, enable=None, default_state=DEFAULT_STATE,
+                 edge_type=DEFAULT_LATCH_TYPE,
+                 reset_type=DEFAULT_RESET_TYPE,
+                 enable_type=DEFAULT_ENABLE_TYPE):
         """
         Constructor will check for valid parameters, exception thrown on invalid
 
@@ -215,10 +220,38 @@ class RegisterFile(Sequential):
                 self._ens[a].write(0)
 
     @classmethod
-    def from_dict(cls, config):
+    def from_dict(cls, config, hooks):
         "Implements conversion from configuration to component"
-        return NotImplemented
+        
+        read_addresses = [hooks[a] for a in config["read_addresses"]]
+        read_datas = [hooks[d] for d in config["read_datas"]]
 
-    def to_dict(self):
-        "Implements conversion from component to configuration"
-        return NotImplemented
+        if "value" in config:
+            default_state = config["value"]
+        else:
+            default_state = RegisterFile.DEFAULT_STATE
+
+        if "edge_type" in config:
+            edge_type = Latch_Type.fromString(config["edge_type"])
+        else:
+            edge_type = RegisterFile.DEFAULT_LATCH_TYPE
+
+        if "reset_type" in config:
+            reset_type = Logic_States.fromString(config["reset_type"])
+        else:
+            reset_type = RegisterFile.DEFAULT_RESET_TYPE
+
+        if "enable" in config:
+            enable = hooks[config["enable"]]
+        else:
+            enable = None
+
+        if "enable_type" in config:
+            enable_type = Logic_States.fromString(config["enable_type"])
+        else:
+            enable_type = RegisterFile.DEFAULT_ENABLE_TYPE
+
+        return RegisterFile(config["length"], config["size"], hooks[config["clock"]],
+                            hooks[config["reset"]], hooks[config["write_address"]],
+                            hooks[config["write_data"]], read_addresses, read_datas,
+                            enable, default_state, edge_type, reset_type, enable_type)

@@ -30,6 +30,19 @@ class Latch_Type(Enum):
             retval = True
         return retval
 
+    @classmethod
+    def fromString(cls, string):
+        "Converts from string to type else None"
+        string = string.lower()
+        if string == "rising_edge":
+            return Latch_Type.RISING_EDGE
+        elif string == "falling_edge":
+            return Latch_Type.FALLING_EDGE
+        elif string == "both_edge":
+            return Latch_Type.BOTH_EDGE
+        else:
+            return None
+
 
 class Logic_States(Enum):
     """
@@ -48,6 +61,17 @@ class Logic_States(Enum):
         elif x == cls.ACTIVE_HIGH:
             retval = True
         return retval
+
+    @classmethod
+    def fromString(cls, string):
+        "Converts from string to type else None"
+        string  = string.lower()
+        if string == "active_low":
+            return Logic_States.ACTIVE_LOW
+        elif string == "active_high":
+            return Logic_States.ACTIVE_HIGH
+        else:
+            return None
 
 
 class Sequential(InternalHook, Entity):

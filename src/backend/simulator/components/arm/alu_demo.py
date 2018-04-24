@@ -181,10 +181,8 @@ class Alu(Combinational):
         self._z.write(self._generate_z(f))
 
     @classmethod
-    def from_dict(cls, config):
+    def from_dict(cls, config, hooks):
         "Implements conversion from configuration to component"
-        return NotImplemented
-
-    def to_dict(self):
-        "Implements conversion from component to configuration"
-        return NotImplemented
+        return Alu(hooks[config["input_a"]], hooks[config["input_b"]], hooks[config["alus"]],
+                   hooks[config["output_f"]], hooks[config["output_c"]], hooks[config["output_v"]],
+                   hooks[config["output_n"]], hooks[config["output_z"]])

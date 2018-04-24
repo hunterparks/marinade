@@ -4,7 +4,7 @@ Single-cycle controller as derived by Larry Skuse's VHDL work.
 
 from simulator.components.abstract.controller import Controller
 from simulator.components.abstract.ibus import iBusRead, iBusWrite
-import components.arm.arm_v4_isa as ISA
+from simulator.components.arm import isa_arm_v4 as ISA
 
 
 class ControllerSingleCycle(Controller):
@@ -248,7 +248,7 @@ class ControllerSingleCycle(Controller):
             if (cmd == ISA.DataCMDCodes.TST.value or
                 cmd == ISA.DataCMDCodes.TEQ.value or
                 cmd == ISA.DataCMDCodes.CMP.value or
-                cmd == ISA.DataCMDCodes.CMN.value):
+                    cmd == ISA.DataCMDCodes.CMN.value):
                 return 0b0
             else:
                 return 0b1
@@ -510,10 +510,16 @@ class ControllerSingleCycle(Controller):
         pass
 
     @classmethod
-    def from_dict(cls, config):
+    def from_dict(cls, config, hooks):
         "Implements conversion from configuration to component"
-        return NotImplemented
-
-    def to_dict(self):
-        "Implements conversion from component to configuration"
-        return NotImplemented
+        return ControllerSingleCycle(hooks[config["instruction"]], hooks[config["c"]],
+                                     hooks[config["v"]], hooks[config["n"]], hooks[config["z"]],
+                                     hooks[config["pcsrc"]], hooks[config["pcwr"]],
+                                     hooks[config["regsa"]], hooks[config["regdst"]],
+                                     hooks[config["regsb"]], hooks[config["regwrs"]],
+                                     hooks[config["regwr"]], hooks[config["exts"]],
+                                     hooks[config["alusrcb"]], hooks[config["alus"]],
+                                     hooks[config["shop"]], hooks[config["shctrl"]],
+                                     hooks[config["accen"]], hooks[config["aluflagwr"]],
+                                     hooks[config["memty"]], hooks[config["memwr"]],
+                                     hooks[config["regsrc"]], hooks[config["wdbs"]])

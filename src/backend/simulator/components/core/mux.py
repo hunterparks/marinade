@@ -67,10 +67,13 @@ class Mux(Combinational):
                 self._output.write(self._inputs[s].read())
 
     @classmethod
-    def from_dict(cls, config):
+    def from_dict(cls, config, hooks):
         "Implements conversion from configuration to component"
-        return NotImplemented
+        inputs = [hooks[i] for i in config["inputs"]]
 
-    def to_dict(self):
-        "Implements conversion from component to configuration"
-        return NotImplemented
+        if "output" in config:
+            output = hooks[config["output"]]
+        else:
+            output = None
+
+        return Mux(config["size"],inputs,hooks[config["select"]],output)

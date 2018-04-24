@@ -101,10 +101,27 @@ class RegisterFile(_RegisterFile):
             self._rd3.write(self._pc.read())
 
     @classmethod
-    def from_dict(cls, config):
+    def from_dict(cls, config, hooks):
         "Implements conversion from configuration to component"
-        return NotImplemented
 
-    def to_dict(self):
-        "Implements conversion from component to configuration"
-        return NotImplemented
+        if "edge_type" in config:
+            edge_type = Latch_Type.fromString(config["edge_type"])
+        else:
+            edge_type = RegisterFile.DEFAULT_LATCH_TYPE
+
+        if "reset_type" in config:
+            reset_type = Logic_States.fromString(config["reset_type"])
+        else:
+            reset_type = RegisterFile.DEFAULT_RESET_TYPE
+
+        if "enable_type" in config:
+            enable_type = Logic_States.fromString(config["enable_type"])
+        else:
+            enable_type = RegisterFile.DEFAULT_ENABLE_TYPE
+
+        return RegisterFile(hooks[config["clock"]],hooks[config["reset"]],
+                            hooks[config["write_enable"]],hooks[config["write_data"]],
+                            hooks[config["ra1"]],hooks[config["ra2"]],hooks[config["ra3"]],
+                            hooks[config["wa1"]],hooks[config["rd1"]],hooks[config["rd2"]],
+                            hooks[config["rd3"]],hooks[config["pc"]],edge_type,reset_type,
+                            enable_type)

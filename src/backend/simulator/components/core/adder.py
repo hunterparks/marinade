@@ -70,10 +70,22 @@ class Adder(Combinational):
             self._carry_out.write(cout)
 
     @classmethod
-    def from_dict(cls, config):
+    def from_dict(cls, config, hooks):
         "Implements conversion from configuration to component"
-        return NotImplemented
+        if "output" in config:
+            output = hooks[config["output"]]
+        else:
+            output = None
 
-    def to_dict(self):
-        "Implements conversion from component to configuration"
-        return NotImplemented
+        if "carry_in" in config:
+            carry_in = hooks[config["carry_in"]]
+        else:
+            carry_in = None
+
+        if "carry_out" in config:
+            carry_out = hooks[config["carry_out"]]
+        else:
+            carry_out = None
+
+        return Adder(config["size"], hooks[config["input_1"]],
+                     hooks[config["input_2"]], output, carry_in, carry_out)

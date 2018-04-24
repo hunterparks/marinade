@@ -81,6 +81,7 @@ def generate_single_cycle_architecture():
     hooks.update({'instr_31_28': Bus(4, 0)})
     hooks.update({'instr_27_26': Bus(2, 0)})
     hooks.update({'instr_25_20': Bus(6, 0)})
+
     hooks.update({'instr_4_4': Bus(1, 0)})
     hooks.update({'imm32': Bus(32, 0)})
     hooks.update({'ra1': Bus(4, 0)})
@@ -194,5 +195,5 @@ def generate_single_cycle_architecture():
     hooks.update({'controller': entities['controller']})
 
     # generate simulatable architecture
-    arch = Architecture(0.0001, clk, rst, hooks, entities)
+    arch = Architecture(0.0001, clk, rst, None, hooks, entities)
     return arch, hooks

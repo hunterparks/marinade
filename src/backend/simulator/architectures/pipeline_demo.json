@@ -1,0 +1,15 @@
+{
+  "packages" : ["arm", "core"],
+  "system_clock" : "clk",
+  "system_reset" : "rst",
+  "system_memory" : null,
+  "time_step" : 0.00001,
+
+  "signals" : [
+
+  ],
+
+  "entities" : [
+    
+  ]
+}
