@@ -58,6 +58,7 @@ timestep or a clockstep.
 import json
 import asyncio
 import websockets
+import struct
 
 import simulator.single_cycle_poc as single_cycle_poc
 import simulator.pipeline_poc as pipeline_poc
@@ -188,8 +189,13 @@ class Interface:
         """
         if not self.arch is None:
             progpath = msg['filepath']
-            # TODO handle compilation of code
-            # TODO remove test program
+            binary_file = open(progpath, mode='rb')
+            machine_code = binary_file.read()
+            program = struct.unpack('B' * len(machine_code), machine_code)
+            binary_file.close()
+            for byte in program:
+                print(hex(byte))
+            """
             program = [
                 0xE3, 0xA0, 0x80, 0x0A,
                 0xE2, 0x88, 0x90, 0x01,
@@ -204,6 +210,7 @@ class Interface:
                 0xE5, 0x9C, 0x60, 0x00,
                 0xEA, 0xFF, 0xFF, 0xFD
             ]
+            """
             retMsg = self.arch.hook({'clear': [msg['memory']]})
             return self.arch.hook({'modify': {'name': msg['memory'], 'parameters': {'start': 0, 'data': program}}})
         else:
