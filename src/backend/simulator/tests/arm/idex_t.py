@@ -50,19 +50,19 @@ class Idex_t(unittest.TestCase):
         invalidBusType = 'w'
 
         with self.assertRaises(ValueError):
-            Idex(pc4d, regwrd, alusrcbd, alusd, aluflagwrd, memwrd, regsrcd, 
-                 wd3sd, rd1d, rd2d, imm32d, ra1d, ra2d, ra3d, flush, clk, 
-                 invalidBusSize, regwre, alusrcbe, aluse, aluflagwre, memwre, 
+            Idex(pc4d, regwrd, alusrcbd, alusd, aluflagwrd, memwrd, regsrcd,
+                 wd3sd, rd1d, rd2d, imm32d, ra1d, ra2d, ra3d, flush, clk,
+                 invalidBusSize, regwre, alusrcbe, aluse, aluflagwre, memwre,
                  regsrce, wd3se, rd1e, rd2e, imm32e, ra1e, ra2e, ra3e)
 
         with self.assertRaises(TypeError):
-            Idex(pc4d, regwrd, alusrcbd, alusd, aluflagwrd, memwrd, regsrcd, 
-                 wd3sd, rd1d, rd2d, imm32d, ra1d, ra2d, ra3d, flush, clk, 
-                 pc4e, regwre, alusrcbe, aluse, aluflagwre, memwre, regsrce, 
+            Idex(pc4d, regwrd, alusrcbd, alusd, aluflagwrd, memwrd, regsrcd,
+                 wd3sd, rd1d, rd2d, imm32d, ra1d, ra2d, ra3d, flush, clk,
+                 pc4e, regwre, alusrcbe, aluse, aluflagwre, memwre, regsrce,
                  wd3se, rd1e, rd2e, imm32e, ra1e, invalidBusType, ra3e)
 
-        Idex(pc4d, regwrd, alusrcbd, alusd, aluflagwrd, memwrd, regsrcd, wd3sd, 
-             rd1d, rd2d, imm32d, ra1d, ra2d, ra3d, flush, clk, pc4e, regwre, 
+        Idex(pc4d, regwrd, alusrcbd, alusd, aluflagwrd, memwrd, regsrcd, wd3sd,
+             rd1d, rd2d, imm32d, ra1d, ra2d, ra3d, flush, clk, pc4e, regwre,
              alusrcbe, aluse, aluflagwre, memwre, regsrce, wd3se, rd1e, rd2e,
              imm32e, ra1e, ra2e, ra3e)
 
@@ -100,9 +100,9 @@ class Idex_t(unittest.TestCase):
         ra2e = Bus(4)
         ra3e = Bus(4)
 
-        idex = Idex(pc4d, regwrd, alusrcbd, alusd, aluflagwrd, memwrd, regsrcd, 
-                    wd3sd, rd1d, rd2d, imm32d, ra1d, ra2d, ra3d, flush, clk, 
-                    pc4e, regwre, alusrcbe, aluse, aluflagwre, memwre, regsrce, 
+        idex = Idex(pc4d, regwrd, alusrcbd, alusd, aluflagwrd, memwrd, regsrcd,
+                    wd3sd, rd1d, rd2d, imm32d, ra1d, ra2d, ra3d, flush, clk,
+                    pc4e, regwre, alusrcbe, aluse, aluflagwre, memwre, regsrce,
                     wd3se, rd1e, rd2e, imm32e, ra1e, ra2e, ra3e)
         pc4d.write(48)
         self.assertNotEqual(pc4d.read(), pc4e.read())
@@ -143,12 +143,12 @@ class Idex_t(unittest.TestCase):
         ra2e = Bus(4)
         ra3e = Bus(4)
 
-        idex = Idex(pc4d, regwrd, alusrcbd, alusd, aluflagwrd, memwrd, regsrcd, 
-                    wd3sd, rd1d, rd2d, imm32d, ra1d, ra2d, ra3d, flush, clk, 
-                    pc4e, regwre, alusrcbe, aluse, aluflagwre, memwre, regsrce, 
+        idex = Idex(pc4d, regwrd, alusrcbd, alusd, aluflagwrd, memwrd, regsrcd,
+                    wd3sd, rd1d, rd2d, imm32d, ra1d, ra2d, ra3d, flush, clk,
+                    pc4e, regwre, alusrcbe, aluse, aluflagwre, memwre, regsrce,
                     wd3se, rd1e, rd2e, imm32e, ra1e, ra2e, ra3e,
                     edge_type=Latch_Type.FALLING_EDGE)
-        
+
         pc4d.write(48)
         self.assertNotEqual(pc4d.read(), pc4e.read())
         idex.on_falling_edge()
@@ -188,11 +188,11 @@ class Idex_t(unittest.TestCase):
         ra2e = Bus(4)
         ra3e = Bus(4)
 
-        idex = Idex(pc4d, regwrd, alusrcbd, alusd, aluflagwrd, memwrd, regsrcd, 
-                    wd3sd, rd1d, rd2d, imm32d, ra1d, ra2d, ra3d, flush, clk, 
-                    pc4e, regwre, alusrcbe, aluse, aluflagwre, memwre, regsrce, 
+        idex = Idex(pc4d, regwrd, alusrcbd, alusd, aluflagwrd, memwrd, regsrcd,
+                    wd3sd, rd1d, rd2d, imm32d, ra1d, ra2d, ra3d, flush, clk,
+                    pc4e, regwre, alusrcbe, aluse, aluflagwre, memwre, regsrce,
                     wd3se, rd1e, rd2e, imm32e, ra1e, ra2e, ra3e)
-        
+
         alusd.write(1)
         self.assertEqual(idex.inspect()['state']['aluse'], 0)
         idex.on_rising_edge()
@@ -232,11 +232,11 @@ class Idex_t(unittest.TestCase):
         ra2e = Bus(4)
         ra3e = Bus(4)
 
-        idex = Idex(pc4d, regwrd, alusrcbd, alusd, aluflagwrd, memwrd, regsrcd, 
-                    wd3sd, rd1d, rd2d, imm32d, ra1d, ra2d, ra3d, flush, clk, 
-                    pc4e, regwre, alusrcbe, aluse, aluflagwre, memwre, regsrce, 
+        idex = Idex(pc4d, regwrd, alusrcbd, alusd, aluflagwrd, memwrd, regsrcd,
+                    wd3sd, rd1d, rd2d, imm32d, ra1d, ra2d, ra3d, flush, clk,
+                    pc4e, regwre, alusrcbe, aluse, aluflagwre, memwre, regsrce,
                     wd3se, rd1e, rd2e, imm32e, ra1e, ra2e, ra3e)
-        
+
         self.assertEqual(idex.modify()['error'], 'idex register cannot be modified')
 
 
@@ -273,11 +273,11 @@ class Idex_t(unittest.TestCase):
         ra2e = Bus(4)
         ra3e = Bus(4)
 
-        idex = Idex(pc4d, regwrd, alusrcbd, alusd, aluflagwrd, memwrd, regsrcd, 
-                    wd3sd, rd1d, rd2d, imm32d, ra1d, ra2d, ra3d, flush, clk, 
-                    pc4e, regwre, alusrcbe, aluse, aluflagwre, memwre, regsrce, 
+        idex = Idex(pc4d, regwrd, alusrcbd, alusd, aluflagwrd, memwrd, regsrcd,
+                    wd3sd, rd1d, rd2d, imm32d, ra1d, ra2d, ra3d, flush, clk,
+                    pc4e, regwre, alusrcbe, aluse, aluflagwre, memwre, regsrce,
                     wd3se, rd1e, rd2e, imm32e, ra1e, ra2e, ra3e)
-        
+
         aluflagwrd.write(1)
         rd1d.write(0xE3A0A000)
         ra3d.write(12)
@@ -298,6 +298,10 @@ class Idex_t(unittest.TestCase):
         self.assertNotEqual(aluflagwrd.read(), aluflagwre.read())
         self.assertNotEqual(rd1d.read(), rd1e.read())
         self.assertNotEqual(ra3d.read(), ra3e.read())
+
+    def test_from_dict(self):
+        "Validates dictionary constructor"
+        raise NotImplementedError
 
 
 

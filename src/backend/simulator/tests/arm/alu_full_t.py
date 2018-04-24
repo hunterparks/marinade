@@ -488,6 +488,10 @@ class Alu_t(unittest.TestCase):
         self.assertEqual(c.read(), 0)
         self.assertEqual(v.read(), 1)
 
+    def test_from_dict(self):
+        "Validates dictionary constructor"
+        raise NotImplementedError
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -187,6 +187,10 @@ class ALUFlagRegister_t(unittest.TestCase):
         self.assertEqual(nout.read(), 0)
         self.assertEqual(zout.read(), 1)
 
+    def test_from_dict(self):
+        "Validates dictionary constructor"
+        raise NotImplementedError
+
 
 if __name__ == '__main__':
     unittest.main()

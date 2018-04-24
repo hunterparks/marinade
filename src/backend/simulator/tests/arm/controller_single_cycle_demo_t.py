@@ -401,6 +401,10 @@ class ControllerSingleCycle_t(unittest.TestCase):
         mod = scc.clear()
         self.assertTrue('error' in mod)  # modify is not implemented for controller
 
+    def test_from_dict(self):
+        "Validates dictionary constructor"
+        raise NotImplementedError
+
 
 if __name__ == '__main__':
     unittest.main()

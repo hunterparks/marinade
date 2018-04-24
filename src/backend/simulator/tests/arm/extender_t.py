@@ -65,6 +65,10 @@ class Extender_t(unittest.TestCase):
         e.run()
         self.assertEqual(imm32.read(), 0b11111110000000000100111110100000)
 
+    def test_from_dict(self):
+        "Validates dictionary constructor"
+        raise NotImplementedError
+
 
 if __name__ == '__main__':
     unittest.main()

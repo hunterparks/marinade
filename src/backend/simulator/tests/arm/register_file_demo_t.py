@@ -45,6 +45,10 @@ class RegisterFile_Demo_t(unittest.TestCase):
         reg = RegisterFile(clk, rst, en, wd, ra0, ra1, wa, rd0, rd1,
                            Latch_Type.RISING_EDGE, Logic_States.ACTIVE_HIGH, Logic_States.ACTIVE_LOW)
 
+    def test_from_dict(self):
+        "Validates dictionary constructor"
+        raise NotImplementedError
+
 
 if __name__ == '__main__':
     unittest.main()

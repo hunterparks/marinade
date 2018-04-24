@@ -95,6 +95,10 @@ class ProgramMemory_t(unittest.TestCase):
         msg = mem.inspect()
         self.assertEqual(len(msg['state'].keys()),0)
 
+    def test_from_dict(self):
+        "Validates dictionary constructor"
+        raise NotImplementedError
+
 
 if __name__ == '__main__':
     unittest.main()

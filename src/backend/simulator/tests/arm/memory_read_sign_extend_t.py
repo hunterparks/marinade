@@ -89,6 +89,10 @@ class MemoryReadSignExtender_t(unittest.TestCase):
         mrse.run()
         self.assertEqual(y.read(),0x2C5E)
 
+    def test_from_dict(self):
+        "Validates dictionary constructor"
+        raise NotImplementedError
+
 
 if __name__ == '__main__':
     unittest.main()

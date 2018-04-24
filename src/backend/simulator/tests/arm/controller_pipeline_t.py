@@ -44,27 +44,27 @@ class ControllerSingleCycle_t(unittest.TestCase):
 
         # test case 1
         with self.assertRaises(ValueError):
-            ControllerPipeline(cond, funct, op, rd, bit4, c, v, n, z, stalld, 
-                               pcsrcd, pcwrd, regsad, regdstd, regwrsd, regwrd, 
-                               extsd, alusrcbd, alusd, aluflagwrd, memwrd, 
+            ControllerPipeline(cond, funct, op, rd, bit4, c, v, n, z, stalld,
+                               pcsrcd, pcwrd, regsad, regdstd, regwrsd, regwrd,
+                               extsd, alusrcbd, alusd, aluflagwrd, memwrd,
                                regsrcd, wd3sd)
         # test case 2
         with self.assertRaises(ValueError):
-            ControllerPipeline(cond, op, bit4, rd, funct, c, v, n, z, stalld, 
-                               pcsrcd, pcwrd, regsad, regdstd, regwrsd, regwrd, 
-                               extsd, alusrcbd, alusd, aluflagwrd, memwrd, 
+            ControllerPipeline(cond, op, bit4, rd, funct, c, v, n, z, stalld,
+                               pcsrcd, pcwrd, regsad, regdstd, regwrsd, regwrd,
+                               extsd, alusrcbd, alusd, aluflagwrd, memwrd,
                                regsrcd, wd3sd)
         # test case 3
         with self.assertRaises(ValueError):
-            ControllerPipeline(cond, op, funct, rd, bit4, c, v, n, z, stalld, 
-                               pcsrcd, pcwrd, regsad, regdstd, regwrd, regwrsd, 
-                               extsd, alusrcbd, aluflagwrd, alusd, memwrd, 
+            ControllerPipeline(cond, op, funct, rd, bit4, c, v, n, z, stalld,
+                               pcsrcd, pcwrd, regsad, regdstd, regwrd, regwrsd,
+                               extsd, alusrcbd, aluflagwrd, alusd, memwrd,
                                regsrcd, wd3sd)
         # test case 4
         with self.assertRaises(ValueError):
-            ControllerPipeline(cond, op, funct, rd, bit4, c, v, n, z, stalld, 
-                               pcsrcd, pcwrd, regsad, regdstd, regwrd, regwrsd, 
-                               alusrcbd, extsd, alusd, aluflagwrd, memwrd, 
+            ControllerPipeline(cond, op, funct, rd, bit4, c, v, n, z, stalld,
+                               pcsrcd, pcwrd, regsad, regdstd, regwrd, regwrsd,
+                               alusrcbd, extsd, alusd, aluflagwrd, memwrd,
                                regsrcd, wd3sd)
 
 
@@ -95,9 +95,9 @@ class ControllerSingleCycle_t(unittest.TestCase):
         regsrcd = Bus(1)
         wd3sd = Bus(1)
         # initialize single cycle controller
-        pp = ControllerPipeline(cond, op, funct, rd, bit4, c, v, n, z, stalld, 
-                                pcsrcd, pcwrd, regsad, regdstd, regwrsd, 
-                                regwrd, extsd, alusrcbd, alusd, aluflagwrd, 
+        pp = ControllerPipeline(cond, op, funct, rd, bit4, c, v, n, z, stalld,
+                                pcsrcd, pcwrd, regsad, regdstd, regwrsd,
+                                regwrd, extsd, alusrcbd, alusd, aluflagwrd,
                                 memwrd, regsrcd, wd3sd)
         # pcsrcd tests
         # test case 4 - occurs for banch instructions where condition is met
@@ -376,7 +376,7 @@ class ControllerSingleCycle_t(unittest.TestCase):
         pp = ControllerPipeline(cond, op, funct, rd, bit4, c, v, n, z, stalld, pcsrcd, pcwrd,
                                     regsad, regdstd, regwrsd, regwrd, extsd, alusrcbd, alusd,
                                     aluflagwrd, memwrd, regsrcd, wd3sd)
-        
+
         mod = pp.modify(None)
         # modify is not implemented for controller
         self.assertTrue('error' in mod)
@@ -384,6 +384,10 @@ class ControllerSingleCycle_t(unittest.TestCase):
         mod = pp.modify({'state': 0})
         # modify is not implemented for controller
         self.assertTrue('error' in mod)
+
+    def test_from_dict(self):
+        "Validates dictionary constructor"
+        raise NotImplementedError
 
 
 

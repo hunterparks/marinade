@@ -77,6 +77,10 @@ class RegisterFile_Full_t(unittest.TestCase):
         self.assertEqual(rd1.read(), 255)
         self.assertNotEqual(rd2.read(), 255)
 
+    def test_from_dict(self):
+        "Validates dictionary constructor"
+        raise NotImplementedError
+
 
 if __name__ == '__main__':
     unittest.main()

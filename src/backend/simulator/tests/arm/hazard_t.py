@@ -36,17 +36,17 @@ class HazardController_t(unittest.TestCase):
         invalidBusType = 'w'
 
         with self.assertRaises(ValueError):
-            HazardController(ra1e, ra2e, ra3e, ra3m, ra3w, regwrm, regwrw, 
-                             regsrcm, regsrcw, invalidBusSize, pcsrcd, fwda, 
+            HazardController(ra1e, ra2e, ra3e, ra3m, ra3w, regwrm, regwrw,
+                             regsrcm, regsrcw, invalidBusSize, pcsrcd, fwda,
                              fwdb, fwds, stallf, flushf, flushd)
 
         with self.assertRaises(TypeError):
-            HazardController(ra1e, ra2e, ra3e, ra3m, ra3w, invalidBusType, 
-                             regwrw, regsrcm, regsrcw, memwrm, pcsrcd, fwda, 
+            HazardController(ra1e, ra2e, ra3e, ra3m, ra3w, invalidBusType,
+                             regwrw, regsrcm, regsrcw, memwrm, pcsrcd, fwda,
                              fwdb, fwds, stallf, flushf, flushd)
 
-        HazardController(ra1e, ra2e, ra3e, ra3m, ra3w, regwrm, regwrw, regsrcm, 
-                         regsrcw, memwrm, pcsrcd, fwda, fwdb, fwds, stallf, 
+        HazardController(ra1e, ra2e, ra3e, ra3m, ra3w, regwrm, regwrw, regsrcm,
+                         regsrcw, memwrm, pcsrcd, fwda, fwdb, fwds, stallf,
                          flushf, flushd)
 
 
@@ -164,9 +164,9 @@ class HazardController_t(unittest.TestCase):
         flushf = Bus(1)
         flushd = Bus(1)
 
-        hazard_controller = HazardController(ra1e, ra2e, ra3e, ra3m, ra3w, 
-                                             regwrm, regwrw, regsrcm, regsrcw, 
-                                             memwrm, pcsrcd, fwda, fwdb, fwds, 
+        hazard_controller = HazardController(ra1e, ra2e, ra3e, ra3m, ra3w,
+                                             regwrm, regwrw, regsrcm, regsrcw,
+                                             memwrm, pcsrcd, fwda, fwdb, fwds,
                                              stallf, flushf, flushd)
         # fwda output expected to be 3
         ra1e.write(4)
@@ -210,9 +210,9 @@ class HazardController_t(unittest.TestCase):
         flushf = Bus(1)
         flushd = Bus(1)
 
-        hazard_controller = HazardController(ra1e, ra2e, ra3e, ra3m, ra3w, 
-                                             regwrm, regwrw, regsrcm, regsrcw, 
-                                             memwrm, pcsrcd, fwda, fwdb, fwds, 
+        hazard_controller = HazardController(ra1e, ra2e, ra3e, ra3m, ra3w,
+                                             regwrm, regwrw, regsrcm, regsrcw,
+                                             memwrm, pcsrcd, fwda, fwdb, fwds,
                                              stallf, flushf, flushd)
 
         self.assertEqual(hazard_controller.inspect()['type'], 'hazard-controller')
@@ -239,12 +239,16 @@ class HazardController_t(unittest.TestCase):
         flushf = Bus(1)
         flushd = Bus(1)
 
-        hazard_controller = HazardController(ra1e, ra2e, ra3e, ra3m, ra3w, 
-                                             regwrm, regwrw, regsrcm, regsrcw, 
-                                             memwrm, pcsrcd, fwda, fwdb, fwds, 
+        hazard_controller = HazardController(ra1e, ra2e, ra3e, ra3m, ra3w,
+                                             regwrm, regwrw, regsrcm, regsrcw,
+                                             memwrm, pcsrcd, fwda, fwdb, fwds,
                                              stallf, flushf, flushd)
 
         self.assertEqual(hazard_controller.modify()['error'], 'hazard controller cannot be modified')
+
+    def test_from_dict(self):
+        "Validates dictionary constructor"
+        raise NotImplementedError
 
 
 

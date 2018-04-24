@@ -35,14 +35,14 @@ class Memwb_t(unittest.TestCase):
         invalidBusType = 'w'
 
         with self.assertRaises(ValueError):
-            Memwb(pc4m, regwrm, regsrcm, wd3sm, fm, rdm, ra3m, clk, pc4w, 
+            Memwb(pc4m, regwrm, regsrcm, wd3sm, fm, rdm, ra3m, clk, pc4w,
                   regwrw, regsrcw, wd3sw, fw, rdw, invalidBusSize)
 
         with self.assertRaises(TypeError):
-            Memwb(pc4m, regwrm, regsrcm, wd3sm, fm, rdm, ra3m, clk, pc4w, 
+            Memwb(pc4m, regwrm, regsrcm, wd3sm, fm, rdm, ra3m, clk, pc4w,
                   regwrw, regsrcw, invalidBusType, fw, rdw, ra3w)
 
-        Memwb(pc4m, regwrm, regsrcm, wd3sm, fm, rdm, ra3m, clk, pc4w, regwrw, 
+        Memwb(pc4m, regwrm, regsrcm, wd3sm, fm, rdm, ra3m, clk, pc4w, regwrw,
               regsrcw, wd3sw, fw, rdw, ra3w)
 
 
@@ -64,7 +64,7 @@ class Memwb_t(unittest.TestCase):
         rdw = Bus(32)
         ra3w = Bus(4)
 
-        memwb = Memwb(pc4m, regwrm, regsrcm, wd3sm, fm, rdm, ra3m, clk, pc4w, 
+        memwb = Memwb(pc4m, regwrm, regsrcm, wd3sm, fm, rdm, ra3m, clk, pc4w,
                       regwrw, regsrcw, wd3sw, fw, rdw, ra3w)
         regsrcm.write(1)
         wd3sm.write(1)
@@ -93,8 +93,8 @@ class Memwb_t(unittest.TestCase):
         rdw = Bus(32)
         ra3w = Bus(4)
 
-        memwb = Memwb(pc4m, regwrm, regsrcm, wd3sm, fm, rdm, ra3m, clk, pc4w, 
-                      regwrw, regsrcw, wd3sw, fw, rdw, ra3w, 
+        memwb = Memwb(pc4m, regwrm, regsrcm, wd3sm, fm, rdm, ra3m, clk, pc4w,
+                      regwrw, regsrcw, wd3sw, fw, rdw, ra3w,
                       Latch_Type.FALLING_EDGE)
         pc4m.write(4)
         rdm.write(0x0A000002)
@@ -126,7 +126,7 @@ class Memwb_t(unittest.TestCase):
         rdw = Bus(32)
         ra3w = Bus(4)
 
-        memwb = Memwb(pc4m, regwrm, regsrcm, wd3sm, fm, rdm, ra3m, clk, pc4w, 
+        memwb = Memwb(pc4m, regwrm, regsrcm, wd3sm, fm, rdm, ra3m, clk, pc4w,
                       regwrw, regsrcw, wd3sw, fw, rdw, ra3w)
         wd3sm.write(1)
         fm.write(0xE2889001)
@@ -155,7 +155,7 @@ class Memwb_t(unittest.TestCase):
         rdw = Bus(32)
         ra3w = Bus(4)
 
-        memwb = Memwb(pc4m, regwrm, regsrcm, wd3sm, fm, rdm, ra3m, clk, pc4w, 
+        memwb = Memwb(pc4m, regwrm, regsrcm, wd3sm, fm, rdm, ra3m, clk, pc4w,
                       regwrw, regsrcw, wd3sw, fw, rdw, ra3w)
         self.assertEqual(memwb.modify()['error'], 'memwb register cannot be modified')
 
@@ -178,7 +178,7 @@ class Memwb_t(unittest.TestCase):
         rdw = Bus(32)
         ra3w = Bus(4)
 
-        memwb = Memwb(pc4m, regwrm, regsrcm, wd3sm, fm, rdm, ra3m, clk, pc4w, 
+        memwb = Memwb(pc4m, regwrm, regsrcm, wd3sm, fm, rdm, ra3m, clk, pc4w,
                       regwrw, regsrcw, wd3sw, fw, rdw, ra3w)
         pc4m.write(16)
         wd3sm.write(1)
@@ -192,6 +192,10 @@ class Memwb_t(unittest.TestCase):
         self.assertEqual(pc4m.read(), pc4w.read())
         self.assertEqual(wd3sm.read(), wd3sw.read())
         self.assertEqual(rdm.read(), rdw.read())
+
+    def test_from_dict(self):
+        "Validates dictionary constructor"
+        raise NotImplementedError
 
 
 

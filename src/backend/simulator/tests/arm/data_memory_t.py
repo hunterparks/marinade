@@ -172,6 +172,10 @@ class DataMemory_t(unittest.TestCase):
             mem.run()
             self.assertEqual(rd.read(), 0x81818181)
 
+    def test_from_dict(self):
+        "Validates dictionary constructor"
+        raise NotImplementedError
+
 
 if __name__ == '__main__':
     unittest.main()

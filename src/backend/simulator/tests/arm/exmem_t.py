@@ -37,15 +37,15 @@ class Exmem_t(unittest.TestCase):
         invalidBusType = 'w'
 
         with self.assertRaises(ValueError):
-            Exmem(pc4e, regwre, memwre, invalidBusSize, wd3se, rd2e, fe, ra3e, 
+            Exmem(pc4e, regwre, memwre, invalidBusSize, wd3se, rd2e, fe, ra3e,
                   clk, pc4m, regwrm, memwrm, regsrcm, wd3sm, fm, rd2m, ra3m)
 
         with self.assertRaises(TypeError):
-            Exmem(pc4e, regwre, memwre, regsrce, wd3se, rd2e, fe, ra3e, clk, 
-                  pc4m, regwrm, memwrm, regsrcm, wd3sm, invalidBusType, rd2m, 
+            Exmem(pc4e, regwre, memwre, regsrce, wd3se, rd2e, fe, ra3e, clk,
+                  pc4m, regwrm, memwrm, regsrcm, wd3sm, invalidBusType, rd2m,
                   ra3m)
 
-        Exmem(pc4e, regwre, memwre, regsrce, wd3se, rd2e, fe, ra3e, clk, 
+        Exmem(pc4e, regwre, memwre, regsrce, wd3se, rd2e, fe, ra3e, clk,
               pc4m, regwrm, memwrm, regsrcm, wd3sm, fm, rd2m, ra3m)
 
 
@@ -69,7 +69,7 @@ class Exmem_t(unittest.TestCase):
         rd2m = Bus(32)
         ra3m = Bus(4)
 
-        exmem = Exmem(pc4e, regwre, memwre, regsrce, wd3se, rd2e, fe, ra3e, clk, 
+        exmem = Exmem(pc4e, regwre, memwre, regsrce, wd3se, rd2e, fe, ra3e, clk,
                       pc4m, regwrm, memwrm, regsrcm, wd3sm, fm, rd2m, ra3m)
         memwre.write(1)
         self.assertNotEqual(memwre.read(), memwrm.read())
@@ -97,7 +97,7 @@ class Exmem_t(unittest.TestCase):
         rd2m = Bus(32)
         ra3m = Bus(4)
 
-        exmem = Exmem(pc4e, regwre, memwre, regsrce, wd3se, rd2e, fe, ra3e, clk, 
+        exmem = Exmem(pc4e, regwre, memwre, regsrce, wd3se, rd2e, fe, ra3e, clk,
                       pc4m, regwrm, memwrm, regsrcm, wd3sm, fm, rd2m, ra3m,
                       Latch_Type.FALLING_EDGE)
         memwre.write(1)
@@ -126,7 +126,7 @@ class Exmem_t(unittest.TestCase):
         rd2m = Bus(32)
         ra3m = Bus(4)
 
-        exmem = Exmem(pc4e, regwre, memwre, regsrce, wd3se, rd2e, fe, ra3e, clk, 
+        exmem = Exmem(pc4e, regwre, memwre, regsrce, wd3se, rd2e, fe, ra3e, clk,
                       pc4m, regwrm, memwrm, regsrcm, wd3sm, fm, rd2m, ra3m)
         pc4e.write(24)
         regwre.write(1)
@@ -160,7 +160,7 @@ class Exmem_t(unittest.TestCase):
         rd2m = Bus(32)
         ra3m = Bus(4)
 
-        exmem = Exmem(pc4e, regwre, memwre, regsrce, wd3se, rd2e, fe, ra3e, clk, 
+        exmem = Exmem(pc4e, regwre, memwre, regsrce, wd3se, rd2e, fe, ra3e, clk,
                       pc4m, regwrm, memwrm, regsrcm, wd3sm, fm, rd2m, ra3m)
         self.assertEqual(exmem.modify()['error'], 'exmem register cannot be modified')
 
@@ -185,7 +185,7 @@ class Exmem_t(unittest.TestCase):
         rd2m = Bus(32)
         ra3m = Bus(4)
 
-        exmem = Exmem(pc4e, regwre, memwre, regsrce, wd3se, rd2e, fe, ra3e, clk, 
+        exmem = Exmem(pc4e, regwre, memwre, regsrce, wd3se, rd2e, fe, ra3e, clk,
                       pc4m, regwrm, memwrm, regsrcm, wd3sm, fm, rd2m, ra3m)
         rd2e.write(0xE24AA020)
         ra3e.write(4)
@@ -196,6 +196,10 @@ class Exmem_t(unittest.TestCase):
         exmem.run()
         self.assertEqual(rd2e.read(), rd2m.read())
         self.assertEqual(ra3e.read(), ra3m.read())
+
+    def test_from_dict(self):
+        "Validates dictionary constructor"
+        raise NotImplementedError
 
 
 
