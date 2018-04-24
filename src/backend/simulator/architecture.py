@@ -199,11 +199,13 @@ class Architecture(ConfigurationParser):
     @classmethod
     def from_dict(cls, config, hooks=None):
         """
+        Implements conversion from configuration to component
 
+        config is dictionary following architecture standard template
+        hooks is optional list of signal objects to start architecture
+
+        Returns an architecture object with components
         """
-
-        # TODO clean this code up
-        # TODO add support for functional_groups as part of symbolic parse
 
         # import packages from file
         package_manager.set_default_packages(config["packages"])
@@ -235,7 +237,15 @@ class Architecture(ConfigurationParser):
     @classmethod
     def _parse_signals(cls, config, hooks):
         """
+        Parse a list of components (signals) from configuration object.
 
+        Configuration signals must be a list of signals where each one follows
+        the configuration template for the given type
+
+        config is reference to dictionary with entities for configuration
+        hooks is dictionary containing signals to link components (or None)
+
+        returns a an ordered dictionary of updated hooks
         """
         if hooks == None:
             hooks = OrderedDict()
@@ -251,7 +261,28 @@ class Architecture(ConfigurationParser):
     @classmethod
     def _parse_entities(cls, config, hooks):
         """
+        Parse a list of components (entities) from configuration object.
 
+        Configuration entities may take several forms
+
+            if the entity is a signal then an insert of hook is made into
+                entities list
+            else if the entity is a symbolic then the component is treated as a
+                container for another list of entities
+            else the entity is concrete and is constructed after searching the
+                package tree
+
+        Additional options
+
+            if package is supplied then the component will be searched only in
+                that list (of strings)
+            if append_to_signals is supplied then component is also added as a
+                hook
+
+        config is reference to dictionary with entities for configuration
+        hooks is dictionary containing signals to link components
+
+        returns a an ordered dictionary of entities
         """
         entities = OrderedDict()
         for entity in config["entities"]:
@@ -264,7 +295,7 @@ class Architecture(ConfigurationParser):
                 entities.update({entity["name"]: hooks[entity["signal"]]})
             elif "symbolic" in entity and entity["symbolic"]:
                 if "entities" in entity:
-                    entities.update(cls._parse_entities(entity,hooks))
+                    entities.update(cls._parse_entities(entity, hooks))
             else:
                 entities.update({entity["name"]: package_manager.construct(
                     entity["type"], entity, package, hooks)})
