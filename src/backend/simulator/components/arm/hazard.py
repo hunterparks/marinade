@@ -1,4 +1,9 @@
+"""
+Hazard controller for ARM v4 Pipeline Processor
+"""
+
 from simulator.components.abstract.ibus import iBusRead, iBusWrite
+
 
 class HazardController():
     """
@@ -6,10 +11,9 @@ class HazardController():
     pipeline architecture
     """
 
-
     def __init__(self, ra1e, ra2e, ra3e, ra3m, ra3w, regwrm,
-                regwrw, regsrcm, regsrcw, memwrm, pcsrcd, fwda, fwdb,
-                fwds, stallf, flushf, flushd):
+                 regwrw, regsrcm, regsrcw, memwrm, pcsrcd, fwda, fwdb,
+                 fwds, stallf, flushf, flushd):
         """
         inputs:
             ra1e: register number
@@ -122,7 +126,6 @@ class HazardController():
         self._flushf = flushf
         self._flushd = flushd
 
-
     @staticmethod
     def _generate_fwda(ra1e, ra3m, ra3w, regwrm, regwrw, regsrcm, regsrcw):
         """
@@ -132,7 +135,7 @@ class HazardController():
         if (ra1e.read() == ra3m.read() and regwrm.read() == 1
                 and regsrcm.read() != 0):
             return 0b010    # Register-use hazard occured
-        elif (ra1e.read() == ra3w.read() and regwrw.read() == 1 
+        elif (ra1e.read() == ra3w.read() and regwrw.read() == 1
                 and regsrcw.read() != 0):
             return 0b001    # Register-use hazard occured
         elif ra1e.read() == ra3m.read() and regsrcm.read() == 0:
@@ -142,17 +145,16 @@ class HazardController():
         else:
             return 0b000    # No hazard occured
 
-
     @staticmethod
     def _generate_fwdb(ra2e, ra3m, ra3w, regwrm, regwrw, regsrcm, regsrcw):
         """
         Forward hazard control for the b input of the alu in the case of a
         register-use hazard
         """
-        if (ra2e.read() == ra3m.read() and regwrm.read() == 1 
+        if (ra2e.read() == ra3m.read() and regwrm.read() == 1
                 and regsrcm.read() != 0):
             return 0b010    # Register-use hazard occured
-        elif (ra2e.read() == ra3w.read() and regwrw.read() == 1 
+        elif (ra2e.read() == ra3w.read() and regwrw.read() == 1
                 and regsrcw.read() != 0):
             return 0b001    # Register-use hazard occured
         elif ra2e.read() == ra3m.read() and regsrcm.read() == 0:
@@ -162,7 +164,6 @@ class HazardController():
         else:
             return 0b000    # No hazard occured
 
-
     @staticmethod
     def _generate_fwds(ra3m, ra3w, memwrm):
         "Forward hazard control in the case of a use-store hazard"
@@ -170,7 +171,6 @@ class HazardController():
             return 1        # Use-store hazard
         else:
             return 0        # No use-store hazard
-
 
     @staticmethod
     def _generate_stallf(pcsrcd):
@@ -180,7 +180,6 @@ class HazardController():
         else:
             return 0
 
-
     @staticmethod
     def _generate_flushf(pcsrcd, ra3e):
         "Sets the outputs of the ifid register to 0"
@@ -188,7 +187,6 @@ class HazardController():
             return 1        # Branch hazard occured
         else:
             return 0        # No branch hazard occured
-
 
     @staticmethod
     def _generate_flushd():
@@ -198,8 +196,7 @@ class HazardController():
         """
         return 0
 
-
-    def run(self, time = None):
+    def run(self, time=None):
         "Timestep handler function computes control output given instruction"
 
         # Read inputs
@@ -216,26 +213,31 @@ class HazardController():
         pcsrcd = self._pcsrcd
 
         # Generate control outputs
-        self._fwda.write(self._generate_fwda(ra1e, ra3m, ra3w, regwrm, regwrw, 
-                         regsrcm, regsrcw))
-        self._fwdb.write(self._generate_fwdb(ra2e, ra3m, ra3w, regwrm, regwrw, 
-                         regsrcm, regsrcw))
+        self._fwda.write(self._generate_fwda(ra1e, ra3m, ra3w, regwrm, regwrw,
+                                             regsrcm, regsrcw))
+        self._fwdb.write(self._generate_fwdb(ra2e, ra3m, ra3w, regwrm, regwrw,
+                                             regsrcm, regsrcw))
         self._fwds.write(self._generate_fwds(ra3m, ra3w, memwrm))
         self._stallf.write(self._generate_stallf(pcsrcd))
         self._flushf.write(self._generate_flushf(pcsrcd, ra3e))
         self._flushd.write(self._generate_flushd())
 
-
     def inspect(self):
         "Return message noting that this controller does not not contain state"
         return {'type': 'hazard-controller', 'state': None}
 
-
-    def modify(self, data = None):
+    def modify(self, data=None):
         "Return message noting that this controller does not contain state"
         return {'error': 'hazard controller cannot be modified'}
 
     @classmethod
     def from_dict(cls, config, hooks):
         "Implements conversion from configuration to component"
-        return NotImplemented
+        return HazardController(hooks[config["ra1e"]],hooks[config["ra2e"]],
+                                hooks[config["ra3e"]],hooks[config["ra3w"]],
+                                hooks[config["regwrm"]],hooks[config["regwrw"]],
+                                hooks[config["regsrcm"]],hooks[config["regsrcw"]],
+                                hooks[config["memwrm"]],hooks[config["pcsrcd"]],
+                                hooks[config["fwda"]],hooks[config["fwdb"]],
+                                hooks[config["fwds"]],hooks[config["stallf"]],
+                                hooks[config["flushf"]],hooks[config["flushd"]])

@@ -1,3 +1,9 @@
+"""
+Package list for Abstract components. The ArmPackage will be imported into
+the configuration parser. All keys in the package ought to reflect the name in
+the configuration file and that the value of that entry should be the class name
+for the given component. Note that components can mean buses or entities.
+"""
 
 from simulator.components.arm.alu_demo import Alu as AluDemo
 from simulator.components.arm.alu_flag_register import ALUFlagRegister

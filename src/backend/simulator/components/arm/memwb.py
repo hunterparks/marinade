@@ -1,13 +1,23 @@
+"""
+Memwb is a barrier register for the pipeline ARM processor that seperates
+the memory and write-back stages.
+"""
+
 from simulator.components.abstract.ibus import iBusRead, iBusWrite
 from simulator.components.abstract.sequential import Sequential, Latch_Type, Logic_States
+
 
 class Memwb(Sequential):
     "This specialized register sits between the memory and write back stages"
 
+    DEFAULT_LATCH_TYPE = Latch_Type.RISING_EDGE
+    DEFAULT_ENABLE_TYPE = Logic_States.ACTIVE_HIGH
+    DEFAULT_ENABLE_BUS = None
+
     def __init__(self, pc4m, regwrm, regsrcm, wd3sm, fm, rdm, ra3m, clk, pc4w,
-                 regwrw, regsrcw, wd3sw, fw, rdw, ra3w, 
-                 edge_type = Latch_Type.RISING_EDGE, enable = None, 
-                 enable_type = Logic_States.ACTIVE_HIGH):
+                 regwrw, regsrcw, wd3sw, fw, rdw, ra3w,
+                 edge_type=DEFAULT_LATCH_TYPE, enable=DEFAULT_ENABLE_BUS,
+                 enable_type=DEFAULT_ENABLE_TYPE):
         """
         inputs:
             pc4m: pc+4
@@ -128,13 +138,9 @@ class Memwb(Sequential):
         self._enable = enable
         self._enable_type = enable_type
 
-        self._memwb = MemwbState(self._pc4w, self._regwrw, self._regsrcw,
-                                self._wd3sw, self._fw, self._rdw, self._ra3w)
-
-
     def on_rising_edge(self):
         "Implements clock rising behavior: captures data if latch type matches"
-        if (self._edge_type == Latch_Type.RISING_EDGE 
+        if (self._edge_type == Latch_Type.RISING_EDGE
                 or self._edge_type == Latch_Type.BOTH_EDGE):
             self._pc4w.write(self._pc4m.read())
             self._regwrw.write(self._regwrm.read())
@@ -143,11 +149,10 @@ class Memwb(Sequential):
             self._fw.write(self._fm.read())
             self._rdw.write(self._rdm.read())
             self._ra3w.write(self._ra3m.read())
-
 
     def on_falling_edge(self):
         "Implements clock rising behavior: captures data if latch type matches"
-        if (self._edge_type == Latch_Type.FALLING_EDGE 
+        if (self._edge_type == Latch_Type.FALLING_EDGE
                 or self._edge_type == Latch_Type.BOTH_EDGE):
             self._pc4w.write(self._pc4m.read())
             self._regwrw.write(self._regwrm.read())
@@ -156,29 +161,24 @@ class Memwb(Sequential):
             self._fw.write(self._fm.read())
             self._rdw.write(self._rdm.read())
             self._ra3w.write(self._ra3m.read())
-
 
     def on_reset(self):
         "Not used for this register"
         pass
 
-
     def inspect(self):
         "Returns a dictionary message to the user"
-        return {'type': 'memwb register', 'state': self._memwb.get_state()}
+        return {'type': 'memwb register', 'state': self._get_state()}
 
-
-    def modify(self, data = None):
+    def modify(self, data=None):
         "Return a message noting that is register cannot be modified"
-        return {'error' : 'memwb register cannot be modified'}
-
+        return {'error': 'memwb register cannot be modified'}
 
     def clear(self):
         "Return a message noting that the memwb register cannot be cleared"
         return {'error': 'memwb register cannot be cleared'}
 
-
-    def run(self, time = None):
+    def run(self, time=None):
         "Timestep handler function - seqeuntially asserts output"
 
         # process enable line
@@ -188,7 +188,7 @@ class Memwb(Sequential):
                 e = self._enable_type.read() == 0
             else:
                 e = self._enable.read() == 1
-        
+
         # check for clock change
         if e:
             if self._clk.read() == 1 and self._prev_clk_state == 0:
@@ -200,27 +200,31 @@ class Memwb(Sequential):
     @classmethod
     def from_dict(cls, config, hooks):
         "Implements conversion from configuration to component"
-        return NotImplemented
 
+        if "edge_type" in config:
+            edge_type = Latch_Type.fromString(config["edge_type"])
+        else:
+            edge_type = Memwb.DEFAULT_LATCH_TYPE
 
-class MemwbState():
-    """
-    Stores the exmem registers state
-    Used in the Exmem class's inspect method
-    Note: Do not make new instances of this class outside of the Exmem class
-    """
+        if "enable" in config:
+            enable = hooks[config["enable"]]
+        else:
+            enable = Memwb.DEFAULT_ENABLE_BUS
 
-    def __init__(self, pc4w, regwrw, regsrcw, wd3sw, fw, rdw, ra3w):
-        self._pc4w = pc4w
-        self._regwrw = regwrw
-        self._regsrcw = regsrcw
-        self._wd3sw = wd3sw
-        self._fw = fw
-        self._rdw = rdw
-        self._ra3w = ra3w
+        if "enable_type" in config:
+            enable_type = Logic_States.fromString(config["enable_type"])
+        else:
+            enable_type = Memwb.DEFAULT_ENABLE_TYPE
 
+        return Memwb(hooks[config["pc4m"]],hooks[config["regwrm"]],hooks[config["regsrcm"]],
+                     hooks[config["wd3sm"]],hooks[config["fm"]],hooks[config["rdm"]],
+                     hooks[config["ra3m"]],hooks[config["clk"]],hooks[config["pc4w"]],
+                     hooks[config["regwrw"]],hooks[config["regsrcw"]],hooks[config["wd3sw"]],
+                     hooks[config["fw"]],hooks[config["rdw"]],hooks[config["ra3w"]],
+                     edge_type,enable,enable_type)
 
-    def get_state(self):
+    def _get_state(self):
+        """Create map between name and data of register state"""
         return {'pcsrcw': self._pc4w.read(),
                 'regwrew': self._regwrw.read(), 'regsrcw': self._regsrcw.read(),
                 'wd3sw': self._wd3sw.read(), 'fw': self._fw.read(),

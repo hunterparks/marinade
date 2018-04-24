@@ -227,8 +227,15 @@ class Interface:
         else:
             return {'status': False, 'error': 'architecture needs to be loaded'}
 
-
+#TODO remove this
 if __name__ == "__main__":
+    interface = Interface()
+
+    result = interface.parse_command({"load":{"filepath":"./simulator/architectures/single_cycle_full.json"}})
+    print(result)
+
+#TODO return this to __main__
+if __name__ == "__test__":
 
     client = initialize_sentry()
 

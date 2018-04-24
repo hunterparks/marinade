@@ -288,199 +288,231 @@
       "signal" : "clk"
     },
     {
-      "name" : "pc_reg",
-      "type" : "Register",
-      "append_to_signals" : true,
-      "size" : 32,
-      "clock" : "clk",
-      "reset" : "rst",
-      "input" : "pcwb",
-      "output" : "pc",
-      "enable" : "pcwr",
-      "edge_type" : "falling_edge"
+      "name" : "fetch_stage",
+      "symbolic" : true,
+      "entities" : [
+        {
+          "name" : "pc_reg",
+          "type" : "Register",
+          "append_to_signals" : true,
+          "size" : 32,
+          "clock" : "clk",
+          "reset" : "rst",
+          "input" : "pcwb",
+          "output" : "pc",
+          "enable" : "pcwr",
+          "edge_type" : "falling_edge"
+        },
+        {
+          "name" : "add8",
+          "type" : "Adder",
+          "size" : 32,
+          "input_1" : "pc",
+          "input_2" : "const8",
+          "output" : "pc8"
+        },
+        {
+          "name" : "add4",
+          "type" : "Adder",
+          "size" : 32,
+          "input_1" : "pc",
+          "input_2" : "const4",
+          "output" : "pc4"
+        },
+        {
+          "name" : "progmem",
+          "type" : "ProgramMemory",
+          "append_to_signals" : true,
+          "address" : "pc",
+          "reset" : "rst",
+          "read" : "instr"
+        }
+      ]
     },
     {
-      "name" : "add8",
-      "type" : "Adder",
-      "size" : 32,
-      "input_1" : "pc",
-      "input_2" : "const8",
-      "output" : "pc8"
+      "name" : "decode_stage",
+      "symbolic" : true,
+      "entities" : [
+        {
+          "name" : "instr_subset",
+          "type" : "BusSubset",
+          "input" : "instr",
+          "outputs" : ["instr_23_0","instr_19_16","instr_3_0","instr_15_12",
+                       "instr_11_8","instr_31_28","instr_27_26","instr_25_20",
+                       "instr_4_4"],
+          "bounds" : [[0,24],[16,20],[0,4],[12,16],[8,12],[28,32],[26,28],
+                      [20,26],[4,5]]
+        },
+        {
+          "name" : "controller",
+          "type" : "ControllerSingleCycleDemo",
+          "append_to_signals" : true,
+          "cond" : "instr_31_28",
+          "op" : "instr_27_26",
+          "funct" : "instr_25_20",
+          "rd" : "instr_15_12",
+          "bit4" : "instr_4_4",
+          "c" : "c",
+          "v" : "v",
+          "n" : "n",
+          "z" : "z",
+          "pcsrc" : "pcsrc",
+          "pcwr" : "pcwr",
+          "regsa" : "regsa",
+          "regdst" : "regdst",
+          "regwrs" : "regwrs",
+          "regwr" : "regwr",
+          "exts" : "exts",
+          "alusrcb" : "alusrcb",
+          "alus" : "alus",
+          "aluflagwr" : "aluflagwr",
+          "memwr" : "memwr",
+          "regsrc" : "regsrc",
+          "wdbs" : "wdbs"
+        },
+        {
+          "name" : "ra1_mux",
+          "type" : "Mux",
+          "size" : 4,
+          "inputs" : ["instr_3_0","instr_19_16"],
+          "select" : "regsa",
+          "output" : "ra1"
+        },
+        {
+          "name" : "ra2_mux",
+          "type" : "Mux",
+          "size" : 4,
+          "inputs" : ["instr_11_8","instr_3_0","instr_15_12"],
+          "select" : "regdst",
+          "output" : "ra2"
+        },
+        {
+          "name" : "ra3_mux",
+          "type" : "Mux",
+          "size" : 4,
+          "inputs" : ["instr_19_16","instr_15_12","const14"],
+          "select" : "regwrs",
+          "output" : "ra3"
+        },
+        {
+          "name" : "rwd_mux",
+          "type" : "Mux",
+          "size" : 32,
+          "inputs" : ["wdb","pc4"],
+          "select" : "wdbs",
+          "output" : "rwd"
+        },
+        {
+          "name" : "extimm",
+          "type" : "Extender",
+          "imm" : "instr_23_0",
+          "exts" : "exts",
+          "imm32" : "imm32"
+        },
+        {
+          "name" : "regfile",
+          "type" : "RegisterFileDemo",
+          "append_to_signals" : true,
+          "clock" : "clk",
+          "reset" : "rst",
+          "write_enable" : "regwr",
+          "write_data" : "rwd",
+          "a1" : "ra1",
+          "a2" : "ra2",
+          "a3" : "ra3",
+          "rd1" : "rd1",
+          "rd2" : "rd2"
+        }
+      ]
     },
     {
-      "name" : "add4",
-      "type" : "Adder",
-      "size" : 32,
-      "input_1" : "pc",
-      "input_2" : "const4",
-      "output" : "pc4"
+      "name" : "execute_stage",
+      "symbolic" : true,
+      "entities" : [
+        {
+          "name" : "alu_mux",
+          "type" : "Mux",
+          "size" : 32,
+          "inputs" : ["imm32","rd2"],
+          "select" : "alusrcb",
+          "output" : "alub"
+        },
+        {
+          "name" : "add_br",
+          "type" : "Adder",
+          "size" : 32,
+          "input_1" : "pc8",
+          "input_2" : "imm32",
+          "output" : "branch"
+        },
+        {
+          "name" : "alu",
+          "type" : "AluDemo",
+          "input_a" : "rd1",
+          "input_b" : "alub",
+          "alus" : "alus",
+          "output_f" : "aluf",
+          "output_c" : "aluc",
+          "output_v" : "aluv",
+          "output_n" : "alun",
+          "output_z" : "aluz"
+        },
+        {
+          "name" : "aluflag_reg",
+          "type" : "AluFlagRegister",
+          "append_to_signals" : true,
+          "c_in" : "aluc",
+          "v_in" : "aluv",
+          "n_in" : "alun",
+          "z_in" : "aluz",
+          "reset" : "rst",
+          "clock" : "clk",
+          "enable" : "aluflagwr",
+          "c_out" : "c",
+          "v_out" : "v",
+          "n_out" : "n",
+          "z_out" : "z"
+        }
+      ]
     },
     {
-      "name" : "progmem",
-      "type" : "ProgramMemory",
-      "append_to_signals" : true,
-      "address" : "pc",
-      "reset" : "rst",
-      "read" : "instr"
+      "name" : "memory_stage",
+      "symbolic" : true,
+      "entities" : [
+        {
+          "name" : "datamem",
+          "type" : "DataMemory",
+          "append_to_signals" : true,
+          "address" : "aluf",
+          "write" : "rd2",
+          "write_enable" : "memwr",
+          "reset" : "rst",
+          "clock" : "clk",
+          "read" : "memrd"
+        }
+      ]
     },
     {
-      "name" : "instr_subset",
-      "type" : "BusSubset",
-      "input" : "instr",
-      "outputs" : ["instr_23_0","instr_19_16","instr_3_0","instr_15_12","instr_11_8",
-                   "instr_31_28","instr_27_26","instr_25_20","instr_4_4"],
-      "bounds" : [[0,24],[16,20],[0,4],[12,16],[8,12],[28,32],[26,28],[20,26],[4,5]]
-    },
-    {
-      "name" : "controller",
-      "type" : "ControllerSingleCycleDemo",
-      "append_to_signals" : true,
-      "cond" : "instr_31_28",
-      "op" : "instr_27_26",
-      "funct" : "instr_25_20",
-      "rd" : "instr_15_12",
-      "bit4" : "instr_4_4",
-      "c" : "c",
-      "v" : "v",
-      "n" : "n",
-      "z" : "z",
-      "pcsrc" : "pcsrc",
-      "pcwr" : "pcwr",
-      "regsa" : "regsa",
-      "regdst" : "regdst",
-      "regwrs" : "regwrs",
-      "regwr" : "regwr",
-      "exts" : "exts",
-      "alusrcb" : "alusrcb",
-      "alus" : "alus",
-      "aluflagwr" : "aluflagwr",
-      "memwr" : "memwr",
-      "regsrc" : "regsrc",
-      "wdbs" : "wdbs"
-    },
-    {
-      "name" : "ra1_mux",
-      "type" : "Mux",
-      "size" : 4,
-      "inputs" : ["instr_3_0","instr_19_16"],
-      "select" : "regsa",
-      "output" : "ra1"
-    },
-    {
-      "name" : "ra2_mux",
-      "type" : "Mux",
-      "size" : 4,
-      "inputs" : ["instr_11_8","instr_3_0","instr_15_12"],
-      "select" : "regdst",
-      "output" : "ra2"
-    },
-    {
-      "name" : "ra3_mux",
-      "type" : "Mux",
-      "size" : 4,
-      "inputs" : ["instr_19_16","instr_15_12","const14"],
-      "select" : "regwrs",
-      "output" : "ra3"
-    },
-    {
-      "name" : "rwd_mux",
-      "type" : "Mux",
-      "size" : 32,
-      "inputs" : ["wdb","pc4"],
-      "select" : "wdbs",
-      "output" : "rwd"
-    },
-    {
-      "name" : "extimm",
-      "type" : "Extender",
-      "imm" : "instr_23_0",
-      "exts" : "exts",
-      "imm32" : "imm32"
-    },
-    {
-      "name" : "regfile",
-      "type" : "RegisterFileDemo",
-      "append_to_signals" : true,
-      "clock" : "clk",
-      "reset" : "rst",
-      "write_enable" : "regwr",
-      "write_data" : "rwd",
-      "a1" : "ra1",
-      "a2" : "ra2",
-      "a3" : "ra3",
-      "rd1" : "rd1",
-      "rd2" : "rd2"
-    },
-    {
-      "name" : "alu_mux",
-      "type" : "Mux",
-      "size" : 32,
-      "inputs" : ["imm32","rd2"],
-      "select" : "alusrcb",
-      "output" : "alub"
-    },
-    {
-      "name" : "add_br",
-      "type" : "Adder",
-      "size" : 32,
-      "input_1" : "pc8",
-      "input_2" : "imm32",
-      "output" : "branch"
-    },
-    {
-      "name" : "alu",
-      "type" : "AluDemo",
-      "input_a" : "rd1",
-      "input_b" : "alub",
-      "alus" : "alus",
-      "output_f" : "aluf",
-      "output_c" : "aluc",
-      "output_v" : "aluv",
-      "output_n" : "alun",
-      "output_z" : "aluz"
-    },
-    {
-      "name" : "aluflag_reg",
-      "type" : "AluFlagRegister",
-      "append_to_signals" : true,
-      "c_in" : "aluc",
-      "v_in" : "aluv",
-      "n_in" : "alun",
-      "z_in" : "aluz",
-      "reset" : "rst",
-      "clock" : "clk",
-      "enable" : "aluflagwr",
-      "c_out" : "c",
-      "v_out" : "v",
-      "n_out" : "n",
-      "z_out" : "z"
-    },
-    {
-      "name" : "datamem",
-      "type" : "DataMemory",
-      "append_to_signals" : true,
-      "address" : "aluf",
-      "write" : "rd2",
-      "write_enable" : "memwr",
-      "reset" : "rst",
-      "clock" : "clk",
-      "read" : "memrd"
-    },
-    {
-      "name" : "wdb_mux",
-      "type" : "Mux",
-      "size" : 32,
-      "inputs" : ["memrd","aluf"],
-      "select" : "regsrc",
-      "output" : "wdb"
-    },
-    {
-      "name" : "pcwb_mux",
-      "type" : "Mux",
-      "size" : 32,
-      "inputs" : ["branch","pc4","wdb"],
-      "select" : "pcsrc",
-      "output" : "pcwb"
+      "name" : "writeback_stage",
+      "symbolic" : true,
+      "entities" : [
+        {
+          "name" : "wdb_mux",
+          "type" : "Mux",
+          "size" : 32,
+          "inputs" : ["memrd","aluf"],
+          "select" : "regsrc",
+          "output" : "wdb"
+        },
+        {
+          "name" : "pcwb_mux",
+          "type" : "Mux",
+          "size" : 32,
+          "inputs" : ["branch","pc4","wdb"],
+          "select" : "pcsrc",
+          "output" : "pcwb"
+        }
+      ]
     }
   ]
 }

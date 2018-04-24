@@ -1,3 +1,8 @@
+"""
+Memwb is a barrier register for the pipeline ARM processor that seperates fetch
+and decode stages.
+"""
+
 from simulator.components.abstract.ibus import iBusRead, iBusWrite
 from simulator.components.abstract.sequential import Sequential, Latch_Type, Logic_States
 
@@ -8,10 +13,16 @@ class Ifid(Sequential):
     processor
     """
 
-    def __init__(self, pc4f, pc8f, instrf, stall, flush, clk, pc4d, pc8d, 
-                 instrd, default_state=0, edge_type=Latch_Type.RISING_EDGE,
-                 flush_type=Logic_States.ACTIVE_HIGH, enable=None,
-                 enable_type=Logic_States.ACTIVE_HIGH):
+    DEFAULT_STATE = 0
+    DEFAULT_LATCH_TYPE = Latch_Type.RISING_EDGE
+    DEFAULT_FLUSH_TYPE = Logic_States.ACTIVE_HIGH
+    DEFAULT_ENABLE_TYPE = Logic_States.ACTIVE_HIGH
+    DEFAULT_ENABLE_BUS = None
+
+    def __init__(self, pc4f, pc8f, instrf, stall, flush, clk, pc4d, pc8d,
+                 instrd, default_state=DEFAULT_STATE, edge_type=DEFAULT_LATCH_TYPE,
+                 flush_type=DEFAULT_FLUSH_TYPE, enable=DEFAULT_ENABLE_BUS,
+                 enable_type=DEFAULT_ENABLE_TYPE):
         """
         inputs:
             pc4f: pc+4
@@ -105,22 +116,20 @@ class Ifid(Sequential):
         self._enable = enable
         self._enable_type = enable_type
 
-        self._ifid = IfidState(self._pc4d, self._pc8d, self._instrd)
-
     def on_rising_edge(self):
         "Implements clock rising behavior: captures data if latching type matches"
-        if (self._edge_type == Latch_Type.RISING_EDGE 
+        if (self._edge_type == Latch_Type.RISING_EDGE
                 or self._edge_type == Latch_Type.BOTH_EDGE):
-            if ((self._flush_type == Logic_States.ACTIVE_LOW 
+            if ((self._flush_type == Logic_States.ACTIVE_LOW
                     and self._flush.read() == 0)
-                    or (self._flush_type == Logic_States.ACTIVE_HIGH 
+                    or (self._flush_type == Logic_States.ACTIVE_HIGH
                     and self._flush.read() == 1)):
                 self._pc4d.write(0)
                 self._pc8d.write(0)
                 self._instrd.write(0)
-            elif ((self._enable_type == Logic_States.ACTIVE_HIGH 
+            elif ((self._enable_type == Logic_States.ACTIVE_HIGH
                     and self._stall.read() == 1)
-                    or (self._enable_type == Logic_States.ACTIVE_LOW 
+                    or (self._enable_type == Logic_States.ACTIVE_LOW
                     and self._stall.read() == 0)):
                 self._pc4d.write(self._pc4d.read())
                 self._pc8d.write(self._pc8d.read())
@@ -132,18 +141,18 @@ class Ifid(Sequential):
 
     def on_falling_edge(self):
         "Implements clock falling behavior: captures data if latching type matches"
-        if (self._edge_type == Latch_Type.FALLING_EDGE 
+        if (self._edge_type == Latch_Type.FALLING_EDGE
                 or self._edge_type == Latch_Type.BOTH_EDGE):
-            if ((self._flush_type == Logic_States.ACTIVE_LOW 
+            if ((self._flush_type == Logic_States.ACTIVE_LOW
                     and self._flush.read() == 0)
-                    or (self._flush_type == Logic_States.ACTIVE_HIGH 
+                    or (self._flush_type == Logic_States.ACTIVE_HIGH
                     and self._flush.read() == 1)):
                 self._pc4d.write(0)
                 self._pc8d.write(0)
                 self._instrd.write(0)
-            elif ((self._enable_type == Logic_States.ACTIVE_HIGH 
+            elif ((self._enable_type == Logic_States.ACTIVE_HIGH
                     and self._stall.read() == 1)
-                    or (self._enable_type == Logic_States.ACTIVE_LOW 
+                    or (self._enable_type == Logic_States.ACTIVE_LOW
                     and self._stall.read() == 0)):
                 self._pc4d.write(self._pc4d.read())
                 self._pc8d.write(self._pc8d.read())
@@ -159,18 +168,15 @@ class Ifid(Sequential):
 
     def inspect(self):
         "Returns a dictionary message to the user"
-        return {'type': 'ifid register', 'state': self._ifid.get_state()}
+        return {'type': 'ifid register', 'state': self._get_state()}
 
-
-    def modify(self, data = None):
+    def modify(self, data=None):
         "Return message noting that is register cannot be modified"
         return {'error': 'ifid register cannot be modified'}
-
 
     def clear(self):
         "Return a message noting that the ifid register cannot be cleared"
         return {'error': 'ifid register cannot be cleared'}
-
 
     def run(self, time=None):
         "Timestep handler function - sequentially asserts output"
@@ -194,21 +200,38 @@ class Ifid(Sequential):
     @classmethod
     def from_dict(cls, config, hooks):
         "Implements conversion from configuration to component"
-        return NotImplemented
 
+        if "value" in config:
+            default_state = config["value"]
+        else:
+            default_state = Ifid.DEFAULT_STATE
 
-class IfidState():
-    """
-    Stores the idex registers state
-    Used in the Idex class's inspect method
-    Do not make new instances of this class outside of the Idex class
-    """
+        if "edge_type" in config:
+            edge_type = Latch_Type.fromString(config["edge_type"])
+        else:
+            edge_type = Ifid.DEFAULT_LATCH_TYPE
 
-    def __init__(self, pc4d, pc8d, instrd):
-        self._pc4d = pc4d
-        self._pc8d = pc8d
-        self._instrd = instrd
+        if "flush_type" in config:
+            flush_type = Logic_States.fromString(config["flush_type"])
+        else:
+            flush_type = Ifid.DEFAULT_FLUSH_TYPE
 
-    def get_state(self):
+        if "enable" in config:
+            enable = hooks[config["enable"]]
+        else:
+            enable = Ifid.DEFAULT_ENABLE_BUS
+
+        if "enable_type" in config:
+            enable_type = Logic_States.fromString(config["enable_type"])
+        else:
+            enable_type = Ifid.DEFAULT_ENABLE_TYPE
+
+        return Ifid(hooks[config["pc4f"]], hooks[config["pc8f"]], hooks[config["instrf"]],
+                    hooks[config["stall"]], hooks[config["clk"]], hooks[config["pc4d"]],
+                    hooks[config["pc8d"]],hooks[config["instrd"]], default_state,
+                    edge_type, flush_type, enable, enable_type)
+
+    def _get_state(self):
+        """Create map between name and data of register state"""
         return {'pc4d': self._pc4d.read(), 'pc8d': self._pc8d.read(),
                 'instrd': self._instrd.read()}

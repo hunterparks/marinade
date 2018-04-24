@@ -70,4 +70,6 @@ class MemoryReadSignExtender(Combinational):
     @classmethod
     def from_dict(cls, config, hooks):
         "Implements conversion from configuration to component"
-        return NotImplemented
+        return MemoryReadSignExtender(hooks[config["input"]],
+                                      hooks[config["ctrl"]],
+                                      hooks[config["output"]])

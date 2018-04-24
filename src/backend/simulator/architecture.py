@@ -198,41 +198,21 @@ class Architecture(ConfigurationParser):
 
     @classmethod
     def from_dict(cls, config, hooks=None):
-        "Implements conversion from configuration to component"
+        """
+
+        """
 
         # TODO clean this code up
+        # TODO add support for functional_groups as part of symbolic parse
 
         # import packages from file
         package_manager.set_default_packages(config["packages"])
 
         # iterate through signals to produce hooks
-        if hooks == None:
-            hooks = OrderedDict()
-        for signal in config["signals"]:
-            if "package" in signal:
-                package = signal["package"]
-            else:
-                package = None
-            hooks.update({signal["name"]: package_manager.construct(
-                signal["type"], signal, package, hooks)})
+        hooks = cls._parse_signals(config, hooks)
 
         # iterate through entities to produce entities
-        entities = OrderedDict()
-        for entity in config["entities"]:
-            if "package" in signal:
-                package = signal["package"]
-            else:
-                package = None
-
-            if "signal" in entity:
-                entities.update({entity["name"]: hooks[entity["signal"]]})
-            elif "symbolic" in entity:
-                pass #skip as purely front-end
-            else:
-                entities.update({entity["name"]: package_manager.construct(
-                    entity["type"], entity, package, hooks)})
-                if "append_to_signals" in entity and entity["append_to_signals"]:
-                    hooks.update({entity["name"]: entities[entity["name"]]})
+        entities = cls._parse_entities(config, hooks)
 
         # gather system wide defintions
         system_clock = config["system_clock"]
@@ -251,3 +231,43 @@ class Architecture(ConfigurationParser):
 
         return Architecture(time_step, system_clock, system_reset, system_memory,
                             hooks, entities)
+
+    @classmethod
+    def _parse_signals(cls, config, hooks):
+        """
+
+        """
+        if hooks == None:
+            hooks = OrderedDict()
+        for signal in config["signals"]:
+            if "package" in signal:
+                package = signal["package"]
+            else:
+                package = None
+            hooks.update({signal["name"]: package_manager.construct(
+                signal["type"], signal, package, hooks)})
+        return hooks
+
+    @classmethod
+    def _parse_entities(cls, config, hooks):
+        """
+
+        """
+        entities = OrderedDict()
+        for entity in config["entities"]:
+            if "package" in entity:
+                package = entity["package"]
+            else:
+                package = None
+
+            if "signal" in entity:
+                entities.update({entity["name"]: hooks[entity["signal"]]})
+            elif "symbolic" in entity and entity["symbolic"]:
+                if "entities" in entity:
+                    entities.update(cls._parse_entities(entity,hooks))
+            else:
+                entities.update({entity["name"]: package_manager.construct(
+                    entity["type"], entity, package, hooks)})
+                if "append_to_signals" in entity and entity["append_to_signals"]:
+                    hooks.update({entity["name"]: entities[entity["name"]]})
+        return entities
