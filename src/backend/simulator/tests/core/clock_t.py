@@ -2,9 +2,10 @@
 Tests core component Clock
 """
 
+from collections import OrderedDict
 import unittest
 import sys
-sys.path.insert(0, '../../')
+sys.path.insert(0, '../../../')
 from simulator.components.core.clock import Clock
 import simulator.limits as limits
 
@@ -179,6 +180,10 @@ class Clock_t(unittest.TestCase):
 
         c.run(2)
         self.assertTrue(c.read() == 0)
+
+    def test_from_dict(self):
+        "Validates dictionary constructor"
+        raise NotImplementedError
 
 
 if __name__ == '__main__':

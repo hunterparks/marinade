@@ -2,9 +2,10 @@
 Tests core component LogicInput
 """
 
+from collections import OrderedDict
 import unittest
 import sys
-sys.path.insert(0, '../../')
+sys.path.insert(0, '../../../')
 from simulator.components.core.logic_input import LogicInput
 
 
@@ -93,6 +94,10 @@ class LogicInput_t(unittest.TestCase):
         "Valid bus size presented"
         l = LogicInput(16, 56)
         self.assertTrue(l.size() == 16)
+
+    def test_from_dict(self):
+        "Validates dictionary constructor"
+        raise NotImplementedError
 
 
 if __name__ == '__main__':

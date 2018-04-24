@@ -1,6 +1,19 @@
 """
 Bus instances used as conduits of numerical data of fixed size. Expectation
 is that a bus will be written to by one component but can be read by many.
+
+Configuration file template should follow form
+{
+    "name" : "",
+    "type" : "Bus",
+    "size" : 1,
+    "value" : 1
+}
+
+name is the entity name, used by entity map (Used externally)
+type is the component class (Used externally)
+size is the bit-width for the component
+value is the default value for the component
 """
 
 from simulator.components.abstract.hooks import OutputHook

@@ -2,9 +2,10 @@
 Tests core component Mux
 """
 
+from collections import OrderedDict
 import unittest
 import sys
-sys.path.insert(0, '../../')
+sys.path.insert(0, '../../../')
 from simulator.components.core.mux import Mux
 from simulator.components.core.constant import Constant
 from simulator.components.core.bus import Bus
@@ -117,6 +118,10 @@ class Mux_t(unittest.TestCase):
         c8 = Constant(8, 255)
         s = Bus(4, 0)
         m = Mux(8, [c0, c1, c2, c3, c4, c5, c6, c7, c8], s, y)
+
+    def test_from_dict(self):
+        "Validates dictionary constructor"
+        raise NotImplementedError
 
 
 if __name__ == '__main__':

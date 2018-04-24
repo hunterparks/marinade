@@ -2,6 +2,48 @@
 Architecture object aggregates all simulation components into a set of of
 lists as constructed. This object is to be used by the simulator to run the
 processor and should be produced by the configuration parser
+
+Configuration file should follow form
+
+{
+    "packages" : [],
+    "system_clock" : null,
+    "system_reset" : null,
+    "system_memory" : null,
+    "time_step" : 1,
+
+    "signals" : [],
+    "entities" : []
+}
+
+packages is the list of default packages to search in for a given component type
+    additionally, each component can specify a package key that allows for
+    redirection to desired component
+
+system_clock is a reference to the main clock of the architecture
+    the frequency of this clock is used to determine the edge and logic step
+    size. Also used to verify that the time_step value is valid
+
+system_reset is a reference to the main reset for the architecture
+    this signal is enforced by special handlers to quickly clear the architecture
+
+system_memory is a reference to the memory component that is to be programmed
+    this signal may be null
+
+time_step is the timing simulation step size, must meet Nyquist criteria for
+    the system_clock
+
+signals is a list of bus components
+    the component is constructed accoriding to the definition in the package
+    manager
+
+entities is a list of runable components
+    if a component has key signal then it is interpretted as a signal that needs
+        to be appended to the entity list
+    if a component has key symbolic then it is interpretted as being a
+        non-runnable container with a set of sub entities
+    else a component is regarded as concrete and is constructed according to
+        the definition in the package manager
 """
 
 from collections import OrderedDict, Iterable
@@ -254,6 +296,7 @@ class Architecture(ConfigurationParser):
                 package = signal["package"]
             else:
                 package = None
+
             hooks.update({signal["name"]: package_manager.construct(
                 signal["type"], signal, package, hooks)})
         return hooks

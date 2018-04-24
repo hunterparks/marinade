@@ -2,9 +2,10 @@
 Test core component RegisterFile
 """
 
+from collections import OrderedDict
 import unittest
 import sys
-sys.path.insert(0, '../../')
+sys.path.insert(0, '../../../')
 from simulator.components.core.register_file import RegisterFile, Latch_Type, Logic_States
 from simulator.components.core.constant import Constant
 from simulator.components.core.bus import Bus
@@ -388,6 +389,10 @@ class RegisterFile_t(unittest.TestCase):
         msg = rgf.inspect()
         self.assertEqual(msg['state'][0], 0)
         self.assertEqual(msg['state'][1], 0)
+
+    def test_from_dict(self):
+        "Validates dictionary constructor"
+        raise NotImplementedError
 
 
 if __name__ == '__main__':

@@ -6,5 +6,5 @@ for the given component. Note that components can mean buses or entities.
 """
 
 AbstractPackage = {
-    # Purposefully empty
+    # Purposefully Empty
 }

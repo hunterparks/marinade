@@ -2,9 +2,10 @@
 Test core component Memory
 """
 
+from collections import OrderedDict
 import unittest
 import sys
-sys.path.insert(0, '../../')
+sys.path.insert(0, '../../../')
 from simulator.components.core.memory import Memory, Latch_Type, Logic_States
 from simulator.components.core.constant import Constant
 from simulator.components.core.bus import Bus
@@ -542,6 +543,10 @@ class Memory_t(unittest.TestCase):
 
         msg = mem.inspect()
         self.assertEqual(len(msg['state'].keys()), 0)
+
+    def test_from_dict(self):
+        "Validates dictionary constructor"
+        raise NotImplementedError
 
 
 if __name__ == '__main__':

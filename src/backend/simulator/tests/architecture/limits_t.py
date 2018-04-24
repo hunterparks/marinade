@@ -7,9 +7,6 @@ import sys
 sys.path.insert(0, '../../')
 import simulator.limits as limits
 
-# TODO add more value checks
-
-
 class Limits_t(unittest.TestCase):
     """
     Tests limit module for existence of all necessary constants

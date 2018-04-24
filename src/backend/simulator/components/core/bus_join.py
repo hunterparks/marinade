@@ -1,5 +1,20 @@
 """
 BusJoin component used to concatenate multiple buses into a single bus
+
+Configuration file template should follow form
+{
+    "name" : "",
+    "type" : "BusJoin",
+    "inputs" : [],
+    "output" : ""
+}
+
+name is the entity name, used by entity map (Used externally)
+type is the component class (Used externally)
+inputs is an array of strings referencing input bus objects
+    the order of the references defines the ordering of the concatenation from
+    least significant bit to most
+output is bus reference with a bit-width of sum of all inputs bit-widths
 """
 
 from simulator.components.abstract.entity import Entity

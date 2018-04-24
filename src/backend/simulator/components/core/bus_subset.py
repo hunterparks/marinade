@@ -1,5 +1,21 @@
 """
 BusSubset component used to break apart a single bus into composite signals
+
+Configuration file template should follow form
+{
+    "name" : "",
+    "type" : "Adder",
+    "input" : "",
+    "outputs" : [],
+    "bounds" : []
+}
+
+name is the entity name, used by entity map (Used externally)
+type is the component class (Used externally)
+input is the bus reference to split
+outputs is an array of string bus references to break input into
+bounds is an array of two element arrays defining start and end of an output
+    for should follow [min,max+1]
 """
 
 from simulator.components.abstract.entity import Entity

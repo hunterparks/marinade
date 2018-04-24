@@ -2,9 +2,10 @@
 Tests core component Adder
 """
 
+from collections import OrderedDict
 import unittest
 import sys
-sys.path.insert(0, '../../')
+sys.path.insert(0, '../../../')
 from simulator.components.core.adder import Adder
 from simulator.components.core.constant import Constant
 from simulator.components.core.bus import Bus
@@ -71,6 +72,33 @@ class Adder_t(unittest.TestCase):
         a.run(50)
         self.assertTrue(y0.read() == 0)
         self.assertTrue(cout.read() == 1)
+
+    def test_from_dict(self):
+        "Validates dictionary constructor"
+        hooks = OrderedDict({
+            "i1" : Constant(8,15),
+            "i2" : Constant(8,12),
+            "o1" : Bus(8),
+            "cin" : Constant(1,1),
+            "cout" : Bus(1)
+        })
+
+        config = {
+            "name" : "adder",
+            "type" : "Adder",
+            "size" : 8,
+            "input_1" : "i1",
+            "input_2" : "i2"
+        }
+
+        # Without optional
+        adder1 = Adder.from_dict(config,hooks)
+
+        # With all options
+        config.update({
+            "output" : "o1", "carry_in" : "cin", "carry_out" : "cout"
+        })
+        adder2 = Adder.from_dict(config,hooks)
 
 
 if __name__ == '__main__':

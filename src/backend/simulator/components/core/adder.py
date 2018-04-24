@@ -1,6 +1,27 @@
 """
 Adder component is a standalone core component for general architecture
 development.
+
+Configuration file template should follow form
+{
+    "name" : "",
+    "type" : "Adder",
+    "size" : 1,
+    "input_1" : "",
+    "input_2" : "",
+    "output" : "",
+    "carry_in" : "",
+    "carry_out" : ""
+}
+
+name is the entity name, used by entity map (Used externally)
+type is the component class (Used externally)
+size is the bit-width for this component
+input_1 is string reference for input bus of bit-width
+input_2 is string reference for input bus of bit-width
+output is an optional string reference for output bus of bit-width
+carry_in is an optional string reference for input bus of 1 bit
+carry_out is an optional string reference for output bus of 1 bit
 """
 
 from simulator.components.abstract.ibus import iBusRead, iBusWrite

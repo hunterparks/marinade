@@ -2,9 +2,10 @@
 Tests core component Constant
 """
 
+from collections import OrderedDict
 import unittest
 import sys
-sys.path.insert(0, '../../')
+sys.path.insert(0, '../../../')
 from simulator.components.core.constant import Constant
 
 
@@ -54,6 +55,10 @@ class Constant_t(unittest.TestCase):
         "Valid bus size presented"
         l = Constant(16, 56)
         self.assertTrue(l.size() == 16)
+
+    def test_from_dict(self):
+        "Validates dictionary constructor"
+        raise NotImplementedError
 
 
 if __name__ == '__main__':
