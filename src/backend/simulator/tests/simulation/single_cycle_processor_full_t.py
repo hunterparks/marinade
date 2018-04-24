@@ -9,7 +9,7 @@ import sys
 import json
 sys.path.insert(0, '../../../')
 
-import simulator.tests.simulation.single_cycle_full as single_cycle_full
+from simulator.tests.simulation import single_cycle_full
 from simulator.architecture import Architecture
 from simulator.tests.simulation.test_framework import TestFramework
 

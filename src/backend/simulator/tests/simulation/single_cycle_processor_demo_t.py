@@ -11,7 +11,7 @@ sys.path.insert(0, '../../../')
 
 from simulator.architecture import Architecture
 from simulator.tests.simulation.test_framework import TestFramework
-import simulator.tests.simulation.single_cycle_poc as single_cycle_poc
+from simulator.tests.simulation import single_cycle_poc
 
 SINGLE_CYCLE_DEMO_CONFIG_FILEPATH = os.path.join(os.path.dirname(
     __file__), "../../architectures/single_cycle_demo.json")
