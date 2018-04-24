@@ -9,11 +9,13 @@ import sys
 import json
 sys.path.insert(0, '../../../')
 
-import simulator.single_cycle_poc as single_cycle_poc
 from simulator.architecture import Architecture
 from simulator.tests.simulation.test_framework import TestFramework
+import simulator.tests.simulation.single_cycle_poc as single_cycle_poc
 
-SINGLE_CYCLE_DEMO_CONFIG_FILEPATH = os.path.join(os.path.dirname(__file__),"../../architectures/single_cycle_demo.json")
+SINGLE_CYCLE_DEMO_CONFIG_FILEPATH = os.path.join(os.path.dirname(
+    __file__), "../../architectures/single_cycle_demo.json")
+
 
 class SingleCycleProcessor_t(TestFramework, unittest.TestCase):
     """
@@ -21,8 +23,6 @@ class SingleCycleProcessor_t(TestFramework, unittest.TestCase):
     clock cycles. Program output will be compared against a template. Only under
     a complete match will simulation be considered valid.
     """
-
-
 
     demo_program = [
         0xE3, 0xA0, 0x80, 0x0A,
@@ -149,7 +149,7 @@ class SingleCycleProcessor_t(TestFramework, unittest.TestCase):
             f.close()
             return arch, hooks
 
-        def _prog(arch,prog):
+        def _prog(arch, prog):
             program_msg = {
                 'modify': {
                     'name': 'progmem',
@@ -161,10 +161,11 @@ class SingleCycleProcessor_t(TestFramework, unittest.TestCase):
             }
             res = arch.hook(program_msg)
 
-        self._set_architecture(_gen,_prog)
+        self._set_architecture(_gen, _prog)
         self.assertTrue(self._generic_test_procedure('single_cycle_config_demo',
-                        self.demo_program, len(self.demo_program) / 4 + 2,
-                        'demo_prog', self.demo_inspect))
+                                                     self.demo_program, len(
+                                                         self.demo_program) / 4 + 2,
+                                                     'demo_prog', self.demo_inspect))
 
     def test_config_file_full(self):
         """
@@ -179,7 +180,7 @@ class SingleCycleProcessor_t(TestFramework, unittest.TestCase):
             f.close()
             return arch, hooks
 
-        def _prog(arch,prog):
+        def _prog(arch, prog):
             program_msg = {
                 'modify': {
                     'name': 'progmem',
@@ -191,10 +192,12 @@ class SingleCycleProcessor_t(TestFramework, unittest.TestCase):
             }
             res = arch.hook(program_msg)
 
-        self._set_architecture(_gen,_prog)
+        self._set_architecture(_gen, _prog)
         self.assertTrue(self._generic_test_procedure('single_cycle_config_demo',
-                        self.required_program, len(self.required_program) / 4 + 2,
-                        'full_prog', self.required_inspect))
+                                                     self.required_program, len(
+                                                         self.required_program) / 4 + 2,
+                                                     'full_prog', self.required_inspect))
+
 
 if __name__ == '__main__':
     unittest.main()
