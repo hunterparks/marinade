@@ -61,7 +61,7 @@ import websockets
 import struct
 import traceback
 
-from sentry.sentry import initialize_sentry
+#from sentry.sentry import initialize_sentry
 
 from simulator.architecture import Architecture
 
@@ -198,27 +198,12 @@ class Interface:
             progpath = msg['filepath']
             binary_file = open(progpath, mode='rb')
             machine_code = binary_file.read()
-            program = struct.unpack('B' * len(machine_code), machine_code)
+            program = list(struct.unpack('B' * len(machine_code), machine_code))
             binary_file.close()
+            print(type(program))
             for byte in program:
                 print(hex(byte))
-            """
-            program = [
-                0xE3, 0xA0, 0x80, 0x0A,
-                0xE2, 0x88, 0x90, 0x01,
-                0xE0, 0x09, 0x09, 0x98,
-                0xE3, 0xA0, 0xA0, 0x00,
-                0xE2, 0x4A, 0xA0, 0x20,
-                0xE0, 0x19, 0xA0, 0x0A,
-                0x0A, 0x00, 0x00, 0x02,
-                0xE3, 0xA0, 0xB0, 0x01,
-                0xE3, 0xA0, 0xC0, 0x04,
-                0xE5, 0x8C, 0xB0, 0x00,
-                0xE5, 0x9C, 0x60, 0x00,
-                0xEA, 0xFF, 0xFF, 0xFD
-            ]
-            """
-            retMsg = self.arch.hook({'clear': [msg['memory']]})
+            self.arch.hook({'clear': [msg['memory']]})
             return self.arch.hook({'modify': {'name': msg['memory'], 'parameters': {'start': 0, 'data': program}}})
         else:
             return {'status': False, 'error': 'architecture needs to be loaded'}
@@ -237,7 +222,7 @@ class Interface:
 
 if __name__ == "__main__":
 
-    client = initialize_sentry()
+    #client = initialize_sentry()
 
     try:
 
@@ -258,4 +243,5 @@ if __name__ == "__main__":
         asyncio.get_event_loop().run_forever()
 
     except Exception:
-        client.captureException()
+        #client.captureException()
+        pass
