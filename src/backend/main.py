@@ -60,6 +60,8 @@ import asyncio
 import websockets
 import struct
 import traceback
+import subprocess
+from sys import platform
 
 #from sentry.sentry import initialize_sentry
 
@@ -107,6 +109,8 @@ class Interface:
             retMsg.update(self.unload())
         if 'program' in msg:
             retMsg.update(self.program(msg['program']))
+        if 'assemble' in msg:
+            retMsg.update(self.assemble(msg['assemble']))
 
         # Component Commands
         if 'inspect' in msg:
@@ -119,6 +123,28 @@ class Interface:
             retMsg.update(self.handle_component_msg(msg))
 
         return retMsg
+
+    def assemble(self, msg):
+        """
+        Calls either a bash script or a batch script that converts assembly
+        code into machine code.
+        Return: Dictionary containing results of the assembler. 
+        """
+        try:
+            f = open(msg['filepath'])
+            if platform == "linux" or platform == "linux2" or platform == "darwin":
+                subprocess.Popen("./assembler/nix_assembler.sh " + msg['filepath'])
+            elif platform == "win32":
+                subprocess.Popen("./assembler/windows_assembler.bat " + msg['filepath'])
+            f.close()
+        except KeyError as e:
+            traceback.print_exc()
+            return {'status': False, 'error': 'invalid key : {}'.format(str(e))}
+        except Exception as e:
+            traceback.print_exc()
+            return {'status': False, 'error': 'exception : {}'.format(str(e))}
+        return {'status': True}
+
 
     def step(self, msg):
         """
