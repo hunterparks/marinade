@@ -3,9 +3,9 @@ Hazard controller for ARM v4 Pipeline Processor
 """
 
 from simulator.components.abstract.ibus import iBusRead, iBusWrite
+from simulator.components.abstract.controller import Controller
 
-
-class HazardController():
+class HazardController(Controller):
     """
     Hazard Controller - Handles hazards that occur in the top level
     pipeline architecture
@@ -230,11 +230,28 @@ class HazardController():
         "Return message noting that this controller does not contain state"
         return {'error': 'hazard controller cannot be modified'}
 
+    def clear(self):
+        "Return a message noting that the controller cannot be cleared"
+        return {'error': 'pipeline-controller cannot be cleared'}
+
+    def on_rising_edge(self):
+        "Not implemented for pipeline"
+        pass
+
+    def on_falling_edge(self):
+        "Not implemented for pipeline"
+        pass
+
+    def on_reset(self):
+        "Not implemented for pipeline"
+        pass
+
     @classmethod
     def from_dict(cls, config, hooks):
         "Implements conversion from configuration to component"
         return HazardController(hooks[config["ra1e"]],hooks[config["ra2e"]],
-                                hooks[config["ra3e"]],hooks[config["ra3w"]],
+                                hooks[config["ra3e"]],hooks[config["ra3m"]],
+                                hooks[config["ra3w"]],
                                 hooks[config["regwrm"]],hooks[config["regwrw"]],
                                 hooks[config["regsrcm"]],hooks[config["regsrcw"]],
                                 hooks[config["memwrm"]],hooks[config["pcsrcd"]],

@@ -235,8 +235,10 @@ class Exmem(Sequential):
 
         return Exmem(hooks[config["pc4e"]],hooks[config["regwre"]],hooks[config["memwre"]],
                      hooks[config["regsrce"]],hooks[config["wd3se"]],hooks[config["rd2e"]],
-                     hooks[config["fe"]],hooks[config["rd2m"]],hooks[config["ra3m"]],
-                      edge_type,enable,enable_type)
+                     hooks[config["fe"]],hooks[config["ra3e"]],hooks[config["clk"]],hooks[config["pc4m"]],
+                     hooks[config["regwrm"]],hooks[config["memwrm"]],hooks[config["regsrcm"]],
+                     hooks[config["wd3sm"]],hooks[config["fm"]], hooks[config["rd2m"]],
+                     hooks[config["ra3m"]],edge_type,enable,enable_type)
 
     def _get_state(self):
         return {'pc4m': self._pc4m.read(),

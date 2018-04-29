@@ -13,6 +13,8 @@ import tablib
 
 from simulator.tests.simulation import pipeline_poc
 
+#TODO rewrite test to use TestFramework
+
 
 class PipelineProcessor_t(unittest.TestCase):
     """

@@ -227,7 +227,7 @@ class Ifid(Sequential):
             enable_type = Ifid.DEFAULT_ENABLE_TYPE
 
         return Ifid(hooks[config["pc4f"]], hooks[config["pc8f"]], hooks[config["instrf"]],
-                    hooks[config["stall"]], hooks[config["clk"]], hooks[config["pc4d"]],
+                    hooks[config["stall"]], hooks[config["flush"]], hooks[config["clk"]], hooks[config["pc4d"]],
                     hooks[config["pc8d"]],hooks[config["instrd"]], default_state,
                     edge_type, flush_type, enable, enable_type)
 

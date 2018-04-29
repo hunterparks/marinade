@@ -64,9 +64,6 @@ from sentry.sentry import initialize_sentry
 
 from simulator.architecture import Architecture
 
-import simulator.single_cycle_poc as single_cycle_poc
-import simulator.pipeline_poc as pipeline_poc
-
 
 HOST_NAME = 'localhost'
 HOST_PORT = 4242

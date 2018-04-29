@@ -357,30 +357,30 @@ class Idex(Sequential):
         if "edge_type" in config:
             edge_type = Latch_Type.fromString(config["edge_type"])
         else:
-            edge_type = Memwb.DEFAULT_LATCH_TYPE
+            edge_type = Idex.DEFAULT_LATCH_TYPE
 
         if "flush_type" in config:
             flush_type = Latch_Type.fromString(config["flush_type"])
         else:
-            flush_type = Memwb.DEFAULT_FLUSH_TYPE
+            flush_type = Idex.DEFAULT_FLUSH_TYPE
 
         if "enable" in config:
             enable = hooks[config["enable"]]
         else:
-            enable = Memwb.DEFAULT_ENABLE_BUS
+            enable = Idex.DEFAULT_ENABLE_BUS
 
         if "enable_type" in config:
             enable_type = Logic_States.fromString(config["enable_type"])
         else:
-            enable_type = Memwb.DEFAULT_ENABLE_TYPE
+            enable_type = Idex.DEFAULT_ENABLE_TYPE
 
         return Idex(hooks[config["pc4d"]],hooks[config["regwrd"]],hooks[config["alusrcbd"]],
                     hooks[config["alusd"]],hooks[config["alusflagwrd"]],hooks[config["memwrd"]],
                     hooks[config["regsrcd"]],hooks[config["wd3sd"]],hooks[config["rd1d"]],
                     hooks[config["rd2d"]],hooks[config["imm32d"]],hooks[config["ra1d"]],
                     hooks[config["ra2d"]],hooks[config["ra3d"]],hooks[config["flush"]],
-                    hooks[config["clk"]],hooks[config["pc43"]],hooks[config["regwre"]],
-                    hooks[config["alusrcbe"]],hooks[config["aluse"]],hooks[config["alusflagwre"]],
+                    hooks[config["clk"]],hooks[config["pc4e"]],hooks[config["regwre"]],
+                    hooks[config["alusrcbe"]],hooks[config["aluse"]],hooks[config["aluflagwre"]],
                     hooks[config["memwre"]],hooks[config["regsrce"]],hooks[config["wd3se"]],
                     hooks[config["rd1e"]],hooks[config["rd2e"]],hooks[config["imm32e"]],
                     hooks[config["ra1e"]],hooks[config["ra2e"]],hooks[config["ra3e"]],

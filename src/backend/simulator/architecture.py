@@ -291,14 +291,19 @@ class Architecture(ConfigurationParser):
         """
         if hooks == None:
             hooks = OrderedDict()
+            
         for signal in config["signals"]:
             if "package" in signal:
                 package = signal["package"]
             else:
                 package = None
 
-            hooks.update({signal["name"]: package_manager.construct(
-                signal["type"], signal, package, hooks)})
+            if "symbolic" in signal:
+                if "signals" in signal:
+                    hooks.update(cls._parse_signals(signal,hooks))
+            else:
+                hooks.update({signal["name"]: package_manager.construct(
+                    signal["type"], signal, package, hooks)})
         return hooks
 
     @classmethod
