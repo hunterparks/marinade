@@ -3,6 +3,17 @@ Reset input is to be viewed as a user adjustable read only bus where the
 logical bit means that the component should handle reset behavior
 
 Note that reset can be used as a logic read bus of size one
+
+Configuration file template should follow form
+{
+    "name" : "reset",
+    "type" : "Reset",
+    "value" : 1
+}
+
+name is the entity name, used by entity map (Used externally)
+type is the component class (Used externally)
+value is the default value for the component
 """
 
 from simulator.components.abstract.hooks import InputHook
@@ -76,5 +87,5 @@ class Reset(InputHook, iBusRead):
             default_state = config["value"]
         else:
             default_state = Reset.DEFAULT_STATE
-            
+
         return Reset(default_state)

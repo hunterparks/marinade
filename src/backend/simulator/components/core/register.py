@@ -1,6 +1,35 @@
 """
 Register component is a standalone core component for general architecture
 development.
+
+Configuration file template should follow form
+{
+    "name" : "register",
+    "type" : "Register",
+    "size" : 8,
+    "clock" : "",
+    "reset" : "",
+    "input" : "",
+    "output" : "",
+    "enable" : "",
+    "value" : 0,
+    "edge_type" : "",
+    "reset_type" : "",
+    "enable_type" : ""
+}
+
+name is the entity name, used by entity map (Used externally)
+type is the component class (Used externally)
+size is number of bits stored in register
+clock is control bus clock line reference
+reset is control bus reset line reference
+input is the data bus reference to store into register
+output is the data bus reference to read from register
+enable is write control bus reference
+value is default value of a byte in memory
+edge_type is edge to clock data
+reset_type is logic level to clear memory
+enable_type is logic level to write to memory
 """
 
 from simulator.components.abstract.ibus import iBusRead, iBusWrite

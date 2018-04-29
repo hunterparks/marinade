@@ -1,5 +1,40 @@
 """
 Generalized register file defines addressable set of registers
+
+Configuration file template should follow form
+{
+    "name" : "register_file",
+    "type" : "RegisterFile",
+    "length" : 16,
+    "size" : 32,
+    "clock" : "",
+    "reset" : "",
+    "write_address" : "",
+    "write_data" : "",
+    "read_addresses" : [],
+    "read_datas" : [],
+    "enable" : "",
+    "value" : 0,
+    "edge_type" : "",
+    "reset_type" : "",
+    "enable_type" : ""
+}
+
+name is the entity name, used by entity map (Used externally)
+type is the component class (Used externally)
+length is number of registers in register file
+size is number of bits stored in register
+clock is control bus clock line reference
+reset is control bus reset line reference
+write_address is address bus reference to select register
+write_data is data bus reference to store in register
+read_addresses is array of address bus reference to select registers
+read_datas is array of data bus references to read from registers
+enable is write control bus reference
+value is default value of a byte in memory
+edge_type is edge to clock data
+reset_type is logic level to clear memory
+enable_type is logic level to write to memory
 """
 
 from simulator.components.core.bus import Bus, iBusRead, iBusWrite
@@ -222,7 +257,7 @@ class RegisterFile(Sequential):
     @classmethod
     def from_dict(cls, config, hooks):
         "Implements conversion from configuration to component"
-        
+
         read_addresses = [hooks[a] for a in config["read_addresses"]]
         read_datas = [hooks[d] for d in config["read_datas"]]
 

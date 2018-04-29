@@ -1,6 +1,23 @@
 """
 Multiplexer component is a standalone core component for general
 architecture development.
+
+Configuration file template should follow form
+{
+    "name" : "mux",
+    "type" : "Mux",
+    "size" : 2,
+    "inputs" : [],
+    "select" : "",
+    "output" : ""
+}
+
+name is the entity name, used by entity map (Used externally)
+type is the component class (Used externally)
+size is number of bits of buses passing through
+inputs is array of data bus references to select
+select is control bus reference to select an input
+output is data bus reference with selected input copied into it
 """
 
 from simulator.components.abstract.ibus import iBusRead, iBusWrite
