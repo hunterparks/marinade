@@ -14,7 +14,7 @@ from simulator.architecture import Architecture
 from simulator.tests.simulation.test_framework import TestFramework
 
 SINGLE_CYCLE_FULL_CONFIG_FILEPATH = os.path.join(os.path.dirname(
-    __file__), "../../architectures/single_cycle_full.json")
+    __file__), "../../../../config/architectures/single_cycle_full.json")
 
 
 class SingleCycleProcessor_t(TestFramework, unittest.TestCase):
