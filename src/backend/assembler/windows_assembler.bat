@@ -14,8 +14,8 @@ if not %argC% == 1 (
 )
 
 :: Generate machine code
-arm-none-eabi-as %1 -march=armv4 -mbig-endian -o generated_machine_code/object.o
-if exist "generated_machine_code\\object.o" (
-    arm-none-eabi-objcopy -O binary generated_machine_code/object.o generated_machine_code/machine_code.bin
-    del "generated_machine_code\\object.o"
+arm-none-eabi-as %1 -march=armv4 -mbig-endian -o assembler/generated_machine_code/object.o
+if exist "assembler\\generated_machine_code\\object.o" (
+    arm-none-eabi-objcopy -O binary assembler/generated_machine_code/object.o assembler/generated_machine_code/machine_code.bin
+    del "assembler\\generated_machine_code\\object.o"
 )

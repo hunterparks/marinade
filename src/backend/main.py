@@ -10,6 +10,7 @@ used when in memory view mode. Distinction is made since step either moves a
 timestep or a clockstep.
 
 ### Architecture Commands
+{'assemble':{'filepath':<'file'>}} Returns {'status':{}}
 {'step':{'type':<'logic','edge','time'>}} Returns {'status':{}}
 {'reset':{}} Returns {'status':{}}
 {'load':{'filepath':<'file'>}}  Returns {'status':{}}
@@ -133,17 +134,19 @@ class Interface:
         try:
             f = open(msg['filepath'])
             if platform == "linux" or platform == "linux2" or platform == "darwin":
-                subprocess.Popen("./assembler/nix_assembler.sh " + msg['filepath'])
+                output = subprocess.run(["./assembler/nix_assembler.sh", msg['filepath']], stderr=subprocess.PIPE)
+                f.close()
+                return {'status': True, 'error': output.stderr.decode('utf-8')}
             elif platform == "win32":
-                subprocess.Popen("./assembler/windows_assembler.bat " + msg['filepath'])
-            f.close()
+                output = subprocess.run([r".\assembler\windows_assembler.bat", msg['filepath']], stderr=subprocess.PIPE)
+                f.close()
+                return {'status': True, 'error': output.stderr.decode('utf-8')}
         except KeyError as e:
             traceback.print_exc()
             return {'status': False, 'error': 'invalid key : {}'.format(str(e))}
         except Exception as e:
             traceback.print_exc()
             return {'status': False, 'error': 'exception : {}'.format(str(e))}
-        return {'status': True}
 
 
     def step(self, msg):
