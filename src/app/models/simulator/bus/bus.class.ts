@@ -13,11 +13,17 @@ interface Junction {
   y: number;
 }
 
+interface Path {
+  points: string;
+  startBit: number;
+  width: number;
+}
+
 export class Bus extends SimulatorComponent {
   public data?: BehaviorSubject<string>;
   public junctions: Junction[];
   public name: string;
-  public paths: string[];
+  public paths: (Path | string)[];
   public state?: BehaviorSubject<BusState>;
   public tooltip: BehaviorSubject<string>;
   public width: number;

@@ -97,36 +97,40 @@ export class BusComponent implements OnInit {
    */
   private drawBus(coordinates: number[][]): void {
     // Reset the paths bus
-    this.paths.push('');
-    // Iterate through the coordinates and build the paths bus
-    for (let i: number = 0; i < coordinates.length; i++) {
-      if (i === 0) {
-        this.paths[this.paths.length - 1] += 'M ';
-      } else {
-        this.paths[this.paths.length - 1]  += ' L ';
+    if (coordinates.length > 0) {
+      this.paths.push('');
+      // Iterate through the coordinates and build the paths bus
+      for (let i: number = 0; i < coordinates.length; i++) {
+        if (i === 0) {
+          this.paths[this.paths.length - 1] += 'M ';
+        } else {
+          this.paths[this.paths.length - 1] += ' L ';
+        }
+        this.paths[this.paths.length - 1] += coordinates[i][0] + ' ' + coordinates[i][1];
       }
-      this.paths[this.paths.length - 1]  += coordinates[i][0] + ' ' + coordinates[i][1];
+      // Draw the arrows using the last two points in the bus
+      this.drawArrow(
+        coordinates[coordinates.length - 1][0],
+        coordinates[coordinates.length - 1][1],
+        BusComponent.arrowDirection(coordinates[coordinates.length - 2], coordinates[coordinates.length - 1])
+      );
     }
-    // Draw the arrows using the last two points in the bus
-    this.drawArrow(
-      coordinates[coordinates.length - 1][0],
-      coordinates[coordinates.length - 1][1],
-      BusComponent.arrowDirection(coordinates[coordinates.length - 2], coordinates[coordinates.length - 1])
-    );
   }
 
   /**
    * Parses the points on the line that create the bus
    * @returns {number[][]} A list of x, y coordinates that create the line for the bus
    */
-  private parsePoints(path: string): number[][] {
+  private parsePoints(path: any): number[][] {
     // Create the coordinates array
     let coordinates: number[][] = [];
-    // Split on commas to separate pairs of x, y coordinates
-    path.split(',').forEach((line: string) => {
-      // Split each set of points on the space, and parse as numbers
-      coordinates.push(line.trim().split(' ').map(Number));
-    });
+    if (typeof path === 'string') {
+      // Split on commas to separate pairs of x, y coordinates
+      path.split(',').forEach((line: string) => {
+        // Split each set of points on the space, and parse as numbers
+        coordinates.push(line.trim().split(' ').map(Number));
+      });
+    }
     return coordinates;
   }
 

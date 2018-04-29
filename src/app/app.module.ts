@@ -40,6 +40,7 @@ import { RequestService } from './services/simulator/request/request.service';
 import { WebsocketService } from './services/simulator/websocket/websocket.service';
 import { TooltipService } from './services/tooltip/tooltip.service';
 import { SentrySettings } from './settings/sentry/local.sentry.settings';
+import { CombinationalComponent } from './components/simulator/combinational/combinational.component';
 
 // Raven.config(SentrySettings.getURL()).install();
 // Raven.setTagsContext({
@@ -72,7 +73,8 @@ import { SentrySettings } from './settings/sentry/local.sentry.settings';
     MemoryViewComponent,
     SettingsViewComponent,
     BusMonitorComponent,
-    BusMonitorItemComponent
+    BusMonitorItemComponent,
+    CombinationalComponent
   ],
   imports: [
     BrowserModule,

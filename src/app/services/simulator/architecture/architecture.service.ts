@@ -3,6 +3,7 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 import { Architecture } from '../../../models/simulator/architecture.class';
 import { ARCHITECTURE } from '../../../models/simulator/architecture.model';
 import { Bus } from '../../../models/simulator/bus/bus.class';
+import { Combinational } from '../../../models/simulator/combinational/combinational.class';
 import { Controller } from '../../../models/simulator/controller/controller.class';
 import { Mux } from '../../../models/simulator/mux/mux.class';
 import { Register } from '../../../models/simulator/register/register.class';
@@ -14,11 +15,12 @@ export class ArchitectureService {
 
   private _architecture: Architecture;
   private readonly componentClasses: { class: any, name: string, services: any[] }[] = [
-    { class: Bus,        name: 'bus',           services: [ this.requestService ] },
-    { class: Controller, name: 'controller',    services: [ ]                     },
-    { class: Mux,        name: 'mux',           services: [ ]                     },
-    { class: Stage,      name: 'stage',         services: [ ]                     },
-    { class: Register,   name: 'register',      services: [ ]                     },
+    { class: Bus,           name: 'bus',              services: [ this.requestService ] },
+    { class: Combinational, name: 'combinational',    services: [ ]                     },
+    { class: Controller,    name: 'controller',       services: [ ]                     },
+    { class: Mux,           name: 'mux',              services: [ ]                     },
+    { class: Stage,         name: 'stage',            services: [ ]                     },
+    { class: Register,      name: 'register',         services: [ ]                     },
   ];
 
   public architecture: BehaviorSubject<Architecture> = new BehaviorSubject<Architecture>(null);
