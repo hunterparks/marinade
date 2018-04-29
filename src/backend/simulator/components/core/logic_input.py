@@ -1,6 +1,19 @@
 """
 Logic input is to be viewed as user changable signal
 into the architecture. Thus the device acts as a read only bus.
+
+Configuration file template should follow form
+{
+    "name" : "logic_input",
+    "type" : "LogicInput",
+    "size" : 1,
+    "value" : 1
+}
+
+name is the entity name, used by entity map (Used externally)
+type is the component class (Used externally)
+size is the bit-width for the component
+value is the default value for the component
 """
 
 from simulator.components.abstract.hooks import InputHook
@@ -58,5 +71,5 @@ class LogicInput(InputHook, iBusRead):
             default_state = config["value"]
         else:
             default_state = LogicInput.DEFAULT_STATE
-            
+
         return LogicInput(config["size"],default_state)

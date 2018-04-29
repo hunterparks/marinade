@@ -4,6 +4,19 @@ frequency of calling a clock generate relative to the timestep (run rate)
 determines the resolution of the application.
 
 Note that clock can be used as a logic read bus of size one
+
+Configuration file template should follow form
+{
+    "name" : "clock",
+    "type" : "Clock",
+    "frequency" : 1,
+    "value" : 1
+}
+
+name is the entity name, used by entity map (Used externally)
+type is the component class (Used externally)
+frequency is the clock frequency in hertz
+value is the default value for the component
 """
 
 import simulator.limits as limits

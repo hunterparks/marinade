@@ -3,7 +3,7 @@ BusJoin component used to concatenate multiple buses into a single bus
 
 Configuration file template should follow form
 {
-    "name" : "",
+    "name" : "bus_join",
     "type" : "BusJoin",
     "inputs" : [],
     "output" : ""

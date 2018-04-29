@@ -1,5 +1,18 @@
 """
 Constant is to be viewed as an immutable bus in architectures
+
+Configuration file template should follow form
+{
+    "name" : "constant",
+    "type" : "Constant",
+    "size" : 1,
+    "value" : 12
+}
+
+name is the entity name, used by entity map (Used externally)
+type is the component class (Used externally)
+size is the bit-width for the component
+value is the value for the component
 """
 
 from simulator.components.abstract.hooks import Hook

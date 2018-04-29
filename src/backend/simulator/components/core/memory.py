@@ -1,5 +1,42 @@
 """
 Core memory object for generalized data memory usage.
+
+Configuration file template should follow form
+{
+    "name" : "memory",
+    "type" : "Memory",
+    "size" : 64,
+    "bytes_per_word" : 4,
+    "start_address" : 0,
+    "address" : "",
+    "write" : "",
+    "enable" : "",
+    "reset" : "",
+    "clock" : "",
+    "access_mode" : "",
+    "read" : "",
+    "value" : 0,
+    "edge_type" : "",
+    "reset_type" : "",
+    "enable_type" : ""
+}
+
+name is the entity name, used by entity map (Used externally)
+type is the component class (Used externally)
+size is number of bytes in memory
+bytes_per_word is number of bytes considered as one word for word access mode
+start_address is the first address that has a byte associated with it
+address is bus reference to memory element to read / write
+write is the data bus reference to store into memory
+enable is write control bus reference
+reset is control bus reset line reference
+clock is control bus clock line reference
+access_mode is control bus selecting memory access type
+read is data bus reference to read from memory
+value is default value of a byte in memory
+edge_type is edge to clock data
+reset_type is logic level to clear memory
+enable_type is logic level to write to memory
 """
 
 import math

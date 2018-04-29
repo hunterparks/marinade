@@ -3,8 +3,8 @@ BusSubset component used to break apart a single bus into composite signals
 
 Configuration file template should follow form
 {
-    "name" : "",
-    "type" : "Adder",
+    "name" : "bus_subset",
+    "type" : "BusSubset",
     "input" : "",
     "outputs" : [],
     "bounds" : []

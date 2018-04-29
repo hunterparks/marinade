@@ -4,7 +4,7 @@ development.
 
 Configuration file template should follow form
 {
-    "name" : "",
+    "name" : "adder",
     "type" : "Adder",
     "size" : 1,
     "input_1" : "",

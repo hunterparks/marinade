@@ -4,7 +4,7 @@ is that a bus will be written to by one component but can be read by many.
 
 Configuration file template should follow form
 {
-    "name" : "",
+    "name" : "bus",
     "type" : "Bus",
     "size" : 1,
     "value" : 1
