@@ -291,7 +291,7 @@ class Architecture(ConfigurationParser):
         """
         if hooks == None:
             hooks = OrderedDict()
-            
+
         for signal in config["signals"]:
             if "package" in signal:
                 package = signal["package"]

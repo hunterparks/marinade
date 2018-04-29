@@ -822,6 +822,28 @@
       ]
     },
     {
+      "name" : "writeback_stage",
+      "symbolic" : true,
+      "entities" : [
+        {
+          "name" : "wd3_mux",
+          "type" : "Mux",
+          "size" : 32,
+          "inputs" : ["rdw","fw"],
+          "select" : "regsrcw",
+          "output" : "wd3"
+        },
+        {
+          "name" : "rwd_mux",
+          "type" : "Mux",
+          "size" : 32,
+          "inputs" : ["wd3","pc4w"],
+          "select" : "wd3sw",
+          "output" : "wd"
+        }
+      ]
+    },
+    {
       "name" : "memory_stage",
       "symbolic" : true,
       "entities" : [
@@ -843,28 +865,6 @@
           "reset" : "rst",
           "clock" : "clk",
           "read" : "rdm"
-        }
-      ]
-    },
-    {
-      "name" : "writeback_stage",
-      "symbolic" : true,
-      "entities" : [
-        {
-          "name" : "wd3_mux",
-          "type" : "Mux",
-          "size" : 32,
-          "inputs" : ["rdw","fw"],
-          "select" : "regsrcw",
-          "output" : "wd3"
-        },
-        {
-          "name" : "rwd_mux",
-          "type" : "Mux",
-          "size" : 32,
-          "inputs" : ["wd3","pc4w"],
-          "select" : "wd3sw",
-          "output" : "wd"
         }
       ]
     }

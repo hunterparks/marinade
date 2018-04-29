@@ -182,7 +182,7 @@ class PipelineProcessor_t(TestFramework, unittest.TestCase):
         self._set_architecture(pipeline_poc.generate_pipeline_architecture,
                                pipeline_poc.program_pipeline_architecture)
         self.assertTrue(self._generic_test_procedure('pipeline_demo', self.demo_program,
-                        len(self.demo_program) / 4 + 2, 'demo_prog', self.msg_inspect))
+                        100, 'demo_prog', self.msg_inspect))
 
     def test_branch_hazards_program(self):
         """
@@ -191,7 +191,7 @@ class PipelineProcessor_t(TestFramework, unittest.TestCase):
         self._set_architecture(pipeline_poc.generate_pipeline_architecture,
                                pipeline_poc.program_pipeline_architecture)
         self.assertTrue(self._generic_test_procedure('pipeline_branch_hazards',
-                        self.branch_hazards_program, len(self.branch_hazards_program) / 4 + 2,
+                        self.branch_hazards_program, 100,
                         'hazards_prog', self.msg_inspect))
 
     def test_all_instruction_program(self):
@@ -230,10 +230,9 @@ class PipelineProcessor_t(TestFramework, unittest.TestCase):
 
         self._set_architecture(_gen, _prog)
         self.assertTrue(self._generic_test_procedure('pipeline_config_demo',
-                        self.demo_program, len(self.demo_program) / 4 + 2,
-                        'demo_prog', self.msg_inspect))
+                        self.demo_program, 100,'demo_prog', self.msg_inspect))
 
-    def test_config_file_hardware(self):
+    def test_config_file_hazards(self):
         """
         Tests against a branch hazards program to assure branch hazards work
         """
@@ -259,8 +258,7 @@ class PipelineProcessor_t(TestFramework, unittest.TestCase):
 
         self._set_architecture(_gen, _prog)
         self.assertTrue(self._generic_test_procedure('pipeline_config_branch_hazards',
-                        self.branch_hazards_program, len(self.branch_hazards_program) / 4 + 2,
-                        'hazards_prog', self.msg_inspect))
+                        self.branch_hazards_program, 100,'hazards_prog', self.msg_inspect))
 
     def test_config_file_full(self):
         """
