@@ -56,13 +56,13 @@ class BusJoin_t(unittest.TestCase):
         })
 
         config = {
-            "name" : "bus_subset",
-            "type" : "BusSubset",
+            "name" : "bus_join",
+            "type" : "BusJoin",
             "inputs" : ["i1","i2"],
             "output" : "o1"
         }
 
-        join = BusSubset.from_dict(config,hooks)
+        join = BusJoin.from_dict(config,hooks)
         join.run()
         self.assertEqual(hooks["o1"].read(),0xFF00)
 

@@ -58,8 +58,15 @@ class Constant_t(unittest.TestCase):
 
     def test_from_dict(self):
         "Validates dictionary constructor"
-        raise NotImplementedError
 
+        config = {
+            "name" : "constant",
+            "type" : "Constant",
+            "size" : 64,
+            "value" : 0xFFFF0000FFFF0000
+        }
+
+        const = Constant.from_dict(config,None) #Buses do not need hook reference
 
 if __name__ == '__main__':
     unittest.main()

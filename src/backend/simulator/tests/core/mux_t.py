@@ -121,7 +121,23 @@ class Mux_t(unittest.TestCase):
 
     def test_from_dict(self):
         "Validates dictionary constructor"
-        raise NotImplementedError
+        hooks = OrderedDict({
+            "a" : Bus(2),
+            "b" : Bus(2),
+            "slct" : Bus(1),
+            "o" : Bus(2)
+        })
+
+        config = {
+            "name" : "mux",
+            "type" : "Mux",
+            "size" : 2,
+            "inputs" : ["a","b"],
+            "select" : "slct",
+            "output" : "o"
+        }
+
+        mux = Mux.from_dict(config,hooks)
 
 
 if __name__ == '__main__':

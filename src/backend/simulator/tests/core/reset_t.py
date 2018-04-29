@@ -103,7 +103,14 @@ class Reset_t(unittest.TestCase):
 
     def test_from_dict(self):
         "Validates dictionary constructor"
-        raise NotImplementedError
+
+        config = {
+            "name" : "rst",
+            "type" : "Reset",
+            "value" : 1
+        }
+
+        rst = Reset.from_dict(config,None) #Buses do not need hook reference
 
 
 if __name__ == '__main__':

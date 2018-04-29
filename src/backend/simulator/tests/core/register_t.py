@@ -292,8 +292,30 @@ class Register_t(unittest.TestCase):
 
     def test_from_dict(self):
         "Validates dictionary constructor"
-        raise NotImplementedError
-        
+
+        hooks = OrderedDict({
+            "clk" : Bus(1),
+            "rst" : Bus(1),
+            "d" : Bus(8),
+            "q" : Bus(8),
+            "en" : Bus(1)
+        })
+
+        config = {
+            "name" : "register",
+            "type" : "Register",
+            "size" : 8,
+            "clock" : "clk",
+            "reset" : "rst",
+            "input" : "d",
+            "output" : "q",
+            "enable" : "en",
+            "value" : 56,
+            "edge_type" : "falling_edge",
+            "reset_type" : "active_low",
+            "enable_type" : "active_high"
+        }
+
 
 if __name__ == '__main__':
     unittest.main()

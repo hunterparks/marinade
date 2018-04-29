@@ -183,7 +183,15 @@ class Clock_t(unittest.TestCase):
 
     def test_from_dict(self):
         "Validates dictionary constructor"
-        raise NotImplementedError
+
+        config = {
+            "name" : "clk",
+            "type" : "Clock",
+            "frequency" : 1000,
+            "value" : 1
+        }
+
+        clk = Clock.from_dict(config,None) #Buses do not need hook reference
 
 
 if __name__ == '__main__':

@@ -546,7 +546,36 @@ class Memory_t(unittest.TestCase):
 
     def test_from_dict(self):
         "Validates dictionary constructor"
-        raise NotImplementedError
+        hooks = OrderedDict({
+            "wr" : Bus(32),
+            "en" : Bus(1),
+            "addr" : Bus(6),
+            "rst" : Bus(1),
+            "clk" : Bus(1),
+            "mode" : Bus(2),
+            "rd" : Bus(32)
+        })
+
+        config = {
+            "name" : "memory",
+            "type" : "Memory",
+            "size" : 64,
+            "bytes_per_word" : 4,
+            "start_address" : 0,
+            "address" : "addr",
+            "write" : "wr",
+            "enable" : "en",
+            "reset" : "rst",
+            "clock" : "clk",
+            "access_mode" : "mode",
+            "read" : "rd",
+            "value" : 55,
+            "edge_type" : "rising_edge",
+            "reset_type" : "active_high",
+            "enable_type" : "active_high"
+        }
+
+        mem = Memory.from_dict(config,hooks)
 
 
 if __name__ == '__main__':

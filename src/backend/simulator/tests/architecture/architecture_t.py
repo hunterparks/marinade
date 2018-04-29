@@ -493,6 +493,10 @@ class Architecture_t(unittest.TestCase):
         msg = arch.hook({'inspect':['reg']})
         self.assertEqual(msg['reg']['state'],0xFF)
 
+    def test_from_dict(self):
+        "Validates dictionary constructor"
+        raise NotImplementedError
+
 
 if __name__ == '__main__':
     unittest.main()

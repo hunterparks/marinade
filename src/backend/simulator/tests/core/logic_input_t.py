@@ -75,7 +75,6 @@ class LogicInput_t(unittest.TestCase):
         }
         rm = l.generate(m)
         self.assertTrue('success' in rm and rm['success'])
-
         self.assertTrue(l.read() == 128)
 
     def test_read(self):
@@ -97,7 +96,15 @@ class LogicInput_t(unittest.TestCase):
 
     def test_from_dict(self):
         "Validates dictionary constructor"
-        raise NotImplementedError
+
+        config = {
+            "name" : "logic",
+            "type" : "LogicInput",
+            "size" : 16,
+            "value" : 10
+        }
+
+        logic = LogicInput.from_dict(config,None) #Buses do not need hook reference
 
 
 if __name__ == '__main__':
