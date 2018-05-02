@@ -3,6 +3,8 @@ Core memory object for generalized data memory usage.
 
 Configuration file template should follow form
 {
+    /* Required */
+
     "name" : "memory",
     "type" : "Memory",
     "size" : 64,
@@ -15,6 +17,10 @@ Configuration file template should follow form
     "clock" : "",
     "access_mode" : "",
     "read" : "",
+
+    /* Optional */
+
+    "package" : ""core,
     "value" : 0,
     "edge_type" : "",
     "reset_type" : "",
@@ -23,6 +29,7 @@ Configuration file template should follow form
 
 name is the entity name, used by entity map (Used externally)
 type is the component class (Used externally)
+package is associated package to override general (Used externally)
 size is number of bytes in memory
 bytes_per_word is number of bytes considered as one word for word access mode
 start_address is the first address that has a byte associated with it

@@ -3,14 +3,21 @@ Constant is to be viewed as an immutable bus in architectures
 
 Configuration file template should follow form
 {
+    /* Required */
+
     "name" : "constant",
     "type" : "Constant",
     "size" : 1,
-    "value" : 12
+    "value" : 12,
+
+    /* Optional */
+
+    "package" : ""core
 }
 
 name is the entity name, used by entity map (Used externally)
 type is the component class (Used externally)
+package is associated package to override general (Used externally)
 size is the bit-width for the component
 value is the value for the component
 """

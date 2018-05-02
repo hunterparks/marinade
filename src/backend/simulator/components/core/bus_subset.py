@@ -3,15 +3,22 @@ BusSubset component used to break apart a single bus into composite signals
 
 Configuration file template should follow form
 {
+    /* Required */
+
     "name" : "bus_subset",
     "type" : "BusSubset",
     "input" : "",
     "outputs" : [],
-    "bounds" : []
+    "bounds" : [],
+
+    /* Optional */
+
+    "package" : ""core
 }
 
 name is the entity name, used by entity map (Used externally)
 type is the component class (Used externally)
+package is associated package to override general (Used externally)
 input is the bus reference to split
 outputs is an array of string bus references to break input into
 bounds is an array of two element arrays defining start and end of an output

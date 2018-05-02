@@ -4,14 +4,20 @@ into the architecture. Thus the device acts as a read only bus.
 
 Configuration file template should follow form
 {
+    /* Required */
     "name" : "logic_input",
     "type" : "LogicInput",
     "size" : 1,
+
+    /* Optional */
+
+    "package" : ""core,
     "value" : 1
 }
 
 name is the entity name, used by entity map (Used externally)
 type is the component class (Used externally)
+package is associated package to override general (Used externally)
 size is the bit-width for the component
 value is the default value for the component
 """

@@ -1,5 +1,37 @@
 """
 ARM ALU object for use in ARMv4 architecture
+
+Configuration file template should follow form
+{
+    /* Required */
+
+    "name" : "alu_demo",
+    "type" : "AluDemo",
+    "input_a" : "",
+    "input_b" : "",
+    "alus" : "",
+    "output_f" : "",
+    "output_c" : "",
+    "output_v" : "",
+    "output_n" : "",
+    "output_z" : "",
+
+    /* Optional */
+    
+    "package" : "arm"
+}
+
+name is the entity name, used by entity map (Used externally)
+type is the component class (Used externally)
+package is associated package to override general (Used externally)
+input_a is bus reference for first input into ALU
+input_b is bus reference for second input into ALU
+alus is control bus reference for ALU operation
+output_f is resulting data bus reference
+output_c is carry data bus reference
+output_v is signed overflow bus reference
+output_n is negative number bus reference
+output_z is zero number bus reference
 """
 
 from simulator.components.abstract.combinational import Combinational

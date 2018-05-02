@@ -4,11 +4,17 @@ development.
 
 Configuration file template should follow form
 {
+    /* Required */
+
     "name" : "adder",
     "type" : "Adder",
+
     "size" : 1,
     "input_1" : "",
     "input_2" : "",
+
+    /* Optional */
+    "package" : ""core,
     "output" : "",
     "carry_in" : "",
     "carry_out" : ""
@@ -16,6 +22,7 @@ Configuration file template should follow form
 
 name is the entity name, used by entity map (Used externally)
 type is the component class (Used externally)
+package is associated package to override general (Used externally)
 size is the bit-width for this component
 input_1 is string reference for input bus of bit-width
 input_2 is string reference for input bus of bit-width

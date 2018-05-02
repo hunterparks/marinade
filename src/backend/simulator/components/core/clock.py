@@ -7,14 +7,22 @@ Note that clock can be used as a logic read bus of size one
 
 Configuration file template should follow form
 {
+    /* Required */
+
     "name" : "clock",
     "type" : "Clock",
+
     "frequency" : 1,
+
+    /* Optional */
+
+    "package" : ""core,
     "value" : 1
 }
 
 name is the entity name, used by entity map (Used externally)
 type is the component class (Used externally)
+package is associated package to override general (Used externally)
 frequency is the clock frequency in hertz
 value is the default value for the component
 """

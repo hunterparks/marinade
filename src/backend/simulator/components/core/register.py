@@ -4,12 +4,18 @@ development.
 
 Configuration file template should follow form
 {
+    /* Required */
+
     "name" : "register",
     "type" : "Register",
     "size" : 8,
     "clock" : "",
     "reset" : "",
     "input" : "",
+
+    /* Optional */
+
+    "package" : ""core,
     "output" : "",
     "enable" : "",
     "value" : 0,
@@ -20,6 +26,7 @@ Configuration file template should follow form
 
 name is the entity name, used by entity map (Used externally)
 type is the component class (Used externally)
+package is associated package to override general (Used externally)
 size is number of bits stored in register
 clock is control bus clock line reference
 reset is control bus reset line reference

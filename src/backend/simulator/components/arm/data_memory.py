@@ -1,5 +1,43 @@
 """
 ARM specific data memory module with 32-bit width.
+
+Configuration file template should follow form
+{
+    /* Required */
+
+    "name" : "data_memory",
+    "type" : "DataMemory",
+    "address" : "",
+    "write" : "",
+    "write_enable" : "",
+    "reset" : "",
+    "clock" : "",
+    "read" : "",
+
+    /* Optional */
+
+    "package" : "arm"
+    "mode" : "",
+    "size" : 1,
+    "edge_type" : "",
+    "reset_type" : "",
+    "enable_type" : ""
+}
+
+name is the entity name, used by entity map (Used externally)
+type is the component class (Used externally)
+package is associated package to override general (Used externally)
+address is bus reference for memory cell to access
+write is data bus reference to write to cell
+clock is control bus clock line reference
+reset is control bus reset line reference
+write_enable is write control bus reference
+read is data bus reference to read from cell
+mode is control bus defining cell size used (none, byte, half-word, word)
+size is number of elements in memory
+edge_type is edge to clock data
+reset_type is logic level to clear memory
+enable_type is logic level to write to memory
 """
 
 from simulator.components.core.memory import Memory, Latch_Type, Logic_States

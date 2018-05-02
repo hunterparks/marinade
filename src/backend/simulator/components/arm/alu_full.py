@@ -1,5 +1,48 @@
 """
 ARM ALU object for use in ARMv4 architecture
+
+Configuration file template should follow form
+{
+    /* Required */
+
+    "name" : "alu_full",
+    "type" : "AluFull",
+    "input_a" : "",
+    "input_b" : "",
+    "input_ar" : "",
+    "alus" : "",
+    "shift" : "",
+    "input_c" : "",
+    "shift_op" : "",
+    "shift_ctrl" : "",
+    "acc_enable" : "",
+    "output_f" : "",
+    "output_c" : "",
+    "output_v" : "",
+    "output_n" : "",
+    "output_z" : "",
+
+    /* Optional */
+    "package" : "arm"
+}
+
+name is the entity name, used by entity map (Used externally)
+type is the component class (Used externally)
+package is associated package to override general (Used externally)
+input_a is bus reference for first input into ALU
+input_b is bus reference for second input into ALU
+input_ar is bus reference for shifter register input and accumulator input
+alus is control bus reference for ALU operation
+shift is immediate shift value bus reference
+input_c is bus reference for carry input into ALU
+shift_op is control bus reference for shifting operation
+shift_ctrl is control bus reference for allowing shift
+acc_enable is control bus reference for using acculation register input
+output_f is resulting data bus reference
+output_c is carry data bus reference
+output_v is signed overflow bus reference
+output_n is negative number bus reference
+output_z is zero number bus reference
 """
 
 from simulator.components.abstract.combinational import Combinational

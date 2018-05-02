@@ -3,6 +3,8 @@ Generalized register file defines addressable set of registers
 
 Configuration file template should follow form
 {
+    /* Required */
+
     "name" : "register_file",
     "type" : "RegisterFile",
     "length" : 16,
@@ -13,6 +15,10 @@ Configuration file template should follow form
     "write_data" : "",
     "read_addresses" : [],
     "read_datas" : [],
+
+    /* Optional */
+    
+    "package" : ""core,
     "enable" : "",
     "value" : 0,
     "edge_type" : "",
@@ -22,6 +28,7 @@ Configuration file template should follow form
 
 name is the entity name, used by entity map (Used externally)
 type is the component class (Used externally)
+package is associated package to override general (Used externally)
 length is number of registers in register file
 size is number of bits stored in register
 clock is control bus clock line reference

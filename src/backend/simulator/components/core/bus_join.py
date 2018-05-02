@@ -3,14 +3,20 @@ BusJoin component used to concatenate multiple buses into a single bus
 
 Configuration file template should follow form
 {
+    /* Required */
+
     "name" : "bus_join",
     "type" : "BusJoin",
     "inputs" : [],
-    "output" : ""
+    "output" : "",
+
+    /* Optional */
+    "package" : ""core
 }
 
 name is the entity name, used by entity map (Used externally)
 type is the component class (Used externally)
+package is associated package to override general (Used externally)
 inputs is an array of strings referencing input bus objects
     the order of the references defines the ordering of the concatenation from
     least significant bit to most

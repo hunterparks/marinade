@@ -1,6 +1,52 @@
 """
 ALU Flag Regsiter stores calculated results from ALU for next state controller
 conditions.
+
+Configuration file template should follow form
+{
+    /* Required */
+
+    "name" : "alu_flag_register",
+    "type" : "AluFlagRegister",
+    "c_in" : "",
+    "v_in" : "",
+    "n_in" : "",
+    "z_in" : "",
+    "reset" : "",
+    "clock" : "",
+    "enable" : "",
+    "c_out" : "",
+    "v_out" : "",
+    "n_out" : "",
+    "z_out" : "",
+
+    /* Optional */
+
+    "package" : "arm",
+    "value" : 0,
+    "edge_type" : "",
+    "reset_type" : "",
+    "enable_type" : ""
+}
+
+name is the entity name, used by entity map (Used externally)
+type is the component class (Used externally)
+package is associated package to override general (Used externally)
+c_in is data bus reference
+v_in is data bus reference
+n_in is data bus reference
+z_in is data bus reference
+clock is control bus clock line reference
+reset is control bus reset line reference
+enable is write control bus reference
+c_out is data bus reference
+v_out is data bus reference
+n_out is data bus reference
+z_out is data bus reference
+value is default value of a byte in memory
+edge_type is edge to clock data
+reset_type is logic level to clear memory
+enable_type is logic level to write to memory
 """
 
 from simulator.components.core.bus_join import BusJoin
