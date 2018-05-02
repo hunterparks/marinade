@@ -2,11 +2,11 @@
   <svg id="arch" xmlns="http://www.w3.org/2000/svg" [attr.viewBox]="viewBox" version="1.1">
     <svg:defs/>
     <svg:g *ngFor="let bus of architecture.bus" [svg-bus]="bus" [tooltip]="bus.tooltip" />
-    <svg:g *ngFor="let combinational of architecture.combinational" [svg-combinational]="combinational" />
-    <svg:g *ngFor="let controller of architecture.controller" [svg-controller]="controller" />
     <svg:g *ngFor="let mux of architecture.mux" [svg-mux]="mux" />
-    <svg:g *ngFor="let stage of architecture.stage" [svg-stage]="stage" />
-    <svg:g *ngFor="let register of architecture.register" [svg-stage-register]="register" />
+    <svg:g *ngFor="let combinational of architecture.combinational" [svg-rect]="combinational" />
+    <svg:g *ngFor="let controller of architecture.controller" [svg-rect]="controller" />
+    <svg:g *ngFor="let stage of architecture.stage" [svg-rect]="stage" />
+    <svg:g *ngFor="let register of architecture.register" [svg-rect]="register" />
   </svg>
   <button (click)="reset()">Reset</button>
 </div>

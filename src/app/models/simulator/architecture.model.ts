@@ -200,18 +200,21 @@ export const ARCHITECTURE: any = {
 'combinational': [
   {
     'height': 80,
+    'name': 'ADDER',
     'width': 80,
     'x': 573,
     'y': 0
   },
   {
     'height': 80,
+    'name': 'CONST14',
     'width': 80,
     'x': 253,
     'y': 510
   },
   {
     'height': 80,
+    'name': 'EXTIMM',
     'width': 80,
     'x': 573,
     'y': 700
@@ -220,18 +223,28 @@ export const ARCHITECTURE: any = {
 'controller': [],
 'mux': [
   {
-    'path': '263 220, 283 180, 343 180, 363 220'
+    'inputs': 2,
+    'outputs': 1,
+    'x': 313,
+    'y': 200,
   },
   {
-    'path': '263 370, 283 330, 343 330, 363 370'
+    'inputs': 3,
+    'outputs': 1,
+    'x': 313,
+    'y': 350,
   },
   {
-    'path': '343 640, 363 600, 423 600, 443 640'
+    'inputs': 3,
+    'outputs': 1,
+    'x': 393,
+    'y': 620,
   }
 ],
 'register': [
   {
     'height': 380,
+    'name': 'REGFILE',
     'width': 50,
     'x': 433,
     'y': 150

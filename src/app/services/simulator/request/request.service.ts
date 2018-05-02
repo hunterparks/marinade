@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { WebsocketService } from '../websocket/websocket.service';
+import { WebsocketService } from '@services/simulator/websocket/websocket.service';
 
 @Injectable()
 export class RequestService {

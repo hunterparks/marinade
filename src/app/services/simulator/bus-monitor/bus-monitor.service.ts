@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { Bus } from '../../../models/simulator/bus/bus.class';
+import { Bus } from '@models/simulator/bus/bus.class';
 
 @Injectable()
 export class BusMonitorService {

@@ -1,23 +1,13 @@
-import { SimulatorComponent } from '../simulator-component.class';
-
-export class Mux extends SimulatorComponent {
-  public path: string;
+export class Mux {
+  public inputs: number;
+  public outputs: number;
+  public x: number;
+  public y: number;
 
   constructor(mux: Mux) {
-    super();
-    this.path = mux.path;
-  }
-
-  public formatTooltip(): string {
-    // TODO: populate this
-    return '';
-  }
-
-  public initialize(): void {
-    // TODO: populate this
-  }
-
-  public inspect(): void {
-    // TODO: populate this
+    this.inputs = mux.inputs;
+    this.outputs = mux.outputs;
+    this.x = mux.x;
+    this.y = mux.y;
   }
 }

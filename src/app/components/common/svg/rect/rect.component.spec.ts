@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { CombinationalComponent } from './combinational.component';
+import { RectComponent } from './rect.component';
 
 describe('CombinationalComponent', () => {
-  let component: CombinationalComponent;
-  let fixture: ComponentFixture<CombinationalComponent>;
+  let component: RectComponent;
+  let fixture: ComponentFixture<RectComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ CombinationalComponent ]
+      declarations: [ RectComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(CombinationalComponent);
+    fixture = TestBed.createComponent(RectComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });
