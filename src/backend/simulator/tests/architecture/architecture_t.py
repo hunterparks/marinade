@@ -495,7 +495,97 @@ class Architecture_t(unittest.TestCase):
 
     def test_from_dict(self):
         "Validates dictionary constructor"
-        raise NotImplementedError
+
+        config = {
+            "packages" : ["user"],
+            "system_clock" : "clk",
+            "system_reset" : "rst",
+            "system_memory" : None,
+            "time_step" : 0.001,
+
+            "signals" : [
+                {
+                    "name" : "container",
+                    "symbolic" : True,
+                    "signals" : [
+                        {
+                            "name" : "clk",
+                            "type" : "Clock",
+                            "package" : "core",
+                            "frequency" : 1
+                        },
+                        {
+                            "name" : "rst",
+                            "type" : "Reset",
+                            "package" : "core"
+                        },
+                        {
+                            "name" : "d",
+                            "type" : "Bus",
+                            "package" : "core",
+                            "size" : 4
+                        },
+                        {
+                            "name" : "q",
+                            "type" : "Bus",
+                            "package" : "core",
+                            "size" : 4
+                        },
+                        {
+                            "name" : "const",
+                            "type" : "Constant",
+                            "package" : "core",
+                            "size" : 4,
+                            "value" : 3
+                        }
+                    ]
+                }
+            ],
+
+            "entities" : [
+                {
+                    "name" : "clk",
+                    "signal" : "clk"
+                },
+                {
+                    "name" : "container",
+                    "symbolic" : True,
+                    "entities" : [
+                        {
+                            "name" : "adder",
+                            "type" : "Adder",
+                            "package" : "core",
+                            "size" : 4,
+                            "input_1" : "const",
+                            "input_2" : "q",
+                            "output" : "d"
+                        },
+                        {
+                            "name" : "register",
+                            "type" : "Register",
+                            "package" : "core",
+                            "append_to_signals" : True,
+                            "size" : 4,
+                            "clock" : "clk",
+                            "reset" : "rst",
+                            "input" : "d",
+                            "output" : "q",
+                            "edge_type" : "both_edge"
+                        }
+                    ]
+                }
+            ]
+        }
+
+        arch = Architecture.from_dict(config)
+
+        self.assertEqual(arch.inspect(["q"])["q"]["state"],0)
+
+        arch.logic_run()
+        arch.logic_run()
+        arch.logic_run()
+
+        self.assertEqual(arch.inspect(["q"])["q"]["state"],15)
 
 
 if __name__ == '__main__':

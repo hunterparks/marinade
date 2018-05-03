@@ -11,7 +11,7 @@ Configuration file template should follow form
 
     /* Optional */
 
-    "package" : ""core,
+    "package" : "core",
     "value" : 1
 }
 

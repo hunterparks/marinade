@@ -8,13 +8,12 @@ Configuration file template should follow form
 
     "name" : "adder",
     "type" : "Adder",
-
     "size" : 1,
     "input_1" : "",
     "input_2" : "",
 
     /* Optional */
-    "package" : ""core,
+    "package" : "core",
     "output" : "",
     "carry_in" : "",
     "carry_out" : ""

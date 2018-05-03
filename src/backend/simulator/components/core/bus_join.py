@@ -11,7 +11,8 @@ Configuration file template should follow form
     "output" : "",
 
     /* Optional */
-    "package" : ""core
+    
+    "package" : "core"
 }
 
 name is the entity name, used by entity map (Used externally)

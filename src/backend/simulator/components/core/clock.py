@@ -11,12 +11,11 @@ Configuration file template should follow form
 
     "name" : "clock",
     "type" : "Clock",
-
     "frequency" : 1,
 
     /* Optional */
 
-    "package" : ""core,
+    "package" : "core",
     "value" : 1
 }
 

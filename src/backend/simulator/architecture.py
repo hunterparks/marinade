@@ -34,8 +34,10 @@ time_step is the timing simulation step size, must meet Nyquist criteria for
     the system_clock
 
 signals is a list of bus components
-    the component is constructed accoriding to the definition in the package
-    manager
+    if a component has key symbolic then it is interpretted as being a
+        non-runnable container with a set of sub entities
+    else a component is constructed accoriding to the definition in the package
+        manager
 
 entities is a list of runable components
     if a component has key signal then it is interpretted as a signal that needs
@@ -44,6 +46,9 @@ entities is a list of runable components
         non-runnable container with a set of sub entities
     else a component is regarded as concrete and is constructed according to
         the definition in the package manager
+
+    if component request to be appened to hooks then it is added after all
+        hooks already in list
 """
 
 from collections import OrderedDict, Iterable
@@ -295,6 +300,8 @@ class Architecture(ConfigurationParser):
         for signal in config["signals"]:
             if "package" in signal:
                 package = signal["package"]
+                if isinstance(package,str):
+                    package = [package] #allows single or multiple packages
             else:
                 package = None
 
@@ -336,6 +343,8 @@ class Architecture(ConfigurationParser):
         for entity in config["entities"]:
             if "package" in entity:
                 package = entity["package"]
+                if isinstance(package,str):
+                    package = [package] #allows single or multiple packages
             else:
                 package = None
 

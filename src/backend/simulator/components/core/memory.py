@@ -20,7 +20,7 @@ Configuration file template should follow form
 
     /* Optional */
 
-    "package" : ""core,
+    "package" : "core",
     "append_to_signals" : true,
     "value" : 0,
     "edge_type" : "",

@@ -15,7 +15,7 @@ Configuration file template should follow form
 
     /* Optional */
 
-    "package" : ""core,
+    "package" : "core",
     "append_to_signals" : true,
     "output" : "",
     "enable" : "",

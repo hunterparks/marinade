@@ -11,8 +11,8 @@ Configuration file template should follow form
     "size" : 1,
 
     /* Optional */
-    
-    "package" : ""core,
+
+    "package" : "core",
     "value" : 1
 }
 

@@ -10,11 +10,11 @@ Configuration file template should follow form
 
     "name" : "reset",
     "type" : "Reset",
-    "value" : 1,
 
     /* Optional */
-    
-    "package" : ""core
+
+    "package" : "core",
+    "value" : 1
 }
 
 name is the entity name, used by entity map (Used externally)
