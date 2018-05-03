@@ -1,5 +1,36 @@
 """
 ARM specific program memory module with 32-bit width.
+
+Configuration file template should follow form
+{
+    /* Required */
+
+    "name" : "program_memory",
+    "type" : "ProgramMemory",
+    "address" : "",
+    "reset" : "",
+    "clock" : "",
+    "read" : "",
+
+    /*  Options */
+    "package" : "arm",
+    "append_to_signals" : true,
+    "size" : 1,
+    "value" : 0,
+    "reset_type" : ""
+}
+
+name is the entity name, used by entity map (Used externally)
+type is the component class (Used externally)
+package is associated package to override general (Used externally)
+append_to_signals is flag used to append an entity as hook (Used externally)
+address is bus reference for memory cell to access
+clock is control bus clock line reference
+reset is control bus reset line reference
+read is data bus reference to read from cell
+size is number of elements in memory
+value is default value for a cell
+reset_type is logic level to clear memory
 """
 
 from simulator.components.core.memory import Memory, Latch_Type, Logic_States

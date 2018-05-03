@@ -1,5 +1,47 @@
 """
 ARM specific register file of length 16 with bit-width of 32.
+
+Configuraiton file template should follow form
+{
+    /* Required */
+
+    "name" : "register_file_demo",
+    "type" : "RegisterFileDemo",
+    "clock" : "",
+    "reset" : "",
+    "write_enable" : "",
+    "write_data" : "",
+    "a1" : "",
+    "a2" : "",
+    "a3" : "",
+    "rd1" : "",
+    "rd2" : "",
+
+    /* Optional */
+
+    "package" : "arm",
+    "append_to_signals" : true,
+    "edge_type" : "",
+    "reset_type" : "",
+    "enable_type" : ""
+}
+
+name is the entity name, used by entity map (Used externally)
+type is the component class (Used externally)
+package is associated package to override general (Used externally)
+append_to_signals is flag used to append an entity as hook (Used externally)
+clock is control bus clock line reference
+reset is control bus reset line reference
+write_enable is write control bus reference
+write_data is data bus reference to register
+a1 is data bus reference for read register address
+a2 is data bus reference for read register address
+a3 is data bus reference for write register address
+rd1 is data bus reference with contents from register 1
+rd2 is data bus reference with contents from register 2
+edge_type is edge to clock data
+reset_type is logic level to clear memory
+enable_type is logic level to write to memory
 """
 
 from simulator.components.core.register_file import RegisterFile as _RegisterFile

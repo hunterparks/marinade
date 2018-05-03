@@ -1,6 +1,92 @@
 """
 Idex is a barrier register for the pipeline ARM processor that seperates the
 memory and write-back stages.
+
+Configuration file template should follow form
+{
+    /* Required */
+
+    "name" : "idex",
+    "type" : "Idex",
+    "pc4d" : "",
+    "regwrd" : "",
+    "alusrcbd" : "",
+    "alusd" : "",
+    "alusflagwrd" : "",
+    "memwrd" : "",
+    "regsrcd" : "",
+    "wd3sd" : "",
+    "rd1d" : "",
+    "rd2d" : "",
+    "imm32d" : "",
+    "ra1d" : "",
+    "ra2d" : "",
+    "ra3d" : "",
+    "flush" : "",
+    "clk" : "",
+    "pc4e" : "",
+    "regwre" : "",
+    "alusrcbe" : "",
+    "aluse" : "",
+    "aluflagwre" : "",
+    "memwre" : "",
+    "regsrce" : "",
+    "wd3se" : "",
+    "rd1e" : "",
+    "rd2e" : "",
+    "imm32e" : "",
+    "ra1e" : "",
+    "ra2e" : "",
+    "ra3e" : "",
+
+    /* Optional */
+
+    "package" : "arm",
+    "append_to_signals" : true,
+    "enable" : "",
+    "edge_type" : "",
+    "enable_type" : "",
+    "flush_type" : ""
+}
+
+name is the entity name, used by entity map (Used externally)
+type is the component class (Used externally)
+package is associated package to override general (Used externally)
+append_to_signals is flag used to append an entity as hook (Used externally)
+pc4d is data bus reference input
+regwrd is data bus reference input
+alusrcbd is data bus reference input
+alusd is data bus reference input
+alusflagwrd is data bus reference input
+memwrd is data bus reference input
+regsrcd is data bus reference input
+wd3sd is data bus reference input
+rd1d is data bus reference input
+rd2d is data bus reference input
+imm32d is data bus reference input
+ra1d is data bus reference input
+ra2d is data bus reference input
+ra3d is data bus reference input
+flush is control bus reference
+clk is clock control bus reference
+pc4e is data bus reference output
+regwre is data bus reference output
+alusrcbe is data bus reference output
+aluse is data bus reference output
+aluflagwre is data bus reference output
+memwre is data bus reference output
+regsrce is data bus reference output
+wd3se is data bus reference output
+rd1e is data bus reference output
+rd2e is data bus reference output
+imm32e is data bus reference output
+ra1e is data bus reference output
+ra2e is data bus reference output
+ra3e is data bus reference output
+enable is write control bus reference
+edge_type is edge to clock data
+enable_type is logic level to write to memory
+flush_type is logic level to clear memory
 """
 
 from simulator.components.abstract.ibus import iBusRead, iBusWrite

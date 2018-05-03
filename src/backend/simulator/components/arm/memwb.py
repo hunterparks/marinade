@@ -1,6 +1,60 @@
 """
 Memwb is a barrier register for the pipeline ARM processor that seperates
 the memory and write-back stages.
+
+Configuraiton file template should follow form
+{
+    /* Required */
+
+    "name" : "memwb",
+    "type" : "Memwb",
+    "pc4m" : "",
+    "regwrm" : "",
+    "regsrcm" : "",
+    "wd3sm" : "",
+    "fm" : "",
+    "rdm" : "",
+    "ra3m" : "",
+    "clk" : "",
+    "pc4w" : "",
+    "regwrw" : "",
+    "regsrcw" : "",
+    "wd3sw" : "",
+    "fw" : "",
+    "rdw" : "",
+    "ra3w" : "",
+
+    /* Optional */
+
+    "package" : "arm",
+    "append_to_signals" : true,
+    "enable" : "",
+    "edge_type" : "",
+    "enable_type" : ""
+}
+
+name is the entity name, used by entity map (Used externally)
+type is the component class (Used externally)
+package is associated package to override general (Used externally)
+append_to_signals is flag used to append an entity as hook (Used externally)
+pc4m is data bus reference input
+regwrm is data bus reference input
+regsrcm is data bus reference input
+wd3sm is data bus reference input
+fm is data bus reference input
+rdm is data bus reference input
+ra3m is data bus reference input
+clk is clock control bus reference
+pc4w is data bus reference output
+regwrw is data bus reference output
+regsrcw is data bus reference output
+wd3sw is data bus reference output
+fw is data bus reference output
+rdw is data bus reference output
+ra3w is data bus reference output
+enable is write control bus reference
+edge_type is edge to clock data
+enable_type is logic level to write to memory
 """
 
 from simulator.components.abstract.ibus import iBusRead, iBusWrite

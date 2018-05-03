@@ -1,6 +1,64 @@
 """
 Exmem is a barrier register for the pipeline ARM processor that seperates the
 execute and memory stages
+
+Configuration file template should follow form
+{
+    /* Required */
+
+    "name" : "exmem",
+    "type" : "Exmem",
+    "pc4e" : "",
+    "regwre" : "",
+    "memwre" : "",
+    "regsrce" : "",
+    "wd3se" : "",
+    "rd2e" : "",
+    "fe" : "",
+    "ra3e" : "",
+    "clk" : "",
+    "pc4m" : "",
+    "regwrm" : "",
+    "memwrm" : "",
+    "regsrcm" : "",
+    "wd3sm" : "",
+    "fm" : "",
+    "rd2m" : "",
+    "ra3m" : "",
+
+    /* Optional */
+
+    "package" : "arm",
+    "append_to_signals" : true,
+    "enable" : "",
+    "edge_type" : "",
+    "enable_type" : ""
+}
+
+name is the entity name, used by entity map (Used externally)
+type is the component class (Used externally)
+package is associated package to override general (Used externally)
+append_to_signals is flag used to append an entity as hook (Used externally)
+pc4e is data bus reference input
+regwre is data bus reference input
+memwre is data bus reference input
+regsrce is data bus reference input
+wd3se is data bus reference input
+rd2e is data bus reference input
+fe is data bus reference input
+ra3e is data bus reference input
+clk is clock control bus reference
+pc4m is data bus reference output
+regwrm is data bus reference output
+memwrm is data bus reference output
+regsrcm is data bus reference output
+wd3sm is data bus reference output
+fm
+rd2m
+ra3m
+enable is write control bus reference
+edge_type is edge to clock data
+enable_type is logic level to write to memory
 """
 
 from simulator.components.abstract.sequential import Sequential, Latch_Type, Logic_States

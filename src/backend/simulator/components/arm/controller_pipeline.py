@@ -1,3 +1,69 @@
+"""
+Pipeline controller as derivied by Larry Skuse's VHDL work. This processor has
+been extended to work in conjunction with the hazard controller.
+
+Configuration file template should follow form
+{
+    /* Required */
+
+    "name" : "controller_pipeline",
+    "type" : "ControllerPipeline",
+    "cond" : "",
+    "op" : "",
+    "funct" : "",
+    "rd" : "",
+    "bit4" : "",
+    "c" : "",
+    "v" : "",
+    "n" : "",
+    "z" : "",
+    "stallf" : "",
+    "pcsrcd" : "",
+    "pcwrd" : "",
+    "regsad" : "",
+    "regdstd" : "",
+    "regwrsd" : "",
+    "regwrd" : "",
+    "extsd" : "",
+    "alusrcbd" : "",
+    "alusd" : "",
+    "aluflagwrd" : "",
+    "memwrd" : "",
+    "regsrcd" : "",
+    "wd3sd" : "",
+
+    /* Optional */
+
+    "package" : "arm",
+    "append_to_signals" : true
+}
+
+name is the entity name, used by entity map (Used externally)
+type is the component class (Used externally)
+package is associated package to override general (Used externally)
+append_to_signals is flag used to append an entity as hook (Used externally)
+cond is data bus reference input
+op is data bus reference input
+funct is data bus reference input
+rd is data bus reference input
+bit4 is data bus reference input
+c is data bus reference input
+v is data bus reference input
+n is data bus reference input
+z is data bus reference input
+stallf is data bus reference input
+pcsrcd is data bus reference output
+regsad is data bus reference output
+regdstd is data bus reference output
+regwrsd is data bus reference output
+extsd is data bus reference output
+alusrcbd is data bus reference output
+aluflagwrd is data bus reference output
+memwrd is data bus reference output
+regsrcd is data bus reference output
+wd3sd is data bus reference output
+"""
+
 from simulator.components.abstract.controller import Controller
 from simulator.components.abstract.ibus import iBusRead, iBusWrite
 

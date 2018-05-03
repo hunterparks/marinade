@@ -1,6 +1,28 @@
 """
 ARM Memory Read extender for use in ARMv4 after reading from memory using
 byte or half word modes
+
+Configuration file template should follow form
+{
+    /* Required */
+
+    "name" : "memory_read_sign_extend",
+    "type" : "MemoryReadSignExtender",
+    "input" : "",
+    "ctrl" : "",
+    "output" : "",
+
+    /* Options */
+
+    "package" : "arm"
+}
+
+name is the entity name, used by entity map (Used externally)
+type is the component class (Used externally)
+package is associated package to override general (Used externally)
+input is data bus reference from memory
+ctrl is control bus to select operation
+output is data bus reference with modified data from input
 """
 
 from simulator.components.abstract.combinational import Combinational

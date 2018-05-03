@@ -17,8 +17,9 @@ Configuration file template should follow form
     "read_datas" : [],
 
     /* Optional */
-    
+
     "package" : ""core,
+    "append_to_signals" : true,
     "enable" : "",
     "value" : 0,
     "edge_type" : "",
@@ -29,6 +30,7 @@ Configuration file template should follow form
 name is the entity name, used by entity map (Used externally)
 type is the component class (Used externally)
 package is associated package to override general (Used externally)
+append_to_signals is flag used to append an entity as hook (Used externally)
 length is number of registers in register file
 size is number of bits stored in register
 clock is control bus clock line reference

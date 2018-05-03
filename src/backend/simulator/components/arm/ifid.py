@@ -1,6 +1,52 @@
 """
 Memwb is a barrier register for the pipeline ARM processor that seperates fetch
 and decode stages.
+
+Configration file template should follow form
+{
+    /* Required */
+
+    "name" : "ifid",
+    "type" : "Ifid",
+    "pc4f" : "",
+    "pc8f" : "",
+    "instrf" : "",
+    "stall" : "",
+    "flush" : "",
+    "clk" : "",
+    "pc4d" : "",
+    "pc8d" : "",
+    "instrd" : "",
+
+    /* Optional */
+
+    "package" : "arm",
+    "append_to_signals" : true,
+    "value" : 0,
+    "enable" : "",
+    "edge_type" : "",
+    "flush_type" : "",
+    "enable_type" : ""
+}
+
+name is the entity name, used by entity map (Used externally)
+type is the component class (Used externally)
+package is associated package to override general (Used externally)
+append_to_signals is flag used to append an entity as hook (Used externally)
+pc4f is data bus reference input
+pc8f is data bus reference input
+instrf is data bus reference input
+stall is control bus reference
+flush is control bus reference
+clk is clock control bus reference
+pc4d is data bus reference output
+pc8d is data bus reference output
+instrd is data bus reference output
+value is default state of register
+enable is write control bus reference
+edge_type is edge to clock data
+enable_type is logic level to write to memory
+flush_type is logic level to clear memory
 """
 
 from simulator.components.abstract.ibus import iBusRead, iBusWrite

@@ -1,5 +1,53 @@
 """
 ARM specific register file of length 16 with bit-width of 32.
+
+Configuration file template should follow form
+{
+    /* Required */
+
+    "name" : "register_file_full",
+    "type" : "RegisterFileFull",
+    "clock" : "",
+    "reset" : "",
+    "write_enable" : "",
+    "write_data" : "",
+    "ra1" : "",
+    "ra2" : "",
+    "ra3" : "",
+    "wa1" : "",
+    "rd1" : "",
+    "rd2" : "",
+    "rd3" : "",
+    "pc" : "",
+
+    /* Optional */
+
+    "package" : "arm",
+    "append_to_signals" : true,
+    "edge_type" : "",
+    "reset_type" : "",
+    "enable_type" : ""
+}
+
+name is the entity name, used by entity map (Used externally)
+type is the component class (Used externally)
+package is associated package to override general (Used externally)
+append_to_signals is flag used to append an entity as hook (Used externally)
+clock is control bus clock line reference
+reset is control bus reset line reference
+write_enable is write control bus reference
+write_data is data bus reference to register
+ra1 is data bus reference for read register address
+ra2 is data bus reference for read register address
+ra3 is data bus reference for read register address
+wa1 is data bus reference for write register address
+rd1 is data bus reference with contents from register 1
+rd2 is data bus reference with contents from register 2
+rd3 is data bus reference with contents from register 3
+pc is data bus reference with contents representing register #15
+edge_type is edge to clock data
+reset_type is logic level to clear memory
+enable_type is logic level to write to memory
 """
 
 from simulator.components.abstract.ibus import iBusRead

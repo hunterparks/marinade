@@ -1,5 +1,56 @@
 """
 Hazard controller for ARM v4 Pipeline Processor
+
+Configuration file template should follow form
+{
+    /* Required */
+
+    "name" : "hazard",
+    "type" : "Hazard",
+    "ra1e" : "",
+    "ra2e" : "",
+    "ra3e" : "",
+    "ra3m" : "",
+    "ra3w" : "",
+    "regwrm" : "",
+    "regwrw" : "",
+    "regsrcm" : "",
+    "regsrcw" : "",
+    "memwrm" : "",
+    "pcsrcd" : "",
+    "fwda" : "",
+    "fwdb" : "",
+    "fwds" : "",
+    "stallf" : "",
+    "flushf" : "",
+    "flushd" : "",
+
+    /* Optional */
+
+    "package" : "arm",
+    "append_to_signals" : true
+}
+
+name is the entity name, used by entity map (Used externally)
+type is the component class (Used externally)
+package is associated package to override general (Used externally)
+ra1e is data bus reference input
+ra2e is data bus reference input
+ra3e is data bus reference input
+ra3m is data bus reference input
+ra3w is data bus reference input
+regwrm is data bus reference input
+regwrw is data bus reference input
+regsrcm is data bus reference input
+regsrcw is data bus reference input
+memwrm is data bus reference input
+pcsrcd is data bus reference input
+fwda is data bus reference output
+fwdn is data bus reference output
+fwds is data bus reference output
+stallf is data bus reference output
+flushf is data bus reference output
+flushd is data bus reference output
 """
 
 from simulator.components.abstract.ibus import iBusRead, iBusWrite

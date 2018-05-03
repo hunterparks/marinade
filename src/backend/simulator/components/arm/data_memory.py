@@ -16,9 +16,11 @@ Configuration file template should follow form
 
     /* Optional */
 
-    "package" : "arm"
+    "package" : "arm",
+    "append_to_signals" : true
     "mode" : "",
     "size" : 1,
+    "value" : 0
     "edge_type" : "",
     "reset_type" : "",
     "enable_type" : ""
@@ -27,6 +29,7 @@ Configuration file template should follow form
 name is the entity name, used by entity map (Used externally)
 type is the component class (Used externally)
 package is associated package to override general (Used externally)
+append_to_signals is flag used to append an entity as hook (Used externally)
 address is bus reference for memory cell to access
 write is data bus reference to write to cell
 clock is control bus clock line reference
@@ -35,6 +38,7 @@ write_enable is write control bus reference
 read is data bus reference to read from cell
 mode is control bus defining cell size used (none, byte, half-word, word)
 size is number of elements in memory
+value is default value for a cell
 edge_type is edge to clock data
 reset_type is logic level to clear memory
 enable_type is logic level to write to memory

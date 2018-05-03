@@ -1,5 +1,72 @@
 """
-Single-cycle controller as derived by Larry Skuse's VHDL work.
+Single-cycle controller as derived by Larry Skuse's VHDL work. This processor
+has been extended to take a larger subset of ARM instructions.
+
+Configuration file template should follow form
+{
+    /* Required */
+
+    "name" : "controller_single_full",
+    "type" : "ControllerSingleCycleFull",
+    "instruction" : "",
+    "c" : "",
+    "v" : "",
+    "n" : "",
+    "z" : "",
+    "pcsrc" : "",
+    "pcwr" : "",
+    "regsa" : "",
+    "regdst" : "",
+    "regsb" : "",
+    "regwr" : "",
+    "regwrs" : "",
+    "regwr" : "",
+    "exts" : ""
+    "alusrcb" : "",
+    "alus" : "",
+    "shop" : "",
+    "shctrl" : "",
+    "accen" : "",
+    "aluflagwr" : "",
+    "memty" : "",
+    "memwr" : "",
+    "regsrc" : "",
+    "wbs" : "",
+
+    /* Optional */
+
+    "package" : "arm",
+    "append_to_signals" : true
+}
+
+name is the entity name, used by entity map (Used externally)
+type is the component class (Used externally)
+package is associated package to override general (Used externally)
+append_to_signals is flag used to append an entity as hook (Used externally)
+instruction is data bus reference input
+c is data bus reference input
+v is data bus reference input
+n is data bus reference input
+z is data bus reference input
+pcsrc is data bus reference output
+pcwr is data bus reference output
+regsa is data bus reference output
+regdst is data bus reference output
+regsb is data bus reference output
+regwr is data bus reference output
+regwrs is data bus reference output
+regwr is data bus reference output
+exts is data bus reference output
+alusrcb is data bus reference output
+alus is data bus reference output
+shop is data bus reference output
+shctrl is data bus reference output
+accen is data bus reference output
+aluflagwr is data bus reference output
+memty is data bus reference output
+memwr is data bus reference output
+regsrc is data bus reference output
+wbs is data bus reference output
 """
 
 from simulator.components.abstract.controller import Controller
