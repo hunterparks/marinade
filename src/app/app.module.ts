@@ -20,9 +20,11 @@ import { marinadeRoutes } from './app.routes';
 import { CovalentFileSelectModule } from './components/common/file-select/file-select/file-select.module';
 import { TooltipContainerComponent } from './components/common/tooltip/tooltip-container/tooltip-container.component';
 import { TooltipComponent } from './components/common/tooltip/tooltip-content/tooltip.component';
+import { EditorViewSidebarComponent } from './components/pages/editor-view/editor-view-sidebar/editor-view-sidebar.component';
 import { EditorViewComponent } from './components/pages/editor-view/editor-view.component';
 import { MemoryViewComponent } from './components/pages/memory-view/memory-view.component';
 import { SettingsViewComponent } from './components/pages/settings-view/settings-view.component';
+import { SimulatorViewSidebarComponent } from './components/pages/simulator-view/simulator-view-sidebar/simulator-view-sidebar.component';
 import { SimulatorViewComponent } from './components/pages/simulator-view/simulator-view.component';
 import { BusMonitorItemComponent } from './components/simulator/bus/bus-monitor/bus-monitor-item/bus-monitor-item.component';
 import { BusMonitorComponent } from './components/simulator/bus/bus-monitor/bus-monitor.component';
@@ -33,10 +35,10 @@ import { StageRegisterComponent } from './components/simulator/stage-register/st
 import { StageComponent } from './components/simulator/stage/stage.component';
 import { TooltipDirective } from './directives/tooltip/tooltip.directive';
 import { SafeHtmlPipe } from './pipes/safe-html.pipe';
-import { BusMonitorService } from './services/simulator/bus-monitor/bus-monitor.service';
 import { ArchitectureService } from './services/simulator/architecture/architecture.service';
-import { ResponseService } from './services/simulator/response/response.service';
+import { BusMonitorService } from './services/simulator/bus-monitor/bus-monitor.service';
 import { RequestService } from './services/simulator/request/request.service';
+import { ResponseService } from './services/simulator/response/response.service';
 import { WebsocketService } from './services/simulator/websocket/websocket.service';
 import { TooltipService } from './services/tooltip/tooltip.service';
 import { SentrySettings } from './settings/sentry/local.sentry.settings';
@@ -72,7 +74,9 @@ export class RavenErrorHandler implements ErrorHandler {
     MemoryViewComponent,
     SettingsViewComponent,
     BusMonitorComponent,
-    BusMonitorItemComponent
+    BusMonitorItemComponent,
+    SimulatorViewSidebarComponent,
+    EditorViewSidebarComponent
   ],
   imports: [
     BrowserModule,
