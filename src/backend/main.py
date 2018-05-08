@@ -229,9 +229,6 @@ class Interface:
             machine_code = binary_file.read()
             program = list(struct.unpack('B' * len(machine_code), machine_code))
             binary_file.close()
-            print(type(program))
-            for byte in program:
-                print(hex(byte))
             self.arch.hook({'clear': [msg['memory']]})
             return self.arch.hook({'modify': {'name': msg['memory'], 'parameters': {'start': 0, 'data': program}}})
         else:
@@ -264,7 +261,7 @@ if __name__ == "__main__":
                     retMsg = interface.parse_command(msg)
                     rxStr = json.dumps(retMsg)
                     await websocket.send(rxStr)
-                except:
+                except Exception as e:
                     await websocket.send(json.dumps({'status' : False, 'error' : 'cannot parse JSON message'}))
 
         asyncio.get_event_loop().run_until_complete(
