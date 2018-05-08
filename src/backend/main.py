@@ -10,7 +10,7 @@ used when in memory view mode. Distinction is made since step either moves a
 timestep or a clockstep.
 
 ### Architecture Commands
-{'assemble':{'filepath':<'file'>}} Returns {'status':{}}
+{'assemble':{'filepath':<'file'>}} Returns {'status':{}, "errors":{}}
 {'step':{'type':<'logic','edge','time'>}} Returns {'status':{}}
 {'reset':{}} Returns {'status':{}}
 {'load':{'filepath':<'file'>}}  Returns {'status':{}}
@@ -136,11 +136,11 @@ class Interface:
             if platform == "linux" or platform == "linux2" or platform == "darwin":
                 output = subprocess.run(["./assembler/nix_assembler.sh", msg['filepath']], stderr=subprocess.PIPE)
                 f.close()
-                return {'status': True, 'error': output.stderr.decode('utf-8')}
+                return {'status': True, 'errors': output.stderr.decode('utf-8')}
             elif platform == "win32":
                 output = subprocess.run([r".\assembler\windows_assembler.bat", msg['filepath']], stderr=subprocess.PIPE)
                 f.close()
-                return {'status': True, 'error': output.stderr.decode('utf-8')}
+                return {'status': True, 'errors': output.stderr.decode('utf-8')}
         except KeyError as e:
             traceback.print_exc()
             return {'status': False, 'error': 'invalid key : {}'.format(str(e))}
@@ -168,7 +168,7 @@ class Interface:
                 return {'status': True}
             else:
                 return {'status': False, 'error': 'architecture needs to be loaded'}
-        except KeyError as e:
+        except KeyError:
             return {'status': False, 'error': 'step requires a type key'}
 
     def reset(self):
@@ -261,7 +261,7 @@ if __name__ == "__main__":
                     retMsg = interface.parse_command(msg)
                     rxStr = json.dumps(retMsg)
                     await websocket.send(rxStr)
-                except Exception as e:
+                except Exception:
                     await websocket.send(json.dumps({'status' : False, 'error' : 'cannot parse JSON message'}))
 
         asyncio.get_event_loop().run_until_complete(
