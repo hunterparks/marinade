@@ -28,7 +28,7 @@ Configuration file template should follow form
     "aluflagwr" : "",
     "memwr" : "",
     "regsrc" : "",
-    "wd3s" : "",
+    "wdbs" : "",
 
     /* Optional */
 
@@ -507,4 +507,4 @@ class ControllerSingleCycle(Controller):
                                      hooks[config["alusrcb"]],
                                      hooks[config["alus"]], hooks[config["aluflagwr"]],
                                      hooks[config["memwr"]], hooks[config["regsrc"]],
-                                     hooks["wdbs"])
+                                     hooks[config["wdbs"]])

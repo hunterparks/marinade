@@ -2,9 +2,10 @@
 Tests arm component Extender
 """
 
+from collections import OrderedDict
 import unittest
 import sys
-sys.path.insert(0, '../../')
+sys.path.insert(0, '../../../')
 from simulator.components.arm.extender import Extender
 from simulator.components.core.bus import Bus
 
@@ -67,7 +68,22 @@ class Extender_t(unittest.TestCase):
 
     def test_from_dict(self):
         "Validates dictionary constructor"
-        raise NotImplementedError
+
+        hooks = OrderedDict({
+            "imm" : Bus(24),
+            "exts" : Bus(2),
+            "imm32" : Bus(32)
+        })
+
+        config = {
+            "name" : "extender",
+            "type" : "Extender",
+            "imm" : "imm",
+            "exts" : "exts",
+            "imm32" : "imm32"
+        }
+
+        ext = Extender.from_dict(config,hooks)
 
 
 if __name__ == '__main__':

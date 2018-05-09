@@ -491,7 +491,44 @@ class Alu_t(unittest.TestCase):
 
     def test_from_dict(self):
         "Validates dictionary constructor"
-        raise NotImplementedError
+
+        hooks = OrderedDict({
+            "a" : Bus(32),
+            "b" : Bus(32),
+            "ar" : Bus(32),
+            "alus" : Bus(4),
+            "sh" : Bus(5),
+            "cin" : Bus(1),
+            "shop" : Bus(2),
+            "shctrl" : Bus(2),
+            "accen" : Bus(1),
+            "f" : Bus(32),
+            "c" : Bus(1),
+            "v" : Bus(1),
+            "n" : Bus(1),
+            "z" : Bus(1)
+        })
+
+        config = {
+            "name" : "alu_full",
+            "type" : "AluFull",
+            "input_a" : "a",
+            "input_b" : "b",
+            "input_ar" : "ar",
+            "alus" : "alus",
+            "shift" : "sh",
+            "input_c" : "cin",
+            "shift_op" : "shop",
+            "shift_ctrl" : "shctrl",
+            "acc_enable" : "accen",
+            "output_f" : "f",
+            "output_c" : "c",
+            "output_v" : "v",
+            "output_n" : "n",
+            "output_z" : "z"
+        }
+
+        alu = Alu.from_dict(config,hooks)
 
 
 if __name__ == '__main__':

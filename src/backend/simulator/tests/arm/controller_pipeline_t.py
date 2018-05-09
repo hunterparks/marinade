@@ -3,6 +3,7 @@ Tests the controller_pipeline.py module
 Must be run in the marinade/src/backend/simulator/tests/arm
 """
 
+from collections import OrderedDict
 import unittest
 import sys
 sys.path.insert(0, '../../../')
@@ -387,9 +388,62 @@ class ControllerSingleCycle_t(unittest.TestCase):
 
     def test_from_dict(self):
         "Validates dictionary constructor"
-        raise NotImplementedError
 
+        hooks = OrderedDict({
+            "cond" : Bus(4),
+            "op" : Bus(2),
+            "funct" : Bus(6),
+            "rd" : Bus(4),
+            "bit4" : Bus(1),
+            "c" : Bus(1),
+            "v" : Bus(1),
+            "n" : Bus(1),
+            "z" : Bus(1),
+            "stallf" : Bus(1),
+            "pcsrcd" : Bus(2),
+            "pcwrd" : Bus(1),
+            "regsad" : Bus(1),
+            "regdstd" : Bus(2),
+            "regwrsd" : Bus(2),
+            "regwrd" : Bus(1),
+            "extsd" : Bus(2),
+            "alusrcbd" : Bus(1),
+            "alusd" : Bus(4),
+            "aluflagwrd" : Bus(1),
+            "memwrd" : Bus(1),
+            "regsrcd" : Bus(1),
+            "wd3sd" : Bus(1)
+        })
 
+        config = {
+            "name" : "controller_pipeline",
+            "type" : "ControllerPipeline",
+            "cond" : "cond",
+            "op" : "op",
+            "funct" : "funct",
+            "rd" : "rd",
+            "bit4" : "bit4",
+            "c" : "c",
+            "v" : "v",
+            "n" : "n",
+            "z" : "z",
+            "stallf" : "stallf",
+            "pcsrcd" : "pcsrcd",
+            "pcwrd" : "pcwrd",
+            "regsad" : "regsad",
+            "regdstd" : "regdstd",
+            "regwrsd" : "regwrsd",
+            "regwrd" : "regwrd",
+            "extsd" : "extsd",
+            "alusrcbd" : "alusrcbd",
+            "alusd" : "alusd",
+            "aluflagwrd" : "aluflagwrd",
+            "memwrd" : "memwrd",
+            "regsrcd" : "regsrcd",
+            "wd3sd" : "wd3sd"
+        }
+
+        ctrl = ControllerPipeline.from_dict(config,hooks)
 
 if __name__ == '__main__':
     unittest.main()

@@ -9,7 +9,7 @@ Configuration file template should follow form
     "type" : "Extender",
     "imm" : "",
     "exts" : "",
-    "imm32" : ""
+    "imm32" : "",
 
     /* Options */
 
@@ -21,7 +21,7 @@ type is the component class (Used externally)
 package is associated package to override general (Used externally)
 imm is data bus reference of 24 bits
 exts is control bus reference
-imm32 is 32 bit extended data bus reference 
+imm32 is 32 bit extended data bus reference
 """
 
 from simulator.components.abstract.combinational import Combinational

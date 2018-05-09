@@ -20,7 +20,7 @@ Configuration file template should follow form
     "append_to_signals" : true
     "mode" : "",
     "size" : 1,
-    "value" : 0
+    "value" : 0,
     "edge_type" : "",
     "reset_type" : "",
     "enable_type" : ""

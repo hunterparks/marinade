@@ -3,6 +3,7 @@ Tests the exmem.py module
 Must be run in the marinade/src/backend/simulator/tests/arm
 """
 
+from collections import OrderedDict
 import unittest
 import sys
 sys.path.insert(0, '../../../')
@@ -199,8 +200,54 @@ class Exmem_t(unittest.TestCase):
 
     def test_from_dict(self):
         "Validates dictionary constructor"
-        raise NotImplementedError
 
+        hooks = OrderedDict({
+            "pc4e" : Bus(32),
+            "regwre" : Bus(1),
+            "memwre" : Bus(1),
+            "regsrce" : Bus(1),
+            "wd3se" : Bus(1),
+            "rd2e" : Bus(32),
+            "fe" : Bus(32),
+            "ra3e" : Bus(4),
+            "clk" : Bus(1),
+            "pc4m" : Bus(32),
+            "regwrm" : Bus(1),
+            "memwrm" : Bus(1),
+            "regsrcm" : Bus(1),
+            "wd3sm" : Bus(1),
+            "fm" : Bus(32),
+            "rd2m" : Bus(32),
+            "ra3m" : Bus(4),
+            "en" : Bus(1)
+        })
+
+        config = {
+            "name" : "exmem",
+            "type" : "Exmem",
+            "pc4e" : "pc4e",
+            "regwre" : "regwre",
+            "memwre" : "memwre",
+            "regsrce" : "regsrce",
+            "wd3se" : "wd3se",
+            "rd2e" : "rd2e",
+            "fe" : "fe",
+            "ra3e" : "ra3e",
+            "clk" : "clk",
+            "pc4m" : "pc4m",
+            "regwrm" : "regwrm",
+            "memwrm" : "memwrm",
+            "regsrcm" : "regsrcm",
+            "wd3sm" : "wd3sm",
+            "fm" : "fm",
+            "rd2m" : "rd2m",
+            "ra3m" : "ra3m",
+            "enable" : "en",
+            "edge_type" : "rising_edge",
+            "enable_type" : "active_low"
+        }
+
+        reg = Exmem.from_dict(config,hooks)
 
 
 if __name__ == '__main__':

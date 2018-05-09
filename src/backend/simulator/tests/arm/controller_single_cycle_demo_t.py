@@ -2,9 +2,10 @@
 Test arm component ControllerSingleCycle
 """
 
+from collections import OrderedDict
 import unittest
 import sys
-sys.path.insert(0, '../../')
+sys.path.insert(0, '../../../')
 from simulator.components.arm.controller_single_cycle_demo import ControllerSingleCycle
 from simulator.components.core.bus import Bus
 
@@ -403,7 +404,60 @@ class ControllerSingleCycle_t(unittest.TestCase):
 
     def test_from_dict(self):
         "Validates dictionary constructor"
-        raise NotImplementedError
+
+        hooks = OrderedDict({
+            "cond" : Bus(4),
+            "op" : Bus(2),
+            "funct" : Bus(6),
+            "rd" : Bus(4),
+            "bit4" : Bus(1),
+            "c" : Bus(1),
+            "v" : Bus(1),
+            "n" : Bus(1),
+            "z" : Bus(1),
+            "pcsrc" : Bus(2),
+            "pcwr" : Bus(1),
+            "regsa" : Bus(1),
+            "regdst" : Bus(2),
+            "regwrs" : Bus(2),
+            "regwr" : Bus(1),
+            "exts" : Bus(2),
+            "alusrcb" : Bus(1),
+            "alus" : Bus(4),
+            "aluflagwr" : Bus(1),
+            "memwr" : Bus(1),
+            "regsrc" : Bus(1),
+            "wd3s" : Bus(1)
+        })
+
+        config = {
+            "name" : "controller_single_demo",
+            "type" : "ControllerPipeline",
+            "cond" : "cond",
+            "op" : "op",
+            "funct" : "funct",
+            "rd" : "rd",
+            "bit4" : "bit4",
+            "c" : "c",
+            "v" : "v",
+            "n" : "n",
+            "z" : "z",
+            "pcsrc" : "pcsrc",
+            "pcwr" : "pcwr",
+            "regsa" : "regsa",
+            "regdst" : "regdst",
+            "regwrs" : "regwrs",
+            "regwr" : "regwr",
+            "exts" : "exts",
+            "alusrcb" : "alusrcb",
+            "alus" : "alus",
+            "aluflagwr" : "aluflagwr",
+            "memwr" : "memwr",
+            "regsrc" : "regsrc",
+            "wdbs" : "wd3s"
+        }
+
+        ctrl = ControllerSingleCycle.from_dict(config,hooks)
 
 
 if __name__ == '__main__':

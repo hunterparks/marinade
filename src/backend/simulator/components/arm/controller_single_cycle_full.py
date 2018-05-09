@@ -18,10 +18,9 @@ Configuration file template should follow form
     "regsa" : "",
     "regdst" : "",
     "regsb" : "",
-    "regwr" : "",
     "regwrs" : "",
     "regwr" : "",
-    "exts" : ""
+    "exts" : "",
     "alusrcb" : "",
     "alus" : "",
     "shop" : "",
@@ -31,7 +30,7 @@ Configuration file template should follow form
     "memty" : "",
     "memwr" : "",
     "regsrc" : "",
-    "wbs" : "",
+    "wdbs" : "",
 
     /* Optional */
 
