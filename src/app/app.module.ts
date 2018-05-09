@@ -41,19 +41,19 @@ import { RequestService } from './services/simulator/request/request.service';
 import { ResponseService } from './services/simulator/response/response.service';
 import { WebsocketService } from './services/simulator/websocket/websocket.service';
 import { TooltipService } from './services/tooltip/tooltip.service';
-import { SentrySettings } from './settings/sentry/local.sentry.settings';
+// import { SentrySettings } from './settings/sentry/local.sentry.settings';
 
-Raven.config(SentrySettings.getURL()).install();
-Raven.setTagsContext({
-  'Aspect': 'Frontend',
-  'Language': 'TypeScript',
-});
+// Raven.config(SentrySettings.getURL()).install();
+// Raven.setTagsContext({
+//   'Aspect': 'Frontend',
+//   'Language': 'TypeScript',
+// });
 
-export class RavenErrorHandler implements ErrorHandler {
-  public handleError(err: any): void {
-    Raven.captureException(err);
-  }
-}
+// export class RavenErrorHandler implements ErrorHandler {
+//   public handleError(err: any): void {
+//    Raven.captureException(err);
+//  }
+// }
 
 @NgModule({
   bootstrap: [AppComponent],
@@ -103,7 +103,7 @@ export class RavenErrorHandler implements ErrorHandler {
     TooltipService,
     RequestService,
     WebsocketService,
-    { provide: ErrorHandler, useClass: RavenErrorHandler }
+    // { provide: ErrorHandler, useClass: RavenErrorHandler }
   ]
 })
 export class AppModule { }
