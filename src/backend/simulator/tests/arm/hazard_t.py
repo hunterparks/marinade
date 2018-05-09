@@ -3,6 +3,7 @@ Tests the hazard.py module
 Must be run in the marinade/src/backend/simulator/tests/arm
 """
 
+from collections import OrderedDict
 import unittest
 import sys
 sys.path.insert(0, '../../../')
@@ -248,8 +249,50 @@ class HazardController_t(unittest.TestCase):
 
     def test_from_dict(self):
         "Validates dictionary constructor"
-        raise NotImplementedError
 
+        hooks = OrderedDict({
+            "ra1e" : Bus(4),
+            "ra2e" : Bus(4),
+            "ra3e" : Bus(4),
+            "ra3m" : Bus(4),
+            "ra3w" : Bus(4),
+            "regwrm" : Bus(1),
+            "regwrw" : Bus(1),
+            "regsrcm" : Bus(1),
+            "regsrcw" : Bus(1),
+            "memwrm" : Bus(1),
+            "pcsrcd" : Bus(2),
+            "fwda" : Bus(3),
+            "fwdb" : Bus(3),
+            "fwds" : Bus(1),
+            "stallf" : Bus(1),
+            "flushf" : Bus(1),
+            "flushd" : Bus(1)
+        })
+
+        config = {
+            "name" : "hazard",
+            "type" : "Hazard",
+            "ra1e" : "ra1e",
+            "ra2e" : "ra2e",
+            "ra3e" : "ra3e",
+            "ra3m" : "ra3m",
+            "ra3w" : "ra3w",
+            "regwrm" : "regwrm",
+            "regwrw" : "regwrw",
+            "regsrcm" : "regsrcm",
+            "regsrcw" : "regsrcw",
+            "memwrm" : "memwrm",
+            "pcsrcd" : "pcsrcd",
+            "fwda" : "fwda",
+            "fwdb" : "fwdb",
+            "fwds" : "fwds",
+            "stallf" : "stallf",
+            "flushf" : "flushf",
+            "flushd" : "flushd"
+        }
+
+        hzrd = HazardController.from_dict(config,hooks)
 
 
 if __name__ == '__main__':

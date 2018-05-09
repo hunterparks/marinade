@@ -3,6 +3,7 @@ Tests the memwb.py module
 Must be run in the marinade/src/backend/simulator/tests/arm
 """
 
+from collections import OrderedDict
 import unittest
 import sys
 sys.path.insert(0, '../../../')
@@ -195,7 +196,50 @@ class Memwb_t(unittest.TestCase):
 
     def test_from_dict(self):
         "Validates dictionary constructor"
-        raise NotImplementedError
+
+        hooks = OrderedDict({
+            "pc4m" : Bus(32),
+            "regwrm" : Bus(1),
+            "regsrcm" : Bus(1),
+            "wd3sm" : Bus(1),
+            "fm" : Bus(32),
+            "rdm" : Bus(32),
+            "ra3m" : Bus(4),
+            "clk" : Bus(1),
+            "pc4w" : Bus(32),
+            "regwrw" : Bus(1),
+            "regsrcw" : Bus(1),
+            "wd3sw" : Bus(1),
+            "fw" : Bus(32),
+            "rdw" : Bus(32),
+            "ra3w" : Bus(4),
+            "enable" : Bus(1)
+        })
+
+        config = {
+            "name" : "memwb",
+            "type" : "Memwb",
+            "pc4m" : "pc4m",
+            "regwrm" : "regwrm",
+            "regsrcm" : "regsrcm",
+            "wd3sm" : "wd3sm",
+            "fm" : "fm",
+            "rdm" : "rdm",
+            "ra3m" : "ra3m",
+            "clk" : "clk",
+            "pc4w" : "pc4w",
+            "regwrw" : "regwrw",
+            "regsrcw" : "regsrcw",
+            "wd3sw" : "wd3sw",
+            "fw" : "fw",
+            "rdw" : "rdw",
+            "ra3w" : "ra3w",
+            "enable" : "enable",
+            "edge_type" : "both_edge",
+            "enable_type" : "active_low"
+        }
+
+        reg = Memwb.from_dict(config,hooks)
 
 
 

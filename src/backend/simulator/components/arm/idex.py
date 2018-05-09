@@ -446,7 +446,7 @@ class Idex(Sequential):
             edge_type = Idex.DEFAULT_LATCH_TYPE
 
         if "flush_type" in config:
-            flush_type = Latch_Type.fromString(config["flush_type"])
+            flush_type = Logic_States.fromString(config["flush_type"])
         else:
             flush_type = Idex.DEFAULT_FLUSH_TYPE
 

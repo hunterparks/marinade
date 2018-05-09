@@ -2,9 +2,10 @@
 Tests arm component MemoryReadSignExtender
 """
 
+from collections import OrderedDict
 import unittest
 import sys
-sys.path.insert(0, '../../')
+sys.path.insert(0, '../../../')
 from simulator.components.arm.memory_read_sign_extend import MemoryReadSignExtender
 from simulator.components.core.bus import Bus
 
@@ -91,7 +92,22 @@ class MemoryReadSignExtender_t(unittest.TestCase):
 
     def test_from_dict(self):
         "Validates dictionary constructor"
-        raise NotImplementedError
+
+        hooks = OrderedDict({
+            "i" : Bus(32),
+            "c" : Bus(2),
+            "o" : Bus(32)
+        })
+
+        config = {
+            "name" : "memory_read_sign_extend",
+            "type" : "MemoryReadSignExtender",
+            "input" : "i",
+            "ctrl" : "c",
+            "output" : "o"
+        }
+
+        ext = MemoryReadSignExtender.from_dict(config,hooks)
 
 
 if __name__ == '__main__':
