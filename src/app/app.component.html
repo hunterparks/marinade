@@ -12,6 +12,9 @@
     <a [routerLink]="['settings']" routerLinkActive="active">
         <i class="fa fa-cog"></i>
     </a>
+    <div class="sidebar-controls">
+      <router-outlet name="sidebar"></router-outlet>
+    </div>
   </div>
   <div class="content">
     <router-outlet></router-outlet>
