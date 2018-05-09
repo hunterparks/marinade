@@ -18,11 +18,6 @@
       "value" : 0
     },
     {
-      "name" : "rst",
-      "type" : "Reset",
-      "value" : 0
-    },
-    {
       "name" : "const8",
       "type" : "Constant",
       "size" : 32,
