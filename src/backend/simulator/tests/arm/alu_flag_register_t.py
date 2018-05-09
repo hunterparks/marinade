@@ -2,9 +2,10 @@
 Tests ARM component ALUFlagRegister
 """
 
+from collections import OrderedDict
 import unittest
 import sys
-sys.path.insert(0, '../../')
+sys.path.insert(0, '../../../')
 from simulator.components.arm.alu_flag_register import ALUFlagRegister, Latch_Type, Logic_States
 from simulator.components.core.constant import Constant
 from simulator.components.core.bus import Bus
@@ -186,6 +187,41 @@ class ALUFlagRegister_t(unittest.TestCase):
         self.assertEqual(vout.read(), 0)
         self.assertEqual(nout.read(), 0)
         self.assertEqual(zout.read(), 1)
+
+    def test_from_dict(self):
+        "Validates dictionary constructor"
+
+        hooks = OrderedDict({
+            "c_i" : Bus(1),
+            "v_i" : Bus(1),
+            "n_i" : Bus(1),
+            "z_i" : Bus(1),
+            "rst" : Bus(1),
+            "clk" : Bus(1),
+            "en" : Bus(1),
+            "c_o" : Bus(1),
+            "v_o" : Bus(1),
+            "n_o" : Bus(1),
+            "z_o" : Bus(1)
+        })
+
+        config = {
+            "name" : "alu_flag_register",
+            "type" : "AluFlagRegister",
+            "c_in" : "c_i",
+            "v_in" : "v_i",
+            "n_in" : "n_i",
+            "z_in" : "z_i",
+            "reset" : "rst",
+            "clock" : "clk",
+            "enable" : "en",
+            "c_out" : "c_o",
+            "v_out" : "v_o",
+            "n_out" : "n_o",
+            "z_out" : "z_o"
+        }
+
+        reg = ALUFlagRegister.from_dict(config,hooks)
 
 
 if __name__ == '__main__':

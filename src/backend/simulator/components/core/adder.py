@@ -1,6 +1,33 @@
 """
 Adder component is a standalone core component for general architecture
 development.
+
+Configuration file template should follow form
+{
+    /* Required */
+
+    "name" : "adder",
+    "type" : "Adder",
+    "size" : 1,
+    "input_1" : "",
+    "input_2" : "",
+
+    /* Optional */
+    "package" : "core",
+    "output" : "",
+    "carry_in" : "",
+    "carry_out" : ""
+}
+
+name is the entity name, used by entity map (Used externally)
+type is the component class (Used externally)
+package is associated package to override general (Used externally)
+size is the bit-width for this component
+input_1 is string reference for input bus of bit-width
+input_2 is string reference for input bus of bit-width
+output is an optional string reference for output bus of bit-width
+carry_in is an optional string reference for input bus of 1 bit
+carry_out is an optional string reference for output bus of 1 bit
 """
 
 from simulator.components.abstract.ibus import iBusRead, iBusWrite
@@ -70,10 +97,22 @@ class Adder(Combinational):
             self._carry_out.write(cout)
 
     @classmethod
-    def from_dict(cls, config):
+    def from_dict(cls, config, hooks):
         "Implements conversion from configuration to component"
-        return NotImplemented
+        if "output" in config:
+            output = hooks[config["output"]]
+        else:
+            output = None
 
-    def to_dict(self):
-        "Implements conversion from component to configuration"
-        return NotImplemented
+        if "carry_in" in config:
+            carry_in = hooks[config["carry_in"]]
+        else:
+            carry_in = None
+
+        if "carry_out" in config:
+            carry_out = hooks[config["carry_out"]]
+        else:
+            carry_out = None
+
+        return Adder(config["size"], hooks[config["input_1"]],
+                     hooks[config["input_2"]], output, carry_in, carry_out)

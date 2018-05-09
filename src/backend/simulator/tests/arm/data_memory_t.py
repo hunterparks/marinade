@@ -2,9 +2,10 @@
 Tests arm component DataMemory
 """
 
+from collections import OrderedDict
 import unittest
 import sys
-sys.path.insert(0, '../../')
+sys.path.insert(0, '../../../')
 from simulator.components.arm.data_memory import DataMemory, Latch_Type, Logic_States
 from simulator.components.core.bus import Bus
 
@@ -171,6 +172,38 @@ class DataMemory_t(unittest.TestCase):
             ad.write(4 * i)
             mem.run()
             self.assertEqual(rd.read(), 0x81818181)
+
+    def test_from_dict(self):
+        "Validates dictionary constructor"
+
+        hooks = OrderedDict({
+            "address" : Bus(32),
+            "write" : Bus(32),
+            "we" : Bus(1),
+            "reset" : Bus(1),
+            "clock" : Bus(1),
+            "read" : Bus(32),
+            "mode" : Bus(2)
+        })
+
+        config = {
+            "name" : "data_memory",
+            "type" : "DataMemory",
+            "address" : "address",
+            "write" : "write",
+            "write_enable" : "we",
+            "reset" : "reset",
+            "clock" : "clock",
+            "read" : "read",
+            "mode" : "mode",
+            "size" : 32,
+            "value" : 255,
+            "edge_type" : "rising_edge",
+            "reset_type" : "active_high",
+            "enable_type" : "active_high"
+        }
+
+        mem = DataMemory.from_dict(config,hooks)
 
 
 if __name__ == '__main__':

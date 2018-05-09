@@ -58,11 +58,12 @@ timestep or a clockstep.
 import json
 import asyncio
 import websockets
-
-import simulator.single_cycle_poc as single_cycle_poc
-import simulator.pipeline_poc as pipeline_poc
+import traceback
 
 from sentry.sentry import initialize_sentry
+
+from simulator.architecture import Architecture
+
 
 HOST_NAME = 'localhost'
 HOST_PORT = 4242
@@ -157,16 +158,19 @@ class Interface:
         Param: msg is dictionary with a filepath specified to config file
         Return: dictionary noting resulting state of operation.
         """
-        retVal = False
-        # TODO replace this with a configuration file being loaded in the future
-        if msg['filepath'] == 'single_cycle_poc.json':
-            self.arch, self.hooks = single_cycle_poc.generate_single_cycle_architecture()
-            return {'status': True}
-        elif msg['filepath'] == 'pipeline_poc.json':
-            self.arch, self.hooks = pipeline_poc.generate_pipeline_architecture()
-            return {'status': True}
-        else:
-            return {'status': False, 'error': 'failed to load file'}
+        try:
+            f = open(msg['filepath'])
+            config = json.loads(f.read())
+            self.arch = Architecture.from_dict(config)
+            self.hooks = self.arch.get_hooks()
+            f.close()
+        except KeyError as e:
+            traceback.print_exc()
+            return {'status': False, 'error': 'invalid key : {}'.format(str(e))}
+        except Exception as e:
+            traceback.print_exc()
+            return {'status': False, 'error': 'exception : {}'.format(str(e))}
+        return {'status': True}
 
     def unload(self):
         """
@@ -231,10 +235,13 @@ if __name__ == "__main__":
 
         async def api_call(websocket, path):
             async for message in websocket:
-                msg = json.loads(message)
-                retMsg = interface.parse_command(msg)
-                rxStr = json.dumps(retMsg)
-                await websocket.send(rxStr)
+                try:
+                    msg = json.loads(message)
+                    retMsg = interface.parse_command(msg)
+                    rxStr = json.dumps(retMsg)
+                    await websocket.send(rxStr)
+                except:
+                    await websocket.send(json.dumps({'status' : False, 'error' : 'cannot parse JSON message'}))
 
         asyncio.get_event_loop().run_until_complete(
             websockets.serve(api_call, HOST_NAME, HOST_PORT))

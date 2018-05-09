@@ -1,5 +1,48 @@
 """
 ARM ALU object for use in ARMv4 architecture
+
+Configuration file template should follow form
+{
+    /* Required */
+
+    "name" : "alu_full",
+    "type" : "AluFull",
+    "input_a" : "",
+    "input_b" : "",
+    "input_ar" : "",
+    "alus" : "",
+    "shift" : "",
+    "input_c" : "",
+    "shift_op" : "",
+    "shift_ctrl" : "",
+    "acc_enable" : "",
+    "output_f" : "",
+    "output_c" : "",
+    "output_v" : "",
+    "output_n" : "",
+    "output_z" : "",
+
+    /* Optional */
+    "package" : "arm"
+}
+
+name is the entity name, used by entity map (Used externally)
+type is the component class (Used externally)
+package is associated package to override general (Used externally)
+input_a is bus reference for first input into ALU
+input_b is bus reference for second input into ALU
+input_ar is bus reference for shifter register input and accumulator input
+alus is control bus reference for ALU operation
+shift is immediate shift value bus reference
+input_c is bus reference for carry input into ALU
+shift_op is control bus reference for shifting operation
+shift_ctrl is control bus reference for allowing shift
+acc_enable is control bus reference for using acculation register input
+output_f is resulting data bus reference
+output_c is carry data bus reference
+output_v is signed overflow bus reference
+output_n is negative number bus reference
+output_z is zero number bus reference
 """
 
 from simulator.components.abstract.combinational import Combinational
@@ -300,10 +343,10 @@ class Alu(Combinational):
         self._z.write(self._generate_z(self._f.read()))
 
     @classmethod
-    def from_dict(cls, config):
+    def from_dict(cls, config, hooks):
         "Implements conversion from configuration to component"
-        return NotImplemented
-
-    def to_dict(self):
-        "Implements conversion from component to configuration"
-        return NotImplemented
+        return Alu(hooks[config["input_a"]], hooks[config["input_b"]], hooks[config["input_ar"]],
+                   hooks[config["alus"]], hooks[config["shift"]], hooks[config["input_c"]],
+                   hooks[config["shift_op"]], hooks[config["shift_ctrl"]], hooks[config["acc_enable"]],
+                   hooks[config["output_f"]], hooks[config["output_c"]], hooks[config["output_v"]],
+                   hooks[config["output_n"]], hooks[config["output_z"]])

@@ -1,13 +1,9 @@
 """
-Single-Cycle Full Proof of Concept
+Single-cycle Proof of Concept
 
 This module defines a proof of concept architecture for a simulated ARM
-CPU. Note that this architecture implements all instructions necessary for an
-introductory architecture course. The instructions omitted include,
-    - Coprocessor
-    - Long multiplication
-    - Branch Exchange (No thumb code)
-    - Memory access multiple
+CPU. Note that the architecture is incomplete as some instructions /
+instruction variants are unsupported.
 
 The reason that this module exists is to provide a test platform for the
 simulator. In addition, this architecture is used to develop the API for
@@ -33,15 +29,15 @@ from simulator.components.core.constant import Constant
 from simulator.components.core.bus_subset import BusSubset
 from simulator.components.core.logic_input import LogicInput
 
-from simulator.components.arm.alu_full import Alu
+from simulator.components.arm.alu_demo import Alu
 from simulator.components.arm.alu_flag_register import ALUFlagRegister
 from simulator.components.arm.extender import Extender
 from simulator.components.arm.data_memory import DataMemory
 from simulator.components.arm.program_memory import ProgramMemory
-from simulator.components.arm.register_file_full import RegisterFile
-from simulator.components.arm.controller_single_cycle_full import ControllerSingleCycle
+from simulator.components.arm.register_file_demo import RegisterFile
+from simulator.components.arm.controller_single_cycle_demo import ControllerSingleCycle
 
-from architecture import Architecture
+from simulator.architecture import Architecture
 
 
 def program_single_cycle_architecture(arch, program):
@@ -82,16 +78,18 @@ def generate_single_cycle_architecture():
     hooks.update({'instr_3_0': Bus(4, 0)})
     hooks.update({'instr_15_12': Bus(4, 0)})
     hooks.update({'instr_11_8': Bus(4, 0)})
-    hooks.update({'instr_11_7': Bus(5, 0)})
+    hooks.update({'instr_31_28': Bus(4, 0)})
+    hooks.update({'instr_27_26': Bus(2, 0)})
+    hooks.update({'instr_25_20': Bus(6, 0)})
+
+    hooks.update({'instr_4_4': Bus(1, 0)})
     hooks.update({'imm32': Bus(32, 0)})
     hooks.update({'ra1': Bus(4, 0)})
     hooks.update({'ra2': Bus(4, 0)})
     hooks.update({'ra3': Bus(4, 0)})
-    hooks.update({'wa': Bus(4, 0)})
     hooks.update({'rwd': Bus(32, 0)})
     hooks.update({'rd1': Bus(32, 0)})
     hooks.update({'rd2': Bus(32, 0)})
-    hooks.update({'rd3': Bus(32, 0)})
     hooks.update({'alub': Bus(32, 0)})
     hooks.update({'branch': Bus(32, 0)})
     hooks.update({'aluf': Bus(32, 0)})
@@ -106,29 +104,25 @@ def generate_single_cycle_architecture():
     hooks.update({'n': Bus(1, 0)})
     hooks.update({'z': Bus(1, 0)})
     hooks.update({'memrd': Bus(32, 0)})
-    hooks.update({'memrd_ext': Bus(32, 0)})
     hooks.update({'wdb': Bus(32, 0)})
     hooks.update({'pcwb': Bus(32, 0)})
 
     # control signals
     hooks.update({'pcwr': Bus(1, 0)})
     hooks.update({'regsa': Bus(1, 0)})
-    hooks.update({'regsb': Bus(1, 0)})
     hooks.update({'regdst': Bus(2, 0)})
     hooks.update({'regwrs': Bus(2, 0)})
     hooks.update({'wdbs': Bus(1, 0)})
     hooks.update({'regwr': Bus(1, 0)})
     hooks.update({'exts': Bus(2, 0)})
-    hooks.update({'alusrcb': Bus(1, 0)})
+    hooks.update({'alu8rcb': Bus(1, 0)})
     hooks.update({'alus': Bus(4, 0)})
     hooks.update({'aluflagwr': Bus(1, 0)})
-    hooks.update({'shop': Bus(2, 0)})
-    hooks.update({'shctrl': Bus(2, 0)})
-    hooks.update({'accen': Bus(1, 0)})
     hooks.update({'memwr': Bus(1, 0)})
-    hooks.update({'memty': Bus(2, 0)})
     hooks.update({'regsrc': Bus(1, 0)})
     hooks.update({'pcsrc': Bus(2, 0)})
+
+    # generate components
 
     # FETCH
     entities = OrderedDict([('clk', clk)])
@@ -137,59 +131,56 @@ def generate_single_cycle_architecture():
                                         edge_type=Latch_Type.FALLING_EDGE)})
     entities.update({'add8': Adder(32, hooks['pc'], hooks['const8'], hooks['pc8'])})
     entities.update({'add4': Adder(32, hooks['pc'], hooks['const4'], hooks['pc4'])})
-    entities.update({'progmem': ProgramMemory(
-        hooks['pc'], hooks['rst'], hooks['instr'])})
+    entities.update({'progmem': ProgramMemory(hooks['pc'], hooks['rst'], hooks['instr'])})
 
     # DECODE
     entities.update({'instr_subset': BusSubset(hooks['instr'],
                                                [hooks['instr_23_0'], hooks['instr_19_16'],
                                                 hooks['instr_3_0'], hooks['instr_15_12'],
-                                                hooks['instr_11_8'], hooks['instr_11_7']],
-                                               [(0, 24), (16, 20), (0, 4), (12, 16), (8, 12), (7, 12)])})
+                                                hooks['instr_11_8'], hooks['instr_31_28'],
+                                                hooks['instr_27_26'], hooks['instr_25_20'],
+                                                hooks['instr_4_4']],
+                                               [(0, 24), (16, 20), (0, 4), (12, 16), (8, 12), (28, 32), (26, 28), (20, 26), (4, 5)])})
 
-    entities.update({'controller': ControllerSingleCycle(hooks['instr'], hooks['c'], hooks['v'],
-                                                         hooks['n'], hooks['z'], hooks['pcsrc'],
-                                                         hooks['pcwr'], hooks['regsa'], hooks['regdst'], hooks['regsb'], hooks['regwrs'],
-                                                         hooks['regwr'], hooks['exts'], hooks['alusrcb'], hooks['alus'], hooks['shop'],
-                                                         hooks['shctrl'], hooks['accen'], hooks['aluflagwr'], hooks['memty'], hooks['memwr'],
-                                                         hooks['regsrc'], hooks['wdbs'])})
+    entities.update({'controller': ControllerSingleCycle(hooks['instr_31_28'],
+                                                         hooks['instr_27_26'], hooks['instr_25_20'],
+                                                         hooks['instr_15_12'], hooks['instr_4_4'],
+                                                         hooks['c'], hooks['v'], hooks['n'], hooks['z'],
+                                                         hooks['pcsrc'], hooks['pcwr'], hooks['regsa'],
+                                                         hooks['regdst'], hooks['regwrs'], hooks['regwr'],
+                                                         hooks['exts'], hooks['alu8rcb'], hooks['alus'],
+                                                         hooks['aluflagwr'], hooks['memwr'], hooks['regsrc'],
+                                                         hooks['wdbs'])})
 
     entities.update({'ra1_mux': Mux(4, [hooks['instr_3_0'], hooks['instr_19_16']],
                                     hooks['regsa'], hooks['ra1'])})
     entities.update({'ra2_mux': Mux(4, [hooks['instr_11_8'], hooks['instr_3_0'],
                                         hooks['instr_15_12']], hooks['regdst'], hooks['ra2'])})
-    entities.update({'ra3_mux': Mux(4, [hooks['instr_11_8'], hooks['instr_15_12']],
-                                    hooks['regsb'], hooks['ra3'])})
-    entities.update({'wa_mux': Mux(4, [hooks['instr_19_16'], hooks['instr_15_12'],
-                                       hooks['const14']], hooks['regwrs'], hooks['wa'])})
+    entities.update({'ra3_mux': Mux(4, [hooks['instr_19_16'], hooks['instr_15_12'],
+                                        hooks['const14']], hooks['regwrs'], hooks['ra3'])})
     entities.update({'rwd_mux': Mux(32, [hooks['wdb'], hooks['pc4']], hooks['wdbs'],
                                     hooks['rwd'])})
     entities.update({'extimm': Extender(hooks['instr_23_0'], hooks['exts'],
                                         hooks['imm32'])})
-    entities.update({'regfile': RegisterFile(hooks['clk'], hooks['rst'], hooks['regwr'],
-                                             hooks['rwd'], hooks['ra1'], hooks['ra2'],
-                                             hooks['ra3'], hooks['wa'], hooks['rd1'],
-                                             hooks['rd2'], hooks['rd3'], hooks['pc'])})
+    entities.update({'regfile': RegisterFile(hooks['clk'], hooks['rst'],
+                                             hooks['regwr'], hooks['rwd'], hooks['ra1'], hooks['ra2'],
+                                             hooks['ra3'], hooks['rd1'], hooks['rd2'])})
 
     # EXECUTE
     entities.update({'alu_mux': Mux(32, [hooks['imm32'], hooks['rd2']],
-                                    hooks['alusrcb'], hooks['alub'])})
+                                    hooks['alu8rcb'], hooks['alub'])})
     entities.update({'add_br': Adder(32, hooks['pc8'], hooks['imm32'], hooks['branch'])})
-    entities.update({'alu': Alu(hooks['rd1'], hooks['alub'], hooks['rd3'], hooks['alus'],
-                                hooks['instr_11_7'], hooks['c'], hooks['shop'], hooks['shctrl'],
-                                hooks['accen'], hooks['aluf'], hooks['aluc'], hooks['aluv'],
-                                hooks['alun'], hooks['aluz'])})
-
+    entities.update({'alu': Alu(hooks['rd1'], hooks['alub'], hooks['alus'],
+                                hooks['aluf'], hooks['aluc'], hooks['aluv'], hooks['alun'],
+                                hooks['aluz'])})
     entities.update({'aluflag_reg': ALUFlagRegister(hooks['aluc'], hooks['aluv'], hooks['alun'],
                                                     hooks['aluz'], hooks['rst'], hooks['clk'],
                                                     hooks['aluflagwr'], hooks['c'], hooks['v'],
                                                     hooks['n'], hooks['z'])})
 
-    # MEMORY
+    # MEMORY & WRITE-BACK
     entities.update({'datamem': DataMemory(hooks['aluf'], hooks['rd2'], hooks['memwr'],
-                                           hooks['rst'], hooks['clk'], hooks['memrd'], hooks['memty'])})
-
-    # WRITE-BACK
+                                           hooks['rst'], hooks['clk'], hooks['memrd'])})
     entities.update({'wdb_mux': Mux(32, [hooks['memrd'], hooks['aluf']],
                                     hooks['regsrc'], hooks['wdb'])})
     entities.update({'pcwb_mux': Mux(32, [hooks['branch'], hooks['pc4'], hooks['wdb']],
@@ -204,5 +195,5 @@ def generate_single_cycle_architecture():
     hooks.update({'controller': entities['controller']})
 
     # generate simulatable architecture
-    arch = Architecture(0.0001, clk, rst, hooks, entities)
+    arch = Architecture(0.0001, clk, rst, None, hooks, entities)
     return arch, hooks

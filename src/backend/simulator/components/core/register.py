@@ -1,6 +1,44 @@
 """
 Register component is a standalone core component for general architecture
 development.
+
+Configuration file template should follow form
+{
+    /* Required */
+
+    "name" : "register",
+    "type" : "Register",
+    "size" : 8,
+    "clock" : "",
+    "reset" : "",
+    "input" : "",
+
+    /* Optional */
+
+    "package" : "core",
+    "append_to_signals" : true,
+    "output" : "",
+    "enable" : "",
+    "value" : 0,
+    "edge_type" : "",
+    "reset_type" : "",
+    "enable_type" : ""
+}
+
+name is the entity name, used by entity map (Used externally)
+type is the component class (Used externally)
+package is associated package to override general (Used externally)
+append_to_signals is flag used to append an entity as hook (Used externally)
+size is number of bits stored in register
+clock is control bus clock line reference
+reset is control bus reset line reference
+input is the data bus reference to store into register
+output is the data bus reference to read from register
+enable is write control bus reference
+value is default value of a byte in memory
+edge_type is edge to clock data
+reset_type is logic level to clear memory
+enable_type is logic level to write to memory
 """
 
 from simulator.components.abstract.ibus import iBusRead, iBusWrite
@@ -16,9 +54,14 @@ class Register(Sequential):
     Default state is state of device at startup and on reset
     """
 
-    def __init__(self, size, clock, reset, in_bus, out_bus=None, default_state=0,
-                 edge_type=Latch_Type.RISING_EDGE, reset_type=Logic_States.ACTIVE_HIGH,
-                 enable=None, enable_type=Logic_States.ACTIVE_HIGH):
+    DEFAULT_STATE = 0
+    DEFAULT_LATCH_TYPE = Latch_Type.RISING_EDGE
+    DEFAULT_RESET_TYPE = Logic_States.ACTIVE_HIGH
+    DEFAULT_ENABLE_TYPE = Logic_States.ACTIVE_HIGH
+
+    def __init__(self, size, clock, reset, in_bus, out_bus=None, default_state=DEFAULT_STATE,
+                 edge_type=Latch_Type.RISING_EDGE, reset_type=DEFAULT_RESET_TYPE,
+                 enable=None, enable_type=DEFAULT_ENABLE_TYPE):
         "Constructor will check for valid parameters, exception thrown on invalid"
 
         if not isinstance(size, int) or size <= 0:
@@ -138,10 +181,38 @@ class Register(Sequential):
             self._out_bus.write(self._q)
 
     @classmethod
-    def from_dict(cls, config):
+    def from_dict(cls, config, hooks):
         "Implements conversion from configuration to component"
-        return NotImplemented
+        if "output" in config:
+            output = hooks[config["output"]]
+        else:
+            output = None
 
-    def to_dict(self):
-        "Implements conversion from component to configuration"
-        return NotImplemented
+        if "value" in config:
+            default_state = config["value"]
+        else:
+            default_state = Register.DEFAULT_STATE
+
+        if "edge_type" in config:
+            edge_type = Latch_Type.fromString(config["edge_type"])
+        else:
+            edge_type = Register.DEFAULT_LATCH_TYPE
+
+        if "reset_type" in config:
+            reset_type = Logic_States.fromString(config["reset_type"])
+        else:
+            reset_type = Register.DEFAULT_RESET_TYPE
+
+        if "enable" in config:
+            enable = hooks[config["enable"]]
+        else:
+            enable = None
+
+        if "enable_type" in config:
+            enable_type = Logic_States.fromString(config["enable_type"])
+        else:
+            enable_type = Register.DEFAULT_ENABLE_TYPE
+
+        return Register(config["size"], hooks[config["clock"]], hooks[config["reset"]],
+                        hooks[config["input"]], output, default_state, edge_type,
+                        reset_type, enable, enable_type)

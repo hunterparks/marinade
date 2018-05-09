@@ -1,6 +1,11 @@
+"""
+Tests core component Reset
+"""
+
+from collections import OrderedDict
 import unittest
 import sys
-sys.path.insert(0, '../../')
+sys.path.insert(0, '../../../')
 from simulator.components.core.reset import Reset
 
 
@@ -95,6 +100,17 @@ class Reset_t(unittest.TestCase):
         "Valid bus size presented"
         l = Reset()
         self.assertTrue(l.size() == 1)
+
+    def test_from_dict(self):
+        "Validates dictionary constructor"
+
+        config = {
+            "name" : "rst",
+            "type" : "Reset",
+            "value" : 1
+        }
+
+        rst = Reset.from_dict(config,None) #Buses do not need hook reference
 
 
 if __name__ == '__main__':

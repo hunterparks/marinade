@@ -2,9 +2,10 @@
 Tests core component LogicInput
 """
 
+from collections import OrderedDict
 import unittest
 import sys
-sys.path.insert(0, '../../')
+sys.path.insert(0, '../../../')
 from simulator.components.core.logic_input import LogicInput
 
 
@@ -74,7 +75,6 @@ class LogicInput_t(unittest.TestCase):
         }
         rm = l.generate(m)
         self.assertTrue('success' in rm and rm['success'])
-
         self.assertTrue(l.read() == 128)
 
     def test_read(self):
@@ -93,6 +93,18 @@ class LogicInput_t(unittest.TestCase):
         "Valid bus size presented"
         l = LogicInput(16, 56)
         self.assertTrue(l.size() == 16)
+
+    def test_from_dict(self):
+        "Validates dictionary constructor"
+
+        config = {
+            "name" : "logic",
+            "type" : "LogicInput",
+            "size" : 16,
+            "value" : 10
+        }
+
+        logic = LogicInput.from_dict(config,None) #Buses do not need hook reference
 
 
 if __name__ == '__main__':

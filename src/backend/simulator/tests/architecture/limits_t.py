@@ -5,10 +5,7 @@ Tests architecture's limit definitions
 import unittest
 import sys
 sys.path.insert(0, '../../')
-import limits
-
-# TODO add more value checks
-
+import simulator.limits as limits
 
 class Limits_t(unittest.TestCase):
     """

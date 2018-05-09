@@ -2,8 +2,8 @@ from .common_sentry_settings import SentrySettingsInterface
 
 
 class SentrySettings(SentrySettingsInterface):
-  address = '192.168.64.2'
+  address = 'localhost'
   port = '9000'
   protocol = 'http://'
-  token_private = 'e74d0f617b0d4d76a4c1acd19d20da6c'
-  token_public = '3d4bca0e8aa8465bae6fd29934f5ea0f'
+  token_private = '55231385a5b6435380c943ffc71e097c'
+  token_public = 'd51f4c915b7a41619ec7934371c685c7'

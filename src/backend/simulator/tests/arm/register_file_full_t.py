@@ -2,9 +2,10 @@
 Test arm component RegisterFile_wo_PC
 """
 
+from collections import OrderedDict
 import unittest
 import sys
-sys.path.insert(0, '../../')
+sys.path.insert(0, '../../../')
 from simulator.components.arm.register_file_full import RegisterFile, Latch_Type, Logic_States
 from simulator.components.core.constant import Constant
 from simulator.components.core.bus import Bus
@@ -76,6 +77,46 @@ class RegisterFile_Full_t(unittest.TestCase):
         self.assertEqual(rd0.read(), 255)
         self.assertEqual(rd1.read(), 255)
         self.assertNotEqual(rd2.read(), 255)
+
+    def test_from_dict(self):
+        "Validates dictionary constructor"
+
+        hooks = OrderedDict({
+            "clock" : Bus(1),
+            "reset" : Bus(1),
+            "write_enable" : Bus(1),
+            "write_data" : Bus(32),
+            "ra1" : Bus(4),
+            "ra2" : Bus(4),
+            "ra3" : Bus(4),
+            "wa1" : Bus(4),
+            "rd1" : Bus(32),
+            "rd2" : Bus(32),
+            "rd3" : Bus(32),
+            "pc" : Bus(32)
+        })
+
+        config = {
+            "name" : "register_file_full",
+            "type" : "RegisterFileFull",
+            "clock" : "clock",
+            "reset" : "reset",
+            "write_enable" : "write_enable",
+            "write_data" : "write_data",
+            "ra1" : "ra1",
+            "ra2" : "ra2",
+            "ra3" : "ra3",
+            "wa1" : "wa1",
+            "rd1" : "rd1",
+            "rd2" : "rd2",
+            "rd3" : "rd3",
+            "pc" : "pc",
+            "edge_type" : "both_edge",
+            "reset_type" : "active_high",
+            "enable_type" : "active_low"
+        }
+
+        reg = RegisterFile.from_dict(config,hooks)
 
 
 if __name__ == '__main__':

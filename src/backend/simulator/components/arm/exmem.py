@@ -1,3 +1,66 @@
+"""
+Exmem is a barrier register for the pipeline ARM processor that seperates the
+execute and memory stages
+
+Configuration file template should follow form
+{
+    /* Required */
+
+    "name" : "exmem",
+    "type" : "Exmem",
+    "pc4e" : "",
+    "regwre" : "",
+    "memwre" : "",
+    "regsrce" : "",
+    "wd3se" : "",
+    "rd2e" : "",
+    "fe" : "",
+    "ra3e" : "",
+    "clk" : "",
+    "pc4m" : "",
+    "regwrm" : "",
+    "memwrm" : "",
+    "regsrcm" : "",
+    "wd3sm" : "",
+    "fm" : "",
+    "rd2m" : "",
+    "ra3m" : "",
+
+    /* Optional */
+
+    "package" : "arm",
+    "append_to_signals" : true,
+    "enable" : "",
+    "edge_type" : "",
+    "enable_type" : ""
+}
+
+name is the entity name, used by entity map (Used externally)
+type is the component class (Used externally)
+package is associated package to override general (Used externally)
+append_to_signals is flag used to append an entity as hook (Used externally)
+pc4e is data bus reference input
+regwre is data bus reference input
+memwre is data bus reference input
+regsrce is data bus reference input
+wd3se is data bus reference input
+rd2e is data bus reference input
+fe is data bus reference input
+ra3e is data bus reference input
+clk is clock control bus reference
+pc4m is data bus reference output
+regwrm is data bus reference output
+memwrm is data bus reference output
+regsrcm is data bus reference output
+wd3sm is data bus reference output
+fm
+rd2m
+ra3m
+enable is write control bus reference
+edge_type is edge to clock data
+enable_type is logic level to write to memory
+"""
+
 from simulator.components.abstract.sequential import Sequential, Latch_Type, Logic_States
 from simulator.components.core.bus import iBusRead, iBusWrite
 
@@ -8,10 +71,14 @@ class Exmem(Sequential):
     processor
     """
 
-    def __init__(self, pc4e, regwre, memwre, regsrce, wd3se, rd2e, fe, ra3e, 
+    DEFAULT_LATCH_TYPE = Latch_Type.RISING_EDGE
+    DEFAULT_ENABLE_TYPE = Logic_States.ACTIVE_HIGH
+    DEFAULT_ENABLE_BUS = None
+
+    def __init__(self, pc4e, regwre, memwre, regsrce, wd3se, rd2e, fe, ra3e,
                  clk, pc4m, regwrm, memwrm, regsrcm, wd3sm, fm, rd2m, ra3m,
-                 edge_type=Latch_Type.RISING_EDGE, enable=None,
-                 enable_type=Logic_States.ACTIVE_HIGH):
+                 edge_type=DEFAULT_LATCH_TYPE, enable=DEFAULT_ENABLE_BUS,
+                 enable_type=DEFAULT_ENABLE_TYPE):
         """
         inputs:
             pc4e: pc+4
@@ -144,13 +211,9 @@ class Exmem(Sequential):
         self._enable = enable
         self._enable_type = enable_type
 
-        self._exmem = ExmemState(self._pc4m, self._regwrm, self._memwrm,
-                                 self._regsrcm, self._wd3sm, self._fm, self._rd2m, self._ra3m)
-
-
     def on_rising_edge(self):
         "Implements clock rising behavior: captures data if latch type matches"
-        if (self._edge_type == Latch_Type.RISING_EDGE 
+        if (self._edge_type == Latch_Type.RISING_EDGE
                 or self._edge_type == Latch_Type.BOTH_EDGE):
             self._pc4m.write(self._pc4e.read())
             self._regwrm.write(self._regwre.read())
@@ -163,7 +226,7 @@ class Exmem(Sequential):
 
     def on_falling_edge(self):
         "Implements clock falling behavior: captures data if latch type matches"
-        if (self._edge_type == Latch_Type.FALLING_EDGE 
+        if (self._edge_type == Latch_Type.FALLING_EDGE
                 or self._edge_type == Latch_Type.BOTH_EDGE):
             self._pc4m.write(self._pc4e.read())
             self._regwrm.write(self._regwre.read())
@@ -178,23 +241,19 @@ class Exmem(Sequential):
         "Not used for this register"
         pass
 
-
     def inspect(self):
         "Returns a dictionary message to the user"
-        return {'type': 'exmem register', 'state': self._exmem.get_state()}
+        return {'type': 'exmem register', 'state': self._get_state()}
 
-
-    def modify(self, data = None):
+    def modify(self, data=None):
         "Return message noting that is register cannot be modified"
-        return {'error' : 'exmem register cannot be modified'}
-
+        return {'error': 'exmem register cannot be modified'}
 
     def clear(self):
         "Return a message noting that the exmem register cannot be cleared"
         return {'error': 'exmem register cannot be cleared'}
 
-
-    def run(self, time = None):
+    def run(self, time=None):
         "Timestep handler function - sequentially asserts output"
 
         # process enable line
@@ -204,7 +263,7 @@ class Exmem(Sequential):
                 e = self._enable_type.read() == 0
             else:
                 e = self._enable.read() == 1
-        
+
         # check for clock change
         if e:
             if self._clk.read() == 1 and self._prev_clk_state == 0:
@@ -214,34 +273,33 @@ class Exmem(Sequential):
         self._prev_clk_state = self._clk.read()
 
     @classmethod
-    def from_dict(cls, config):
+    def from_dict(cls, config, hooks):
         "Implements conversion from configuration to component"
-        return NotImplemented
 
-    def to_dict(self):
-        "Implements conversion from component to configuration"
-        return NotImplemented
+        if "edge_type" in config:
+            edge_type = Latch_Type.fromString(config["edge_type"])
+        else:
+            edge_type = Exmem.DEFAULT_LATCH_TYPE
 
+        if "enable" in config:
+            enable = hooks[config["enable"]]
+        else:
+            enable = Exmem.DEFAULT_ENABLE_BUS
 
-class ExmemState():
-    """
-    Stores the exmem registers state
-    Used in the Exmem class's inspect method
-    Do not make new instances of this class outside of the Exmem class
-    """
+        if "enable_type" in config:
+            enable_type = Logic_States.fromString(config["enable_type"])
+        else:
+            enable_type = Exmem.DEFAULT_ENABLE_TYPE
 
-    def __init__(self, pc4m, regwrm, memwrm, regsrcm, wd3sm, fm, rd2m, ra3m):
-        self._pc4m = pc4m
-        self._regwrm = regwrm
-        self._memwrm = memwrm
-        self._regsrcm = regsrcm
-        self._wd3sm = wd3sm
-        self._fm = fm
-        self._rd2m = rd2m
-        self._ra3m = ra3m
+        return Exmem(hooks[config["pc4e"]], hooks[config["regwre"]], hooks[config["memwre"]],
+                     hooks[config["regsrce"]], hooks[config["wd3se"]], hooks[config["rd2e"]],
+                     hooks[config["fe"]], hooks[config["ra3e"]
+                                                ], hooks[config["clk"]], hooks[config["pc4m"]],
+                     hooks[config["regwrm"]], hooks[config["memwrm"]], hooks[config["regsrcm"]],
+                     hooks[config["wd3sm"]], hooks[config["fm"]], hooks[config["rd2m"]],
+                     hooks[config["ra3m"]], edge_type, enable, enable_type)
 
-
-    def get_state(self):
+    def _get_state(self):
         return {'pc4m': self._pc4m.read(),
                 'regwrm': self._regwrm.read(), 'memwrm': self._memwrm.read(),
                 'regsrcm': self._regsrcm.read(), 'wd3sm': self._wd3sm.read(),

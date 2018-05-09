@@ -1,5 +1,27 @@
 """
 ARM Extender object for use in ARMv4 architectures
+
+Configuration file template should follow form
+{
+    /* Required */
+
+    "name" : "extender",
+    "type" : "Extender",
+    "imm" : "",
+    "exts" : "",
+    "imm32" : "",
+
+    /* Options */
+
+    "package" : "arm"
+}
+
+name is the entity name, used by entity map (Used externally)
+type is the component class (Used externally)
+package is associated package to override general (Used externally)
+imm is data bus reference of 24 bits
+exts is control bus reference
+imm32 is 32 bit extended data bus reference
 """
 
 from simulator.components.abstract.combinational import Combinational
@@ -65,10 +87,7 @@ class Extender(Combinational):
             self._imm32.write(new_imm << 2)
 
     @classmethod
-    def from_dict(cls, config):
+    def from_dict(cls, config, hooks):
         "Implements conversion from configuration to component"
-        return NotImplemented
-
-    def to_dict(self):
-        "Implements conversion from component to configuration"
-        return NotImplemented
+        return Extender(hooks[config["imm"]],hooks[config["exts"]],
+                        hooks[config["imm32"]])

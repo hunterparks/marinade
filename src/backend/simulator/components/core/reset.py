@@ -3,6 +3,24 @@ Reset input is to be viewed as a user adjustable read only bus where the
 logical bit means that the component should handle reset behavior
 
 Note that reset can be used as a logic read bus of size one
+
+Configuration file template should follow form
+{
+    /* Required */
+
+    "name" : "reset",
+    "type" : "Reset",
+
+    /* Optional */
+
+    "package" : "core",
+    "value" : 1
+}
+
+name is the entity name, used by entity map (Used externally)
+type is the component class (Used externally)
+package is associated package to override general (Used externally)
+value is the default value for the component
 """
 
 from simulator.components.abstract.hooks import InputHook
@@ -17,7 +35,9 @@ class Reset(InputHook, iBusRead):
     information that logic is responsible for keeping track of state change
     """
 
-    def __init__(self, default_state=0):
+    DEFAULT_STATE = 0
+
+    def __init__(self, default_state=DEFAULT_STATE):
         "Constructor will cause exception on invalid parameters"
         if not isinstance(default_state, int) or default_state < 0 or default_state > 1:
             raise TypeError('Default state must be a bit value')
@@ -68,10 +88,11 @@ class Reset(InputHook, iBusRead):
         return 1
 
     @classmethod
-    def from_dict(cls, config):
+    def from_dict(cls, config, hooks):
         "Implements conversion from configuration to component"
-        return NotImplemented
+        if "value" in config:
+            default_state = config["value"]
+        else:
+            default_state = Reset.DEFAULT_STATE
 
-    def to_dict(self):
-        "Implements conversion from component to configuration"
-        return NotImplemented
+        return Reset(default_state)

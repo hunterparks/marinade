@@ -2,9 +2,10 @@
 Tests arm component Alu
 """
 
+from collections import OrderedDict
 import unittest
 import sys
-sys.path.insert(0, '../../')
+sys.path.insert(0, '../../../')
 from simulator.components.arm.alu_demo import Alu
 from simulator.components.core.bus import Bus
 
@@ -164,6 +165,35 @@ class Alu_t(unittest.TestCase):
         self.assertEqual(n.read(), 1)
         self.assertEqual(c.read(), 0)
         self.assertEqual(v.read(), 1)
+
+    def test_from_dict(self):
+        "Validates dictionary constructor"
+
+        hooks = OrderedDict({
+            "a" : Bus(32),
+            "b" : Bus(32),
+            "alus" : Bus(4),
+            "f" : Bus(32),
+            "c" : Bus(1),
+            "v" : Bus(1),
+            "n" : Bus(1),
+            "z" : Bus(1)
+        })
+
+        config = {
+            "name" : "alu_demo",
+            "type" : "AluDemo",
+            "input_a" : "a",
+            "input_b" : "b",
+            "alus" : "alus",
+            "output_f" : "f",
+            "output_c" : "c",
+            "output_v" : "v",
+            "output_n" : "n",
+            "output_z" : "z"
+        }
+
+        alu = Alu.from_dict(config,hooks)
 
 
 if __name__ == '__main__':

@@ -3,6 +3,7 @@ Tests the ifid.py module
 Must be run in the marinade/src/backend/simulator/tests/arm
 """
 
+from collections import OrderedDict
 import unittest
 import sys
 sys.path.insert(0, '../../../')
@@ -29,11 +30,11 @@ class Ifid_t(unittest.TestCase):
         notBusType = 'w'
 
         with self.assertRaises(ValueError):
-            Ifid(pc4f, pc8f, invalidBusSize, stall, flush, clk, pc4d, pc8d, 
+            Ifid(pc4f, pc8f, invalidBusSize, stall, flush, clk, pc4d, pc8d,
                  instrd)
 
         with self.assertRaises(TypeError):
-            Ifid(notBusType, pc8f, instrf, stall, flush, clk, pc4d, pc8d, 
+            Ifid(notBusType, pc8f, instrf, stall, flush, clk, pc4d, pc8d,
                  instrd)
 
         Ifid(pc4f, pc8f, instrf, stall, flush, clk, pc4d, pc8d, instrd)
@@ -70,7 +71,7 @@ class Ifid_t(unittest.TestCase):
         pc8d = Bus(32)
         instrd = Bus(32)
 
-        ifid = Ifid(pc4f, pc8f, instrf, stall, flush, clk, pc4d, pc8d, instrd, 
+        ifid = Ifid(pc4f, pc8f, instrf, stall, flush, clk, pc4d, pc8d, instrd,
                     0, Latch_Type.FALLING_EDGE, Logic_States.ACTIVE_LOW, None,
                     Logic_States.ACTIVE_HIGH)
         instrf.write(0xE3A0800A)    # mov r8, #10
@@ -140,6 +141,43 @@ class Ifid_t(unittest.TestCase):
         flush.write(1)
         ifid.run()
         self.assertNotEqual(instrf.read(), instrd.read())
+
+    def test_from_dict(self):
+        "Validates dictionary constructor"
+
+        hooks = OrderedDict({
+            "pc4f" : Bus(32),
+            "pc8f" : Bus(32),
+            "instrf" : Bus(32),
+            "stall" : Bus(1),
+            "flush" : Bus(1),
+            "clk" : Bus(1),
+            "pc4d" : Bus(32),
+            "pc8d" : Bus(32),
+            "instrd" : Bus(32),
+            "enable" :Bus(1)
+        })
+
+        config = {
+            "name" : "ifid",
+            "type" : "Ifid",
+            "pc4f" : "pc4f",
+            "pc8f" : "pc8f",
+            "instrf" : "instrf",
+            "stall" : "stall",
+            "flush" : "flush",
+            "clk" : "clk",
+            "pc4d" : "pc4d",
+            "pc8d" : "pc8d",
+            "instrd" : "instrd",
+            "value" : 0,
+            "enable" : "enable",
+            "edge_type" : "falling_edge",
+            "flush_type" : "active_high",
+            "enable_type" : "active_high"
+        }
+
+        reg = Ifid.from_dict(config,hooks)
 
 
 

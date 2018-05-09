@@ -2,9 +2,10 @@
 Tests core component BusSubset
 """
 
+from collections import OrderedDict
 import unittest
 import sys
-sys.path.insert(0, '../../')
+sys.path.insert(0, '../../../')
 from simulator.components.core.bus_subset import BusSubset
 from simulator.components.core.constant import Constant
 from simulator.components.core.bus import Bus
@@ -64,6 +65,27 @@ class BusSubset_t(unittest.TestCase):
         self.assertTrue(b2.read() == 0x02)
         self.assertTrue(b3.read() == 0x02)
         self.assertTrue(b4.read() == 1)
+
+    def test_from_dict(self):
+        "Validates dictionary constructor"
+        hooks = OrderedDict({
+            "i1" : Constant(8,0x0F),
+            "o1" : Bus(4),
+            "o2" : Bus(4)
+        })
+
+        config = {
+            "name" : "bus_subset",
+            "type" : "BusSubset",
+            "input" : "i1",
+            "outputs" : ["o1","o2"],
+            "bounds" : [[0,4],[4,8]]
+        }
+
+        subset = BusSubset.from_dict(config,hooks)
+        subset.run()
+        self.assertEqual(hooks["o1"].read(),0xF)
+        self.assertEqual(hooks["o2"].read(),0x0)
 
 
 if __name__ == '__main__':

@@ -1,5 +1,28 @@
 """
 BusSubset component used to break apart a single bus into composite signals
+
+Configuration file template should follow form
+{
+    /* Required */
+
+    "name" : "bus_subset",
+    "type" : "BusSubset",
+    "input" : "",
+    "outputs" : [],
+    "bounds" : [],
+
+    /* Optional */
+
+    "package" : "core"
+}
+
+name is the entity name, used by entity map (Used externally)
+type is the component class (Used externally)
+package is associated package to override general (Used externally)
+input is the bus reference to split
+outputs is an array of string bus references to break input into
+bounds is an array of two element arrays defining start and end of an output
+    for should follow [min,max+1]
 """
 
 from simulator.components.abstract.entity import Entity
@@ -30,8 +53,8 @@ class BusSubset(Entity):
         if not isinstance(outs_range, list) or not len(outs_b) == len(outs_range):
             raise TypeError('Output ranges must be a list corresponding to outputs')
         for i in range(0, len(outs_range)):
-            if not isinstance(outs_range[i], tuple) or not len(outs_range[i]) == 2:
-                raise TypeError('Range must be a tuple with two elements')
+            if not isinstance(outs_range[i], (tuple,list)) or not len(outs_range[i]) == 2:
+                raise TypeError('Range must be a tuple or list with two elements')
             elif not outs_range[i][0] < outs_range[i][1]:
                 raise ValueError('Range must start position first')
             elif not outs_range[i][1] <= in_b.size():
@@ -48,10 +71,9 @@ class BusSubset(Entity):
             self._outputs[x].write(val)
 
     @classmethod
-    def from_dict(cls, config):
+    def from_dict(cls, config, hooks):
         "Implements conversion from configuration to component"
-        return NotImplemented
+        outputs = [hooks[o] for o in config["outputs"]]
+        output_range = [r for r in config["bounds"]]
 
-    def to_dict(self):
-        "Implements conversion from component to configuration"
-        return NotImplemented
+        return BusSubset(hooks[config["input"]],outputs,output_range)

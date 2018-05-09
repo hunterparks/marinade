@@ -2,11 +2,12 @@
 Tests core component Clock
 """
 
+from collections import OrderedDict
 import unittest
 import sys
-sys.path.insert(0, '../../')
+sys.path.insert(0, '../../../')
 from simulator.components.core.clock import Clock
-import limits
+import simulator.limits as limits
 
 
 class Clock_t(unittest.TestCase):
@@ -179,6 +180,18 @@ class Clock_t(unittest.TestCase):
 
         c.run(2)
         self.assertTrue(c.read() == 0)
+
+    def test_from_dict(self):
+        "Validates dictionary constructor"
+
+        config = {
+            "name" : "clk",
+            "type" : "Clock",
+            "frequency" : 1000,
+            "value" : 1
+        }
+
+        clk = Clock.from_dict(config,None) #Buses do not need hook reference
 
 
 if __name__ == '__main__':

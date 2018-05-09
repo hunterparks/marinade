@@ -2,9 +2,10 @@
 Tests core component Bus
 """
 
+from collections import OrderedDict
 import unittest
 import sys
-sys.path.insert(0, '../../')
+sys.path.insert(0, '../../../')
 from simulator.components.core.bus import Bus
 
 
@@ -54,6 +55,18 @@ class Bus_t(unittest.TestCase):
         "Valid bus size presented"
         b = Bus(8, 255)
         self.assertTrue(b.size() == 8)
+
+    def test_from_dict(self):
+        "Validates dictionary constructor"
+
+        config = {
+            "name" : "bus",
+            "type" : "Bus",
+            "size" : 32,
+            "value" : 7869
+        }
+
+        bus = Bus.from_dict(config,None) #Buses do not need hook reference
 
 
 if __name__ == '__main__':

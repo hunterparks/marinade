@@ -5,7 +5,6 @@ Generic test framework class that can be extended to test various architectures
 import unittest
 import sys
 import os
-sys.path.insert(0, '../../')
 
 import json
 import tablib  # external library
@@ -89,7 +88,6 @@ class TestFramework:
         template = tablib.Dataset().load(templatef.read())
         testf.close()
         templatef.close()
-
         return test.csv == template.csv
 
     def _generic_test_procedure(self, filename, program, cycles, programname, inspetables):

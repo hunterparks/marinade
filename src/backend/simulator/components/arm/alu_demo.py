@@ -1,5 +1,37 @@
 """
 ARM ALU object for use in ARMv4 architecture
+
+Configuration file template should follow form
+{
+    /* Required */
+
+    "name" : "alu_demo",
+    "type" : "AluDemo",
+    "input_a" : "",
+    "input_b" : "",
+    "alus" : "",
+    "output_f" : "",
+    "output_c" : "",
+    "output_v" : "",
+    "output_n" : "",
+    "output_z" : "",
+
+    /* Optional */
+    
+    "package" : "arm"
+}
+
+name is the entity name, used by entity map (Used externally)
+type is the component class (Used externally)
+package is associated package to override general (Used externally)
+input_a is bus reference for first input into ALU
+input_b is bus reference for second input into ALU
+alus is control bus reference for ALU operation
+output_f is resulting data bus reference
+output_c is carry data bus reference
+output_v is signed overflow bus reference
+output_n is negative number bus reference
+output_z is zero number bus reference
 """
 
 from simulator.components.abstract.combinational import Combinational
@@ -181,10 +213,8 @@ class Alu(Combinational):
         self._z.write(self._generate_z(f))
 
     @classmethod
-    def from_dict(cls, config):
+    def from_dict(cls, config, hooks):
         "Implements conversion from configuration to component"
-        return NotImplemented
-
-    def to_dict(self):
-        "Implements conversion from component to configuration"
-        return NotImplemented
+        return Alu(hooks[config["input_a"]], hooks[config["input_b"]], hooks[config["alus"]],
+                   hooks[config["output_f"]], hooks[config["output_c"]], hooks[config["output_v"]],
+                   hooks[config["output_n"]], hooks[config["output_z"]])

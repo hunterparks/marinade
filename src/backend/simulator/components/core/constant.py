@@ -1,5 +1,25 @@
 """
 Constant is to be viewed as an immutable bus in architectures
+
+Configuration file template should follow form
+{
+    /* Required */
+
+    "name" : "constant",
+    "type" : "Constant",
+    "size" : 1,
+    "value" : 12,
+
+    /* Optional */
+
+    "package" : "core"
+}
+
+name is the entity name, used by entity map (Used externally)
+type is the component class (Used externally)
+package is associated package to override general (Used externally)
+size is the bit-width for the component
+value is the value for the component
 """
 
 from simulator.components.abstract.hooks import Hook
@@ -34,10 +54,6 @@ class Constant(Hook, iBusRead):
         return self._size
 
     @classmethod
-    def from_dict(cls, config):
+    def from_dict(cls, config, hooks):
         "Implements conversion from configuration to component"
-        return NotImplemented
-
-    def to_dict(self):
-        "Implements conversion from component to configuration"
-        return NotImplemented
+        return Constant(config["size"],config["value"])

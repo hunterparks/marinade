@@ -2,13 +2,14 @@
 Test core component Memory
 """
 
+from collections import OrderedDict
 import unittest
 import sys
-sys.path.insert(0, '../../')
+sys.path.insert(0, '../../../')
 from simulator.components.core.memory import Memory, Latch_Type, Logic_States
 from simulator.components.core.constant import Constant
 from simulator.components.core.bus import Bus
-import limits
+import simulator.limits as limits
 
 
 class Memory_t(unittest.TestCase):
@@ -542,6 +543,39 @@ class Memory_t(unittest.TestCase):
 
         msg = mem.inspect()
         self.assertEqual(len(msg['state'].keys()), 0)
+
+    def test_from_dict(self):
+        "Validates dictionary constructor"
+        hooks = OrderedDict({
+            "wr" : Bus(32),
+            "en" : Bus(1),
+            "addr" : Bus(6),
+            "rst" : Bus(1),
+            "clk" : Bus(1),
+            "mode" : Bus(2),
+            "rd" : Bus(32)
+        })
+
+        config = {
+            "name" : "memory",
+            "type" : "Memory",
+            "size" : 64,
+            "bytes_per_word" : 4,
+            "start_address" : 0,
+            "address" : "addr",
+            "write" : "wr",
+            "enable" : "en",
+            "reset" : "rst",
+            "clock" : "clk",
+            "access_mode" : "mode",
+            "read" : "rd",
+            "value" : 55,
+            "edge_type" : "rising_edge",
+            "reset_type" : "active_high",
+            "enable_type" : "active_high"
+        }
+
+        mem = Memory.from_dict(config,hooks)
 
 
 if __name__ == '__main__':
