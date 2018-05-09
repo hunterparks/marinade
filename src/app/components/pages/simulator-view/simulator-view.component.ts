@@ -1,12 +1,12 @@
 import { Component, HostListener } from '@angular/core';
-import { Bus } from '../../../models/simulator/bus/bus.class';
-import { Architecture } from '../../../models/simulator/architecture.class';
-import { ArchitectureService } from '../../../services/simulator/architecture/architecture.service';
-import { BusMonitorService } from '../../../services/simulator/bus-monitor/bus-monitor.service';
-import { RequestService } from '../../../services/simulator/request/request.service';
-import { ResponseService } from '../../../services/simulator/response/response.service';
-import { WebsocketService } from '../../../services/simulator/websocket/websocket.service';
-import { TooltipService } from '../../../services/tooltip/tooltip.service';
+import { Architecture } from '@models/simulator/architecture.class';
+import { Bus } from '@models/simulator/bus/bus.class';
+import { ArchitectureService } from '@services/simulator/architecture/architecture.service';
+import { BusMonitorService } from '@services/simulator/bus-monitor/bus-monitor.service';
+import { RequestService } from '@services/simulator/request/request.service';
+import { ResponseService } from '@services/simulator/response/response.service';
+import { WebsocketService } from '@services/simulator/websocket/websocket.service';
+import { TooltipService } from '@services/tooltip/tooltip.service';
 
 @Component({
   selector: 'marinade-simulator',

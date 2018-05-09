@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { StageComponent } from './stage.component';
+import { RectComponent } from './rect.component';
 
-describe('ControllerComponent', () => {
-  let component: StageComponent;
-  let fixture: ComponentFixture<StageComponent>;
+describe('CombinationalComponent', () => {
+  let component: RectComponent;
+  let fixture: ComponentFixture<RectComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ StageComponent ]
+      declarations: [ RectComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(StageComponent);
+    fixture = TestBed.createComponent(RectComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -6,11 +6,11 @@ import os
 import re
 
 current_directory = os.path.dirname(__file__)
-input_file = open('/Users/alex/Downloads/pipeline_architecture.svg', 'r')
+input_file = open('/Users/stoehraj/Downloads/decode.svg', 'r')
 output_file = os.path.join(current_directory, '../../../app/models/simulator/architecture.model.ts')
 
 # Clear the contents of the file
-open(output_file, 'w').write('export const ARCHITECTURE: Simulator = {\n')
+open(output_file, 'w').write('export const ARCHITECTURE: any = {\n')
 
 # Read the input file and set up beautifulsoup
 input_text = ''
@@ -55,9 +55,12 @@ class Collection:
         elif component_type == 'stage':
             self.typescript_type = 'any[]'
             self.component_type = 'stage'
-        elif component_type == 'stageRegister':
+        elif component_type == 'register':
             self.typescript_type = 'any[]'
-            self.component_type = 'stageRegister'
+            self.component_type = 'register'
+        elif component_type == 'combinational':
+            self.typescript_type = 'any[]'
+            self.component_type = 'combinational'
 
     def to_typescript(self):
         return json.dumps([element.to_dict() for element in self.elements], indent=2).replace('"', '\'')
@@ -74,7 +77,7 @@ class Collection:
         return False
 
     def add(self, element):
-        if element.__class__.__name__.lower() == self.component_type or (element.__class__.__name__.lower() == 'register' and self.component_type in ['stage', 'stageRegister', 'controller']):
+        if element.__class__.__name__.lower() == self.component_type or (element.__class__.__name__.lower() == 'rectangle' and self.component_type in ['stage', 'register', 'controller', 'combinational']):
             if element.valid:
                 self.elements.append(element)
 
@@ -245,7 +248,7 @@ class Mux(Element):
         self.valid = True
 
 
-class Register(Element):
+class Rectangle(Element):
 
     def __init__(self, svg):
         self.type, self.height, self.width, self.x, self.y = self.parse_svg(svg)
@@ -255,9 +258,11 @@ class Register(Element):
         if color == '#ff3333':
           self.type = 'stage'
         elif color == '#97d077':
-          self.type = 'stageRegister'
+          self.type = 'register'
         elif color == '#ffff33':
           self.type = 'controller'
+        elif color == '#ff9933':
+          self.type = 'combinational'
         height = svg.attrs['height']
         width = svg.attrs['width']
         x = svg.attrs['x']
@@ -354,20 +359,23 @@ for line in soup.find_all('path'):
 # ====================================
 # Find the registers (rectangles)
 # ====================================
-registers = {
+rectangles = {
   'stage': Collection('stage'),
-  'stageRegister': Collection('stageRegister'),
-  'controller': Collection('controller')
+  'register': Collection('register'),
+  'controller': Collection('controller'),
+  'combinational': Collection('combinational')
 }
 for rect in soup.find_all('rect'):
-    typed_rect = Register(rect)
-    registers[typed_rect.type].add(typed_rect)
+  if rect.attrs['fill'].lower() != '#ffffff':
+    typed_rect = Rectangle(rect)
+    rectangles[typed_rect.type].add(typed_rect)
 
 buses.commit()
-registers['controller'].commit()
+rectangles['combinational'].commit()
+rectangles['controller'].commit()
 muxes.commit()
-registers['stage'].commit()
-registers['stageRegister'].commit()
+rectangles['register'].commit()
+rectangles['stage'].commit()
 
 file = open(output_file, 'a')
 file.write('};\n')

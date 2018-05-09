@@ -1,6 +1,6 @@
 import { Directive, ElementRef, HostListener, Input, OnDestroy } from '@angular/core';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
-import { TooltipService } from '../../services/tooltip/tooltip.service';
+import { TooltipService } from '@services/tooltip/tooltip.service';
 
 @Directive({ selector: '[tooltip]' })
 export class TooltipDirective implements OnDestroy {

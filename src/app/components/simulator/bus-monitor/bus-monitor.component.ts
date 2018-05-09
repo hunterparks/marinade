@@ -1,6 +1,6 @@
 import { Component, HostListener } from '@angular/core';
-import { Bus } from '../../../../models/simulator/bus/bus.class';
-import { BusMonitorService } from '../../../../services/simulator/bus-monitor/bus-monitor.service';
+import { Bus } from '@models/simulator/bus/bus.class';
+import { BusMonitorService } from '@services/simulator/bus-monitor/bus-monitor.service';
 
 @Component({
   selector: 'marinade-bus-monitor',

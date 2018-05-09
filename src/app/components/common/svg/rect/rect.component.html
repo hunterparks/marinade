@@ -1,0 +1,17 @@
+<svg:rect
+  [attr.fill]="color"
+  [attr.x]="rect.x"
+  [attr.y]="rect.y"
+  [attr.width]="rect.width"
+  [attr.height]="rect.height"
+  stroke="#000000"
+/>
+<svg:text
+  *ngIf="rect.name"
+  [attr.x]="rect.x + rect.width / 2"
+  [attr.y]="rect.y + rect.height / 2 + 5"
+  [attr.font-size]="fontSize"
+  font-family="sans-serif"
+  text-anchor="middle">
+  {{ rect.name }}
+</svg:text>

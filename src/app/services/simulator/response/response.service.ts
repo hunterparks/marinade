@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Bus } from '../../../models/simulator/bus/bus.class';
-import { ArchitectureService } from '../architecture/architecture.service';
+import { Bus } from '@models/simulator/bus/bus.class';
+import { ArchitectureService } from '@services/simulator/architecture/architecture.service';
 
 @Injectable()
 export class ResponseService {
