@@ -248,7 +248,7 @@ class Interface:
 
 if __name__ == "__main__":
 
-    #client = initialize_sentry()
+    client = initialize_sentry()
 
     try:
 
@@ -257,7 +257,7 @@ if __name__ == "__main__":
         async def api_call(websocket, path):
             async for message in websocket:
                 try:
-                    msg = json.loads(message)
+                    msg = json.loads(message.replace("\\", "/"))
                     retMsg = interface.parse_command(msg)
                     rxStr = json.dumps(retMsg)
                     await websocket.send(rxStr)
@@ -269,5 +269,4 @@ if __name__ == "__main__":
         asyncio.get_event_loop().run_forever()
 
     except Exception:
-        #client.captureException()
-        pass
+        client.captureException()
