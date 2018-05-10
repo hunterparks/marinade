@@ -6,20 +6,11 @@ Configuration file template should follow form
 {
     /* Required */
 
-    "name" : "memory_read_sign_extend",
-    "type" : "MemoryReadSignExtender",
     "input" : "",
     "ctrl" : "",
-    "output" : "",
-
-    /* Options */
-
-    "package" : "arm"
+    "output" : ""
 }
 
-name is the entity name, used by entity map (Used externally)
-type is the component class (Used externally)
-package is associated package to override general (Used externally)
 input is data bus reference from memory
 ctrl is control bus to select operation
 output is data bus reference with modified data from input

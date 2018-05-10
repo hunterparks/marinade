@@ -39,9 +39,10 @@ signals is a list of bus components
     else a component is constructed accoriding to the definition in the package
         manager
 
+    if component request to be appened to entities then it is added after all
+        current entities in list (typically none)
+
 entities is a list of runable components
-    if a component has key signal then it is interpretted as a signal that needs
-        to be appended to the entity list
     if a component has key symbolic then it is interpretted as being a
         non-runnable container with a set of sub entities
     else a component is regarded as concrete and is constructed according to
@@ -289,6 +290,20 @@ class Architecture(ConfigurationParser):
         Configuration signals must be a list of signals where each one follows
         the configuration template for the given type
 
+        Configuration signals may take several forms
+
+            if the signal is a symbolic then the component is treated as a
+                container for another list of signals
+            else the signal is concrete and is constructed after searching the
+                package tree
+
+        Additional options
+
+            if package is supplied then the component will be searched only in
+                that list (of strings)
+            if append_to_entities is supplied then component is also added as an
+                entity
+
         config is reference to dictionary with entities for configuration
         hooks is dictionary containing signals to link components (or None)
         entities is orderedDict to append signals that request to be appended
@@ -331,9 +346,7 @@ class Architecture(ConfigurationParser):
 
         Configuration entities may take several forms
 
-            if the entity is a signal then an insert of hook is made into
-                entities list
-            else if the entity is a symbolic then the component is treated as a
+            if the entity is a symbolic then the component is treated as a
                 container for another list of entities
             else the entity is concrete and is constructed after searching the
                 package tree
@@ -367,7 +380,7 @@ class Architecture(ConfigurationParser):
                 if "entities" in entity:
                     entities.update(cls._parse_entities(entity, hooks))
             else:
-                
+
                 entities.update({entity["name"]: package_manager.construct(
                     entity["simulation"]["model"], entity["simulation"], package, hooks)})
 

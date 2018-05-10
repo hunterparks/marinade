@@ -8,19 +8,15 @@ Configuration file template should follow form
 {
     /* Required */
 
-    "name" : "reset",
-    "type" : "Reset",
     "width" : 1,
 
     /* Optional */
 
-    "package" : "core",
-    "value" : 1
+    "value" : 1,
+    "append_to_entities" : true
 }
 
-name is the entity name, used by entity map (Used externally)
-type is the component class (Used externally)
-package is associated package to override general (Used externally)
+append_to_entities is flag used to append an hooks as entity (Used externally)
 value is the default value for the component
 width is bit-width, enforced to always be one
 """

@@ -6,21 +6,12 @@ Configuration file template should follow form
 {
     /* Required */
 
-    "name" : "mux",
-    "type" : "Mux",
     "width" : 2,
     "inputs" : [],
     "select" : "",
-    "output" : "",
-
-    /* Optional */
-
-    "package" : "core"
+    "output" : ""
 }
 
-name is the entity name, used by entity map (Used externally)
-type is the component class (Used externally)
-package is associated package to override general (Used externally)
 width is number of bits of buses passing through
 inputs is array of data bus references to select
 select is control bus reference to select an input

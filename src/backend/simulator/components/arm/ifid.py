@@ -6,8 +6,6 @@ Configration file template should follow form
 {
     /* Required */
 
-    "name" : "ifid",
-    "type" : "Ifid",
     "pc4f" : "",
     "pc8f" : "",
     "instrf" : "",
@@ -20,7 +18,6 @@ Configration file template should follow form
 
     /* Optional */
 
-    "package" : "arm",
     "append_to_signals" : true,
     "value" : 0,
     "enable" : "",
@@ -29,9 +26,6 @@ Configration file template should follow form
     "enable_type" : ""
 }
 
-name is the entity name, used by entity map (Used externally)
-type is the component class (Used externally)
-package is associated package to override general (Used externally)
 append_to_signals is flag used to append an entity as hook (Used externally)
 pc4f is data bus reference input
 pc8f is data bus reference input

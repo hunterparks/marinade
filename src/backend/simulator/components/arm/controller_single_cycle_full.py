@@ -6,8 +6,6 @@ Configuration file template should follow form
 {
     /* Required */
 
-    "name" : "controller_single_full",
-    "type" : "ControllerSingleCycleFull",
     "instruction" : "",
     "c" : "",
     "v" : "",
@@ -34,13 +32,9 @@ Configuration file template should follow form
 
     /* Optional */
 
-    "package" : "arm",
     "append_to_signals" : true
 }
 
-name is the entity name, used by entity map (Used externally)
-type is the component class (Used externally)
-package is associated package to override general (Used externally)
 append_to_signals is flag used to append an entity as hook (Used externally)
 instruction is data bus reference input
 c is data bus reference input

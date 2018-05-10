@@ -5,8 +5,6 @@ Configuration file template should follow form
 {
     /* Required */
 
-    "name" : "hazard",
-    "type" : "Hazard",
     "ra1e" : "",
     "ra2e" : "",
     "ra3e" : "",
@@ -27,13 +25,9 @@ Configuration file template should follow form
 
     /* Optional */
 
-    "package" : "arm",
     "append_to_signals" : true
 }
 
-name is the entity name, used by entity map (Used externally)
-type is the component class (Used externally)
-package is associated package to override general (Used externally)
 ra1e is data bus reference input
 ra2e is data bus reference input
 ra3e is data bus reference input

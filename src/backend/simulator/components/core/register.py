@@ -6,16 +6,13 @@ Configuration file template should follow form
 {
     /* Required */
 
-    "name" : "register",
-    "type" : "Register",
     "width" : 8,
     "clock" : "",
     "reset" : "",
     "input" : "",
 
     /* Optional */
-
-    "package" : "core",
+    
     "append_to_signals" : true,
     "output" : "",
     "enable" : "",
@@ -25,9 +22,6 @@ Configuration file template should follow form
     "enable_type" : ""
 }
 
-name is the entity name, used by entity map (Used externally)
-type is the component class (Used externally)
-package is associated package to override general (Used externally)
 append_to_signals is flag used to append an entity as hook (Used externally)
 width is number of bits stored in register
 clock is control bus clock line reference

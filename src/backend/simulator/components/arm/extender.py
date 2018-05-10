@@ -5,20 +5,11 @@ Configuration file template should follow form
 {
     /* Required */
 
-    "name" : "extender",
-    "type" : "Extender",
     "imm" : "",
     "exts" : "",
-    "imm32" : "",
-
-    /* Options */
-
-    "package" : "arm"
+    "imm32" : ""
 }
 
-name is the entity name, used by entity map (Used externally)
-type is the component class (Used externally)
-package is associated package to override general (Used externally)
 imm is data bus reference of 24 bits
 exts is control bus reference
 imm32 is 32 bit extended data bus reference
