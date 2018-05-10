@@ -184,8 +184,6 @@ class ControllerSingleCycle_t(unittest.TestCase):
         })
 
         config = {
-            "name" : "controller_single_full",
-            "type" : "ControllerSingleCycleFull",
             "instruction" : "instruction",
             "c" : "c",
             "v" : "v",

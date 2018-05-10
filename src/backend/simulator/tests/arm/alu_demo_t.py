@@ -181,8 +181,6 @@ class Alu_t(unittest.TestCase):
         })
 
         config = {
-            "name" : "alu_demo",
-            "type" : "AluDemo",
             "input_a" : "a",
             "input_b" : "b",
             "alus" : "alus",

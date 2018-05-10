@@ -10,7 +10,9 @@
       "simulation": {
         "model": "Clock",
         "frequency": 10,
-        "value": 0
+        "value": 0,
+        "append_to_entities" : true,
+        "width" : 1
       },
       "view": { }
     },
@@ -18,7 +20,8 @@
       "name": "rst",
       "simulation": {
         "model": "Reset",
-        "value": 0
+        "value": 0,
+        "width" : 1
       },
       "view": { }
     },
@@ -772,10 +775,6 @@
   ],
   "entities": [
     {
-      "name": "clk",
-      "signal": "clk"
-    },
-    {
       "name": "barrier_registers",
       "symbolic": true,
       "entities": [
@@ -1066,7 +1065,7 @@
             "a3": "ra3w",
             "rd1": "rd1d",
             "rd2": "rd2d",
-            "edge_model": "falling_edge"
+            "edge_type": "falling_edge"
           },
           "view": { }
         }

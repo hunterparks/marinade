@@ -105,9 +105,8 @@ class Reset_t(unittest.TestCase):
         "Validates dictionary constructor"
 
         config = {
-            "name" : "rst",
-            "type" : "Reset",
-            "value" : 1
+            "value" : 1,
+            "width" : 1
         }
 
         rst = Reset.from_dict(config,None) #Buses do not need hook reference

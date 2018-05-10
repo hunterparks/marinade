@@ -11,7 +11,8 @@
         "model": "Clock",
         "frequency": 10,
         "value": 0,
-        "width": 1
+        "width": 1,
+        "append_to_entities" : true
       },
       "view": { }
     },
@@ -445,10 +446,6 @@
   ],
   "entities": [
     {
-      "name": "clk",
-      "signal": "clk"
-    },
-    {
       "name": "fetch_stage",
       "symbolic": true,
       "entities": [
@@ -463,7 +460,7 @@
             "input": "pcwb",
             "output": "pc",
             "enable": "pcwr",
-            "edge_model": "falling_edge"
+            "edge_type": "falling_edge"
           },
           "view": { }
         },

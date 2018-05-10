@@ -7,7 +7,7 @@ Configuration file template should follow form
 
     "name" : "constant",
     "type" : "Constant",
-    "size" : 1,
+    "width" : 1,
     "value" : 12,
 
     /* Optional */
@@ -18,7 +18,7 @@ Configuration file template should follow form
 name is the entity name, used by entity map (Used externally)
 type is the component class (Used externally)
 package is associated package to override general (Used externally)
-size is the bit-width for the component
+width is the bit-width for the component
 value is the value for the component
 """
 
@@ -56,4 +56,4 @@ class Constant(Hook, iBusRead):
     @classmethod
     def from_dict(cls, config, hooks):
         "Implements conversion from configuration to component"
-        return Constant(config["size"],config["value"])
+        return Constant(config["width"],config["value"])

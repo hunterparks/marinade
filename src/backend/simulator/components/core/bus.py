@@ -8,7 +8,7 @@ Configuration file template should follow form
 
     "name" : "bus",
     "type" : "Bus",
-    "size" : 1,
+    "width" : 1,
 
     /* Optional */
 
@@ -19,7 +19,7 @@ Configuration file template should follow form
 name is the entity name, used by entity map (Used externally)
 type is the component class (Used externally)
 package is associated package to override general (Used externally)
-size is the bit-width for the component
+width is the bit-width for the component
 value is the default value for the component
 """
 
@@ -75,4 +75,4 @@ class Bus(OutputHook, iBusRead, iBusWrite):
         else:
             default_state = Bus.DEFAULT_STATE
 
-        return Bus(config["size"],default_state)
+        return Bus(config["width"],default_state)

@@ -8,7 +8,7 @@ Configuration file template should follow form
 
     "name" : "adder",
     "type" : "Adder",
-    "size" : 1,
+    "width" : 1,
     "input_1" : "",
     "input_2" : "",
 
@@ -22,7 +22,7 @@ Configuration file template should follow form
 name is the entity name, used by entity map (Used externally)
 type is the component class (Used externally)
 package is associated package to override general (Used externally)
-size is the bit-width for this component
+width is the bit-width for this component
 input_1 is string reference for input bus of bit-width
 input_2 is string reference for input bus of bit-width
 output is an optional string reference for output bus of bit-width
@@ -114,5 +114,5 @@ class Adder(Combinational):
         else:
             carry_out = None
 
-        return Adder(config["size"], hooks[config["input_1"]],
+        return Adder(config["width"], hooks[config["input_1"]],
                      hooks[config["input_2"]], output, carry_in, carry_out)

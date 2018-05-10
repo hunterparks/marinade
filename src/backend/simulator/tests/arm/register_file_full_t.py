@@ -97,8 +97,6 @@ class RegisterFile_Full_t(unittest.TestCase):
         })
 
         config = {
-            "name" : "register_file_full",
-            "type" : "RegisterFileFull",
             "clock" : "clock",
             "reset" : "reset",
             "write_enable" : "write_enable",

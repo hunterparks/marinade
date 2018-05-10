@@ -217,8 +217,6 @@ class Memwb_t(unittest.TestCase):
         })
 
         config = {
-            "name" : "memwb",
-            "type" : "Memwb",
             "pc4m" : "pc4m",
             "regwrm" : "regwrm",
             "regsrcm" : "regsrcm",

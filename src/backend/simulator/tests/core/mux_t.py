@@ -129,9 +129,7 @@ class Mux_t(unittest.TestCase):
         })
 
         config = {
-            "name" : "mux",
-            "type" : "Mux",
-            "size" : 2,
+            "width" : 2,
             "inputs" : ["a","b"],
             "select" : "slct",
             "output" : "o"

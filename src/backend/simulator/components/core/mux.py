@@ -8,7 +8,7 @@ Configuration file template should follow form
 
     "name" : "mux",
     "type" : "Mux",
-    "size" : 2,
+    "width" : 2,
     "inputs" : [],
     "select" : "",
     "output" : "",
@@ -21,7 +21,7 @@ Configuration file template should follow form
 name is the entity name, used by entity map (Used externally)
 type is the component class (Used externally)
 package is associated package to override general (Used externally)
-size is number of bits of buses passing through
+width is number of bits of buses passing through
 inputs is array of data bus references to select
 select is control bus reference to select an input
 output is data bus reference with selected input copied into it
@@ -100,4 +100,4 @@ class Mux(Combinational):
         else:
             output = None
 
-        return Mux(config["size"],inputs,hooks[config["select"]],output)
+        return Mux(config["width"],inputs,hooks[config["select"]],output)

@@ -185,10 +185,9 @@ class Clock_t(unittest.TestCase):
         "Validates dictionary constructor"
 
         config = {
-            "name" : "clk",
-            "type" : "Clock",
             "frequency" : 1000,
-            "value" : 1
+            "value" : 1,
+            "width" : 1
         }
 
         clk = Clock.from_dict(config,None) #Buses do not need hook reference

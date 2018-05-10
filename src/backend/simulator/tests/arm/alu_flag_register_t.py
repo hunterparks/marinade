@@ -206,8 +206,6 @@ class ALUFlagRegister_t(unittest.TestCase):
         })
 
         config = {
-            "name" : "alu_flag_register",
-            "type" : "AluFlagRegister",
             "c_in" : "c_i",
             "v_in" : "v_i",
             "n_in" : "n_i",

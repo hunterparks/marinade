@@ -8,353 +8,668 @@
   "signals" : [
     {
       "name" : "clk",
-      "model" : "Clock",
-      "frequency" : 10,
-      "value" : 0,
-      "width" : 1
+      "simulation" : {
+        "model" : "Clock",
+        "frequency" : 10,
+        "value" : 0,
+        "width" : 1,
+        "append_to_entities" : true
+      },
+      "view" : {
+
+      }
     },
     {
       "name" : "rst",
-      "model" : "Reset",
-      "value" : 0,
-      "width" : 1
+      "simulation" : {
+        "model" : "Reset",
+        "value" : 0,
+        "width" : 1
+      },
+      "view" : {
+
+      }
     },
     {
       "name" : "const8",
-      "model" : "Constant",
-      "width" : 32,
-      "value" : 8
+      "simulation" : {
+        "model" : "Constant",
+        "width" : 32,
+        "value" : 8
+      },
+      "view" : {
+
+      }
     },
     {
       "name" : "const4",
-      "model" : "Constant",
-      "width" : 32,
-      "value" : 4
+      "simulation" : {
+        "model" : "Constant",
+        "width" : 32,
+        "value" : 4
+      },
+      "view" : {
+
+      }
     },
     {
       "name" : "const14",
-      "model" : "Constant",
-      "width" : 4,
-      "value" : 14
+      "simulation" : {
+        "model" : "Constant",
+        "width" : 4,
+        "value" : 14
+      },
+      "view" : {
+
+      }
     },
     {
       "name" : "pc",
-      "model" : "Bus",
-      "width" : 32
+      "simulation" : {
+        "model" : "Bus",
+        "width" : 32
+      },
+      "view" : {
+
+      }
     },
     {
       "name" : "pc8",
-      "model" : "Bus",
-      "width" : 32
+      "simulation" : {
+        "model" : "Bus",
+        "width" : 32
+      },
+      "view" : {
+
+      }
     },
     {
       "name" : "pc4",
-      "model" : "Bus",
-      "width" : 32
+      "simulation" : {
+        "model" : "Bus",
+        "width" : 32
+      },
+      "view" : {
+
+      }
     },
     {
       "name" : "instr",
-      "model" : "Bus",
-      "width" : 32
+      "simulation" : {
+        "model" : "Bus",
+        "width" : 32
+      },
+      "view" : {
+
+      }
     },
     {
       "name" : "instr_23_0",
-      "model" : "Bus",
-      "width" : 24
+      "simulation" : {
+        "model" : "Bus",
+        "width" : 24
+      },
+      "view" : {
+
+      }
     },
     {
       "name" : "instr_19_16",
-      "model" : "Bus",
-      "width" : 4
+      "simulation" : {
+        "model" : "Bus",
+        "width" : 4
+      },
+      "view" : {
+
+      }
     },
     {
       "name" : "instr_3_0",
-      "model" : "Bus",
-      "width" : 4
+      "simulation" : {
+        "model" : "Bus",
+        "width" : 4
+      },
+      "view" : {
+
+      }
     },
     {
       "name" : "instr_15_12",
-      "model" : "Bus",
-      "width" : 4
+      "simulation" : {
+        "model" : "Bus",
+        "width" : 4
+      },
+      "view" : {
+
+      }
     },
     {
       "name" : "instr_11_8",
-      "model" : "Bus",
-      "width" : 4
+      "simulation" : {
+        "model" : "Bus",
+        "width" : 4
+      },
+      "view" : {
+
+      }
     },
     {
       "name" : "instr_11_7",
-      "model" : "Bus",
-      "width" : 5
+      "simulation" : {
+        "model" : "Bus",
+        "width" : 5
+      },
+      "view" : {
+
+      }
     },
     {
       "name" : "imm32",
-      "model" : "Bus",
-      "width" : 32
+      "simulation" : {
+        "model" : "Bus",
+        "width" : 32
+      },
+      "view" : {
+
+      }
     },
     {
       "name" : "ra1",
-      "model" : "Bus",
-      "width" : 4
+      "simulation" : {
+        "model" : "Bus",
+        "width" : 4
+      },
+      "view" : {
+
+      }
     },
     {
       "name" : "ra2",
-      "model" : "Bus",
-      "width" : 4
+      "simulation" : {
+        "model" : "Bus",
+        "width" : 4
+      },
+      "view" : {
+
+      }
     },
     {
       "name" : "ra3",
-      "model" : "Bus",
-      "width" : 4
+      "simulation" : {
+        "model" : "Bus",
+        "width" : 4
+      },
+      "view" : {
+
+      }
     },
     {
       "name" : "wa",
-      "model" : "Bus",
-      "width" : 4
+      "simulation" : {
+        "model" : "Bus",
+        "width" : 4
+      },
+      "view" : {
+
+      }
     },
     {
       "name" : "rwd",
-      "model" : "Bus",
-      "width" : 32
+      "simulation" : {
+        "model" : "Bus",
+        "width" : 32
+      },
+      "view" : {
+
+      }
     },
     {
       "name" : "rd1",
-      "model" : "Bus",
-      "width" : 32
+      "simulation" : {
+        "model" : "Bus",
+        "width" : 32
+      },
+      "view" : {
+
+      }
     },
     {
       "name" : "rd2",
-      "model" : "Bus",
-      "width" : 32
+      "simulation" : {
+        "model" : "Bus",
+        "width" : 32
+      },
+      "view" : {
+
+      }
     },
     {
       "name" : "rd3",
-      "model" : "Bus",
-      "width" : 32
+      "simulation" : {
+        "model" : "Bus",
+        "width" : 32
+      },
+      "view" : {
+
+      }
     },
     {
       "name" : "alub",
-      "model" : "Bus",
-      "width" : 32
+      "simulation" : {
+        "model" : "Bus",
+        "width" : 32
+      },
+      "view" : {
+
+      }
     },
     {
       "name" : "branch",
-      "model" : "Bus",
-      "width" : 32
+      "simulation" : {
+        "model" : "Bus",
+        "width" : 32
+      },
+      "view" : {
+
+      }
     },
     {
       "name" : "aluf",
-      "model" : "Bus",
-      "width" : 32
+      "simulation" : {
+        "model" : "Bus",
+        "width" : 32
+      },
+      "view" : {
+
+      }
     },
     {
       "name" : "aluc",
-      "model" : "Bus",
-      "width" : 1
+      "simulation" : {
+        "model" : "Bus",
+        "width" : 1
+      },
+      "view" : {
+
+      }
     },
     {
       "name" : "aluv",
-      "model" : "Bus",
-      "width" : 1
+      "simulation" : {
+        "model" : "Bus",
+        "width" : 1
+      },
+      "view" : {
+
+      }
     },
     {
       "name" : "alun",
-      "model" : "Bus",
-      "width" : 1
+      "simulation" : {
+        "model" : "Bus",
+        "width" : 1
+      },
+      "view" : {
+
+      }
     },
     {
       "name" : "aluz",
-      "model" : "Bus",
-      "width" : 1
+      "simulation" : {
+        "model" : "Bus",
+        "width" : 1
+      },
+      "view" : {
+
+      }
     },
     {
       "name" : "aluflag",
-      "model" : "Bus",
-      "width" : 4
+      "simulation" : {
+        "model" : "Bus",
+        "width" : 4
+      },
+      "view" : {
+
+      }
     },
     {
       "name" : "flag",
-      "model" : "Bus",
-      "width" : 4
+      "simulation" : {
+        "model" : "Bus",
+        "width" : 4
+      },
+      "view" : {
+
+      }
     },
     {
       "name" : "c",
-      "model" : "Bus",
-      "width" : 1
+      "simulation" : {
+        "model" : "Bus",
+        "width" : 1
+      },
+      "view" : {
+
+      }
     },
     {
       "name" : "v",
-      "model" : "Bus",
-      "width" : 1
+      "simulation" : {
+        "model" : "Bus",
+        "width" : 1
+      },
+      "view" : {
+
+      }
     },
     {
       "name" : "n",
-      "model" : "Bus",
-      "width" : 1
+      "simulation" : {
+        "model" : "Bus",
+        "width" : 1
+      },
+      "view" : {
+
+      }
     },
     {
       "name" : "z",
-      "model" : "Bus",
-      "width" : 1
+      "simulation" : {
+        "model" : "Bus",
+        "width" : 1
+      },
+      "view" : {
+
+      }
     },
     {
       "name" : "memrd",
-      "model" : "Bus",
-      "width" : 32
+      "simulation" : {
+        "model" : "Bus",
+        "width" : 32
+      },
+      "view" : {
+
+      }
     },
     {
       "name" : "memrd_ext",
-      "model" : "Bus",
-      "width" : 32
+      "simulation" : {
+        "model" : "Bus",
+        "width" : 32
+      },
+      "view" : {
+
+      }
     },
     {
       "name" : "wdb",
-      "model" : "Bus",
-      "width" : 32
+      "simulation" : {
+        "model" : "Bus",
+        "width" : 32
+      },
+      "view" : {
+
+      }
     },
     {
       "name" : "pcwb",
-      "model" : "Bus",
-      "width" : 32
+      "simulation" : {
+        "model" : "Bus",
+        "width" : 32
+      },
+      "view" : {
+
+      }
     },
     {
       "name" : "pcwr",
-      "model" : "Bus",
-      "width" : 1
+      "simulation" : {
+        "model" : "Bus",
+        "width" : 1
+      },
+      "view" : {
+
+      }
     },
     {
       "name" : "regsa",
-      "model" : "Bus",
-      "width" : 1
+      "simulation" : {
+        "model" : "Bus",
+        "width" : 1
+      },
+      "view" : {
+
+      }
     },
     {
       "name" : "regsb",
-      "model" : "Bus",
-      "width" : 1
+      "simulation" : {
+        "model" : "Bus",
+        "width" : 1
+      },
+      "view" : {
+
+      }
     },
     {
       "name" : "regdst",
-      "model" : "Bus",
-      "width" : 2
+      "simulation" : {
+        "model" : "Bus",
+        "width" : 2
+      },
+      "view" : {
+
+      }
     },
     {
       "name" : "regwrs",
-      "model" : "Bus",
-      "width" : 2
+      "simulation" : {
+        "model" : "Bus",
+        "width" : 2
+      },
+      "view" : {
+
+      }
     },
     {
       "name" : "wdbs",
-      "model" : "Bus",
-      "width" : 1
+      "simulation" : {
+        "model" : "Bus",
+        "width" : 1
+      },
+      "view" : {
+
+      }
     },
     {
       "name" : "regwr",
-      "model" : "Bus",
-      "width" : 1
+      "simulation" : {
+        "model" : "Bus",
+        "width" : 1
+      },
+      "view" : {
+
+      }
     },
     {
       "name" : "exts",
-      "model" : "Bus",
-      "width" : 2
+      "simulation" : {
+        "model" : "Bus",
+        "width" : 2
+      },
+      "view" : {
+
+      }
     },
     {
       "name" : "alusrcb",
-      "model" : "Bus",
-      "width" : 1
+      "simulation" : {
+        "model" : "Bus",
+        "width" : 1
+      },
+      "view" : {
+
+      }
     },
     {
       "name" : "alus",
-      "model" : "Bus",
-      "width" : 4
+      "simulation" : {
+        "model" : "Bus",
+        "width" : 4
+      },
+      "view" : {
+
+      }
     },
     {
       "name" : "aluflagwr",
-      "model" : "Bus",
-      "width" : 1
+      "simulation" : {
+        "model" : "Bus",
+        "width" : 1
+      },
+      "view" : {
+
+      }
     },
     {
       "name" : "shop",
-      "model" : "Bus",
-      "width" : 2
+      "simulation" : {
+        "model" : "Bus",
+        "width" : 2
+      },
+      "view" : {
+
+      }
     },
     {
       "name" : "shctrl",
-      "model" : "Bus",
-      "width" : 2
+      "simulation" : {
+        "model" : "Bus",
+        "width" : 2
+      },
+      "view" : {
+
+      }
     },
     {
       "name" : "accen",
-      "model" : "Bus",
-      "width" : 1
+      "simulation" : {
+        "model" : "Bus",
+        "width" : 1
+      },
+      "view" : {
+
+      }
     },
     {
       "name" : "memwr",
-      "model" : "Bus",
-      "width" : 1
+      "simulation" : {
+        "model" : "Bus",
+        "width" : 1
+      },
+      "view" : {
+
+      }
     },
     {
       "name" : "memty",
-      "model" : "Bus",
-      "width" : 2
+      "simulation" : {
+        "model" : "Bus",
+        "width" : 2
+      },
+      "view" : {
+
+      }
     },
     {
       "name" : "regsrc",
-      "model" : "Bus",
-      "width" : 1
+      "simulation" : {
+        "model" : "Bus",
+        "width" : 1
+      },
+      "view" : {
+
+      }
     },
     {
       "name" : "pcsrc",
-      "model" : "Bus",
-      "width" : 2
+      "simulation" : {
+        "model" : "Bus",
+        "width" : 2
+      },
+      "view" : {
+
+      }
     }
   ],
 
   "entities" : [
-    {
-      "name" : "clk",
-      "signal" : "clk"
-    },
     {
       "name" : "fetch_stage",
       "symbolic" : true,
       "entities" : [
         {
           "name" : "pc_reg",
-          "model" : "Register",
-          "append_to_signals" : true,
-          "width" : 32,
-          "clock" : "clk",
-          "reset" : "rst",
-          "input" : "pcwb",
-          "output" : "pc",
-          "enable" : "pcwr",
-          "edge_model" : "falling_edge"
+          "simulation" : {
+            "model" : "Register",
+            "append_to_signals" : true,
+            "width" : 32,
+            "clock" : "clk",
+            "reset" : "rst",
+            "input" : "pcwb",
+            "output" : "pc",
+            "enable" : "pcwr",
+            "edge_type" : "falling_edge"
+          },
+          "view" : {
+
+          }
         },
         {
           "name" : "add8",
-          "model" : "Adder",
-          "width" : 32,
-          "input_1" : "pc",
-          "input_2" : "const8",
-          "output" : "pc8"
+          "simulation" : {
+            "model" : "Adder",
+            "width" : 32,
+            "input_1" : "pc",
+            "input_2" : "const8",
+            "output" : "pc8"
+          },
+          "view" : {
+
+          }
         },
         {
           "name" : "add4",
-          "model" : "Adder",
-          "width" : 32,
-          "input_1" : "pc",
-          "input_2" : "const4",
-          "output" : "pc4"
+          "simulation" : {
+            "model" : "Adder",
+            "width" : 32,
+            "input_1" : "pc",
+            "input_2" : "const4",
+            "output" : "pc4"
+          },
+          "view" : {
+
+          }
         },
         {
           "name" : "progmem",
-          "model" : "ProgramMemory",
-          "append_to_signals" : true,
-          "address" : "pc",
-          "reset" : "rst",
-          "read" : "instr"
+          "simulation" : {
+            "model" : "ProgramMemory",
+            "append_to_signals" : true,
+            "address" : "pc",
+            "reset" : "rst",
+            "read" : "instr"
+          },
+          "view" : {
+
+          }
         }
-      ]
+      ],
+      "view" : {
+
+      }
     },
     {
       "name" : "decode_stage",
@@ -362,105 +677,153 @@
       "entities" : [
         {
           "name" : "instr_subset",
-          "model" : "BusSubset",
-          "input" : "instr",
-          "outputs" : ["instr_23_0","instr_19_16","instr_3_0","instr_15_12",
-                       "instr_11_8","instr_11_7"],
-          "bounds" : [[0,24],[16,20],[0,4],[12,16],[8,12],[7,12]]
+          "simulation" : {
+            "model" : "BusSubset",
+            "input" : "instr",
+            "outputs" : ["instr_23_0","instr_19_16","instr_3_0","instr_15_12",
+                         "instr_11_8","instr_11_7"],
+            "bounds" : [[0,24],[16,20],[0,4],[12,16],[8,12],[7,12]]
+          },
+          "view" : {
+
+          }
         },
         {
           "name" : "controller",
-          "model" : "ControllerSingleCycleFull",
-          "append_to_signals" : true,
-          "instruction" : "instr",
-          "c" : "c",
-          "v" : "v",
-          "n" : "n",
-          "z" : "z",
-          "pcsrc" : "pcsrc",
-          "pcwr" : "pcwr",
-          "regsa" : "regsa",
-          "regdst" : "regdst",
-          "regsb" : "regsb",
-          "regwrs" : "regwrs",
-          "regwr" : "regwr",
-          "exts" : "exts",
-          "alusrcb" : "alusrcb",
-          "alus" : "alus",
-          "shop" : "shop",
-          "shctrl" : "shctrl",
-          "accen" : "accen",
-          "aluflagwr" : "aluflagwr",
-          "memty" : "memty",
-          "memwr" : "memwr",
-          "regsrc" : "regsrc",
-          "wdbs" : "wdbs"
+          "simulation" : {
+            "model" : "ControllerSingleCycleFull",
+            "append_to_signals" : true,
+            "instruction" : "instr",
+            "c" : "c",
+            "v" : "v",
+            "n" : "n",
+            "z" : "z",
+            "pcsrc" : "pcsrc",
+            "pcwr" : "pcwr",
+            "regsa" : "regsa",
+            "regdst" : "regdst",
+            "regsb" : "regsb",
+            "regwrs" : "regwrs",
+            "regwr" : "regwr",
+            "exts" : "exts",
+            "alusrcb" : "alusrcb",
+            "alus" : "alus",
+            "shop" : "shop",
+            "shctrl" : "shctrl",
+            "accen" : "accen",
+            "aluflagwr" : "aluflagwr",
+            "memty" : "memty",
+            "memwr" : "memwr",
+            "regsrc" : "regsrc",
+            "wdbs" : "wdbs"
+          },
+          "view" : {
+
+          }
         },
         {
           "name" : "ra1_mux",
-          "model" : "Mux",
-          "width" : 4,
-          "inputs" : ["instr_3_0","instr_19_16"],
-          "select" : "regsa",
-          "output" : "ra1"
+          "simulation" : {
+            "model" : "Mux",
+            "width" : 4,
+            "inputs" : ["instr_3_0","instr_19_16"],
+            "select" : "regsa",
+            "output" : "ra1"
+          },
+          "view" : {
+
+          }
         },
         {
           "name" : "ra2_mux",
-          "model" : "Mux",
-          "width" : 4,
-          "inputs" : ["instr_11_8","instr_3_0","instr_15_12"],
-          "select" : "regdst",
-          "output" : "ra2"
+          "simulation" : {
+            "model" : "Mux",
+            "width" : 4,
+            "inputs" : ["instr_11_8","instr_3_0","instr_15_12"],
+            "select" : "regdst",
+            "output" : "ra2"
+          },
+          "view" : {
+
+          }
         },
         {
           "name" : "ra3_mux",
-          "model" : "Mux",
-          "width" : 4,
-          "inputs" : ["instr_11_8","instr_15_12"],
-          "select" : "regsb",
-          "output" : "ra3"
+          "simulation" : {
+            "model" : "Mux",
+            "width" : 4,
+            "inputs" : ["instr_11_8","instr_15_12"],
+            "select" : "regsb",
+            "output" : "ra3"
+          },
+          "view" : {
+
+          }
         },
         {
           "name" : "wa_mux",
-          "model" : "Mux",
-          "width" : 4,
-          "inputs" : ["instr_19_16","instr_15_12","const14"],
-          "select" : "regwrs",
-          "output" : "wa"
+          "simulation" : {
+            "model" : "Mux",
+            "width" : 4,
+            "inputs" : ["instr_19_16","instr_15_12","const14"],
+            "select" : "regwrs",
+            "output" : "wa"
+          },
+          "view" : {
+
+          }
         },
         {
           "name" : "rwd_mux",
-          "model" : "Mux",
-          "width" : 32,
-          "inputs" : ["wdb","pc4"],
-          "select" : "wdbs",
-          "output" : "rwd"
+          "simulation" : {
+            "model" : "Mux",
+            "width" : 32,
+            "inputs" : ["wdb","pc4"],
+            "select" : "wdbs",
+            "output" : "rwd"
+          },
+          "view" : {
+
+          }
         },
         {
           "name" : "extimm",
-          "model" : "Extender",
-          "imm" : "instr_23_0",
-          "exts" : "exts",
-          "imm32" : "imm32"
+          "simulation" : {
+            "model" : "Extender",
+            "imm" : "instr_23_0",
+            "exts" : "exts",
+            "imm32" : "imm32"
+          },
+          "view" : {
+
+          }
         },
         {
           "name" : "regfile",
-          "model" : "RegisterFileFull",
-          "append_to_signals" : true,
-          "clock" : "clk",
-          "reset" : "rst",
-          "write_enable" : "regwr",
-          "write_data" : "rwd",
-          "ra1" : "ra1",
-          "ra2" : "ra2",
-          "ra3" : "ra3",
-          "rd1" : "rd1",
-          "rd2" : "rd2",
-          "rd3" : "rd3",
-          "wa1" : "wa",
-          "pc" : "pc"
+          "simulation" : {
+            "model" : "RegisterFileFull",
+            "append_to_signals" : true,
+            "clock" : "clk",
+            "reset" : "rst",
+            "write_enable" : "regwr",
+            "write_data" : "rwd",
+            "ra1" : "ra1",
+            "ra2" : "ra2",
+            "ra3" : "ra3",
+            "rd1" : "rd1",
+            "rd2" : "rd2",
+            "rd3" : "rd3",
+            "wa1" : "wa",
+            "pc" : "pc"
+          },
+          "view" : {
+
+          }
         }
-      ]
+      ],
+      "view" : {
+
+      }
     },
     {
       "name" : "execute_stage",
@@ -468,55 +831,78 @@
       "entities" : [
         {
           "name" : "alu_mux",
-          "model" : "Mux",
-          "width" : 32,
-          "inputs" : ["imm32","rd2"],
-          "select" : "alusrcb",
-          "output" : "alub"
+          "simulation" : {
+            "model" : "Mux",
+            "width" : 32,
+            "inputs" : ["imm32","rd2"],
+            "select" : "alusrcb",
+            "output" : "alub"
+          },
+          "view" : {
+
+          }
         },
         {
           "name" : "add_br",
-          "model" : "Adder",
-          "width" : 32,
-          "input_1" : "pc8",
-          "input_2" : "imm32",
-          "output" : "branch"
+          "simulation" : {
+            "model" : "Adder",
+            "width" : 32,
+            "input_1" : "pc8",
+            "input_2" : "imm32",
+            "output" : "branch"
+          },
+          "view" : {
+
+          }
         },
         {
           "name" : "alu",
-          "model" : "AluFull",
-          "input_a" : "rd1",
-          "input_b" : "alub",
-          "input_ar" : "rd3",
-          "alus" : "alus",
-          "shift" : "instr_11_7",
-          "input_c" : "c",
-          "shift_op" : "shop",
-          "shift_ctrl" : "shctrl",
-          "acc_enable" : "accen",
-          "output_f" : "aluf",
-          "output_c" : "aluc",
-          "output_v" : "aluv",
-          "output_n" : "alun",
-          "output_z" : "aluz"
+          "simulation" : {
+            "model" : "AluFull",
+            "input_a" : "rd1",
+            "input_b" : "alub",
+            "input_ar" : "rd3",
+            "alus" : "alus",
+            "shift" : "instr_11_7",
+            "input_c" : "c",
+            "shift_op" : "shop",
+            "shift_ctrl" : "shctrl",
+            "acc_enable" : "accen",
+            "output_f" : "aluf",
+            "output_c" : "aluc",
+            "output_v" : "aluv",
+            "output_n" : "alun",
+            "output_z" : "aluz"
+          },
+          "view" : {
+
+          }
         },
         {
           "name" : "aluflag_reg",
-          "model" : "AluFlagRegister",
-          "append_to_signals" : true,
-          "c_in" : "aluc",
-          "v_in" : "aluv",
-          "n_in" : "alun",
-          "z_in" : "aluz",
-          "reset" : "rst",
-          "clock" : "clk",
-          "enable" : "aluflagwr",
-          "c_out" : "c",
-          "v_out" : "v",
-          "n_out" : "n",
-          "z_out" : "z"
+          "simulation" : {
+            "model" : "AluFlagRegister",
+            "append_to_signals" : true,
+            "c_in" : "aluc",
+            "v_in" : "aluv",
+            "n_in" : "alun",
+            "z_in" : "aluz",
+            "reset" : "rst",
+            "clock" : "clk",
+            "enable" : "aluflagwr",
+            "c_out" : "c",
+            "v_out" : "v",
+            "n_out" : "n",
+            "z_out" : "z"
+          },
+          "view" : {
+
+          }
         }
-      ]
+      ],
+      "view" : {
+
+      }
     },
     {
       "name" : "memory_stage",
@@ -524,15 +910,20 @@
       "entities" : [
         {
           "name" : "datamem",
-          "model" : "DataMemory",
-          "append_to_signals" : true,
-          "address" : "aluf",
-          "write" : "rd2",
-          "write_enable" : "memwr",
-          "reset" : "rst",
-          "clock" : "clk",
-          "read" : "memrd",
-          "mode" : "memty"
+          "simulation" : {
+            "model" : "DataMemory",
+            "append_to_signals" : true,
+            "address" : "aluf",
+            "write" : "rd2",
+            "write_enable" : "memwr",
+            "reset" : "rst",
+            "clock" : "clk",
+            "read" : "memrd",
+            "mode" : "memty"
+          },
+          "view" : {
+
+          }
         }
       ]
     },
@@ -542,21 +933,34 @@
       "entities" : [
         {
           "name" : "wdb_mux",
-          "model" : "Mux",
-          "width" : 32,
-          "inputs" : ["memrd","aluf"],
-          "select" : "regsrc",
-          "output" : "wdb"
+          "simulation" : {
+            "model" : "Mux",
+            "width" : 32,
+            "inputs" : ["memrd","aluf"],
+            "select" : "regsrc",
+            "output" : "wdb"
+          },
+          "view" : {
+
+          }
         },
         {
           "name" : "pcwb_mux",
-          "model" : "Mux",
-          "width" : 32,
-          "inputs" : ["branch","pc4","wdb"],
-          "select" : "pcsrc",
-          "output" : "pcwb"
+          "simulation" : {
+            "model" : "Mux",
+            "width" : 32,
+            "inputs" : ["branch","pc4","wdb"],
+            "select" : "pcsrc",
+            "output" : "pcwb"
+          },
+          "view" : {
+
+          }
         }
-      ]
+      ],
+      "view" : {
+
+      }
     }
   ]
 }

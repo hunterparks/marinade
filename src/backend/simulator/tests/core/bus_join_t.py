@@ -56,8 +56,6 @@ class BusJoin_t(unittest.TestCase):
         })
 
         config = {
-            "name" : "bus_join",
-            "type" : "BusJoin",
             "inputs" : ["i1","i2"],
             "output" : "o1"
         }

@@ -403,10 +403,8 @@ class RegisterFile_t(unittest.TestCase):
         })
 
         config = {
-            "name" : "register_file",
-            "type" : "RegisterFile",
-            "length" : 16,
-            "size" : 32,
+            "size" : 16,
+            "width" : 32,
             "clock" : "clk",
             "reset" : "rst",
             "write_address" : "wa",

@@ -107,8 +107,6 @@ class ProgramMemory_t(unittest.TestCase):
         })
 
         config = {
-            "name" : "program_memory",
-            "type" : "ProgramMemory",
             "address" : "address",
             "reset" : "reset",
             "clock" : "clock",

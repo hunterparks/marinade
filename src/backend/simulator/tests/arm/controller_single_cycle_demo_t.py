@@ -431,8 +431,6 @@ class ControllerSingleCycle_t(unittest.TestCase):
         })
 
         config = {
-            "name" : "controller_single_demo",
-            "type" : "ControllerPipeline",
             "cond" : "cond",
             "op" : "op",
             "funct" : "funct",

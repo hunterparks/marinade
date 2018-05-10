@@ -12,6 +12,7 @@ Configuration file template should follow form
     "name" : "clock",
     "type" : "Clock",
     "frequency" : 1,
+    "width" : 1,
 
     /* Optional */
 
@@ -24,6 +25,7 @@ type is the component class (Used externally)
 package is associated package to override general (Used externally)
 frequency is the clock frequency in hertz
 value is the default value for the component
+width is bit-width, enforced to always be one
 """
 
 import simulator.limits as limits
@@ -124,5 +126,8 @@ class Clock(InputHook, iBusRead, Entity):
             default_state = config["value"]
         else:
             default_state = Clock.DEFAULT_STATE
+
+        if config["width"] != 1:
+            raise ValueError("width must be 1")
 
         return Clock(config["frequency"],default_state)

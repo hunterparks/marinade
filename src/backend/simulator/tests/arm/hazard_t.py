@@ -271,8 +271,6 @@ class HazardController_t(unittest.TestCase):
         })
 
         config = {
-            "name" : "hazard",
-            "type" : "Hazard",
             "ra1e" : "ra1e",
             "ra2e" : "ra2e",
             "ra3e" : "ra3e",

@@ -557,8 +557,6 @@ class Memory_t(unittest.TestCase):
         })
 
         config = {
-            "name" : "memory",
-            "type" : "Memory",
             "size" : 64,
             "bytes_per_word" : 4,
             "start_address" : 0,

@@ -60,9 +60,7 @@ class Bus_t(unittest.TestCase):
         "Validates dictionary constructor"
 
         config = {
-            "name" : "bus",
-            "type" : "Bus",
-            "size" : 32,
+            "width" : 32,
             "value" : 7869
         }
 

@@ -76,8 +76,6 @@ class Extender_t(unittest.TestCase):
         })
 
         config = {
-            "name" : "extender",
-            "type" : "Extender",
             "imm" : "imm",
             "exts" : "exts",
             "imm32" : "imm32"

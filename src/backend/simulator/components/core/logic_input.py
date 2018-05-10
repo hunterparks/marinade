@@ -7,7 +7,7 @@ Configuration file template should follow form
     /* Required */
     "name" : "logic_input",
     "type" : "LogicInput",
-    "size" : 1,
+    "width" : 1,
 
     /* Optional */
 
@@ -18,7 +18,7 @@ Configuration file template should follow form
 name is the entity name, used by entity map (Used externally)
 type is the component class (Used externally)
 package is associated package to override general (Used externally)
-size is the bit-width for the component
+width is the bit-width for the component
 value is the default value for the component
 """
 
@@ -78,4 +78,4 @@ class LogicInput(InputHook, iBusRead):
         else:
             default_state = LogicInput.DEFAULT_STATE
 
-        return LogicInput(config["size"],default_state)
+        return LogicInput(config["width"],default_state)

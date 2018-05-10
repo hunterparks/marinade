@@ -159,8 +159,6 @@ class Ifid_t(unittest.TestCase):
         })
 
         config = {
-            "name" : "ifid",
-            "type" : "Ifid",
             "pc4f" : "pc4f",
             "pc8f" : "pc8f",
             "instrf" : "instrf",

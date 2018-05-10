@@ -84,9 +84,7 @@ class Adder_t(unittest.TestCase):
         })
 
         config = {
-            "name" : "adder",
-            "type" : "Adder",
-            "size" : 8,
+            "width" : 8,
             "input_1" : "i1",
             "input_2" : "i2"
         }
