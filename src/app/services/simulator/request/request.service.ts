@@ -24,7 +24,7 @@ export class RequestService {
 
   public load(filepath: string): void {
     // TODO - add file chooser
-    this.websocketService.write('{ "load": { "filepath": "pipeline_poc.json" } }');
+    this.websocketService.write('{ "load": { "filepath": "../config/architectures/pipeline_demo.json" } }');
   }
 
   public modify(component: string, parameters: string[]): void {
