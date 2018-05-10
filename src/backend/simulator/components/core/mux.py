@@ -1,6 +1,30 @@
 """
 Multiplexer component is a standalone core component for general
 architecture development.
+
+Configuration file template should follow form
+{
+    /* Required */
+
+    "name" : "mux",
+    "type" : "Mux",
+    "size" : 2,
+    "inputs" : [],
+    "select" : "",
+    "output" : "",
+
+    /* Optional */
+
+    "package" : "core"
+}
+
+name is the entity name, used by entity map (Used externally)
+type is the component class (Used externally)
+package is associated package to override general (Used externally)
+size is number of bits of buses passing through
+inputs is array of data bus references to select
+select is control bus reference to select an input
+output is data bus reference with selected input copied into it
 """
 
 from simulator.components.abstract.ibus import iBusRead, iBusWrite
@@ -67,10 +91,13 @@ class Mux(Combinational):
                 self._output.write(self._inputs[s].read())
 
     @classmethod
-    def from_dict(cls, config):
+    def from_dict(cls, config, hooks):
         "Implements conversion from configuration to component"
-        return NotImplemented
+        inputs = [hooks[i] for i in config["inputs"]]
 
-    def to_dict(self):
-        "Implements conversion from component to configuration"
-        return NotImplemented
+        if "output" in config:
+            output = hooks[config["output"]]
+        else:
+            output = None
+
+        return Mux(config["size"],inputs,hooks[config["select"]],output)

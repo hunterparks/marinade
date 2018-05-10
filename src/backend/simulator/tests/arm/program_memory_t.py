@@ -2,9 +2,10 @@
 Tests arm component ProgramMemory
 """
 
+from collections import OrderedDict
 import unittest
 import sys
-sys.path.insert(0, '../../')
+sys.path.insert(0, '../../../')
 from simulator.components.arm.program_memory import ProgramMemory, Latch_Type, Logic_States
 from simulator.components.core.bus import Bus
 
@@ -94,6 +95,30 @@ class ProgramMemory_t(unittest.TestCase):
         mem.clear()
         msg = mem.inspect()
         self.assertEqual(len(msg['state'].keys()),0)
+
+    def test_from_dict(self):
+        "Validates dictionary constructor"
+
+        hooks = OrderedDict({
+            "address" : Bus(32),
+            "reset" : Bus(1),
+            "clock" : Bus(1),
+            "read" : Bus(32),
+        })
+
+        config = {
+            "name" : "program_memory",
+            "type" : "ProgramMemory",
+            "address" : "address",
+            "reset" : "reset",
+            "clock" : "clock",
+            "read" : "read",
+            "size" : 56,
+            "value" : 12,
+            "reset_type" : "active_low"
+        }
+
+        mem = ProgramMemory.from_dict(config,hooks)
 
 
 if __name__ == '__main__':

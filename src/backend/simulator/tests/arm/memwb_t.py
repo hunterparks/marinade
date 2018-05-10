@@ -3,6 +3,7 @@ Tests the memwb.py module
 Must be run in the marinade/src/backend/simulator/tests/arm
 """
 
+from collections import OrderedDict
 import unittest
 import sys
 sys.path.insert(0, '../../../')
@@ -35,14 +36,14 @@ class Memwb_t(unittest.TestCase):
         invalidBusType = 'w'
 
         with self.assertRaises(ValueError):
-            Memwb(pc4m, regwrm, regsrcm, wd3sm, fm, rdm, ra3m, clk, pc4w, 
+            Memwb(pc4m, regwrm, regsrcm, wd3sm, fm, rdm, ra3m, clk, pc4w,
                   regwrw, regsrcw, wd3sw, fw, rdw, invalidBusSize)
 
         with self.assertRaises(TypeError):
-            Memwb(pc4m, regwrm, regsrcm, wd3sm, fm, rdm, ra3m, clk, pc4w, 
+            Memwb(pc4m, regwrm, regsrcm, wd3sm, fm, rdm, ra3m, clk, pc4w,
                   regwrw, regsrcw, invalidBusType, fw, rdw, ra3w)
 
-        Memwb(pc4m, regwrm, regsrcm, wd3sm, fm, rdm, ra3m, clk, pc4w, regwrw, 
+        Memwb(pc4m, regwrm, regsrcm, wd3sm, fm, rdm, ra3m, clk, pc4w, regwrw,
               regsrcw, wd3sw, fw, rdw, ra3w)
 
 
@@ -64,7 +65,7 @@ class Memwb_t(unittest.TestCase):
         rdw = Bus(32)
         ra3w = Bus(4)
 
-        memwb = Memwb(pc4m, regwrm, regsrcm, wd3sm, fm, rdm, ra3m, clk, pc4w, 
+        memwb = Memwb(pc4m, regwrm, regsrcm, wd3sm, fm, rdm, ra3m, clk, pc4w,
                       regwrw, regsrcw, wd3sw, fw, rdw, ra3w)
         regsrcm.write(1)
         wd3sm.write(1)
@@ -93,8 +94,8 @@ class Memwb_t(unittest.TestCase):
         rdw = Bus(32)
         ra3w = Bus(4)
 
-        memwb = Memwb(pc4m, regwrm, regsrcm, wd3sm, fm, rdm, ra3m, clk, pc4w, 
-                      regwrw, regsrcw, wd3sw, fw, rdw, ra3w, 
+        memwb = Memwb(pc4m, regwrm, regsrcm, wd3sm, fm, rdm, ra3m, clk, pc4w,
+                      regwrw, regsrcw, wd3sw, fw, rdw, ra3w,
                       Latch_Type.FALLING_EDGE)
         pc4m.write(4)
         rdm.write(0x0A000002)
@@ -126,7 +127,7 @@ class Memwb_t(unittest.TestCase):
         rdw = Bus(32)
         ra3w = Bus(4)
 
-        memwb = Memwb(pc4m, regwrm, regsrcm, wd3sm, fm, rdm, ra3m, clk, pc4w, 
+        memwb = Memwb(pc4m, regwrm, regsrcm, wd3sm, fm, rdm, ra3m, clk, pc4w,
                       regwrw, regsrcw, wd3sw, fw, rdw, ra3w)
         wd3sm.write(1)
         fm.write(0xE2889001)
@@ -155,7 +156,7 @@ class Memwb_t(unittest.TestCase):
         rdw = Bus(32)
         ra3w = Bus(4)
 
-        memwb = Memwb(pc4m, regwrm, regsrcm, wd3sm, fm, rdm, ra3m, clk, pc4w, 
+        memwb = Memwb(pc4m, regwrm, regsrcm, wd3sm, fm, rdm, ra3m, clk, pc4w,
                       regwrw, regsrcw, wd3sw, fw, rdw, ra3w)
         self.assertEqual(memwb.modify()['error'], 'memwb register cannot be modified')
 
@@ -178,7 +179,7 @@ class Memwb_t(unittest.TestCase):
         rdw = Bus(32)
         ra3w = Bus(4)
 
-        memwb = Memwb(pc4m, regwrm, regsrcm, wd3sm, fm, rdm, ra3m, clk, pc4w, 
+        memwb = Memwb(pc4m, regwrm, regsrcm, wd3sm, fm, rdm, ra3m, clk, pc4w,
                       regwrw, regsrcw, wd3sw, fw, rdw, ra3w)
         pc4m.write(16)
         wd3sm.write(1)
@@ -192,6 +193,53 @@ class Memwb_t(unittest.TestCase):
         self.assertEqual(pc4m.read(), pc4w.read())
         self.assertEqual(wd3sm.read(), wd3sw.read())
         self.assertEqual(rdm.read(), rdw.read())
+
+    def test_from_dict(self):
+        "Validates dictionary constructor"
+
+        hooks = OrderedDict({
+            "pc4m" : Bus(32),
+            "regwrm" : Bus(1),
+            "regsrcm" : Bus(1),
+            "wd3sm" : Bus(1),
+            "fm" : Bus(32),
+            "rdm" : Bus(32),
+            "ra3m" : Bus(4),
+            "clk" : Bus(1),
+            "pc4w" : Bus(32),
+            "regwrw" : Bus(1),
+            "regsrcw" : Bus(1),
+            "wd3sw" : Bus(1),
+            "fw" : Bus(32),
+            "rdw" : Bus(32),
+            "ra3w" : Bus(4),
+            "enable" : Bus(1)
+        })
+
+        config = {
+            "name" : "memwb",
+            "type" : "Memwb",
+            "pc4m" : "pc4m",
+            "regwrm" : "regwrm",
+            "regsrcm" : "regsrcm",
+            "wd3sm" : "wd3sm",
+            "fm" : "fm",
+            "rdm" : "rdm",
+            "ra3m" : "ra3m",
+            "clk" : "clk",
+            "pc4w" : "pc4w",
+            "regwrw" : "regwrw",
+            "regsrcw" : "regsrcw",
+            "wd3sw" : "wd3sw",
+            "fw" : "fw",
+            "rdw" : "rdw",
+            "ra3w" : "ra3w",
+            "enable" : "enable",
+            "edge_type" : "both_edge",
+            "enable_type" : "active_low"
+        }
+
+        reg = Memwb.from_dict(config,hooks)
 
 
 

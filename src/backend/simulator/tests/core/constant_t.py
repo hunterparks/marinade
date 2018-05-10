@@ -2,9 +2,10 @@
 Tests core component Constant
 """
 
+from collections import OrderedDict
 import unittest
 import sys
-sys.path.insert(0, '../../')
+sys.path.insert(0, '../../../')
 from simulator.components.core.constant import Constant
 
 
@@ -55,6 +56,17 @@ class Constant_t(unittest.TestCase):
         l = Constant(16, 56)
         self.assertTrue(l.size() == 16)
 
+    def test_from_dict(self):
+        "Validates dictionary constructor"
+
+        config = {
+            "name" : "constant",
+            "type" : "Constant",
+            "size" : 64,
+            "value" : 0xFFFF0000FFFF0000
+        }
+
+        const = Constant.from_dict(config,None) #Buses do not need hook reference
 
 if __name__ == '__main__':
     unittest.main()

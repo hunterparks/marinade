@@ -3,6 +3,7 @@ Tests the controller_pipeline.py module
 Must be run in the marinade/src/backend/simulator/tests/arm
 """
 
+from collections import OrderedDict
 import unittest
 import sys
 sys.path.insert(0, '../../../')
@@ -44,27 +45,27 @@ class ControllerSingleCycle_t(unittest.TestCase):
 
         # test case 1
         with self.assertRaises(ValueError):
-            ControllerPipeline(cond, funct, op, rd, bit4, c, v, n, z, stalld, 
-                               pcsrcd, pcwrd, regsad, regdstd, regwrsd, regwrd, 
-                               extsd, alusrcbd, alusd, aluflagwrd, memwrd, 
+            ControllerPipeline(cond, funct, op, rd, bit4, c, v, n, z, stalld,
+                               pcsrcd, pcwrd, regsad, regdstd, regwrsd, regwrd,
+                               extsd, alusrcbd, alusd, aluflagwrd, memwrd,
                                regsrcd, wd3sd)
         # test case 2
         with self.assertRaises(ValueError):
-            ControllerPipeline(cond, op, bit4, rd, funct, c, v, n, z, stalld, 
-                               pcsrcd, pcwrd, regsad, regdstd, regwrsd, regwrd, 
-                               extsd, alusrcbd, alusd, aluflagwrd, memwrd, 
+            ControllerPipeline(cond, op, bit4, rd, funct, c, v, n, z, stalld,
+                               pcsrcd, pcwrd, regsad, regdstd, regwrsd, regwrd,
+                               extsd, alusrcbd, alusd, aluflagwrd, memwrd,
                                regsrcd, wd3sd)
         # test case 3
         with self.assertRaises(ValueError):
-            ControllerPipeline(cond, op, funct, rd, bit4, c, v, n, z, stalld, 
-                               pcsrcd, pcwrd, regsad, regdstd, regwrd, regwrsd, 
-                               extsd, alusrcbd, aluflagwrd, alusd, memwrd, 
+            ControllerPipeline(cond, op, funct, rd, bit4, c, v, n, z, stalld,
+                               pcsrcd, pcwrd, regsad, regdstd, regwrd, regwrsd,
+                               extsd, alusrcbd, aluflagwrd, alusd, memwrd,
                                regsrcd, wd3sd)
         # test case 4
         with self.assertRaises(ValueError):
-            ControllerPipeline(cond, op, funct, rd, bit4, c, v, n, z, stalld, 
-                               pcsrcd, pcwrd, regsad, regdstd, regwrd, regwrsd, 
-                               alusrcbd, extsd, alusd, aluflagwrd, memwrd, 
+            ControllerPipeline(cond, op, funct, rd, bit4, c, v, n, z, stalld,
+                               pcsrcd, pcwrd, regsad, regdstd, regwrd, regwrsd,
+                               alusrcbd, extsd, alusd, aluflagwrd, memwrd,
                                regsrcd, wd3sd)
 
 
@@ -95,9 +96,9 @@ class ControllerSingleCycle_t(unittest.TestCase):
         regsrcd = Bus(1)
         wd3sd = Bus(1)
         # initialize single cycle controller
-        pp = ControllerPipeline(cond, op, funct, rd, bit4, c, v, n, z, stalld, 
-                                pcsrcd, pcwrd, regsad, regdstd, regwrsd, 
-                                regwrd, extsd, alusrcbd, alusd, aluflagwrd, 
+        pp = ControllerPipeline(cond, op, funct, rd, bit4, c, v, n, z, stalld,
+                                pcsrcd, pcwrd, regsad, regdstd, regwrsd,
+                                regwrd, extsd, alusrcbd, alusd, aluflagwrd,
                                 memwrd, regsrcd, wd3sd)
         # pcsrcd tests
         # test case 4 - occurs for banch instructions where condition is met
@@ -376,7 +377,7 @@ class ControllerSingleCycle_t(unittest.TestCase):
         pp = ControllerPipeline(cond, op, funct, rd, bit4, c, v, n, z, stalld, pcsrcd, pcwrd,
                                     regsad, regdstd, regwrsd, regwrd, extsd, alusrcbd, alusd,
                                     aluflagwrd, memwrd, regsrcd, wd3sd)
-        
+
         mod = pp.modify(None)
         # modify is not implemented for controller
         self.assertTrue('error' in mod)
@@ -385,7 +386,64 @@ class ControllerSingleCycle_t(unittest.TestCase):
         # modify is not implemented for controller
         self.assertTrue('error' in mod)
 
+    def test_from_dict(self):
+        "Validates dictionary constructor"
 
+        hooks = OrderedDict({
+            "cond" : Bus(4),
+            "op" : Bus(2),
+            "funct" : Bus(6),
+            "rd" : Bus(4),
+            "bit4" : Bus(1),
+            "c" : Bus(1),
+            "v" : Bus(1),
+            "n" : Bus(1),
+            "z" : Bus(1),
+            "stallf" : Bus(1),
+            "pcsrcd" : Bus(2),
+            "pcwrd" : Bus(1),
+            "regsad" : Bus(1),
+            "regdstd" : Bus(2),
+            "regwrsd" : Bus(2),
+            "regwrd" : Bus(1),
+            "extsd" : Bus(2),
+            "alusrcbd" : Bus(1),
+            "alusd" : Bus(4),
+            "aluflagwrd" : Bus(1),
+            "memwrd" : Bus(1),
+            "regsrcd" : Bus(1),
+            "wd3sd" : Bus(1)
+        })
+
+        config = {
+            "name" : "controller_pipeline",
+            "type" : "ControllerPipeline",
+            "cond" : "cond",
+            "op" : "op",
+            "funct" : "funct",
+            "rd" : "rd",
+            "bit4" : "bit4",
+            "c" : "c",
+            "v" : "v",
+            "n" : "n",
+            "z" : "z",
+            "stallf" : "stallf",
+            "pcsrcd" : "pcsrcd",
+            "pcwrd" : "pcwrd",
+            "regsad" : "regsad",
+            "regdstd" : "regdstd",
+            "regwrsd" : "regwrsd",
+            "regwrd" : "regwrd",
+            "extsd" : "extsd",
+            "alusrcbd" : "alusrcbd",
+            "alusd" : "alusd",
+            "aluflagwrd" : "aluflagwrd",
+            "memwrd" : "memwrd",
+            "regsrcd" : "regsrcd",
+            "wd3sd" : "wd3sd"
+        }
+
+        ctrl = ControllerPipeline.from_dict(config,hooks)
 
 if __name__ == '__main__':
     unittest.main()

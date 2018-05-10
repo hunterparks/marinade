@@ -9,7 +9,6 @@ Eventually these values could be made configurable by an architecture.
 MAX_FREQUENCY = 1000  # Hz
 MIN_FREQUENCY = 0  # Hz
 
-
 MAX_MEMORY_BLOCK = 4096  # bytes
 MIN_MEMORY_BLOCK = 1  # bytes
 

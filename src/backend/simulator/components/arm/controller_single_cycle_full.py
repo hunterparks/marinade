@@ -1,10 +1,76 @@
 """
-Single-cycle controller as derived by Larry Skuse's VHDL work.
+Single-cycle controller as derived by Larry Skuse's VHDL work. This processor
+has been extended to take a larger subset of ARM instructions.
+
+Configuration file template should follow form
+{
+    /* Required */
+
+    "name" : "controller_single_full",
+    "type" : "ControllerSingleCycleFull",
+    "instruction" : "",
+    "c" : "",
+    "v" : "",
+    "n" : "",
+    "z" : "",
+    "pcsrc" : "",
+    "pcwr" : "",
+    "regsa" : "",
+    "regdst" : "",
+    "regsb" : "",
+    "regwrs" : "",
+    "regwr" : "",
+    "exts" : "",
+    "alusrcb" : "",
+    "alus" : "",
+    "shop" : "",
+    "shctrl" : "",
+    "accen" : "",
+    "aluflagwr" : "",
+    "memty" : "",
+    "memwr" : "",
+    "regsrc" : "",
+    "wdbs" : "",
+
+    /* Optional */
+
+    "package" : "arm",
+    "append_to_signals" : true
+}
+
+name is the entity name, used by entity map (Used externally)
+type is the component class (Used externally)
+package is associated package to override general (Used externally)
+append_to_signals is flag used to append an entity as hook (Used externally)
+instruction is data bus reference input
+c is data bus reference input
+v is data bus reference input
+n is data bus reference input
+z is data bus reference input
+pcsrc is data bus reference output
+pcwr is data bus reference output
+regsa is data bus reference output
+regdst is data bus reference output
+regsb is data bus reference output
+regwr is data bus reference output
+regwrs is data bus reference output
+regwr is data bus reference output
+exts is data bus reference output
+alusrcb is data bus reference output
+alus is data bus reference output
+shop is data bus reference output
+shctrl is data bus reference output
+accen is data bus reference output
+aluflagwr is data bus reference output
+memty is data bus reference output
+memwr is data bus reference output
+regsrc is data bus reference output
+wbs is data bus reference output
 """
 
 from simulator.components.abstract.controller import Controller
 from simulator.components.abstract.ibus import iBusRead, iBusWrite
-import components.arm.arm_v4_isa as ISA
+from simulator.components.arm import isa_arm_v4 as ISA
 
 
 class ControllerSingleCycle(Controller):
@@ -248,7 +314,7 @@ class ControllerSingleCycle(Controller):
             if (cmd == ISA.DataCMDCodes.TST.value or
                 cmd == ISA.DataCMDCodes.TEQ.value or
                 cmd == ISA.DataCMDCodes.CMP.value or
-                cmd == ISA.DataCMDCodes.CMN.value):
+                    cmd == ISA.DataCMDCodes.CMN.value):
                 return 0b0
             else:
                 return 0b1
@@ -510,10 +576,16 @@ class ControllerSingleCycle(Controller):
         pass
 
     @classmethod
-    def from_dict(cls, config):
+    def from_dict(cls, config, hooks):
         "Implements conversion from configuration to component"
-        return NotImplemented
-
-    def to_dict(self):
-        "Implements conversion from component to configuration"
-        return NotImplemented
+        return ControllerSingleCycle(hooks[config["instruction"]], hooks[config["c"]],
+                                     hooks[config["v"]], hooks[config["n"]], hooks[config["z"]],
+                                     hooks[config["pcsrc"]], hooks[config["pcwr"]],
+                                     hooks[config["regsa"]], hooks[config["regdst"]],
+                                     hooks[config["regsb"]], hooks[config["regwrs"]],
+                                     hooks[config["regwr"]], hooks[config["exts"]],
+                                     hooks[config["alusrcb"]], hooks[config["alus"]],
+                                     hooks[config["shop"]], hooks[config["shctrl"]],
+                                     hooks[config["accen"]], hooks[config["aluflagwr"]],
+                                     hooks[config["memty"]], hooks[config["memwr"]],
+                                     hooks[config["regsrc"]], hooks[config["wdbs"]])

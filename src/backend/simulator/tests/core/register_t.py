@@ -2,9 +2,10 @@
 Tests core component Register
 """
 
+from collections import OrderedDict
 import unittest
 import sys
-sys.path.insert(0, '../../')
+sys.path.insert(0, '../../../')
 from simulator.components.core.register import Register, Latch_Type, Logic_States
 from simulator.components.core.constant import Constant
 from simulator.components.core.bus import Bus
@@ -288,6 +289,32 @@ class Register_t(unittest.TestCase):
         #validate clear
         msg = reg.inspect()
         self.assertEqual(msg['state'],1)
+
+    def test_from_dict(self):
+        "Validates dictionary constructor"
+
+        hooks = OrderedDict({
+            "clk" : Bus(1),
+            "rst" : Bus(1),
+            "d" : Bus(8),
+            "q" : Bus(8),
+            "en" : Bus(1)
+        })
+
+        config = {
+            "name" : "register",
+            "type" : "Register",
+            "size" : 8,
+            "clock" : "clk",
+            "reset" : "rst",
+            "input" : "d",
+            "output" : "q",
+            "enable" : "en",
+            "value" : 56,
+            "edge_type" : "falling_edge",
+            "reset_type" : "active_low",
+            "enable_type" : "active_high"
+        }
 
 
 if __name__ == '__main__':

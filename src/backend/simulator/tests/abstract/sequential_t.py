@@ -21,8 +21,12 @@ class Latch_Type_t(unittest.TestCase):
         self.assertTrue(Latch_Type.valid(Latch_Type.BOTH_EDGE))
         self.assertFalse(Latch_Type.valid(3))
         self.assertFalse(Latch_Type.valid(-1))
-        pass
 
+    def test_fromString(self):
+        self.assertEqual(Latch_Type.fromString("rising_edge"),Latch_Type.RISING_EDGE)
+        self.assertEqual(Latch_Type.fromString("falling_edge"),Latch_Type.FALLING_EDGE)
+        self.assertEqual(Latch_Type.fromString("both_edge"),Latch_Type.BOTH_EDGE)
+        self.assertEqual(Latch_Type.fromString("test"),None)
 
 class Logic_States_t(unittest.TestCase):
     """
@@ -36,6 +40,10 @@ class Logic_States_t(unittest.TestCase):
         self.assertFalse(Logic_States.valid(2))
         self.assertFalse(Logic_States.valid(-1))
 
+    def test_fromString(self):
+        self.assertEqual(Logic_States.fromString("active_low"),Logic_States.ACTIVE_LOW)
+        self.assertEqual(Logic_States.fromString("active_high"),Logic_States.ACTIVE_HIGH)
+        self.assertEqual(Logic_States.fromString("test"),None)
 
 class Sequential_t(unittest.TestCase):
     """

@@ -1,5 +1,64 @@
 """
 Single-cycle controller as derived by Larry Skuse's VHDL work.
+
+Configuration file template should follow form
+{
+    /* Required */
+
+    "name" : "controller_single_demo",
+    "type" : "ControllerPipeline",
+    "cond" : "",
+    "op" : "",
+    "funct" : "",
+    "rd" : "",
+    "bit4" : "",
+    "c" : "",
+    "v" : "",
+    "n" : "",
+    "z" : "",
+    "pcsrc" : "",
+    "pcwr" : "",
+    "regsa" : "",
+    "regdst" : "",
+    "regwrs" : "",
+    "regwr" : "",
+    "exts" : "",
+    "alusrcb" : "",
+    "alus" : "",
+    "aluflagwr" : "",
+    "memwr" : "",
+    "regsrc" : "",
+    "wdbs" : "",
+
+    /* Optional */
+
+    "package" : "arm",
+    "append_to_signals" : true
+}
+
+name is the entity name, used by entity map (Used externally)
+type is the component class (Used externally)
+package is associated package to override general (Used externally)
+append_to_signals is flag used to append an entity as hook (Used externally)
+cond is data bus reference input
+op is data bus reference input
+funct is data bus reference input
+rd is data bus reference input
+bit4 is data bus reference input
+c is data bus reference input
+v is data bus reference input
+n is data bus reference input
+z is data bus reference input
+pcsrc is data bus reference output
+regsa is data bus reference output
+regdst is data bus reference output
+regwrs is data bus reference output
+exts is data bus reference output
+alusrcb is data bus reference output
+aluflagwr is data bus reference output
+memwr is data bus reference output
+regsrc is data bus reference output
+wd3s is data bus reference output
 """
 
 from simulator.components.abstract.controller import Controller
@@ -435,20 +494,17 @@ class ControllerSingleCycle(Controller):
         pass
 
     @classmethod
-    def from_dict(cls, config):
+    def from_dict(cls, config, hooks):
         "Implements conversion from configuration to component"
-        return NotImplemented
-
-    @classmethod
-    def to_dict(cls):
-        "Implements conversion from component to configuration"
-        return NotImplemented
-
-    @classmethod
-    def from_dict(cls, config):
-        "Implements conversion from configuration to component"
-        return NotImplemented
-
-    def to_dict(self):
-        "Implements conversion from component to configuration"
-        return NotImplemented
+        return ControllerSingleCycle(hooks[config["cond"]], hooks[config["op"]],
+                                     hooks[config["funct"]], hooks[config["rd"]],
+                                     hooks[config["bit4"]], hooks[config["c"]],
+                                     hooks[config["v"]], hooks[config["n"]],
+                                     hooks[config["z"]], hooks[config["pcsrc"]],
+                                     hooks[config["pcwr"]], hooks[config["regsa"]],
+                                     hooks[config["regdst"]], hooks[config["regwrs"]],
+                                     hooks[config["regwr"]], hooks[config["exts"]],
+                                     hooks[config["alusrcb"]],
+                                     hooks[config["alus"]], hooks[config["aluflagwr"]],
+                                     hooks[config["memwr"]], hooks[config["regsrc"]],
+                                     hooks[config["wdbs"]])

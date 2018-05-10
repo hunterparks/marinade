@@ -4,11 +4,17 @@ written to JSON files and Excel files.
 """
 
 import unittest
+import os
 import sys
-sys.path.insert(0, '../../')
+import json
+sys.path.insert(0, '../../../')
 
-import single_cycle_poc
-from tests.simulation.test_framework import TestFramework
+from simulator.architecture import Architecture
+from simulator.tests.simulation.test_framework import TestFramework
+from simulator.tests.simulation import single_cycle_poc
+
+SINGLE_CYCLE_DEMO_CONFIG_FILEPATH = os.path.join(os.path.dirname(
+    __file__), "../../../../config/architectures/single_cycle_demo.json")
 
 
 class SingleCycleProcessor_t(TestFramework, unittest.TestCase):
@@ -129,6 +135,68 @@ class SingleCycleProcessor_t(TestFramework, unittest.TestCase):
                                single_cycle_poc.program_single_cycle_architecture)
         self.assertTrue(self._generic_test_procedure(
             'single_cycle_demo', self.required_program, len(self.required_program) / 4 + 2, 'full_prog', self.required_inspect))
+
+    def test_config_file_demo(self):
+        """
+        Test config file form against demo program to prove general operation
+        """
+
+        def _gen():
+            f = open(SINGLE_CYCLE_DEMO_CONFIG_FILEPATH)
+            config = json.loads(f.read())
+            arch = Architecture.from_dict(config)
+            hooks = arch.get_hooks()
+            f.close()
+            return arch, hooks
+
+        def _prog(arch, prog):
+            program_msg = {
+                'modify': {
+                    'name': 'progmem',
+                    'parameters': {
+                        'start': 0,
+                        'data': prog
+                    }
+                }
+            }
+            res = arch.hook(program_msg)
+
+        self._set_architecture(_gen, _prog)
+        self.assertTrue(self._generic_test_procedure('single_cycle_config_demo',
+                                                     self.demo_program, len(
+                                                         self.demo_program) / 4 + 2,
+                                                     'demo_prog', self.demo_inspect))
+
+    def test_config_file_full(self):
+        """
+        Test config file form against full program to prove general operation
+        """
+
+        def _gen():
+            f = open(SINGLE_CYCLE_DEMO_CONFIG_FILEPATH)
+            config = json.loads(f.read())
+            arch = Architecture.from_dict(config)
+            hooks = arch.get_hooks()
+            f.close()
+            return arch, hooks
+
+        def _prog(arch, prog):
+            program_msg = {
+                'modify': {
+                    'name': 'progmem',
+                    'parameters': {
+                        'start': 0,
+                        'data': prog
+                    }
+                }
+            }
+            res = arch.hook(program_msg)
+
+        self._set_architecture(_gen, _prog)
+        self.assertTrue(self._generic_test_procedure('single_cycle_config_demo',
+                                                     self.required_program, len(
+                                                         self.required_program) / 4 + 2,
+                                                     'full_prog', self.required_inspect))
 
 
 if __name__ == '__main__':

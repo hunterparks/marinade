@@ -10,6 +10,7 @@ used when in memory view mode. Distinction is made since step either moves a
 timestep or a clockstep.
 
 ### Architecture Commands
+{'assemble':{'filepath':<'file'>}} Returns {'status':{}, "errors":{}}
 {'step':{'type':<'logic','edge','time'>}} Returns {'status':{}}
 {'reset':{}} Returns {'status':{}}
 {'load':{'filepath':<'file'>}}  Returns {'status':{}}
@@ -58,11 +59,15 @@ timestep or a clockstep.
 import json
 import asyncio
 import websockets
+import struct
+import traceback
+import subprocess
+from sys import platform
 
-import simulator.single_cycle_poc as single_cycle_poc
-import simulator.pipeline_poc as pipeline_poc
+#from sentry.sentry import initialize_sentry
 
-from sentry.sentry import initialize_sentry
+from simulator.architecture import Architecture
+
 
 HOST_NAME = 'localhost'
 HOST_PORT = 4242
@@ -102,6 +107,8 @@ class Interface:
             retMsg.update(self.unload())
         if 'program' in msg:
             retMsg.update(self.program(msg['program']))
+        if 'assemble' in msg:
+            retMsg.update(self.assemble(msg['assemble']))
 
         # Component Commands
         if 'inspect' in msg:
@@ -114,6 +121,30 @@ class Interface:
             retMsg.update(self.handle_component_msg(msg))
 
         return retMsg
+
+    def assemble(self, msg):
+        """
+        Calls either a bash script or a batch script that converts assembly
+        code into machine code.
+        Return: Dictionary containing results of the assembler. 
+        """
+        try:
+            f = open(msg['filepath'])
+            if platform == "linux" or platform == "linux2" or platform == "darwin":
+                output = subprocess.run(["./assembler/nix_assembler.sh", msg['filepath']], stderr=subprocess.PIPE)
+                f.close()
+                return {'status': True, 'errors': output.stderr.decode('utf-8')}
+            elif platform == "win32":
+                output = subprocess.run([r".\assembler\windows_assembler.bat", msg['filepath']], stderr=subprocess.PIPE)
+                f.close()
+                return {'status': True, 'errors': output.stderr.decode('utf-8')}
+        except KeyError as e:
+            traceback.print_exc()
+            return {'status': False, 'error': 'invalid key : {}'.format(str(e))}
+        except Exception as e:
+            traceback.print_exc()
+            return {'status': False, 'error': 'exception : {}'.format(str(e))}
+
 
     def step(self, msg):
         """
@@ -134,7 +165,7 @@ class Interface:
                 return {'status': True}
             else:
                 return {'status': False, 'error': 'architecture needs to be loaded'}
-        except KeyError as e:
+        except KeyError:
             return {'status': False, 'error': 'step requires a type key'}
 
     def reset(self):
@@ -157,16 +188,19 @@ class Interface:
         Param: msg is dictionary with a filepath specified to config file
         Return: dictionary noting resulting state of operation.
         """
-        retVal = False
-        # TODO replace this with a configuration file being loaded in the future
-        if msg['filepath'] == 'single_cycle_poc.json':
-            self.arch, self.hooks = single_cycle_poc.generate_single_cycle_architecture()
-            return {'status': True}
-        elif msg['filepath'] == 'pipeline_poc.json':
-            self.arch, self.hooks = pipeline_poc.generate_pipeline_architecture()
-            return {'status': True}
-        else:
-            return {'status': False, 'error': 'failed to load file'}
+        try:
+            f = open(msg['filepath'])
+            config = json.loads(f.read())
+            self.arch = Architecture.from_dict(config)
+            self.hooks = self.arch.get_hooks()
+            f.close()
+        except KeyError as e:
+            traceback.print_exc()
+            return {'status': False, 'error': 'invalid key : {}'.format(str(e))}
+        except Exception as e:
+            traceback.print_exc()
+            return {'status': False, 'error': 'exception : {}'.format(str(e))}
+        return {'status': True}
 
     def unload(self):
         """
@@ -188,23 +222,11 @@ class Interface:
         """
         if not self.arch is None:
             progpath = msg['filepath']
-            # TODO handle compilation of code
-            # TODO remove test program
-            program = [
-                0xE3, 0xA0, 0x80, 0x0A,
-                0xE2, 0x88, 0x90, 0x01,
-                0xE0, 0x09, 0x09, 0x98,
-                0xE3, 0xA0, 0xA0, 0x00,
-                0xE2, 0x4A, 0xA0, 0x20,
-                0xE0, 0x19, 0xA0, 0x0A,
-                0x0A, 0x00, 0x00, 0x02,
-                0xE3, 0xA0, 0xB0, 0x01,
-                0xE3, 0xA0, 0xC0, 0x04,
-                0xE5, 0x8C, 0xB0, 0x00,
-                0xE5, 0x9C, 0x60, 0x00,
-                0xEA, 0xFF, 0xFF, 0xFD
-            ]
-            retMsg = self.arch.hook({'clear': [msg['memory']]})
+            binary_file = open(progpath, mode='rb')
+            machine_code = binary_file.read()
+            program = list(struct.unpack('B' * len(machine_code), machine_code))
+            binary_file.close()
+            self.arch.hook({'clear': [msg['memory']]})
             return self.arch.hook({'modify': {'name': msg['memory'], 'parameters': {'start': 0, 'data': program}}})
         else:
             return {'status': False, 'error': 'architecture needs to be loaded'}
@@ -231,10 +253,13 @@ if __name__ == "__main__":
 
         async def api_call(websocket, path):
             async for message in websocket:
-                msg = json.loads(message)
-                retMsg = interface.parse_command(msg)
-                rxStr = json.dumps(retMsg)
-                await websocket.send(rxStr)
+                try:
+                    msg = json.loads(message.replace("\\", "/"))
+                    retMsg = interface.parse_command(msg)
+                    rxStr = json.dumps(retMsg)
+                    await websocket.send(rxStr)
+                except Exception:
+                    await websocket.send(json.dumps({'status' : False, 'error' : 'cannot parse JSON message'}))
 
         asyncio.get_event_loop().run_until_complete(
             websockets.serve(api_call, HOST_NAME, HOST_PORT))

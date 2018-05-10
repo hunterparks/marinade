@@ -1,5 +1,36 @@
 """
 ARM specific program memory module with 32-bit width.
+
+Configuration file template should follow form
+{
+    /* Required */
+
+    "name" : "program_memory",
+    "type" : "ProgramMemory",
+    "address" : "",
+    "reset" : "",
+    "clock" : "",
+    "read" : "",
+
+    /*  Options */
+    "package" : "arm",
+    "append_to_signals" : true,
+    "size" : 1,
+    "value" : 0,
+    "reset_type" : ""
+}
+
+name is the entity name, used by entity map (Used externally)
+type is the component class (Used externally)
+package is associated package to override general (Used externally)
+append_to_signals is flag used to append an entity as hook (Used externally)
+address is bus reference for memory cell to access
+clock is control bus clock line reference
+reset is control bus reset line reference
+read is data bus reference to read from cell
+size is number of elements in memory
+value is default value for a cell
+reset_type is logic level to clear memory
 """
 
 from simulator.components.core.memory import Memory, Latch_Type, Logic_States
@@ -21,8 +52,12 @@ class ProgramMemory(Memory):
     size defined for the module.
     """
 
-    def __init__(self, address, rst, read, default_size=4096,
-                 default_value=0, rst_type=Logic_States.ACTIVE_HIGH):
+    DEFAULT_SIZE = 4096
+    DEFAULT_STATE = 0
+    DEFAULT_RESET_TYPE = Logic_States.ACTIVE_HIGH
+
+    def __init__(self, address, rst, read, default_size=DEFAULT_SIZE,
+                 default_value=DEFAULT_STATE, rst_type=DEFAULT_RESET_TYPE):
         """
         Buses
             address : word sized address bus to access program memory
@@ -66,10 +101,23 @@ class ProgramMemory(Memory):
         Memory.run(self, time)
 
     @classmethod
-    def from_dict(cls, config):
+    def from_dict(cls, config, hooks):
         "Implements conversion from configuration to component"
-        return NotImplemented
 
-    def to_dict(self):
-        "Implements conversion from component to configuration"
-        return NotImplemented
+        if "size" in config:
+            size = config["size"]
+        else:
+            size = ProgramMemory.DEFAULT_SIZE
+
+        if "value" in config:
+            value = config["value"]
+        else:
+            value = ProgramMemory.DEFAULT_STATE
+
+        if "reset_type" in config:
+            reset_type = Logic_States.fromString(config["reset_type"])
+        else:
+            reset_type = ProgramMemory.DEFAULT_RESET_TYPE
+
+        return ProgramMemory(hooks[config["address"]],hooks[config["reset"]],
+                             hooks[config["read"]],size,value,reset_type)

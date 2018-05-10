@@ -1,5 +1,27 @@
 """
 BusJoin component used to concatenate multiple buses into a single bus
+
+Configuration file template should follow form
+{
+    /* Required */
+
+    "name" : "bus_join",
+    "type" : "BusJoin",
+    "inputs" : [],
+    "output" : "",
+
+    /* Optional */
+    
+    "package" : "core"
+}
+
+name is the entity name, used by entity map (Used externally)
+type is the component class (Used externally)
+package is associated package to override general (Used externally)
+inputs is an array of strings referencing input bus objects
+    the order of the references defines the ordering of the concatenation from
+    least significant bit to most
+output is bus reference with a bit-width of sum of all inputs bit-widths
 """
 
 from simulator.components.abstract.entity import Entity
@@ -43,10 +65,8 @@ class BusJoin(Entity):
         self._output.write(val)
 
     @classmethod
-    def from_dict(cls, config):
+    def from_dict(cls, config, hooks):
         "Implements conversion from configuration to component"
-        return NotImplemented
+        inputs = [hooks[i] for i in config["inputs"]]
 
-    def to_dict(self):
-        "Implements conversion from component to configuration"
-        return NotImplemented
+        return BusJoin(inputs,hooks[config["output"]])

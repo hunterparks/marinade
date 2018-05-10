@@ -1,5 +1,51 @@
 """
 Core memory object for generalized data memory usage.
+
+Configuration file template should follow form
+{
+    /* Required */
+
+    "name" : "memory",
+    "type" : "Memory",
+    "size" : 64,
+    "bytes_per_word" : 4,
+    "start_address" : 0,
+    "address" : "",
+    "write" : "",
+    "enable" : "",
+    "reset" : "",
+    "clock" : "",
+    "access_mode" : "",
+    "read" : "",
+
+    /* Optional */
+
+    "package" : "core",
+    "append_to_signals" : true,
+    "value" : 0,
+    "edge_type" : "",
+    "reset_type" : "",
+    "enable_type" : ""
+}
+
+name is the entity name, used by entity map (Used externally)
+type is the component class (Used externally)
+package is associated package to override general (Used externally)
+append_to_signals is flag used to append an entity as hook (Used externally)
+size is number of bytes in memory
+bytes_per_word is number of bytes considered as one word for word access mode
+start_address is the first address that has a byte associated with it
+address is bus reference to memory element to read / write
+write is the data bus reference to store into memory
+enable is write control bus reference
+reset is control bus reset line reference
+clock is control bus clock line reference
+access_mode is control bus selecting memory access type
+read is data bus reference to read from memory
+value is default value of a byte in memory
+edge_type is edge to clock data
+reset_type is logic level to clear memory
+enable_type is logic level to write to memory
 """
 
 import math
@@ -24,6 +70,11 @@ class Memory(MemoryBlock):
     MEM_MODE_BYTE = 1
     MEM_MODE_HALF = 2
     MEM_MODE_WORD = 3
+
+    DEFAULT_STATE = 0
+    DEFAULT_LATCH_TYPE = Latch_Type.RISING_EDGE
+    DEFAULT_RESET_TYPE = Logic_States.ACTIVE_HIGH
+    DEFAULT_ENABLE_TYPE = Logic_States.ACTIVE_HIGH
 
     def __init__(self, size, bytesPerWord, startingAddress, address, write,
                  writeEnable, reset, clock, accessMode, read, default_value=0,
@@ -335,10 +386,32 @@ class Memory(MemoryBlock):
         self._read.write(read)
 
     @classmethod
-    def from_dict(cls, config):
+    def from_dict(cls, config, hooks):
         "Implements conversion from configuration to component"
-        return NotImplemented
 
-    def to_dict(self):
-        "Implements conversion from component to configuration"
-        return NotImplemented
+        if "value" in config:
+            default_state = config["value"]
+        else:
+            default_state = Memory.DEFAULT_STATE
+
+        if "edge_type" in config:
+            edge_type = Latch_Type.fromString(config["edge_type"])
+        else:
+            edge_type = RegisterFile.DEFAULT_LATCH_TYPE
+
+        if "reset_type" in config:
+            reset_type = Logic_States.fromString(config["reset_type"])
+        else:
+            reset_type = RegisterFile.DEFAULT_RESET_TYPE
+
+        if "enable_type" in config:
+            enable_type = Logic_States.fromString(config["enable_type"])
+        else:
+            enable_type = RegisterFile.DEFAULT_ENABLE_TYPE
+
+        return Memory(config["size"], config["bytes_per_word"],
+                      config["start_address"], hooks[config["address"]],
+                      hooks[config["write"]], hooks[config["enable"]],
+                      hooks[config["reset"]], hooks[config["clock"]],
+                      hooks[config["access_mode"]], hooks[config["read"]],
+                      default_state, edge_type, reset_type, enable_type)

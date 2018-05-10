@@ -4,6 +4,26 @@ frequency of calling a clock generate relative to the timestep (run rate)
 determines the resolution of the application.
 
 Note that clock can be used as a logic read bus of size one
+
+Configuration file template should follow form
+{
+    /* Required */
+
+    "name" : "clock",
+    "type" : "Clock",
+    "frequency" : 1,
+
+    /* Optional */
+
+    "package" : "core",
+    "value" : 1
+}
+
+name is the entity name, used by entity map (Used externally)
+type is the component class (Used externally)
+package is associated package to override general (Used externally)
+frequency is the clock frequency in hertz
+value is the default value for the component
 """
 
 import simulator.limits as limits
@@ -21,7 +41,9 @@ class Clock(InputHook, iBusRead, Entity):
     information that logic is responsible for keeping track of state change
     """
 
-    def __init__(self, freq, default_state=0):
+    DEFAULT_STATE = 0
+
+    def __init__(self, freq, default_state=DEFAULT_STATE):
         "Constructor will cause exception on invalid parameters"
         if not isinstance(default_state, int) or default_state < 0 or default_state > 1:
             raise TypeError('Default state must be a bit value')
@@ -96,10 +118,11 @@ class Clock(InputHook, iBusRead, Entity):
             self._state = self._default_state
 
     @classmethod
-    def from_dict(cls, config):
+    def from_dict(cls, config, hooks):
         "Implements conversion from configuration to component"
-        return NotImplemented
+        if "value" in config:
+            default_state = config["value"]
+        else:
+            default_state = Clock.DEFAULT_STATE
 
-    def to_dict(self):
-        "Implements conversion from component to configuration"
-        return NotImplemented
+        return Clock(config["frequency"],default_state)

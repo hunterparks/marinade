@@ -2,9 +2,10 @@
 Test core component RegisterFile
 """
 
+from collections import OrderedDict
 import unittest
 import sys
-sys.path.insert(0, '../../')
+sys.path.insert(0, '../../../')
 from simulator.components.core.register_file import RegisterFile, Latch_Type, Logic_States
 from simulator.components.core.constant import Constant
 from simulator.components.core.bus import Bus
@@ -388,6 +389,38 @@ class RegisterFile_t(unittest.TestCase):
         msg = rgf.inspect()
         self.assertEqual(msg['state'][0], 0)
         self.assertEqual(msg['state'][1], 0)
+
+    def test_from_dict(self):
+        "Validates dictionary constructor"
+        hooks = OrderedDict({
+            "clk" : Bus(1),
+            "rst" : Bus(1),
+            "wa" : Bus(4),
+            "wd" : Bus(32),
+            "ra" : Bus(4),
+            "rd" : Bus(32),
+            "en" : Bus(1)
+        })
+
+        config = {
+            "name" : "register_file",
+            "type" : "RegisterFile",
+            "length" : 16,
+            "size" : 32,
+            "clock" : "clk",
+            "reset" : "rst",
+            "write_address" : "wa",
+            "write_data" : "wd",
+            "read_addresses" : ["ra"],
+            "read_datas" : ["rd"],
+            "enable" : "en",
+            "value" : 255,
+            "edge_type" : "rising_edge",
+            "reset_type" : "active_high",
+            "enable_type" : "active_high"
+        }
+
+        regFile = RegisterFile.from_dict(config,hooks)
 
 
 if __name__ == '__main__':

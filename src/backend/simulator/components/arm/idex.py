@@ -1,20 +1,116 @@
+"""
+Idex is a barrier register for the pipeline ARM processor that seperates the
+memory and write-back stages.
+
+Configuration file template should follow form
+{
+    /* Required */
+
+    "name" : "idex",
+    "type" : "Idex",
+    "pc4d" : "",
+    "regwrd" : "",
+    "alusrcbd" : "",
+    "alusd" : "",
+    "alusflagwrd" : "",
+    "memwrd" : "",
+    "regsrcd" : "",
+    "wd3sd" : "",
+    "rd1d" : "",
+    "rd2d" : "",
+    "imm32d" : "",
+    "ra1d" : "",
+    "ra2d" : "",
+    "ra3d" : "",
+    "flush" : "",
+    "clk" : "",
+    "pc4e" : "",
+    "regwre" : "",
+    "alusrcbe" : "",
+    "aluse" : "",
+    "aluflagwre" : "",
+    "memwre" : "",
+    "regsrce" : "",
+    "wd3se" : "",
+    "rd1e" : "",
+    "rd2e" : "",
+    "imm32e" : "",
+    "ra1e" : "",
+    "ra2e" : "",
+    "ra3e" : "",
+
+    /* Optional */
+
+    "package" : "arm",
+    "append_to_signals" : true,
+    "enable" : "",
+    "edge_type" : "",
+    "enable_type" : "",
+    "flush_type" : ""
+}
+
+name is the entity name, used by entity map (Used externally)
+type is the component class (Used externally)
+package is associated package to override general (Used externally)
+append_to_signals is flag used to append an entity as hook (Used externally)
+pc4d is data bus reference input
+regwrd is data bus reference input
+alusrcbd is data bus reference input
+alusd is data bus reference input
+alusflagwrd is data bus reference input
+memwrd is data bus reference input
+regsrcd is data bus reference input
+wd3sd is data bus reference input
+rd1d is data bus reference input
+rd2d is data bus reference input
+imm32d is data bus reference input
+ra1d is data bus reference input
+ra2d is data bus reference input
+ra3d is data bus reference input
+flush is control bus reference
+clk is clock control bus reference
+pc4e is data bus reference output
+regwre is data bus reference output
+alusrcbe is data bus reference output
+aluse is data bus reference output
+aluflagwre is data bus reference output
+memwre is data bus reference output
+regsrce is data bus reference output
+wd3se is data bus reference output
+rd1e is data bus reference output
+rd2e is data bus reference output
+imm32e is data bus reference output
+ra1e is data bus reference output
+ra2e is data bus reference output
+ra3e is data bus reference output
+enable is write control bus reference
+edge_type is edge to clock data
+enable_type is logic level to write to memory
+flush_type is logic level to clear memory
+"""
+
 from simulator.components.abstract.ibus import iBusRead, iBusWrite
 from simulator.components.abstract.sequential import Sequential, Latch_Type, Logic_States
 
 
 class Idex(Sequential):
     """
-    This specialized register sits between the decode and execute stages of the 
+    This specialized register sits between the decode and execute stages of the
     processor
     """
+
+    DEFAULT_LATCH_TYPE = Latch_Type.RISING_EDGE
+    DEFAULT_FLUSH_TYPE = Logic_States.ACTIVE_HIGH
+    DEFAULT_ENABLE_TYPE = Logic_States.ACTIVE_HIGH
+    DEFAULT_ENABLE_BUS = None
 
     def __init__(self, pc4d, regwrd, alusrcbd, alusd, aluflagwrd,
                  memwrd, regsrcd, wd3sd, rd1d, rd2d, imm32d, ra1d, ra2d, ra3d,
                  flush, clk, pc4e, regwre, alusrcbe, aluse, aluflagwre,
                  memwre, regsrce, wd3se, rd1e, rd2e, imm32e, ra1e, ra2e, ra3e,
-                 edge_type=Latch_Type.RISING_EDGE, 
-                 flush_type=Logic_States.ACTIVE_HIGH, enable=None, 
-                 enable_type=Logic_States.ACTIVE_HIGH):
+                 edge_type=DEFAULT_LATCH_TYPE,
+                 flush_type=DEFAULT_FLUSH_TYPE, enable=DEFAULT_ENABLE_BUS,
+                 enable_type=DEFAULT_ENABLE_TYPE):
         """
         inputs:
             pc4d: pc+4
@@ -211,7 +307,7 @@ class Idex(Sequential):
         self._ra1e = ra1e
         self._ra2e = ra2e
         self._ra3e = ra3e
-        
+
         # Attributes
         if not Latch_Type.valid(edge_type):
             raise ValueError('Invalid latch edge type')
@@ -229,21 +325,14 @@ class Idex(Sequential):
         self._enable = enable
         self._enable_type = enable_type
 
-        self._idex = IdexState(self._pc4e, self._regwre, self._alusrcbe,
-                                self._aluse, self._aluflagwre, self._memwre, 
-                                self._regsrce, self._wd3se, self._rd1e, 
-                                self._rd2e, self._imm32e, self._ra1e, 
-                                self._ra2e, self._ra3e)
-
-
     def on_rising_edge(self):
         "Implements clock rising behavior: captures data if latch type matches"
-        if (self._edge_type == Latch_Type.RISING_EDGE 
+        if (self._edge_type == Latch_Type.RISING_EDGE
                 or self._edge_type == Latch_Type.BOTH_EDGE):
-            if ((self._flush_type == Logic_States.ACTIVE_LOW 
-                    and self._flush.read() == 0) 
-                    or (self._flush_type == Logic_States.ACTIVE_HIGH 
-                    and self._flush.read() == 1)):
+            if ((self._flush_type == Logic_States.ACTIVE_LOW
+                    and self._flush.read() == 0)
+                    or (self._flush_type == Logic_States.ACTIVE_HIGH
+                        and self._flush.read() == 1)):
                 self._pc4e.write(0)
                 self._regwre.write(0)
                 self._alusrcbe.write(0)
@@ -276,12 +365,12 @@ class Idex(Sequential):
 
     def on_falling_edge(self):
         "Implements clock falling behavior: captures data if latch type matches"
-        if (self._edge_type == Latch_Type.FALLING_EDGE 
+        if (self._edge_type == Latch_Type.FALLING_EDGE
                 or self._edge_type == Latch_Type.BOTH_EDGE):
-            if ((self._flush_type == Logic_States.ACTIVE_LOW 
+            if ((self._flush_type == Logic_States.ACTIVE_LOW
                     and self._flush.read() == 0)
-                    or (self._flush_type == Logic_States.ACTIVE_HIGH 
-                    and self._flush.read() == 1)):
+                    or (self._flush_type == Logic_States.ACTIVE_HIGH
+                        and self._flush.read() == 1)):
                 self._pc4e.write(0)
                 self._regwre.write(0)
                 self._alusrcbe.write(0)
@@ -316,21 +405,17 @@ class Idex(Sequential):
         "Not used for this register"
         pass
 
-
     def inspect(self):
         "Returns a dictionary message to the user"
-        return {'type': 'idex register', 'state': self._idex.get_state()}
+        return {'type': 'idex register', 'state': self._get_state()}
 
-
-    def modify(self, data = None):
+    def modify(self, data=None):
         "Return message noting that is register cannot be modified"
-        return {'error' : 'idex register cannot be modified'}
-
+        return {'error': 'idex register cannot be modified'}
 
     def clear(self):
         "Return a message noting that the idex register cannot be cleared"
         return {'error': 'idex register cannot be cleared'}
-
 
     def run(self, time=None):
         "Timestep handler function - sequentially asserts output"
@@ -342,7 +427,7 @@ class Idex(Sequential):
                 e = self._enable_type.read() == 0
             else:
                 e = self._enable.read() == 1
-        
+
         # check for clock change
         if e:
             if self._clk.read() == 1 and self._prev_clk_state == 0:
@@ -352,40 +437,42 @@ class Idex(Sequential):
         self._prev_clk_state = self._clk.read()
 
     @classmethod
-    def from_dict(cls, config):
+    def from_dict(cls, config, hooks):
         "Implements conversion from configuration to component"
-        return NotImplemented
 
-    def to_dict(self):
-        "Implements conversion from component to configuration"
-        return NotImplemented
+        if "edge_type" in config:
+            edge_type = Latch_Type.fromString(config["edge_type"])
+        else:
+            edge_type = Idex.DEFAULT_LATCH_TYPE
 
+        if "flush_type" in config:
+            flush_type = Logic_States.fromString(config["flush_type"])
+        else:
+            flush_type = Idex.DEFAULT_FLUSH_TYPE
 
-class IdexState():
-    """
-    Stores the idex registers state
-    Used in the Idex class's inspect method
-    Do not make new instances of this class outside of the Idex class
-    """
+        if "enable" in config:
+            enable = hooks[config["enable"]]
+        else:
+            enable = Idex.DEFAULT_ENABLE_BUS
 
-    def __init__(self, pc4e, regwre, alusrcbe, aluse, aluflagwre, memwre, regsrce,
-                wd3se, rd1e, rd2e, imm32e, ra1e, ra2e, ra3e):
-        self._pc4e = pc4e
-        self._regwre = regwre
-        self._alusrcbe = alusrcbe
-        self._aluse = aluse
-        self._aluflagwre = aluflagwre
-        self._memwre = memwre
-        self._regsrce = regsrce
-        self._wd3se = wd3se
-        self._rd1e = rd1e
-        self._rd2e = rd2e
-        self._imm32e = imm32e
-        self._ra1e = ra1e
-        self._ra2e = ra2e
-        self._ra3e = ra3e
+        if "enable_type" in config:
+            enable_type = Logic_States.fromString(config["enable_type"])
+        else:
+            enable_type = Idex.DEFAULT_ENABLE_TYPE
 
-    def get_state(self):
+        return Idex(hooks[config["pc4d"]],hooks[config["regwrd"]],hooks[config["alusrcbd"]],
+                    hooks[config["alusd"]],hooks[config["alusflagwrd"]],hooks[config["memwrd"]],
+                    hooks[config["regsrcd"]],hooks[config["wd3sd"]],hooks[config["rd1d"]],
+                    hooks[config["rd2d"]],hooks[config["imm32d"]],hooks[config["ra1d"]],
+                    hooks[config["ra2d"]],hooks[config["ra3d"]],hooks[config["flush"]],
+                    hooks[config["clk"]],hooks[config["pc4e"]],hooks[config["regwre"]],
+                    hooks[config["alusrcbe"]],hooks[config["aluse"]],hooks[config["aluflagwre"]],
+                    hooks[config["memwre"]],hooks[config["regsrce"]],hooks[config["wd3se"]],
+                    hooks[config["rd1e"]],hooks[config["rd2e"]],hooks[config["imm32e"]],
+                    hooks[config["ra1e"]],hooks[config["ra2e"]],hooks[config["ra3e"]],
+                    edge_type,flush_type,enable,enable_type)
+
+    def _get_state(self):
         return {'pcsrce': self._pc4e.read(),
                 'regwre': self._regwre.read(), 'alusrcbe': self._alusrcbe.read(),
                 'aluse': self._aluse.read(), 'aluflagwre': self._aluflagwre.read(),
