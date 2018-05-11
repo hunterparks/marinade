@@ -35,14 +35,14 @@ import { StageRegisterComponent } from './components/simulator/stage-register/st
 import { StageComponent } from './components/simulator/stage/stage.component';
 import { TooltipDirective } from './directives/tooltip/tooltip.directive';
 import { SafeHtmlPipe } from './pipes/safe-html.pipe';
+import { EditorFileService } from './services/editor/file/editor-file.service';
+import { IpcService } from './services/ipc/ipc.service';
 import { ArchitectureService } from './services/simulator/architecture/architecture.service';
 import { BusMonitorService } from './services/simulator/bus-monitor/bus-monitor.service';
 import { RequestService } from './services/simulator/request/request.service';
 import { ResponseService } from './services/simulator/response/response.service';
 import { WebsocketService } from './services/simulator/websocket/websocket.service';
 import { TooltipService } from './services/tooltip/tooltip.service';
-import { IpcService } from './services/ipc/ipc.service';
-import { EditorFileService } from './services/editor/file/editor-file.service';
 // import { SentrySettings } from './settings/sentry/local.sentry.settings';
 
 // Raven.config(SentrySettings.getURL()).install();

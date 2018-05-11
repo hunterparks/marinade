@@ -159,3 +159,14 @@ electron.ipcMain.on('saveFile', (event, fileFullPath, fileContents) => {
   });
   event.sender.send('saveFileCallback');
 });
+
+// Relay commands to communicate between Angular components
+electron.ipcMain.on('saveRequest', (event) => {
+  event.sender.send('saveRequest');
+});
+electron.ipcMain.on('compileRequest', (event) => {
+  event.sender.send('compileRequest');
+});
+electron.ipcMain.on('runRequest', (event) => {
+  event.sender.send('runRequest');
+});

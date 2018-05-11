@@ -4,6 +4,7 @@ import 'rxjs/add/operator/takeUntil';
 import { Subject } from 'rxjs/Subject';
 import { EditorFileService } from '../../../services/editor/file/editor-file.service';
 import { IpcService } from '../../../services/ipc/ipc.service';
+import { WebsocketService } from '../../../services/simulator/websocket/websocket.service';
 import { IFile } from '../../common/file-select/file-select/file-select.component';
 
 @Component({
@@ -22,14 +23,17 @@ export class EditorViewComponent implements OnDestroy, OnInit {
 
   constructor(
     private readonly _ipc: IpcService,
-    private _file: EditorFileService
-  ) { }
+    private _file: EditorFileService,
+    private _ws: WebsocketService
+  ) {
+    this._ws.connect();
+  }
 
   public changedEditorValue(): void {
     this._file.updateContent(this.monaco.value);
   }
 
-  public handleSaveClick(event: Event): void {
+  public handleSaveClick(): void {
     if (this._file.getFileName()) { // File has name => file already exists
       this.ipcSaveFile(this._file.getFilePath() + this._file.getFileName(), this._file.getContent());
     } else { // File does not have name => file does not exist
@@ -42,7 +46,6 @@ export class EditorViewComponent implements OnDestroy, OnInit {
   }
 
   public ipcSaveFileCallback(): void {
-    console.log('called');
     this._file.updateDirtyFlag(false);
   }
 
@@ -70,6 +73,11 @@ export class EditorViewComponent implements OnDestroy, OnInit {
     // Create a boolean subject to mass-remove any subscriptions
     this._destroy = new Subject<boolean>();
 
+    this._ws.messageSubject.takeUntil(this._destroy).subscribe((message: string) => {
+      console.log(message);
+    });
+    this._ws.connect();
+
     this._ipc.on('saveFileCallback', (event: Electron.IpcMessageEvent) => {
       console.log('DEBUG: Save file callback');
       this.ipcSaveFileCallback();
@@ -77,6 +85,20 @@ export class EditorViewComponent implements OnDestroy, OnInit {
     this._ipc.on('saveNewFileCallback', (event: Electron.IpcMessageEvent, filename: string) => {
       console.log('DEBUG: Save new file callback');
       this.ipcSaveNewFileCallback(filename);
+    });
+    this._ipc.on('saveRequest', (event: Electron.IpcMessageEvent) => {
+      this.handleSaveClick();
+    });
+    this._ipc.on('compileRequest', (event: Electron.IpcMessageEvent) => {
+      const fullFilePath: string = this._file.getFilePath() + this._file.getFileName();
+      // {'assemble':{'filepath':<'file'>}}
+      const objectToSend: any = {
+        assemble: { fullFilePath }
+      };
+      this._ws.write(JSON.stringify(objectToSend));
+    });
+    this._ipc.on('runRequest', (event: Electron.IpcMessageEvent) => {
+
     });
 
     // Subscribe to the editor's value change event

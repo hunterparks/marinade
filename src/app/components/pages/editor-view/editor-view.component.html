@@ -1,6 +1,3 @@
-<button (click)="handleSaveClick($event)" [disabled]="!_file.getDirtyFlag()">Save</button>
-<span *ngIf="_file.getDirtyFlag()">Dirty</span>
-
 <div class="grid-wrapper">
   <td-file-select layout="column"
     flex #fileSelect
