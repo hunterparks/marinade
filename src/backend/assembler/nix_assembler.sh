@@ -7,9 +7,11 @@ if [ $# -ne 1 ]; then
     exit $ERRCODE
 fi
 
+mkdir -p ./src/backend/assembler/generated_machine_code
+
 # Generate machine code
-arm-none-eabi-as "$1" -march=armv4 -mbig-endian -o assembler/generated_machine_code/object.o
-if [ -f assembler/generated_machine_code/object.o ]; then
-    arm-none-eabi-objcopy -O binary assembler/generated_machine_code/object.o assembler/generated_machine_code/machine_code.bin
-    rm assembler/generated_machine_code/object.o
+arm-none-eabi-as "$1" -march=armv4 -mbig-endian -o ./src/backend/assembler/generated_machine_code/object.o
+if [ -f ./src/backend/assembler/generated_machine_code/object.o ]; then
+    arm-none-eabi-objcopy -O binary ./src/backend/assembler/generated_machine_code/object.o ./src/backend/assembler/generated_machine_code/machine_code.bin
+    rm ./src/backend/assembler/generated_machine_code/object.o
 fi

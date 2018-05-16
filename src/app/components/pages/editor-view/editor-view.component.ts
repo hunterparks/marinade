@@ -74,9 +74,8 @@ export class EditorViewComponent implements OnDestroy, OnInit {
     this._destroy = new Subject<boolean>();
 
     this._ws.messageSubject.takeUntil(this._destroy).subscribe((message: string) => {
-      console.log(message);
+      const response: any = JSON.parse(message);
     });
-    this._ws.connect();
 
     this._ipc.on('saveFileCallback', (event: Electron.IpcMessageEvent) => {
       console.log('DEBUG: Save file callback');
@@ -93,7 +92,7 @@ export class EditorViewComponent implements OnDestroy, OnInit {
       const fullFilePath: string = this._file.getFilePath() + this._file.getFileName();
       // {'assemble':{'filepath':<'file'>}}
       const objectToSend: any = {
-        assemble: { fullFilePath }
+        assemble: { filepath: fullFilePath }
       };
       this._ws.write(JSON.stringify(objectToSend));
     });

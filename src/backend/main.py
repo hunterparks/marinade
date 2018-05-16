@@ -126,16 +126,16 @@ class Interface:
         """
         Calls either a bash script or a batch script that converts assembly
         code into machine code.
-        Return: Dictionary containing results of the assembler. 
+        Return: Dictionary containing results of the assembler.
         """
         try:
             f = open(msg['filepath'])
             if platform == "linux" or platform == "linux2" or platform == "darwin":
-                output = subprocess.run(["./assembler/nix_assembler.sh", msg['filepath']], stderr=subprocess.PIPE)
+                output = subprocess.run(["./dist/backend/assembler/nix_assembler.sh", msg['filepath']], stderr=subprocess.PIPE)
                 f.close()
                 return {'status': True, 'errors': output.stderr.decode('utf-8')}
             elif platform == "win32":
-                output = subprocess.run([r".\assembler\windows_assembler.bat", msg['filepath']], stderr=subprocess.PIPE)
+                output = subprocess.run([r".dist\backend\assembler\windows_assembler.bat", msg['filepath']], stderr=subprocess.PIPE)
                 f.close()
                 return {'status': True, 'errors': output.stderr.decode('utf-8')}
         except KeyError as e:
