@@ -109,6 +109,7 @@ class RegisterFile(Sequential):
         self._edge_type = edge_type
         self._reset_type = reset_type
         self._enable_type = enable_type
+        self._default_state = default_state
 
         # generate necessary parameters that buses must fit
         if num_reg == 0:
@@ -170,8 +171,9 @@ class RegisterFile(Sequential):
         return {
             'type': 'register',
             'length': self._num_reg,  # number of elements
-                    'size': self._reg_size,  # bit size of register
-                    'state': states  # array of all register output values
+            'size': self._reg_size,  # bit size of register
+            'state': states,  # array of all register output values
+            'default_state' : self._default_state
         }
 
     def modify(self, message):
