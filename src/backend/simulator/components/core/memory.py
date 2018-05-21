@@ -318,7 +318,12 @@ class Memory(MemoryBlock):
         """
         returns dictionary message to user
         """
-        return {'type': 'Memory', 'size': self._size, 'state': self._assigned_memory}
+        return {
+            'type': 'Memory',
+            'size': self._size,
+            'state': self._assigned_memory,
+            'default_state' : self._default_value
+        }
 
     def modify(self, message):
         """
@@ -397,17 +402,17 @@ class Memory(MemoryBlock):
         if "edge_type" in config:
             edge_type = Latch_Type.fromString(config["edge_type"])
         else:
-            edge_type = RegisterFile.DEFAULT_LATCH_TYPE
+            edge_type = Memory.DEFAULT_LATCH_TYPE
 
         if "reset_type" in config:
             reset_type = Logic_States.fromString(config["reset_type"])
         else:
-            reset_type = RegisterFile.DEFAULT_RESET_TYPE
+            reset_type = Memory.DEFAULT_RESET_TYPE
 
         if "enable_type" in config:
             enable_type = Logic_States.fromString(config["enable_type"])
         else:
-            enable_type = RegisterFile.DEFAULT_ENABLE_TYPE
+            enable_type = Memory.DEFAULT_ENABLE_TYPE
 
         return Memory(config["size"], config["bytes_per_word"],
                       config["start_address"], hooks[config["address"]],
