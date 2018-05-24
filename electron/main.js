@@ -1,4 +1,5 @@
 const electron = require('electron');
+const fs = require('fs');
 var client;
 // Module to control application life.
 const app = electron.app;
@@ -122,3 +123,50 @@ app.on('will-quit', exitPyProc);
 
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
+
+// Application Inter-Process Communication (IPC) Functions
+
+// Fucntion triggered when Angular requests saving a new file
+electron.ipcMain.on('saveNewFile', (event, fileContents) => {
+  console.log('DEBUG: Save new file');
+  electron.dialog.showSaveDialog(
+    mainWindow,
+    {
+      title: 'Save File',
+      defaultPath: process.env['HOME'] + '/code',
+      filters: [
+        { name: 'ARM ASM', extensions: [ 's' ] }
+      ]
+    },
+    (filename) => {
+      if (filename) {
+        fs.writeFile(filename, fileContents, (error) => {
+          if (error) { console.log('Error ', error); }
+        });
+        event.sender.send('saveNewFileCallback', filename);
+      }
+    }
+  );
+});
+
+electron.ipcMain.on('saveFile', (event, fileFullPath, fileContents) => {
+  console.log('DEBUG: Save file');
+  fs.truncate(fileFullPath, (error) => {
+    if (error) { console.log(error); }
+    fs.writeFile(fileFullPath, fileContents, (error) => {
+      if (error) { console.log(error); }
+    });
+  });
+  event.sender.send('saveFileCallback');
+});
+
+// Relay commands to communicate between Angular components
+electron.ipcMain.on('saveRequest', (event) => {
+  event.sender.send('saveRequest');
+});
+electron.ipcMain.on('compileRequest', (event) => {
+  event.sender.send('compileRequest');
+});
+electron.ipcMain.on('runRequest', (event) => {
+  event.sender.send('runRequest');
+});

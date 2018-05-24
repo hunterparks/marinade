@@ -176,5 +176,5 @@ gulp.task('watch-electron', 'Watch for changed files', function (cb) {
 // watches the python files for changes
 gulp.task('watch-python', 'Watch for changed files', function (cb) {
   // Reload main process after files change
-  gulp.watch(['src/backend/**/*'], ['restart']);
+  gulp.watch(['src/backend/**/*.py'], ['restart']);
 });

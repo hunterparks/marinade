@@ -1,7 +1,7 @@
 <div class="grid-wrapper">
   <td-file-select layout="column"
     flex #fileSelect
-    (openFile)="monaco.value = $event.contents">
+    (openFile)="openFile($event)">
   </td-file-select>
 
   <td-code-editor #monaco
