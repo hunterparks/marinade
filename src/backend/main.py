@@ -133,11 +133,11 @@ class Interface:
             if platform == "linux" or platform == "linux2" or platform == "darwin":
                 output = subprocess.run(["./dist/backend/assembler/nix_assembler.sh", msg['filepath']], stderr=subprocess.PIPE)
                 f.close()
-                return {'status': True, 'errors': output.stderr.decode('utf-8')}
+                return {'status': True, 'error': output.stderr.decode('utf-8')}
             elif platform == "win32":
                 output = subprocess.run([r".dist\backend\assembler\windows_assembler.bat", msg['filepath']], stderr=subprocess.PIPE)
                 f.close()
-                return {'status': True, 'errors': output.stderr.decode('utf-8')}
+                return {'status': True, 'error': output.stderr.decode('utf-8')}
         except KeyError as e:
             traceback.print_exc()
             return {'status': False, 'error': 'invalid key : {}'.format(str(e))}
@@ -245,7 +245,7 @@ class Interface:
 
 if __name__ == "__main__":
 
-    client = initialize_sentry()
+    # client = initialize_sentry()
 
     try:
 
@@ -266,4 +266,5 @@ if __name__ == "__main__":
         asyncio.get_event_loop().run_forever()
 
     except Exception:
-        client.captureException()
+        print("Whoops")
+        # client.captureException()

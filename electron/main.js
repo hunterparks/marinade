@@ -160,6 +160,10 @@ electron.ipcMain.on('saveFile', (event, fileFullPath, fileContents) => {
   event.sender.send('saveFileCallback');
 });
 
+electron.ipcMain.on('showError', (event, title, content) => {
+  electron.dialog.showErrorBox(title, content);
+});
+
 // Relay commands to communicate between Angular components
 electron.ipcMain.on('saveRequest', (event) => {
   event.sender.send('saveRequest');

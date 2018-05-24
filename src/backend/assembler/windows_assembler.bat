@@ -8,7 +8,7 @@ for %%x in (%*) do (
 
 :: Check to make sure correct number of args were supplied
 if not %argC% == 1 (
-    echo "Incorrect amount of argurments supplied."
+    echo "Incorrect amount of arguments supplied."
     echo "Usage: ./windows_assembler.bat <assembly_file>"
     EXIT /B 1
 )
