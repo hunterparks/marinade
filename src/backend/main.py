@@ -64,8 +64,6 @@ import traceback
 import subprocess
 from sys import platform
 
-#from sentry.sentry import initialize_sentry
-
 from simulator.architecture import Architecture
 
 
@@ -245,7 +243,11 @@ class Interface:
 
 if __name__ == "__main__":
 
-    # client = initialize_sentry()
+    isAlex = False # You're probably not Alex so we won't us sentry
+
+    if isAlex:
+        from sentry.sentry import initialize_sentry
+        client = initialize_sentry()
 
     try:
 
@@ -266,5 +268,7 @@ if __name__ == "__main__":
         asyncio.get_event_loop().run_forever()
 
     except Exception:
-        print("Whoops")
-        # client.captureException()
+        if isAlex:
+            client.captureException()
+        else:
+            print('Exception caught in main.py')
