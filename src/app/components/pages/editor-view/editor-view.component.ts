@@ -80,7 +80,6 @@ export class EditorViewComponent implements OnDestroy, OnInit {
 
     this._ws.messageSubject.takeUntil(this._destroy).subscribe((message: string) => {
       const response: { error?: string, status: boolean } = JSON.parse(message);
-      console.log(response);
       const lastAction: string = this.WS_QUEUE.shift();
       if (lastAction === 'assembleRQ') {
         // TODO: Check error state
@@ -103,22 +102,17 @@ export class EditorViewComponent implements OnDestroy, OnInit {
           this._ipc.send('showError', 'Load Error', 'There was an error loading architecture:\r\n\r\n' + response.error);
         }
       } else if (lastAction === 'runRQ') {
-        // if (response.status && !response.error) {
-          this._router.navigate(['simulator']);
-        // } else {
-        //   this._ipc.send('showError', 'Program Error', 'There was an error programming simulator:\r\n\r\n' + response.error);
-        // }
+        // TODO: Error Checking
+        this._router.navigate(['simulator']);
       } else {
         this.WS_QUEUE.unshift(lastAction);
       }
     });
 
     this._ipc.on('saveFileCallback', (event: Electron.IpcMessageEvent) => {
-      console.log('DEBUG: Save file callback');
       this.ipcSaveFileCallback();
     });
     this._ipc.on('saveNewFileCallback', (event: Electron.IpcMessageEvent, filename: string) => {
-      console.log('DEBUG: Save new file callback');
       this.ipcSaveNewFileCallback(filename);
     });
     this._ipc.on('saveRequest', (event: Electron.IpcMessageEvent) => {
