@@ -19,7 +19,7 @@ export class ArchitectureService {
     this.ipcService.on('openFileCallback', (event: Electron.EventEmitter, data: any, filepath: string) => {
       this.parseArchitecture(data);
       this.requestService.load(filepath);
-      this.program()
+      this.program();
     });
   }
 
