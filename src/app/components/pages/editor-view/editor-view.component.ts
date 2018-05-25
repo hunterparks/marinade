@@ -1,12 +1,13 @@
-import { Component, EventEmitter, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Router } from '@angular/router';
+import { IFile } from '@components//common/file-select/file-select/file-select.component';
 import { TdCodeEditorComponent } from '@covalent/code-editor';
+import { EditorFileService } from '@services/editor/file/editor-file.service';
+import { IpcService } from '@services/ipc/ipc.service';
+import { ArchitectureService } from '@services/simulator/architecture/architecture.service';
+import { WebsocketService } from '@services/simulator/websocket/websocket.service';
 import 'rxjs/add/operator/takeUntil';
 import { Subject } from 'rxjs/Subject';
-import { EditorFileService } from '../../../services/editor/file/editor-file.service';
-import { IpcService } from '../../../services/ipc/ipc.service';
-import { WebsocketService } from '../../../services/simulator/websocket/websocket.service';
-import { IFile } from '../../common/file-select/file-select/file-select.component';
 
 @Component({
   selector: 'marinade-editor-view',
@@ -24,6 +25,7 @@ export class EditorViewComponent implements OnDestroy, OnInit {
   @ViewChild(TdCodeEditorComponent) public monaco: TdCodeEditorComponent;
 
   constructor(
+    private _architecture: ArchitectureService,
     private readonly _ipc: IpcService,
     private _file: EditorFileService,
     private _ws: WebsocketService,
@@ -84,13 +86,8 @@ export class EditorViewComponent implements OnDestroy, OnInit {
       if (lastAction === 'assembleRQ') {
         // TODO: Check error state
         if (response.status && !response.error) {
-          const filePathToConfig: string = './src/config/architectures/pipeline_demo.json';
-          // {'load':{'filepath':<'file'>}}
-          const objectToSend: any = {
-            load: { filepath: filePathToConfig }
-          };
-          this._ws.write(JSON.stringify(objectToSend));
           this.WS_QUEUE.push('loadRQ');
+          this._architecture.load();
         } else {
           this._ipc.send('showError', 'Assemble Error', 'There was an error assembling machine code:\r\n\r\n' + response.error);
         }
@@ -102,10 +99,12 @@ export class EditorViewComponent implements OnDestroy, OnInit {
           this._ipc.send('showError', 'Load Error', 'There was an error loading architecture:\r\n\r\n' + response.error);
         }
       } else if (lastAction === 'runRQ') {
-        // TODO: Error Checking
-        this._router.navigate(['simulator']);
-      } else {
-        this.WS_QUEUE.unshift(lastAction);
+        if (!this._architecture.architecture.getValue()) {
+          this._ipc.send('showError', 'Architecture Error', 'There is no loaded architecture:\r\n\r\n' + response.error);
+        } else {
+          // TODO: Error Checking
+          this._router.navigate(['simulator']);
+        }
       }
     });
 

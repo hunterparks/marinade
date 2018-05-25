@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MemoryViewComponent } from './memory-view.component';
+import { MemoryViewComponent } from '@components/pages/memory-view/memory-view.component';
 
 describe('MemoryViewComponent', () => {
   let component: MemoryViewComponent;

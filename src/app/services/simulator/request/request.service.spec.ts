@@ -1,6 +1,6 @@
 import { TestBed, inject } from '@angular/core/testing';
 
-import { RequestService } from './request.service';
+import { RequestService } from '@services/simulator/request/request.service';
 
 describe('RequestService', () => {
   beforeEach(() => {
