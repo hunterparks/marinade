@@ -1,5 +1,0 @@
-<svg:path *ngFor="let path of bus.paths" data-tooltip [attr.title]="name" [attr.d]="path" fill="none" [attr.stroke]="color" stroke-width="1"/>
-<svg:path *ngFor="let arrow of bus.arrows" [attr.d]="arrow" [attr.fill]="color" [attr.stroke]="color" stroke-width="2"/>
-<svg:path *ngFor="let path of bus.paths" data-tooltip [attr.title]="name" [attr.d]="path" fill="none" [attr.stroke]="'transparent'" stroke-width="15"/>
-<svg:path *ngFor="let arrow of bus.arrows" [attr.d]="arrow" [attr.fill]="color" [attr.stroke]="'transparent'" stroke-width="5"/>
-<svg:ellipse *ngFor="let junction of bus.junctions" [attr.cx]="junction.x" [attr.fill]="color" [attr.cy]="junction.y" rx="3" ry="3" />

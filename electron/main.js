@@ -160,6 +160,31 @@ electron.ipcMain.on('saveFile', (event, fileFullPath, fileContents) => {
   event.sender.send('saveFileCallback');
 });
 
+electron.ipcMain.on('openFile', () => {
+  electron.dialog.showOpenDialog(
+    mainWindow,
+    {
+      title: 'Open File',
+      defaultPath: process.env['HOME'] + '/Workspace/marinade/dist/config/architectures',
+      filters: [
+        { name: 'JSON', extensions: [ 'json' ] }
+      ]
+    },
+    (filename) => {
+      if (filename) {
+        fs.readFile(filename[0], 'utf8', (error, data) => {
+          if (error) {
+            console.log('Error ', error);
+          } else {
+            mainWindow.webContents.send('openFileCallback', data, filename[0]);
+          }
+        });
+      }
+    }
+  )
+});
+
+
 // Relay commands to communicate between Angular components
 electron.ipcMain.on('saveRequest', (event) => {
   event.sender.send('saveRequest');

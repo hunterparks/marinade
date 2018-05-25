@@ -245,7 +245,7 @@ class Interface:
 
 if __name__ == "__main__":
 
-    client = initialize_sentry()
+    # client = initialize_sentry()
 
     try:
 

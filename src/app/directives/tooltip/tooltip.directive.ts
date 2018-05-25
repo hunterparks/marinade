@@ -37,11 +37,14 @@ export class TooltipDirective implements OnDestroy {
 
   @HostListener('mousemove', ['$event'])
   public onMouseMove(event: MouseEvent): void {
-    if (event.clientX !== this.tooltipService.findTooltip(this.id).x.getValue()) {
-      this.tooltipService.findTooltip(this.id).x.next(event.clientX);
-    }
-    if (event.clientY !== this.tooltipService.findTooltip(this.id).y.getValue()) {
-      this.tooltipService.findTooltip(this.id).y.next(event.clientY);
+    let tooltip: any = this.tooltipService.findTooltip(this.id);
+    if (tooltip) {
+      if (event.clientX !== tooltip.x.getValue()) {
+        tooltip.x.next(event.clientX);
+      }
+      if (event.clientY !== tooltip.y.getValue()) {
+        tooltip.y.next(event.clientY);
+      }
     }
   }
 

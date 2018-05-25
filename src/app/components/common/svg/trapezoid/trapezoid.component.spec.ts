@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MuxComponent } from './mux.component';
+import { TrapezoidComponent } from './trapezoid.component';
 
 describe('MuxComponent', () => {
-  let component: MuxComponent;
-  let fixture: ComponentFixture<MuxComponent>;
+  let component: TrapezoidComponent;
+  let fixture: ComponentFixture<TrapezoidComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ MuxComponent ]
+      declarations: [ TrapezoidComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(MuxComponent);
+    fixture = TestBed.createComponent(TrapezoidComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

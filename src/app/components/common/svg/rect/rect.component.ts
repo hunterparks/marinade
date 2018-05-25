@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { SVGRect } from '@models/simulator/svg/rect.svg.class';
+import { SVGRect } from '@models/simulator/svg/rect.class';
 
 @Component({
   selector: '[svg-rect]',

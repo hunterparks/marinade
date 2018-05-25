@@ -1,6 +1,6 @@
 import { Component, HostListener } from '@angular/core';
 import { Architecture } from '@models/simulator/architecture.class';
-import { Bus } from '@models/simulator/bus/bus.class';
+import { SVGPath } from '@models/simulator/svg/path.class';
 import { ArchitectureService } from '@services/simulator/architecture/architecture.service';
 import { BusMonitorService } from '@services/simulator/bus-monitor/bus-monitor.service';
 import { RequestService } from '@services/simulator/request/request.service';
@@ -45,7 +45,6 @@ export class SimulatorViewComponent {
     private tooltipService: TooltipService,
     private websocketService: WebsocketService
   ) {
-    this.architectureService.load();
     this.architectureService.architecture.subscribe((architecture: Architecture) => this.architecture = architecture);
     this.websocketService.connect();
     this.websocketService.messageSubject.subscribe((message: any) => this.responseService.receiveMessage(message));
@@ -72,6 +71,10 @@ export class SimulatorViewComponent {
                    this.viewBoxWidth + ' ' + this.viewBoxHeight;
   }
 
+  public load(): void {
+    this.architectureService.load();
+  }
+
   /**
    * Start tracking the mouse drag motion
    * @param {MouseEvent} event The MouseEvent that caused the click function to fire
@@ -92,7 +95,7 @@ export class SimulatorViewComponent {
         this.requestService.inspect(['']);
         break;
       case 'l':
-        this.requestService.load('');
+        this.architectureService.load();
         break;
       case 'p':
         this.requestService.program('', '');
@@ -100,13 +103,15 @@ export class SimulatorViewComponent {
       case 'r':
         this.requestService.reset();
         break;
-      case 's': {
+      case 's':
         this.requestService.step('logic');
-        this.architectureService.architecture.getValue().bus.forEach((bus: Bus) => {
-          bus.inspect();
+        this.architectureService.architecture.getValue().path.forEach((path: SVGPath) => {
+          path.inspect();
         });
         break;
-      }
+      case 'u':
+        this.architectureService.unload();
+        break;
     }
   }
 

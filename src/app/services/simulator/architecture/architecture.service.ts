@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { Architecture } from '@models/simulator/architecture.class';
-import { ARCHITECTURE } from '@models/simulator/architecture.model';
-import { Bus } from '@models/simulator/bus/bus.class';
-import { Mux } from '@models/simulator/mux/mux.class';
-import { SVGRect } from '@models/simulator/svg/rect.svg.class';
+import { SVGPath } from '@models/simulator/svg/path.class';
+import { SVGRect } from '@models/simulator/svg/rect.class';
+import { SVGTrapezoid } from '@models/simulator/svg/trapezoid.class';
+import { IpcService } from '@services/ipc/ipc.service';
 import { RequestService } from '@services/simulator/request/request.service';
 import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 
@@ -11,41 +11,79 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 export class ArchitectureService {
 
   private _architecture: Architecture;
-  private readonly componentClasses: { class: any, name: string, services: any[] }[] = [
-    { class: Bus,     name: 'bus',           services: [ this.requestService ] },
-    { class: SVGRect, name: 'combinational', services: [ ]                     },
-    { class: SVGRect, name: 'controller',    services: [ ]                     },
-    { class: Mux,     name: 'mux',           services: [ ]                     },
-    { class: SVGRect, name: 'stage',         services: [ ]                     },
-    { class: SVGRect, name: 'register',      services: [ ]                     },
-  ];
 
   public architecture: BehaviorSubject<Architecture> = new BehaviorSubject<Architecture>(null);
 
-  constructor(private requestService: RequestService) { }
+  constructor(private requestService: RequestService, private ipcService: IpcService) {
+    this.ipcService.on('openFileCallback', (event: Electron.EventEmitter, data: any, filepath: string) => {
+      this.parseArchitecture(data);
+      this.requestService.load(filepath);
+      this.requestService.program('', '');
+    });
+  }
+
+  private static isEmpty(object: any): boolean {
+    return Object.keys(object).length === 0 && object.constructor === Object;
+  }
 
   public load(): void {
+    this.ipcService.send('openFile');
+  }
+
+  public parseArchitecture(json: any): void {
     this._architecture = { };
-    for (let componentClass of this.componentClasses) {
-      // For each object from the architecture configuration
-      for (let instance of ARCHITECTURE[componentClass.name]) {
-        // If this is the first one, make a place for it in the architecture
-        if (!this._architecture[componentClass.name]) {
-          this._architecture[componentClass.name] = [ ];
-        }
-        if (componentClass.class.name === 'SVGRect') {
-          instance.type = componentClass.name;
-        }
-        // Create the class instance using the services and JSON instance
-        this._architecture[componentClass.name].push(new componentClass.class(...componentClass.services, instance));
-      }
-    }
-    // Emit the new architecture
+    let architecture: any = JSON.parse(json);
+    this.parseSignals(architecture.signals);
+    this.parseEntities(architecture.entities);
     this.architecture.next(this._architecture);
   }
 
+  public parseEntities(entities: any, parent?: any): void {
+    if (!this._architecture['rectangle']) {
+      this._architecture['rectangle'] = [];
+    }
+    if (!this._architecture['trapezoid']) {
+      this._architecture['trapezoid'] = [];
+    }
+    for (let entity of entities) {
+      if (!ArchitectureService.isEmpty(entity.view) && entity.view.model) {
+        if (entity.view.model === 'rectangle') {
+          let rectangle: SVGRect = new SVGRect();
+          rectangle.parseEntity(entity);
+          if (parent) {
+            rectangle.setParent(parent);
+          }
+          this._architecture['rectangle'].push(rectangle);
+        } else if (entity.view.model === 'trapezoid') {
+          let trapezoid: SVGTrapezoid = new SVGTrapezoid();
+          trapezoid.parseEntity(entity);
+          this._architecture['trapezoid'].push(trapezoid);
+        }
+      }
+      if (entity.entities) {
+        this.parseEntities(entity.entities, entity);
+      }
+    }
+  }
+
+  public parseSignals(signals: any): void {
+    if (!this._architecture['path']) {
+      this._architecture['path'] = [];
+    }
+    for (let signal of signals) {
+      if (!ArchitectureService.isEmpty(signal.view) && signal.view.model) {
+        if (signal.view.model === 'path') {
+          let path: SVGPath = new SVGPath(this.requestService);
+          path.parseEntity(signal);
+          this._architecture['path'].push(path);
+        }
+      }
+    }
+  }
+
   public unload(): void {
-    this._architecture = { };
+    this.requestService.unload();
+    this._architecture = null;
     this.architecture.next(this._architecture);
   }
 

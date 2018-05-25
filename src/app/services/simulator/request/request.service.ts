@@ -23,16 +23,14 @@ export class RequestService {
   }
 
   public load(filepath: string): void {
-    // TODO - add file chooser
-    this.websocketService.write('{ "load": { "filepath": "../config/architectures/pipeline_demo.json" } }');
+    this.websocketService.write('{ "load": { "filepath": "' + filepath + '" } }');
   }
 
   public modify(component: string, parameters: string[]): void {
     // not all components have modify - only memory-type objects (reg, reg files, memory)
   }
 
-  public program(filepath: string, memory: string): void {
-    // TODO - add file chooser
+  public program(filepath: string, memory?: string): void {
     this.websocketService.write('{ "program": { "filepath": "", "memory": "progmem" } }');
   }
 

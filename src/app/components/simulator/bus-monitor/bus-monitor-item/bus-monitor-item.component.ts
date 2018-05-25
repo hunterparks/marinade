@@ -1,6 +1,6 @@
 import { Component, HostListener, Input } from '@angular/core';
-import { Bus, BusState } from '../../../../models/simulator/bus/bus.class';
-import { BusMonitorService } from '../../../../services/simulator/bus-monitor/bus-monitor.service';
+import { PathState, SVGPath } from '@models/simulator/svg/path.class';
+import { BusMonitorService } from '@services/simulator/bus-monitor/bus-monitor.service';
 
 @Component({
   selector: 'marinade-bus-monitor-item',
@@ -9,24 +9,24 @@ import { BusMonitorService } from '../../../../services/simulator/bus-monitor/bu
 })
 export class BusMonitorItemComponent {
 
-  @Input('bus') public bus: Bus;
-  public State: any = BusState;
+  @Input('path') public path: SVGPath;
+  public State: any = PathState;
 
   constructor(private busMonitorService: BusMonitorService) { }
 
   @HostListener('mouseenter')
   public onMouseEnter(): void {
-    this.bus.state.next(BusState.Active);
+    this.path.state.next(PathState.Active);
   }
 
   @HostListener('mouseleave')
   public onMouseLeave(): void {
-    this.bus.state.next(BusState.Inactive);
+    this.path.state.next(PathState.Inactive);
   }
 
   public removeBus(): void {
-    this.bus.state.next(BusState.Inactive);
-    this.busMonitorService.deleteBus(this.bus);
+    this.path.state.next(PathState.Inactive);
+    this.busMonitorService.deleteBus(this.path);
   }
 
 }

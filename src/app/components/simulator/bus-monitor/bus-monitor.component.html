@@ -1,12 +1,12 @@
 <div class="tab" [class.open]="open" (click)="toggleTab()">
-  <p>Bus Monitor ({{ buses.length }})</p>
+  <p>Bus Monitor ({{ paths.length }})</p>
   <i *ngIf="!open" class="fa fa-caret-right"></i>
   <i *ngIf="open" class="fa fa-caret-left"></i>
 </div>
 <div class="list" *ngIf="open">
-  <ng-container *ngIf="buses.length !== 0; else empty"></ng-container>
-  <div *ngFor="let bus of buses">
-    <marinade-bus-monitor-item [bus]="bus"></marinade-bus-monitor-item>
+  <ng-container *ngIf="paths.length !== 0; else empty"></ng-container>
+  <div *ngFor="let path of paths">
+    <marinade-bus-monitor-item [path]="path"></marinade-bus-monitor-item>
   </div>
   <ng-template #empty>
     <p class="empty">Double-click a bus to add or remove it from the bus monitor.</p>

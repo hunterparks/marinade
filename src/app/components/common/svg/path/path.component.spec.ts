@@ -1,20 +1,20 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { BusComponent } from './bus.component';
+import { PathComponent } from './path.component';
 
 describe('BusComponent', () => {
-  let component: BusComponent;
-  let fixture: ComponentFixture<BusComponent>;
+  let component: PathComponent;
+  let fixture: ComponentFixture<PathComponent>;
 
   beforeEach(async(() => {
     TestBed.configureTestingModule({
-      declarations: [ BusComponent ]
+      declarations: [ PathComponent ]
     })
     .compileComponents();
   }));
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(BusComponent);
+    fixture = TestBed.createComponent(PathComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

@@ -1,5 +1,5 @@
 import { Component, HostListener } from '@angular/core';
-import { Bus } from '@models/simulator/bus/bus.class';
+import { SVGPath } from '@models/simulator/svg/path.class';
 import { BusMonitorService } from '@services/simulator/bus-monitor/bus-monitor.service';
 
 @Component({
@@ -9,12 +9,12 @@ import { BusMonitorService } from '@services/simulator/bus-monitor/bus-monitor.s
 })
 export class BusMonitorComponent {
 
-  public buses: Bus[] = [];
   public open: boolean = false;
+  public paths: SVGPath[] = [];
 
   constructor(private busMonitorService: BusMonitorService) {
-    busMonitorService.buses.subscribe((buses: Bus[]) => {
-      this.buses = buses;
+    busMonitorService.paths.subscribe((paths: SVGPath[]) => {
+      this.paths = paths;
     });
   }
 
