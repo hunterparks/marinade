@@ -8,91 +8,112 @@
   "signals" : [
     {
       "name" : "clk",
-      "type" : "Clock",
-      "frequency" : 1,
-      "size" : 1
+      "simulation" : {
+        "model" : "Clock",
+        "frequency" : 1,
+        "width" : 1,
+        "append_to_entities" : true
+      }
     },
     {
       "name" : "rst",
-      "type" : "Reset",
-      "size" : 1
+      "simulation" : {
+        "model" : "Reset",
+        "width" : 1
+      }
     },
     {
       "name" : "d",
-      "type" : "Bus",
-      "size" : 4
+      "simulation" : {
+        "model" : "Bus",
+        "width" : 4
+      }
     },
     {
       "name" : "q",
-      "type" : "Bus",
-      "size" : 4
+      "simulation" : {
+        "model" : "Bus",
+        "width" : 4
+      }
     },
     {
       "name" : "const",
-      "type" : "LogicInput",
-      "size" : 4,
-      "value" : 1
+      "simulation" : {
+        "model" : "LogicInput",
+        "width" : 4,
+        "value" : 1
+      }
     },
     {
       "name" : "rd",
-      "type" : "Bus",
-      "size" : 8
+      "simulation" : {
+        "model" : "Bus",
+        "width" : 8
+      }
     },
     {
       "name" : "wr",
-      "type" : "Bus",
-      "size" : 8
+      "simulation" : {
+        "model" : "Bus",
+        "width" : 8
+      }
     },
     {
       "name" : "en",
-      "type" : "Bus",
-      "size" : 1
+      "simulation" : {
+        "model" : "Bus",
+        "width" : 1
+      }
     },
     {
       "name" : "acm",
-      "type" : "Bus",
-      "size" : 2
+      "simulation" : {
+        "model" : "Bus",
+        "width" : 2
+      }
     }
   ],
 
   "entities" : [
     {
-      "name" : "clk",
-      "signal" : "clk"
-    },
-    {
       "name" : "adder",
-      "type" : "Adder",
-      "size" : 4,
-      "input_1" : "const",
-      "input_2" : "q",
-      "output" : "d"
+        "simulation" : {
+        "model" : "Adder",
+        "width" : 4,
+        "input_1" : "const",
+        "input_2" : "q",
+        "output" : "d"
+      }
     },
     {
       "name" : "register",
-      "type" : "Register",
-      "append_to_signals" : true,
-      "size" : 4,
-      "clock" : "clk",
-      "reset" : "rst",
-      "input" : "d",
-      "output" : "q",
-      "edge_type" : "both_edge"
+      "simulation" : {
+        "model" : "Register",
+        "append_to_signals" : true,
+        "width" : 4,
+        "clock" : "clk",
+        "reset" : "rst",
+        "input" : "d",
+        "output" : "q",
+        "edge_model" : "both_edge"
+      }
     },
     {
       "name" : "memory",
-      "type" : "Memory",
-      "size" : 16,
-      "bytes_per_word" : 1,
-      "start_address" : 0,
-      "address" : "q",
-      "write" : "wr",
-      "enable" : "en",
-      "reset" : "rst",
-      "clock" : "clk",
-      "access_mode" : "acm",
-      "read" : "rd",
-      "append_to_signals" : true
+      "simulation" : {
+        "model" : "Memory",
+        "size" : 16,
+        "bytes_per_word" : 1,
+        "start_address" : 0,
+        "address" : "q",
+        "write" : "wr",
+        "enable" : "en",
+        "reset" : "rst",
+        "clock" : "clk",
+        "access_mode" : "acm",
+        "read" : "rd",
+        "append_to_signals" : true
+      }
     }
   ]
 }

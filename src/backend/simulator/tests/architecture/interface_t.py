@@ -11,7 +11,7 @@ sys.path.insert(0,'../../../../')
 from simulator.interface import Interface
 
 TEST_ARCH_PATH = os.path.join(os.path.dirname(__file__),'test_architecture.json')
-TEST_PROGRAM_PATH = os.path.join(os.path.dirname(__file__),'test_program.bin')
+TEST_PROGRAM_PATH = os.path.join(os.path.dirname(__file__),'test_program.bint')
 TEST_ASSEMBLE_PATH = os.path.join(os.path.dirname(__file__),'test_assemble.s')
 
 class Interface_t(unittest.TestCase):
