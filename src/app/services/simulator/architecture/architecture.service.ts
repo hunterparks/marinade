@@ -19,7 +19,7 @@ export class ArchitectureService {
     this.ipcService.on('openFileCallback', (event: Electron.EventEmitter, data: any, filepath: string) => {
       this.parseArchitecture(data);
       this.requestService.load(filepath);
-      this.requestService.program('./src/backend/assembler/generated_machine_code/machine_code.bin', this.systemMemory);
+      this.program()
     });
   }
 
