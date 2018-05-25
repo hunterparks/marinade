@@ -14,9 +14,12 @@ export class ResponseService {
         return bus.name.toLowerCase() === key;
       });
       if (selectedBus) {
-        selectedBus.data.next(messageObject[key].state);
+        let newState = '';
+        if (key in messageObject && 'state' in messageObject[key]) {
+          newState = '0x' + messageObject[key].state.toString(16).toUpperCase();
+        }
+        selectedBus.data.next(newState);
       }
     });
   }
-
 }
