@@ -30,6 +30,12 @@ export class SimulatorViewSidebarComponent {
           path.inspect();
         });
         break;
+      case 'reset':
+        this.requestService.reset();
+        this.architectureService.architecture.getValue().path.forEach((path: SVGPath) => {
+          path.inspect();
+        });
+        break;
       default: break;
     }
   }

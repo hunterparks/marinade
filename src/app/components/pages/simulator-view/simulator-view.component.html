@@ -5,7 +5,7 @@
     <svg:g *ngFor="let trapezoid of architecture.trapezoid" [svg-trapezoid]="trapezoid" />
     <svg:g *ngFor="let rectangle of architecture.rectangle" [svg-rect]="rectangle" />
   </svg>
-  <button class="reset" (click)="reset()">Reset</button>
+  <button class="reset" (click)="reset()">Reset View</button>
 </div>
 <marinade-bus-monitor></marinade-bus-monitor>
 <tooltip-container></tooltip-container>

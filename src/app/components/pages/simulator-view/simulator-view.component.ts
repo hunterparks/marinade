@@ -102,6 +102,9 @@ export class SimulatorViewComponent {
         break;
       case 'r':
         this.requestService.reset();
+        this.architectureService.architecture.getValue().path.forEach((path: SVGPath) => {
+          path.inspect();
+        });
         break;
       case 's':
         this.requestService.step('logic');
