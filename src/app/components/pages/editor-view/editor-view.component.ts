@@ -97,7 +97,7 @@ export class EditorViewComponent implements OnDestroy, OnInit {
       } else if (lastAction === 'loadRQ') {
         if (response.status && !response.error) {
           // TODO: Handle success
-          this._ipc.send('showError', 'Success!', 'Ready to program!');
+          this._ipc.send('showMessage', 'Success!', 'Ready to program!');
         } else {
           this._ipc.send('showError', 'Load Error', 'There was an error loading architecture:\r\n\r\n' + response.error);
         }
