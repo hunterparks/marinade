@@ -9,7 +9,6 @@ export class ResponseService {
 
   public receiveMessage(message: string): void {
     let messageObject: any = JSON.parse(message);
-    console.log(messageObject);
     Object.keys(messageObject).map((key: string) => {
       let architecture: any = this.architectureService.architecture.getValue();
       if (architecture) {

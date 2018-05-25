@@ -30,8 +30,8 @@ export class RequestService {
     // not all components have modify - only memory-type objects (reg, reg files, memory)
   }
 
-  public program(filepath: string, memory?: string): void {
-    this.websocketService.write('{ "program": { "filepath": "", "memory": "progmem" } }');
+  public program(filepath: string, memory: string): void {
+    this.websocketService.write('{ "program": { "filepath": "' + filepath + '", "memory": "' + memory + '" } }');
   }
 
   public reset(): void {
