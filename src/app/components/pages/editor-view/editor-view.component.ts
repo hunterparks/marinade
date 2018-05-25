@@ -147,15 +147,11 @@ export class EditorViewComponent implements OnDestroy, OnInit {
   }
 
   public openFile(event: IFile): void {
-    if (this._file.getDirtyFlag()) {
-
-    } else {
-      this.monaco.value = event.contents;
-      this._file.updateContent(event.contents);
-      this._file.updateFilename((event.name).substr(1));
-      this._file.updateFilepath(event.path + (event.name).charAt(0));
-      this._file.updateDirtyFlag(false);
-    }
+    this.monaco.value = event.contents;
+    this._file.updateContent(event.contents);
+    this._file.updateFilename((event.name).substr(1));
+    this._file.updateFilepath(event.path + (event.name).charAt(0));
+    this._file.updateDirtyFlag(false);
   }
 
   public registerCustomLanguage(): void {
