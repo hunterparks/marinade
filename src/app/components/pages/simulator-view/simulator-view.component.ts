@@ -98,10 +98,11 @@ export class SimulatorViewComponent {
         this.architectureService.load();
         break;
       case 'p':
-        this.requestService.program('', '');
+        this.architectureService.program();
         break;
       case 'r':
         this.requestService.reset();
+        this.architectureService.program();
         this.architectureService.architecture.getValue().path.forEach((path: SVGPath) => {
           path.inspect();
         });

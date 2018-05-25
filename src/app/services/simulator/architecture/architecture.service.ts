@@ -23,6 +23,10 @@ export class ArchitectureService {
     });
   }
 
+  public program(): void {
+    this.requestService.program('./src/backend/assembler/generated_machine_code/machine_code.bin', this.systemMemory);
+  }
+
   private static isEmpty(object: any): boolean {
     return Object.keys(object).length === 0 && object.constructor === Object;
   }
