@@ -429,7 +429,12 @@
         "model": "Bus",
         "width": 32
       },
-      "view": { }
+      "view": {
+        "model": "path",
+        "segments": [
+          "1058 427, 1127 427"
+        ]
+      }
     },
     {
       "name": "ra1d",
@@ -1313,7 +1318,11 @@
             "select": "pcsrcd",
             "output": "nextaddr"
           },
-          "view": { }
+          "view": {
+            "model": "trapezoid",
+            "x": 87,
+            "y": 162
+          }
         },
         {
           "name": "pc_reg",
@@ -1550,7 +1559,11 @@
             "select": "fwda",
             "output": "rd1"
           },
-          "view": { }
+          "view": {
+            "model": "trapezoid",
+            "x": 802,
+            "y": 302
+          }
         },
         {
           "name": "fwdb_mux",
@@ -1561,7 +1574,11 @@
             "select": "fwdb",
             "output": "rd2"
           },
-          "view": { }
+          "view": {
+            "model": "trapezoid",
+            "x": 802,
+            "y": 412
+          }
         },
         {
           "name": "alu_mux",
@@ -1645,7 +1662,11 @@
             "select": "wd3sw",
             "output": "wd"
           },
-          "view": { }
+          "view": {
+            "model": "trapezoid",
+            "x": 417,
+            "y": 352
+          }
         }
       ],
       "view": { }
@@ -1663,7 +1684,11 @@
             "select": "fwds",
             "output": "data"
           },
-          "view": { }
+          "view": {
+            "model": "trapezoid",
+            "x": 1152,
+            "y": 442
+          }
         },
         {
           "name": "datamem",

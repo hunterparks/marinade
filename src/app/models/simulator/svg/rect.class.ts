@@ -15,7 +15,7 @@ export class SVGRect implements SVGBase{
       this.name = entity.name;
     }
     if (entity.simulation) {
-      this.type = entity.simulation.model;
+      this.type = entity.simulation.model.toLowerCase();
     } else {
       this.type = 'stage';
     }
