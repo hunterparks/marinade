@@ -1,0 +1,24 @@
+@import '../../../../../styles.sass'
+$sidebar-size: 60px
+$sidebar-font-size: 30px
+
+.sidebar
+  background-color: $marinade-background-dark
+  grid-column-start: 1
+  grid-column-end: 1
+  a
+    color: $marinade-primary-light
+    height: $sidebar-size
+    width: $sidebar-size
+    display: block
+    text-align: center
+    line-height: $sidebar-size
+    font-size: $sidebar-font-size
+    text-decoration: none
+    &.active
+      background-color: $marinade-primary-dark
+      color: $marinade-background-light
+
+    &:hover
+      background-color: lighten($marinade-background-dark, 10%)
+      color: lighten($marinade-primary-light, 10%)

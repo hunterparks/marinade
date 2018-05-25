@@ -17,3 +17,7 @@ declare var require: NodeRequire;
 declare var fs: any;
 declare var electron: any;
 declare var path: any;
+
+interface Window {
+  require: NodeRequire;
+}

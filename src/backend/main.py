@@ -9,7 +9,6 @@ import json
 import asyncio
 import websockets
 
-from sentry.sentry import initialize_sentry
 from simulator.interface import Interface
 
 
@@ -19,12 +18,16 @@ DEFAULT_HOST_PORT = 4242
 
 if __name__ == "__main__":
 
+    isAlex = False # You're probably not Alex so we won't us sentry
+
     if len(sys.argv) > 1:
         port = int(sys.argv[1])
     else:
         port = DEFAULT_HOST_PORT
 
-    client = initialize_sentry()
+    if isAlex:
+        from sentry.sentry import initialize_sentry
+        client = initialize_sentry()
 
     try:
 
@@ -48,4 +51,7 @@ if __name__ == "__main__":
         asyncio.get_event_loop().run_forever()
 
     except Exception:
-        client.captureException()
+        if isAlex:
+            client.captureException()
+        else:
+            print('Exception caught in main.py')

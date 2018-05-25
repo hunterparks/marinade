@@ -1,2 +1,5 @@
-<p>Edit</p>
-<p>SB</p>
+<div class="sidebar" *ngFor="let button of SIDEBAR_CONFIG">
+  <a (click)="sidebarClickHandler(button.callingID)" [title]="button.title">
+    <i class="fa fa-{{button.icon}}"></i>
+  </a>
+</div>

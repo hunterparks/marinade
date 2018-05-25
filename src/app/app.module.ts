@@ -35,6 +35,8 @@ import { StageRegisterComponent } from './components/simulator/stage-register/st
 import { StageComponent } from './components/simulator/stage/stage.component';
 import { TooltipDirective } from './directives/tooltip/tooltip.directive';
 import { SafeHtmlPipe } from './pipes/safe-html.pipe';
+import { EditorFileService } from './services/editor/file/editor-file.service';
+import { IpcService } from './services/ipc/ipc.service';
 import { ArchitectureService } from './services/simulator/architecture/architecture.service';
 import { BusMonitorService } from './services/simulator/bus-monitor/bus-monitor.service';
 import { RequestService } from './services/simulator/request/request.service';
@@ -51,8 +53,8 @@ import { TooltipService } from './services/tooltip/tooltip.service';
 
 // export class RavenErrorHandler implements ErrorHandler {
 //   public handleError(err: any): void {
-//    Raven.captureException(err);
-//  }
+//     Raven.captureException(err);
+//   }
 // }
 
 @NgModule({
@@ -103,6 +105,8 @@ import { TooltipService } from './services/tooltip/tooltip.service';
     TooltipService,
     RequestService,
     WebsocketService,
+    IpcService,
+    EditorFileService,
     // { provide: ErrorHandler, useClass: RavenErrorHandler }
   ]
 })
