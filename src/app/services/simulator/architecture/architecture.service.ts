@@ -11,6 +11,7 @@ import { BehaviorSubject } from 'rxjs/BehaviorSubject';
 export class ArchitectureService {
 
   private _architecture: Architecture;
+  private systemMemory: string;
 
   public architecture: BehaviorSubject<Architecture> = new BehaviorSubject<Architecture>(null);
 
@@ -18,7 +19,7 @@ export class ArchitectureService {
     this.ipcService.on('openFileCallback', (event: Electron.EventEmitter, data: any, filepath: string) => {
       this.parseArchitecture(data);
       this.requestService.load(filepath);
-      this.requestService.program('', '');
+      this.requestService.program('./src/backend/assembler/generated_machine_code/machine_code.bin', this.systemMemory);
     });
   }
 
@@ -33,6 +34,7 @@ export class ArchitectureService {
   public parseArchitecture(json: any): void {
     this._architecture = { };
     let architecture: any = JSON.parse(json);
+    this.systemMemory = architecture['system_memory'];
     this.parseSignals(architecture.signals);
     this.parseEntities(architecture.entities);
     this.architecture.next(this._architecture);
