@@ -184,6 +184,17 @@ electron.ipcMain.on('openFile', () => {
   )
 });
 
+electron.ipcMain.on('showError', (event, title, content) => {
+  electron.dialog.showErrorBox(title, content);
+});
+
+electron.ipcMain.on('showMessage', (event, title, content) => {
+  electron.dialog.showMessageBox(mainWindow, {
+    type: 'info',
+    title: title,
+    message: content
+  })
+});
 
 // Relay commands to communicate between Angular components
 electron.ipcMain.on('saveRequest', (event) => {

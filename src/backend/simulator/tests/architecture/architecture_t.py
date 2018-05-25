@@ -4,7 +4,7 @@ Tests Architecture object which defines a collection of entities and hooks
 
 import unittest
 import sys
-sys.path.insert(0, '../../')
+sys.path.insert(0, '../../../')
 
 from collections import OrderedDict
 

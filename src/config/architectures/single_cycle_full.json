@@ -2,7 +2,7 @@
   "packages" : ["arm", "core"],
   "system_clock" : "clk",
   "system_reset" : "rst",
-  "system_memory" : null,
+  "system_memory" : "progmem",
   "time_step" : 0.00001,
 
   "signals" : [

@@ -2,7 +2,7 @@
 
 # Check to make sure correct number of args were supplied
 if [ $# -ne 1 ]; then
-    echo "Incorrect amount of argurments supplied."
+    echo "Incorrect amount of arguments supplied."
     echo "Usage: ./linux_assembler.sh <assembly_file>"
     exit $ERRCODE
 fi
