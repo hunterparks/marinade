@@ -1,0 +1,17 @@
+<div class="architecture" *ngIf="architecture; else noArchitecture">
+  <svg id="arch" xmlns="http://www.w3.org/2000/svg" [attr.viewBox]="viewBox" version="1.1">
+    <svg:defs/>
+    <svg:g *ngFor="let path of architecture.path" [svg-path]="path" [tooltip]="path.tooltip" />
+    <svg:g *ngFor="let trapezoid of architecture.trapezoid" [svg-trapezoid]="trapezoid" />
+    <svg:g *ngFor="let rectangle of architecture.rectangle" [svg-rect]="rectangle" />
+  </svg>
+  <button class="reset" (click)="reset()">Reset View</button>
+</div>
+<marinade-bus-monitor></marinade-bus-monitor>
+<tooltip-container></tooltip-container>
+<ng-template #noArchitecture>
+  <div class="no-architecture">
+    <p>No architecture loaded</p>
+    <button (click)="load()"><i class="fa fa-folder-open-o"></i>&nbsp;Open</button>
+  </div>
+</ng-template>

@@ -1,7 +1,15 @@
 # See http://help.github.com/ignore-files/ for more about ignoring files.
 
+# asembler output
+*.bin
+*.o
+
 # compiled output
 /dist
+/dist-app
+/dist-ng
+/dist-server
+/platforms
 /tmp
 /out-tsc
 
@@ -40,3 +48,12 @@ testem.log
 # System Files
 .DS_Store
 Thumbs.db
+
+# Local Settings Files
+/src/app/settings/**/local.*.settings.ts
+/src/backend/settings/**/local_*_settings.py
+/simulator_prototype/settings/**/local_*_settings.py
+
+# Python
+__pycache__/
+*.py[cod]

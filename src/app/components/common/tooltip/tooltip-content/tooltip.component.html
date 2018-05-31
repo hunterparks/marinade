@@ -1,0 +1,4 @@
+<div *ngIf="content" #tooltip id="tooltip" [style.left.px]="offsetX" [style.top.px]="offsetY">
+  <p>{{ content.getValue() }}</p>
+</div>
+<!--<div *ngIf="content" id="tooltip-arrow" [style.left.px]="offsetX" [style.top.px]="offsetY + arrowOffsetY"></div>-->

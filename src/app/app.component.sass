@@ -1,0 +1,61 @@
+@import '../styles.sass'
+$sidebar-size: 60px
+$sidebar-font-size: 30px
+
+.grid-wrapper
+  display: grid
+  width: 100vw
+  height: 100vh
+  grid-template-columns: $sidebar-size 1fr
+
+.sidebar
+  background-color: $marinade-background-dark
+  grid-column-start: 1
+  grid-column-end: 1
+  a
+    color: $marinade-primary-light
+    height: $sidebar-size
+    width: $sidebar-size
+    display: block
+    text-align: center
+    line-height: $sidebar-size
+    font-size: $sidebar-font-size
+    text-decoration: none
+    &.active
+      background-color: $marinade-primary-dark
+      color: $marinade-background-light
+
+    &:hover
+      background-color: lighten($marinade-background-dark, 10%)
+      color: lighten($marinade-primary-light, 10%)
+
+.content
+  grid-column-start: 2
+  grid-column-end: 2
+
+div.sidebar-controls
+  position: absolute
+  bottom: 0
+  width: $sidebar-size
+  text-align: center
+
+/*
+  :host /deep/
+    mat-divider
+      border-top-color: rgba(black, 0.12)
+
+    a.directory
+      &:hover
+        cursor: pointer
+
+
+    mat-toolbar
+      z-index: 2
+
+    mat-sidenav .cdk-focus-trap-content > *
+      height: 100%
+
+    .header
+      background-color: #356C72
+      min-height: 35px
+      height: 35px

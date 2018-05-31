@@ -1,0 +1,119 @@
+{
+  "packages" : ["core"],
+  "system_clock" : "clk",
+  "system_reset" : "rst",
+  "system_memory" : null,
+  "time_step" : 0.0001,
+
+  "signals" : [
+    {
+      "name" : "clk",
+      "simulation" : {
+        "model" : "Clock",
+        "frequency" : 1,
+        "width" : 1,
+        "append_to_entities" : true
+      }
+    },
+    {
+      "name" : "rst",
+      "simulation" : {
+        "model" : "Reset",
+        "width" : 1
+      }
+    },
+    {
+      "name" : "d",
+      "simulation" : {
+        "model" : "Bus",
+        "width" : 4
+      }
+    },
+    {
+      "name" : "q",
+      "simulation" : {
+        "model" : "Bus",
+        "width" : 4
+      }
+    },
+    {
+      "name" : "const",
+      "simulation" : {
+        "model" : "LogicInput",
+        "width" : 4,
+        "value" : 1
+      }
+    },
+    {
+      "name" : "rd",
+      "simulation" : {
+        "model" : "Bus",
+        "width" : 8
+      }
+    },
+    {
+      "name" : "wr",
+      "simulation" : {
+        "model" : "Bus",
+        "width" : 8
+      }
+    },
+    {
+      "name" : "en",
+      "simulation" : {
+        "model" : "Bus",
+        "width" : 1
+      }
+    },
+    {
+      "name" : "acm",
+      "simulation" : {
+        "model" : "Bus",
+        "width" : 2
+      }
+    }
+  ],
+
+  "entities" : [
+    {
+      "name" : "adder",
+        "simulation" : {
+        "model" : "Adder",
+        "width" : 4,
+        "input_1" : "const",
+        "input_2" : "q",
+        "output" : "d"
+      }
+    },
+    {
+      "name" : "register",
+      "simulation" : {
+        "model" : "Register",
+        "append_to_signals" : true,
+        "width" : 4,
+        "clock" : "clk",
+        "reset" : "rst",
+        "input" : "d",
+        "output" : "q",
+        "edge_model" : "both_edge"
+      }
+    },
+    {
+      "name" : "memory",
+      "simulation" : {
+        "model" : "Memory",
+        "size" : 16,
+        "bytes_per_word" : 1,
+        "start_address" : 0,
+        "address" : "q",
+        "write" : "wr",
+        "enable" : "en",
+        "reset" : "rst",
+        "clock" : "clk",
+        "access_mode" : "acm",
+        "read" : "rd",
+        "append_to_signals" : true
+      }
+    }
+  ]
+}

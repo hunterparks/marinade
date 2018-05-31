@@ -1,0 +1,45 @@
+$marinade-background-dark: #150F29
+$marinade-background-light: white
+$marinade-primary-dark: #356C72
+$marinade-primary-light: #4B8E8B
+$marinade-secondary-dark: #D7263D
+$marinade-secondary-light: #F46036
+$marinade-transparent: rgba(0, 0, 0, 0.85)
+$marinade-transparent-hover: rgba(50, 50, 50, 0.85)
+
+body, html
+  margin: 0
+  padding: 0
+  height: 100vh
+  width: 100vw
+  overflow: hidden
+
+/**
+  // Electron styles
+  .draggable
+    -webkit-user-select: none
+    -webkit-app-region: drag
+
+  // Href line height wasn't right for mat-icon-button
+  a[mat-icon-button]
+      line-height: 36px
+
+  // Stretch tab labels until there is an attribute for it
+  .mat-tab-label
+    flex-grow: 1
+
+@mixin hover
+  cursor: pointer
+
+@mixin overlay
+  background-color: $marinade-transparent
+
+@mixin overlay-hover
+  @include hover
+  background-color: $marinade-transparent-hover
+
+@mixin center
+  position: absolute
+  top: 50%
+  left: 50%
+  transform: translate(-50%, -50%)

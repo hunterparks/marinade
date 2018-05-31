@@ -9,6 +9,7 @@ import 'zone.js/dist/async-test';
 import 'zone.js/dist/fake-async-test';
 // tslint:enable:ordered-imports
 
+import "hammerjs";
 import { getTestBed } from '@angular/core/testing';
 import { BrowserDynamicTestingModule, platformBrowserDynamicTesting } from '@angular/platform-browser-dynamic/testing';
 
@@ -18,7 +19,7 @@ declare const require: any;
 
 // Prevent Karma from running prematurely.
 // tslint:disable-next-line:typedef
-__karma__.loaded = function () {};
+__karma__.loaded = function (): void {};
 
 // First, initialize the Angular testing environment.
 getTestBed().initTestEnvironment(
