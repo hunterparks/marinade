@@ -8,19 +8,17 @@ Configuration file template should follow form
 {
     /* Required */
 
-    "name" : "reset",
-    "type" : "Reset",
+    "width" : 1,
 
     /* Optional */
 
-    "package" : "core",
-    "value" : 1
+    "value" : 1,
+    "append_to_entities" : true
 }
 
-name is the entity name, used by entity map (Used externally)
-type is the component class (Used externally)
-package is associated package to override general (Used externally)
+append_to_entities is flag used to append an hooks as entity (Used externally)
 value is the default value for the component
+width is bit-width, enforced to always be one
 """
 
 from simulator.components.abstract.hooks import InputHook
@@ -94,5 +92,8 @@ class Reset(InputHook, iBusRead):
             default_state = config["value"]
         else:
             default_state = Reset.DEFAULT_STATE
+
+        if config["width"] != 1:
+            raise ValueError("width must be 1")
 
         return Reset(default_state)

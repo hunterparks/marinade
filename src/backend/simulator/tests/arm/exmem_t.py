@@ -219,8 +219,6 @@ class Exmem_t(unittest.TestCase):
         })
 
         config = {
-            "name": "exmem",
-            "type": "Exmem",
             "pc4e": "pc4e",
             "regwre": "regwre",
             "memwre": "memwre",

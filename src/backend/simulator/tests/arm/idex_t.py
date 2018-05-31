@@ -334,8 +334,6 @@ class Idex_t(unittest.TestCase):
         })
 
         config = {
-            "name" : "idex",
-            "type" : "Idex",
             "pc4d" : "pc4d",
             "regwrd" : "regwrd",
             "alusrcbd" : "alusrcbd",

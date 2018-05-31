@@ -6,8 +6,6 @@ Configuration file template should follow form
 {
     /* Required */
 
-    "name" : "alu_flag_register",
-    "type" : "AluFlagRegister",
     "c_in" : "",
     "v_in" : "",
     "n_in" : "",
@@ -22,7 +20,6 @@ Configuration file template should follow form
 
     /* Optional */
 
-    "package" : "arm",
     "append_to_signals" : true,
     "value" : 0,
     "edge_type" : "",
@@ -30,9 +27,6 @@ Configuration file template should follow form
     "enable_type" : ""
 }
 
-name is the entity name, used by entity map (Used externally)
-type is the component class (Used externally)
-package is associated package to override general (Used externally)
 append_to_signals is flag used to append an entity as hook (Used externally)
 c_in is data bus reference
 v_in is data bus reference

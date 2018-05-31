@@ -5,10 +5,8 @@ Configuration file template should follow form
 {
     /* Required */
 
-    "name" : "register_file",
-    "type" : "RegisterFile",
-    "length" : 16,
-    "size" : 32,
+    "size" : 16,
+    "width" : 32,
     "clock" : "",
     "reset" : "",
     "write_address" : "",
@@ -18,7 +16,6 @@ Configuration file template should follow form
 
     /* Optional */
 
-    "package" : "core",
     "append_to_signals" : true,
     "enable" : "",
     "value" : 0,
@@ -27,12 +24,9 @@ Configuration file template should follow form
     "enable_type" : ""
 }
 
-name is the entity name, used by entity map (Used externally)
-type is the component class (Used externally)
-package is associated package to override general (Used externally)
 append_to_signals is flag used to append an entity as hook (Used externally)
-length is number of registers in register file
-size is number of bits stored in register
+size is number of registers in register file
+width is number of bits stored in register
 clock is control bus clock line reference
 reset is control bus reset line reference
 write_address is address bus reference to select register
@@ -297,7 +291,7 @@ class RegisterFile(Sequential):
         else:
             enable_type = RegisterFile.DEFAULT_ENABLE_TYPE
 
-        return RegisterFile(config["length"], config["size"], hooks[config["clock"]],
+        return RegisterFile(config["size"], config["width"], hooks[config["clock"]],
                             hooks[config["reset"]], hooks[config["write_address"]],
                             hooks[config["write_data"]], read_addresses, read_datas,
                             enable, default_state, edge_type, reset_type, enable_type)

@@ -5,8 +5,6 @@ Configuration file template should follow form
 {
     /* Required */
 
-    "name" : "alu_demo",
-    "type" : "AluDemo",
     "input_a" : "",
     "input_b" : "",
     "alus" : "",
@@ -14,16 +12,9 @@ Configuration file template should follow form
     "output_c" : "",
     "output_v" : "",
     "output_n" : "",
-    "output_z" : "",
-
-    /* Optional */
-    
-    "package" : "arm"
+    "output_z" : ""
 }
 
-name is the entity name, used by entity map (Used externally)
-type is the component class (Used externally)
-package is associated package to override general (Used externally)
 input_a is bus reference for first input into ALU
 input_b is bus reference for second input into ALU
 alus is control bus reference for ALU operation

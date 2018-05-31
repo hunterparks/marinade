@@ -100,8 +100,6 @@ class MemoryReadSignExtender_t(unittest.TestCase):
         })
 
         config = {
-            "name" : "memory_read_sign_extend",
-            "type" : "MemoryReadSignExtender",
             "input" : "i",
             "ctrl" : "c",
             "output" : "o"

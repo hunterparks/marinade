@@ -31,7 +31,7 @@ if (process.argv.find(function(args) {
 }
 
 // kicks off all the tasks to run and watch for changes on src and electron files
-gulp.task('watch', ['start-watch-src','watch-electron', 'watch-python'], function (cb) {
+gulp.task('watch', ['start-watch-src','watch-electron', 'watch-python', 'watch-config'], function (cb) {
     setTimeout(cb, 200);
 });
 
@@ -177,4 +177,10 @@ gulp.task('watch-electron', 'Watch for changed files', function (cb) {
 gulp.task('watch-python', 'Watch for changed files', function (cb) {
   // Reload main process after files change
   gulp.watch(['src/backend/**/*.py'], ['restart']);
+});
+
+// watches the python files for changes
+gulp.task('watch-config', 'Watch for changed files', function (cb) {
+  // Reload main process after files change
+  gulp.watch(['src/config/**/*.json'], ['restart']);
 });

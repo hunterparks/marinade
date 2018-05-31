@@ -1,13 +1,9 @@
-import { Bus } from './bus/bus.class';
-import { Controller } from './controller/controller.class';
-import { Mux } from './mux/mux.class';
-import { Register } from './register/register.class';
-import { Stage } from './stage/stage.class';
+import { SVGPath } from '@models/simulator/svg/path.class';
+import { SVGRect } from '@models/simulator/svg/rect.class';
+import { SVGTrapezoid } from '@models/simulator/svg/trapezoid.class';
 
 export class Architecture {
-  public bus?: Bus[];
-  public controller?: Controller[];
-  public mux?: Mux[];
-  public stage?: Stage[];
-  public stageRegister?: Register[];
+  public path?: SVGPath[];
+  public rectangle?: SVGRect[];
+  public trapezoid?: SVGTrapezoid[];
 }

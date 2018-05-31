@@ -6,8 +6,6 @@ Configuration file template should follow form
 {
     /* Required */
 
-    "name" : "idex",
-    "type" : "Idex",
     "pc4d" : "",
     "regwrd" : "",
     "alusrcbd" : "",
@@ -41,7 +39,6 @@ Configuration file template should follow form
 
     /* Optional */
 
-    "package" : "arm",
     "append_to_signals" : true,
     "enable" : "",
     "edge_type" : "",
@@ -49,9 +46,6 @@ Configuration file template should follow form
     "flush_type" : ""
 }
 
-name is the entity name, used by entity map (Used externally)
-type is the component class (Used externally)
-package is associated package to override general (Used externally)
 append_to_signals is flag used to append an entity as hook (Used externally)
 pc4d is data bus reference input
 regwrd is data bus reference input

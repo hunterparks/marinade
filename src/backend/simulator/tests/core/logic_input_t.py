@@ -98,9 +98,7 @@ class LogicInput_t(unittest.TestCase):
         "Validates dictionary constructor"
 
         config = {
-            "name" : "logic",
-            "type" : "LogicInput",
-            "size" : 16,
+            "width" : 16,
             "value" : 10
         }
 

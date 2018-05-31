@@ -187,8 +187,6 @@ class DataMemory_t(unittest.TestCase):
         })
 
         config = {
-            "name" : "data_memory",
-            "type" : "DataMemory",
             "address" : "address",
             "write" : "write",
             "write_enable" : "we",

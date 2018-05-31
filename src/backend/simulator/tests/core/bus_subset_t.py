@@ -75,8 +75,6 @@ class BusSubset_t(unittest.TestCase):
         })
 
         config = {
-            "name" : "bus_subset",
-            "type" : "BusSubset",
             "input" : "i1",
             "outputs" : ["o1","o2"],
             "bounds" : [[0,4],[4,8]]

@@ -5,8 +5,6 @@ Configuration file template should follow form
 {
     /* Required */
 
-    "name" : "data_memory",
-    "type" : "DataMemory",
     "address" : "",
     "write" : "",
     "write_enable" : "",
@@ -16,7 +14,6 @@ Configuration file template should follow form
 
     /* Optional */
 
-    "package" : "arm",
     "append_to_signals" : true
     "mode" : "",
     "size" : 1,
@@ -26,9 +23,6 @@ Configuration file template should follow form
     "enable_type" : ""
 }
 
-name is the entity name, used by entity map (Used externally)
-type is the component class (Used externally)
-package is associated package to override general (Used externally)
 append_to_signals is flag used to append an entity as hook (Used externally)
 address is bus reference for memory cell to access
 write is data bus reference to write to cell

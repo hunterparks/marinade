@@ -60,9 +60,7 @@ class Constant_t(unittest.TestCase):
         "Validates dictionary constructor"
 
         config = {
-            "name" : "constant",
-            "type" : "Constant",
-            "size" : 64,
+            "width" : 64,
             "value" : 0xFFFF0000FFFF0000
         }
 

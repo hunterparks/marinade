@@ -6,16 +6,13 @@ Configuration file template should follow form
 {
     /* Required */
 
-    "name" : "register",
-    "type" : "Register",
-    "size" : 8,
+    "width" : 8,
     "clock" : "",
     "reset" : "",
     "input" : "",
 
     /* Optional */
-
-    "package" : "core",
+    
     "append_to_signals" : true,
     "output" : "",
     "enable" : "",
@@ -25,11 +22,8 @@ Configuration file template should follow form
     "enable_type" : ""
 }
 
-name is the entity name, used by entity map (Used externally)
-type is the component class (Used externally)
-package is associated package to override general (Used externally)
 append_to_signals is flag used to append an entity as hook (Used externally)
-size is number of bits stored in register
+width is number of bits stored in register
 clock is control bus clock line reference
 reset is control bus reset line reference
 input is the data bus reference to store into register
@@ -213,6 +207,6 @@ class Register(Sequential):
         else:
             enable_type = Register.DEFAULT_ENABLE_TYPE
 
-        return Register(config["size"], hooks[config["clock"]], hooks[config["reset"]],
+        return Register(config["width"], hooks[config["clock"]], hooks[config["reset"]],
                         hooks[config["input"]], output, default_state, edge_type,
                         reset_type, enable, enable_type)

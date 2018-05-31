@@ -39,9 +39,10 @@ signals is a list of bus components
     else a component is constructed accoriding to the definition in the package
         manager
 
+    if component request to be appened to entities then it is added after all
+        current entities in list (typically none)
+
 entities is a list of runable components
-    if a component has key signal then it is interpretted as a signal that needs
-        to be appended to the entity list
     if a component has key symbolic then it is interpretted as being a
         non-runnable container with a set of sub entities
     else a component is regarded as concrete and is constructed according to
@@ -258,10 +259,10 @@ class Architecture(ConfigurationParser):
         package_manager.set_default_packages(config["packages"])
 
         # iterate through signals to produce hooks
-        hooks = cls._parse_signals(config, hooks)
+        hooks, entities = cls._parse_signals(config, hooks, None)
 
         # iterate through entities to produce entities
-        entities = cls._parse_entities(config, hooks)
+        entities = cls._parse_entities(config, hooks, entities)
 
         # gather system wide defintions
         system_clock = config["system_clock"]
@@ -282,22 +283,42 @@ class Architecture(ConfigurationParser):
                             hooks, entities)
 
     @classmethod
-    def _parse_signals(cls, config, hooks):
+    def _parse_signals(cls, config, hooks, entities=None):
         """
         Parse a list of components (signals) from configuration object.
 
         Configuration signals must be a list of signals where each one follows
         the configuration template for the given type
 
+        Configuration signals may take several forms
+
+            if the signal is a symbolic then the component is treated as a
+                container for another list of signals
+            else the signal is concrete and is constructed after searching the
+                package tree
+
+        Additional options
+
+            if package is supplied then the component will be searched only in
+                that list (of strings)
+            if append_to_entities is supplied then component is also added as an
+                entity
+
         config is reference to dictionary with entities for configuration
         hooks is dictionary containing signals to link components (or None)
+        entities is orderedDict to append signals that request to be appended
 
-        returns a an ordered dictionary of updated hooks
+        returns a an ordered dictionary of updated hooks and optionally entities
+                entities may be empty
         """
         if hooks == None:
             hooks = OrderedDict()
 
+        if entities == None:
+            entities = OrderedDict()
+
         for signal in config["signals"]:
+
             if "package" in signal:
                 package = signal["package"]
                 if isinstance(package,str):
@@ -307,22 +328,25 @@ class Architecture(ConfigurationParser):
 
             if "symbolic" in signal:
                 if "signals" in signal:
-                    hooks.update(cls._parse_signals(signal,hooks))
+                    cls._parse_signals(signal,hooks,entities)
             else:
+
                 hooks.update({signal["name"]: package_manager.construct(
-                    signal["type"], signal, package, hooks)})
-        return hooks
+                    signal["simulation"]["model"], signal["simulation"], package, hooks)})
+
+                if "append_to_entities" in signal["simulation"] and signal["simulation"]["append_to_entities"]:
+                    entities.update({signal["name"]: hooks[signal["name"]]})
+
+        return hooks, entities
 
     @classmethod
-    def _parse_entities(cls, config, hooks):
+    def _parse_entities(cls, config, hooks, entities=None):
         """
         Parse a list of components (entities) from configuration object.
 
         Configuration entities may take several forms
 
-            if the entity is a signal then an insert of hook is made into
-                entities list
-            else if the entity is a symbolic then the component is treated as a
+            if the entity is a symbolic then the component is treated as a
                 container for another list of entities
             else the entity is concrete and is constructed after searching the
                 package tree
@@ -336,11 +360,15 @@ class Architecture(ConfigurationParser):
 
         config is reference to dictionary with entities for configuration
         hooks is dictionary containing signals to link components
+        entities is an optional starting point for list of components
 
         returns a an ordered dictionary of entities
         """
-        entities = OrderedDict()
+        if entities == None:
+            entities = OrderedDict()
+
         for entity in config["entities"]:
+
             if "package" in entity:
                 package = entity["package"]
                 if isinstance(package,str):
@@ -348,14 +376,14 @@ class Architecture(ConfigurationParser):
             else:
                 package = None
 
-            if "signal" in entity:
-                entities.update({entity["name"]: hooks[entity["signal"]]})
-            elif "symbolic" in entity and entity["symbolic"]:
+            if "symbolic" in entity and entity["symbolic"]:
                 if "entities" in entity:
                     entities.update(cls._parse_entities(entity, hooks))
             else:
+
                 entities.update({entity["name"]: package_manager.construct(
-                    entity["type"], entity, package, hooks)})
-                if "append_to_signals" in entity and entity["append_to_signals"]:
+                    entity["simulation"]["model"], entity["simulation"], package, hooks)})
+
+                if "append_to_signals" in entity["simulation"] and entity["simulation"]["append_to_signals"]:
                     hooks.update({entity["name"]: entities[entity["name"]]})
         return entities

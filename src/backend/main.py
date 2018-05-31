@@ -40,10 +40,10 @@ if __name__ == "__main__":
                     retMsg = interface.parse_command(msg)
                     rxStr = json.dumps(retMsg)
                     await websocket.send(rxStr)
-                except Exception:
+                except Exception as e:
                     await websocket.send(json.dumps({
                         'status' : False,
-                        'error' : 'cannot parse JSON message'
+                        'error' : 'cannot parse JSON message: {}'.format(str(e))
                     }))
 
         asyncio.get_event_loop().run_until_complete(

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { TooltipService } from '../../../../services/tooltip/tooltip.service';
+import { TooltipService } from '@services/tooltip/tooltip.service';
 
 @Component({
   selector: 'tooltip-container',

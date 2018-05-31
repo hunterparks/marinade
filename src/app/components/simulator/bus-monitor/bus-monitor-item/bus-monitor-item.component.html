@@ -1,0 +1,4 @@
+<div class="list-item" [class.active]="path.state.getValue() === State.Active">
+  <p>{{ path.tooltip.getValue() }}</p>
+  <i class="fa fa-close" (click)="removeBus()"></i>
+</div>

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Bus } from '../../../models/simulator/bus/bus.class';
-import { ArchitectureService } from '../architecture/architecture.service';
+import { SVGPath } from '@models/simulator/svg/path.class';
+import { ArchitectureService } from '@services/simulator/architecture/architecture.service';
 
 @Injectable()
 export class ResponseService {
@@ -10,15 +10,18 @@ export class ResponseService {
   public receiveMessage(message: string): void {
     let messageObject: any = JSON.parse(message);
     Object.keys(messageObject).map((key: string) => {
-      let selectedBus: Bus = this.architectureService.architecture.getValue().bus.find((bus: Bus) => {
-        return bus.name.toLowerCase() === key;
-      });
-      if (selectedBus) {
-        let newState = '';
-        if (key in messageObject && 'state' in messageObject[key]) {
-          newState = '0x' + messageObject[key].state.toString(16).toUpperCase();
+      let architecture: any = this.architectureService.architecture.getValue();
+      if (architecture) {
+        let selectedBus: SVGPath = this.architectureService.architecture.getValue().path.find((path: SVGPath) => {
+          return path.name.toLowerCase() === key;
+        });
+        if (selectedBus) {
+          let newState = '';
+          if (key in messageObject && 'state' in messageObject[key]) {
+            newState = '0x' + messageObject[key].state.toString(16).toUpperCase();
+          }
+          selectedBus.data.next(newState);
         }
-        selectedBus.data.next(newState);
       }
     });
   }

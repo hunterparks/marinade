@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { EditorViewSidebarComponent } from './editor-view-sidebar.component';
+import { EditorViewSidebarComponent } from '@components/pages/editor-view/editor-view-sidebar/editor-view-sidebar.component';
 
 describe('EditorViewSidebarComponent', () => {
   let component: EditorViewSidebarComponent;

@@ -5,24 +5,19 @@ Configuration file template should follow form
 {
     /* Required */
 
-    "name" : "program_memory",
-    "type" : "ProgramMemory",
     "address" : "",
     "reset" : "",
     "clock" : "",
     "read" : "",
 
     /*  Options */
-    "package" : "arm",
+
     "append_to_signals" : true,
     "size" : 1,
     "value" : 0,
     "reset_type" : ""
 }
 
-name is the entity name, used by entity map (Used externally)
-type is the component class (Used externally)
-package is associated package to override general (Used externally)
 append_to_signals is flag used to append an entity as hook (Used externally)
 address is bus reference for memory cell to access
 clock is control bus clock line reference

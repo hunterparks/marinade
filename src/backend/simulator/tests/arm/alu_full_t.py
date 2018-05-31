@@ -510,8 +510,6 @@ class Alu_t(unittest.TestCase):
         })
 
         config = {
-            "name" : "alu_full",
-            "type" : "AluFull",
             "input_a" : "a",
             "input_b" : "b",
             "input_ar" : "ar",

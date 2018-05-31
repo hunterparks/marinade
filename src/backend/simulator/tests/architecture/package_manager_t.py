@@ -24,7 +24,7 @@ class PackageManager_t(unittest.TestCase):
         components = OrderedDict()
         obj_bus = package_manager.construct(
             "Bus", {
-                "size": 8,
+                "width": 8,
                 "value": 0
             }, None, components
         )
@@ -70,7 +70,6 @@ class PackageManager_t(unittest.TestCase):
             components.update({"extender": obj_extender})
             self.assertTrue(False)
         except Exception as e:
-            print(str(e))
             self.assertTrue(True)
 
         # Expect success

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IpcService } from '../../../../services/ipc/ipc.service';
+import { IpcService } from '@services/ipc/ipc.service';
 
 @Component({
   selector: 'marinade-editor-view-sidebar',

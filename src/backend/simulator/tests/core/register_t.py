@@ -302,9 +302,7 @@ class Register_t(unittest.TestCase):
         })
 
         config = {
-            "name" : "register",
-            "type" : "Register",
-            "size" : 8,
+            "width" : 8,
             "clock" : "clk",
             "reset" : "rst",
             "input" : "d",

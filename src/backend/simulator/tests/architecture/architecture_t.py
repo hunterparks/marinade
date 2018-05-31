@@ -507,36 +507,55 @@ class Architecture_t(unittest.TestCase):
                 {
                     "name" : "container",
                     "symbolic" : True,
+                    "view" : {},
                     "signals" : [
                         {
                             "name" : "clk",
-                            "type" : "Clock",
                             "package" : "core",
-                            "frequency" : 1
+                            "simulation" : {
+                                "model" : "Clock",
+                                "frequency" : 1,
+                                "append_to_entities" : True,
+                                "width" : 1
+                            },
+                            "view" : {}
                         },
                         {
                             "name" : "rst",
-                            "type" : "Reset",
-                            "package" : "core"
+                            "package" : "core",
+                            "simulation" : {
+                                "model" : "Reset",
+                                "width" : 1
+                            },
+                            "view" : {}
                         },
                         {
                             "name" : "d",
-                            "type" : "Bus",
                             "package" : "core",
-                            "size" : 4
+                            "simulation" : {
+                                "model" : "Bus",
+                                "width" : 4
+                            },
+                            "view" : {}
                         },
                         {
                             "name" : "q",
-                            "type" : "Bus",
                             "package" : "core",
-                            "size" : 4
+                            "simulation" : {
+                                "model" : "Bus",
+                                "width" : 4
+                            },
+                            "view" : {}
                         },
                         {
                             "name" : "const",
-                            "type" : "Constant",
                             "package" : "core",
-                            "size" : 4,
-                            "value" : 3
+                            "simulation" : {
+                                "model" : "Constant",
+                                "width" : 4,
+                                "value" : 3
+                            },
+                            "view" : {}
                         }
                     ]
                 }
@@ -544,33 +563,36 @@ class Architecture_t(unittest.TestCase):
 
             "entities" : [
                 {
-                    "name" : "clk",
-                    "signal" : "clk"
-                },
-                {
                     "name" : "container",
                     "symbolic" : True,
+                    "view" : {},
                     "entities" : [
                         {
                             "name" : "adder",
-                            "type" : "Adder",
                             "package" : "core",
-                            "size" : 4,
-                            "input_1" : "const",
-                            "input_2" : "q",
-                            "output" : "d"
+                            "simulation" : {
+                                "model" : "Adder",
+                                "width" : 4,
+                                "input_1" : "const",
+                                "input_2" : "q",
+                                "output" : "d"
+                            },
+                            "view" : {}
                         },
                         {
                             "name" : "register",
-                            "type" : "Register",
                             "package" : "core",
-                            "append_to_signals" : True,
-                            "size" : 4,
-                            "clock" : "clk",
-                            "reset" : "rst",
-                            "input" : "d",
-                            "output" : "q",
-                            "edge_type" : "both_edge"
+                            "simulation" : {
+                                "model" : "Register",
+                                "append_to_signals" : True,
+                                "width" : 4,
+                                "clock" : "clk",
+                                "reset" : "rst",
+                                "input" : "d",
+                                "output" : "q",
+                                "edge_type" : "both_edge"
+                            },
+                            "view" : {}
                         }
                     ]
                 }

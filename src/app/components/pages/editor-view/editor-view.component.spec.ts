@@ -1,6 +1,6 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { EditorViewComponent } from './editor-view.component';
+import { EditorViewComponent } from '@components/pages/editor-view/editor-view.component';
 
 describe('EditorViewComponent', () => {
   let component: EditorViewComponent;

@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { WebsocketService } from '../websocket/websocket.service';
+import { WebsocketService } from '@services/simulator/websocket/websocket.service';
 
 @Injectable()
 export class RequestService {
@@ -23,8 +23,7 @@ export class RequestService {
   }
 
   public load(filepath: string): void {
-    // TODO - add file chooser
-    this.websocketService.write('{ "load": { "filepath": "pipeline_poc.json" } }');
+    this.websocketService.write('{ "load": { "filepath": "' + filepath + '" } }');
   }
 
   public modify(component: string, parameters: string[]): void {
@@ -32,8 +31,7 @@ export class RequestService {
   }
 
   public program(filepath: string, memory: string): void {
-    // TODO - add file chooser
-    this.websocketService.write('{ "program": { "filepath": "", "memory": "progmem" } }');
+    this.websocketService.write('{ "program": { "filepath": "' + filepath + '", "memory": "' + memory + '" } }');
   }
 
   public reset(): void {

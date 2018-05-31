@@ -62,8 +62,6 @@ class RegisterFile_Demo_t(unittest.TestCase):
         })
 
         config = {
-            "name" : "register_file_demo",
-            "type" : "RegisterFileDemo",
             "clock" : "clock",
             "reset" : "reset",
             "write_enable" : "write_enable",
